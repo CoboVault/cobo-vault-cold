@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020 Cobo
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_unlock.xml"
+    app:startDestination="@id/patternLockFragment">
+
+    <fragment
+        android:id="@id/patternLockFragment"
+        android:name="com.cobo.cold.ui.fragment.PatternLockFragment"
+        tools:layout="@layout/pattern_lock_fragment"
+        android:label="PatternLockFragment">
+        <action
+            android:id="@+id/action_to_passwordLockFragment"
+            app:destination="@id/passwordLockFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/passwordLockFragment"
+        android:name="com.cobo.cold.ui.fragment.PasswordLockFragment"
+        tools:layout="@layout/password_unlock"
+        android:label="PasswordLockFragment">
+        <action
+            android:id="@+id/action_resetpassword_verifyMnemonic"
+            app:destination="@id/verifyMnemonicFragment" />
+    </fragment>
+    <fragment
+        android:id="@id/verifyMnemonicFragment"
+        android:name="com.cobo.cold.ui.fragment.unlock.VerifyMnemonicFragment"
+        tools:layout="@layout/verify_mnemonic"
+        android:label="VerifyMnemonicFragment">
+        <action
+            android:id="@+id/action_verifyMnemonic_to_setPassword"
+            app:destination="@id/setPasswordUnlockFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/setPasswordUnlockFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.SetPasswordFragment"
+        tools:layout="@layout/set_password"
+        android:label="SetPasswordUnlockFragment"/>
+    <fragment
+        android:id="@+id/fingerprintLockFragment"
+        android:name="com.cobo.cold.ui.fragment.FingerprintLockFragment"
+        android:label="FingerprintLockFragment"
+        tools:layout="@layout/fingerprint_lock_fragment">
+        <action
+            android:id="@+id/action_fingerprint_to_patternLockFragment"
+            app:destination="@id/patternLockFragment" />
+        <action
+            android:id="@+id/action_fingerprint_to_passwordLockFragment"
+            app:destination="@id/passwordLockFragment" />
+    </fragment>
+</navigation>

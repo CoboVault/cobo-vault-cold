@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020 Cobo
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="tx"
+            type="com.cobo.cold.db.entity.TxEntity" />
+
+        <variable
+            name="txCallback"
+            type="com.cobo.cold.ui.fragment.main.TxCallback" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:background="?attr/selectableItemBackground"
+        android:onClick="@{()->txCallback.onClick(tx)}"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/from"
+            android:layout_width="132dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="14dp"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:text="@{tx.from}"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="0x4f7d6a…52ce9824" />
+
+        <ImageView
+            android:id="@+id/arrow_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/from"
+            android:layout_alignStart="@id/from"
+            android:layout_marginVertical="8dp"
+            android:src="@drawable/tx_arrow_down"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/to"
+            android:layout_width="132dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/arrow_down"
+            android:layout_alignStart="@id/arrow_down"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="0x4f7d6a…52ce9824" />
+
+        <TextView
+            android:id="@+id/amount"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="end"
+            android:text="@{tx.amount}"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="-0.15352413 BTC" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/amount"
+            android:layout_alignEnd="@id/amount"
+            android:layout_marginTop="4dp"
+            android:gravity="end"
+            android:textColor="@color/white40"
+            android:textSize="12sp"
+            app:time="@{tx.timeStamp}"
+            tools:text="2018/06/01" />
+
+
+        <include
+            layout="@layout/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+</layout>

@@ -1,0 +1,267 @@
+<!--
+  ~ Copyright (c) 2020 Cobo
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="app_name">CoboVault</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_scan_qr_code">Scan QR Code</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+
+    <string name="drawer_menu_my_vault">我的 Cobo 金库</string>
+    <string name="drawer_menu_add_remove">添加 / 隐藏币种</string>
+    <string name="drawer_menu_sync">同步移动端</string>
+    <string name="drawer_menu_setting">设置</string>
+    <string name="drawer_menu_about">关于 Cobo 金库</string>
+    <string name="title_about">关于 Cobo 金库</string>
+    <string name="title_setting">设置</string>
+    <string name="add_remove_coin">添加 / 隐藏币种</string>
+    <string name="scan">扫描二维码</string>
+    <string name="scan_hint">将二维码放入框内，即可自动扫描</string>
+    <string name="title_sync">同步Cobo金库移动端</string>
+    <string name="pattern_lock">手势解锁</string>
+    <string name="pattern_lock_hint">请绘制解锁图案</string>
+    <string name="switch_to_password">切换至密码解锁</string>
+    <string name="about_message">Cobo 金库是一款利用二维码作为信息传输媒介，从而实现100%完全脱网的硬件钱包产品。通过二维码，用户亦可方便地检查输入和输出的信息。我们的安全芯片通过物理震荡环生成真随机数（TRNG），从而充分保障了用户私钥的随机性。私钥派生，所有的交易签名全部在安全芯片内完成。从而将硬件钱包的安全性能推到一个前所未有的新高度。</string>
+    <string name="device_info">序列号: %s\n  固件版本：%s\n  系统版本：%s  \n应用版本：%s</string>
+    <string name="asset_list_empty">请到“菜单 - 添加 / 隐藏币种” 中添加所需币种</string>
+    <string name="mnemonic_hint1">助记词用于恢复钱包，请使用cryptosteel依次记录您的24个助记词，并保存到安全的地方。</string>
+    <string name="mnemonic_hint2">请勿进行拍照等操作！如果他人获取您的助记词将直接获取您的资产！</string>
+    <string name="saved">我已安全保存</string>
+    <string name="tab_my_address">我的地址</string>
+    <string name="tab_my_pubkey">我的公钥</string>
+    <string name="tab_transaction_history">签名记录</string>
+    <string name="create_addr">创建 %s 地址</string>
+    <string name="signing_hint">正在签名…</string>
+    <string name="scan_progress">请持续扫描,当前进度%s</string>
+    <string name="eos_hint">以下是您的 %s 公钥（可安全分享）</string>
+    <string name="eos_pubkey">公钥：\n %s</string>
+    <string name="receive_warning">此地址只接收 %s体系资产,\n发送其他体系币种到此地址将无法找回。</string>
+    <string name="receive_coin">接收 %s</string>
+    <string name="amount_hint">设置收币额度</string>
+    <string name="version_update_hint"><![CDATA[请访问: <font color="#00cdc3">https://cobo.com/hardware-wallet/firmware<font/> 查看是否有更新。如需更新，请按下图依次取下电池和TF卡，下载最新安装包到TF卡根目录下（TF卡仅支持FAT32格式，且容量不能超过32G），插回卡后开机，按照系统提示更新。]]></string>
+    <string name="version">版本</string>
+    <string name="setting_language">语言设置</string>
+    <string name="setting_vibrator">震动开关</string>
+    <string name="setting_brightness">屏幕亮度</string>
+    <string name="setting_screen_off_time">锁屏时间</string>
+    <string name="web_auth1"><![CDATA[1. 请打开 <font color="#00cdc3">https://cobo.com/hardware-wallet/web-authentication<font/>；]]></string>
+    <string name="web_auth2"><![CDATA[2. 点击下方 <font color="#00cdc3">\"扫码验证\" <font/>按钮，扫描网站上的二维码；]]></string>
+    <string name="web_auth3">3.将扫描后的结果输入到网站，获取设备验证信息；</string>
+    <string name="web_auth4">4.如果扫描失败，您的设备可能已经被攻击，建议您停止使用该设备。</string>
+    <string name="skip">跳过</string>
+    <string name="read_confirm"><![CDATA[我已阅读并同意 <u><font color="#00cdc3">\"服务条款\"<font/></u> ，和 <u><font color="#00cdc3">\"隐私政策\"<font/></u>]]></string>
+    <string name="license">服务条款</string>
+    <string name="create_vault_hint"><![CDATA[1.您可以点击 <u><font color="#00cdc3">\"创建金库\"<font/></u>，系统将为您新建一个全新的金库]]></string>
+    <string name="import_vault_hint"><![CDATA[2.您也可以点击 <u><font color="#00cdc3">\"导入金库\"<font/></u> ，通过助记词恢复已有的金库]]></string>
+    <string name="setup_wallet_hint1">感谢您使用 Cobo 金库硬件钱包！</string>
+    <string name="input_mnemonic_hint">请在下方表格中输入%d个助记词以恢复金库</string>
+    <string name="input_mnemonic">输入助记词</string>
+    <string name="pwd_again_hint">请再次输入密码</string>
+    <string name="pwd_hint">请输入密码</string>
+    <string name="password_verify_wrong">两次输入不一致</string>
+    <string name="password_input_wrong">必须同时包含大、小写字母和数字</string>
+    <string name="mnemonic_hint"><![CDATA[提示：<br>1. 助记词为恢复资产的唯一途径，请按顺序正确记录，并妥善保管到安全的脱网环境中。  <br><br>2. 请勿将助记词拍照、储存在联网设备上或泄露给他人！助记词丢失或泄露将意味着资产丢失！  <br><br>3.您可访问 <font color="#00cdc3">https://cobo.com/hardware-wallet/cobo-tablet<font/> 购买 Cobo 金刚匣安全方便保存您的助记词。]]></string>
+    <string name="generate_mnemonic">生成助记词</string>
+    <string name="next">下一步</string>
+    <string name="and">和</string>
+    <string name="import_vault">导入金库</string>
+    <string name="create_vault">创建金库</string>
+    <string name="confirm_mnemonic">确认助记词</string>
+    <string name="confirm_input_mnemonic_hint">请在下方表格中输入%d个助记词。</string>
+    <string name="complete">完成</string>
+    <string name="password_verify_too_short">至少10个字符</string>
+    <string-array name="screen_off_entries">
+        <item>15 秒</item>
+        <item>30 秒</item>
+        <item>1 分钟</item>
+        <item>2 分钟</item>
+        <item>5 分钟</item>
+        <item>10 分钟</item>
+    </string-array>
+
+    <string-array name="step_label">
+        <item>"官网验证"</item>
+        <item>"密码设置"</item>
+        <item>"创建/导入金库"</item>
+        <item>"创建观察钱包"</item>
+        <item>"开始使用"</item>
+    </string-array>
+
+    <string name="sync_hint2"><![CDATA[Cobo 金库移动端可在 Cobo 官网下载：<br><font color="#00cdc3"><u>https://cobo.com/hardware-wallet/cobo-vault-app</u><font/><br>]]></string>
+    <string name="sync_hint1"><![CDATA[请使用 Cobo 金库移动端扫描<font color="#00cdc3">动态二维码<font/>]]></string>
+    <string name="wrong_mnemonic_please_check">助记词有误，请逐字检查</string>
+    <string name="dots_not_enough">请至少连接四个点</string>
+    <string name="input_pattern_again">请再次绘制解锁图案</string>
+    <string name="two_pattern_not_match">两次输入不一致，请重新输入</string>
+    <string name="set_pattern_complete">手势解锁设置成功</string>
+    <string name="retry_times_hint">密码错误，还可尝试 %d 次</string>
+    <string name="too_many_pattern_attempts">手势密码错误次数过多， \n已切换至密码解锁页面</string>
+    <string name="wrong_pattern_hint">手势错误，请重新尝试</string>
+    <string name="factory_reset_title">恢复出厂设置</string>
+    <string name="password_modal_title">请输入密码</string>
+    <string name="passphrase_hint3">密语长度不得超过128个字符；可用大小写字母、数字、符号，禁用空格；</string>
+    <string name="passphrase_hint2">密语 (Passphrase)： 区分大小写</string>
+    <string name="passphrase_hint1">注意：\n1.隐藏金库创建后，其对应的密语（Passphrase）不可修改；请牢记密语（Passphrase），忘记密语（Passphrase）将意味着隐藏金库的资产丢失；\n2. 密语为空，直接点击确定按钮将进入到默认金库</string>
+    <string name="passphrase_hint">请输入 密语 (Passphrase)</string>
+    <string name="passphrase_title">密语(Passphrase)金库</string>
+    <string name="passphrase_confirm_modal_title">覆盖确认</string>
+    <string name="passphrase_confirm_modal_hint">确认后，当前金库将被覆盖，您可以通过密语（Passphrase）金库再次进入</string>
+    <string name="password_error_hint">密码错误，还有%d次机会\n机会用完后将恢复出厂设置</string>
+    <string name="verify_mnemonic_hint">请在下方表格中输入%d个助记词 </string>
+    <string name="delete_white_list_hint">确定要删除白名单地址:%s吗？</string>
+    <string name="invalid_qrcode">无效的二维码</string>
+    <string name="attack_warning">为了您的资产安全，已删除所有信息并冻结该设备。请立即联系客服\n 状态码:%s</string>
+    <string name="set_pattern">手势解锁</string>
+    <string name="system_settings">系统设置</string>
+    <string name="white_list">白名单</string>
+    <string name="create_import_vault">创建 / 导入金库</string>
+    <string name="safety_instruction">安全须知</string>
+    <string name="setting_license">服务条款</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="factory_reset">恢复出厂设置</string>
+    <string name="updatable">可更新</string>
+    <string name="password_input_hint">请输入密码</string>
+    <string name="factory_reset_hint">将清除所有数据，此操作不可逆</string>
+    <string name="password">密码</string>
+    <string name="confirm">确认</string>
+    <string name="wrong_password_retry_hint">密码错误，请重新尝试</string>
+    <string name="Update">版本更新</string>
+    <string name="draw_pattern_again">请再次绘制解锁图案</string>
+    <string name="scan_to_auth">扫码验证</string>
+    <string name="signing_history">签名记录</string>
+    <string name="add_coins">添加币种</string>
+    <string name="not_in_whitelist_reject">收币地址不在白名单上，拒绝签名!</string>
+    <string name="invalid_mnemonic">助记词有误，请仔细检查</string>
+    <string name="scan_permission_denied">没有权限无法扫描</string>
+    <string name="verify_mnemonic">验证助记词</string>
+    <string name="wrong_mnemonic">助记词输入有误</string>
+    <string name="too_many_passphrase">最多只能有5个密语</string>
+    <string name="address_name_hint">地址创建后不可被删除，有意义的名称可以更好的帮助您管理资产。</string>
+    <string name="change_password">修改密码</string>
+    <string name="self_checking">正在进行安全检查…</string>
+    <string name="text_create_address_main_text">请选择创建地址数量</string>
+    <string name="add_white_list">添加白名单</string>
+    <string name="search">搜索</string>
+    <string name="cancel">取消</string>
+    <string name="device_under_attack">检测到系统被攻击!</string>
+    <string name="power_off">关机</string>
+    <string name="create_new_address">创建新地址</string>
+    <string name="screen_brightness_hint">滑动调整屏幕亮度</string>
+    <string name="broadcast_tx">广播交易</string>
+    <string name="please_broadcast_with_hot">请使用 Cobo 金库移动端扫描二维码，并广播交易至区块链</string>
+    <string name="please_confirm">请确认</string>
+    <string name="mnemonic_save_hint">请确认您已妥善保管好助记词，一旦助记词丢失，资产将无法找回！（金库生成后，无法再次查看助记词）</string>
+    <string name="know">我知道了</string>
+    <string name="creating_vault_hint">正在为您创建金库，请勿锁屏</string>
+    <string name="delete_white_list">删除白名单</string>
+    <string name="self_check_under_disassemble">您的设备被攻击！</string>
+    <string name="self_check_alert_content">继续使用被攻击的机器可能导致您的资产丢失，为了您的资产安全，请清除设备所有信息并关机。如有任何问题，可联系微信客服：fatnene</string>
+    <string name="web_auth_scan_agian">重新扫描二维码</string>
+    <string name="clean_data_and_power_off">清除数据并关机</string>
+    <string name="sign_success">签名成功</string>
+    <string name="sign_fail">签名失败，请重试。\n如果多次失败，请联系客服处理。</string>
+    <string name="manage_white_list_hint">此金库只可向白名单内的地址授权发币交易，白名单地址为空时，拒绝所有交易。</string>
+    <string name="password_unlock">密码解锁</string>
+    <string name="forget_password">忘记密码？</string>
+    <string name="unlock">解锁</string>
+    <string name="eos_pubkey_sign_only">1. 若您已经创建了该公钥的地址，您可在Cobo 金库移动端进行收发币，用本设备签名时将自动同步账户信息\n2. 若您还未创建地址，您可邀请持有%s的朋友扫描以上公钥信息创建%s地址</string>
+    <string name="secret_modal_title">请环顾四周</string>
+    <string name="secret_modal_msg">任何人获得了助记词，意味着获取了您的资产，请确保周围无人，无摄像头。</string>
+    <string name="select_mnemonic_count">选择助记词数量</string>
+    <string name="set_password">设置密码</string>
+    <string name="text_password_required">至少10个字符；必须同时包含大、小写字母和数字；可包含常用特殊字符</string>
+    <string name="guide_completed_title">恭喜！金库设置已完成，\n  可以开始使用了！</string>
+    <string name="guide_completed_remind"><![CDATA[更多金库设置可点击菜单-设置，如手势解锁，创建Passphrase金库。了解更多功能，请访问：\n <font color="#00cdc3">https://cobo.com/hardware-wallet/cobo-vault<font/>]]></string>
+    <string name="tx_id">交易ID</string>
+    <string name="tx_from">来自</string>
+    <string name="tx_to">发送到</string>
+    <string name="tx_fee">交易费</string>
+    <string name="tx_memo">备注</string>
+    <string name="tx_confirm">交易确认</string>
+    <string name="sign">签名</string>
+    <string name="find_password">密码找回</string>
+    <string name="web_auth">官网验证</string>
+    <string name="web_auth_code">您的设备验证码为</string>
+    <string name="Success">成功</string>
+    <string name="fail">失败</string>
+    <string name="verify_way">选择验证方式</string>
+    <string name="verify_way_mnemonic">助记词验证</string>
+    <string name="verify_way_sharding">助记词分片验证</string>
+    <string name="generate_mnemonic_hint">请正确记录并妥善保存好助记词；金库生成后，无法再次查看助记词！</string>
+    <string name="update_hint">请务必从上方Cobo官方网站下载安装包！</string>
+    <string name="verify_code_hint">请将此验证码输入到网站获取验证结果</string>
+    <string name="update_alert_boot_low_battery_message">为保证升级顺利，设备电量需保持在%s以上可进行更新操作；当前设备电量为%s，您需要更换电池或充电后进行更新。</string>
+    <string name="update">检测到新版本</string>
+    <string name="new_version_hint_message">您有新的版本%s可以更新，点击“立即更新”按钮，开始更新。</string>
+    <string name="updating">正在升级</string>
+    <string name="update_now">立即更新</string>
+    <string name="delete_fingerprint">删除指纹</string>
+    <string name="rename_fingerprint">重命名</string>
+    <string name="confirm_delete">确认删除</string>
+    <string name="fingerprint_rename_subtitle">自定义指纹名称</string>
+    <string name="enroll_complete_hint">恭喜！%s 成功录入</string>
+    <string name="unsupported_qrcode">二维码非法，请检查您扫描的二维码</string>
+    <string name="unsupported_coin">不支持此币种</string>
+    <string name="uuid_not_match">冷热端金库不一致，请检查你扫描的二维码</string>
+    <string name="incorrect_qrcode">二维码数据错误</string>
+    <string name="incorrect_tx_data">非法交易数据</string>
+    <string name="invalid_webauth_qrcode_hint">二维码非法，请按照指引扫码正确的二维码完成设备验证</string>
+    <string name="hint">提示</string>
+    <string name="enlarge_qrcode">扫码困难？点击放大</string>
+    <string name="enroll_fingerprint">指纹录入</string>
+    <string name="enroll_fingerprint_hint">将您的手指放在指纹传感器区，感受到震动后离开，重复此步骤直至指纹 100% 录入。</string>
+    <string name="complete_enroll">完成</string>
+    <string name="modify_fingerprint_name">自定义指纹名称</string>
+    <string name="fingerprint_settings">指纹设置</string>
+    <string name="enroll_fingerprint_hint1">手指放在指纹感应区，稍用力按压</string>
+    <string name="fingerprint_use_hint">签名或解锁该设备时，可使用指纹密码</string>
+    <string name="fingerprint_start_enroll">开始录入</string>
+    <string name="delete">删除</string>
+    <string name="rename">重命名</string>
+    <string name="fingerprint_unlock">指纹解锁</string>
+    <string name="verify_fingerprint_hint">请验证指纹</string>
+    <string name="add_fingerprint">+添加指纹</string>
+    <string name="search_coin_no_result_hint">未找到您想添加的币种</string>
+    <string name="verify_fingerprint_to_sign">请验证已有的指纹，用于签名</string>
+    <string name="switch_to_fingerprint_sign"><![CDATA[切换至密码签名 >]]></string>
+    <string name="use_fingerprint_unlock">用于解锁设备</string>
+    <string name="use_fingerprint_sign">用于签名</string>
+    <string name="serialno">序列号: %s</string>
+    <string name="receive_address">收款地址%d</string>
+    <string name="sync_in_progress">信息同步中</string>
+    <string name="scan_failed">扫描失败</string>
+    <string name="version_not_match">和移动端版本不匹配，请升级金库固件</string>
+    <string name="reset_hint">密码错误，机器将恢复出厂设置</string>
+    <string name="set_passphrase">密语️(Passphrase)金库</string>
+    <string name="tx_list_empty">没有您搜索的结果\n请输入已签名交易或消息的相关信息</string>
+    <string name="address_list_empty">没有您搜索的结果\n请输入地址或地址名称关键字</string>
+    <string name="tag">标签</string>
+    <string name="confirm_to_verify_mnemonic">确认，去验证</string>
+    <string name="pattern_unlock_hint">手势密码将用于解锁设备</string>
+    <string name="new_version_footer_hint">弹框关闭后，您可前往【菜单—设置—版本】，点击“可更新”也可触发更新操作</string>
+    <string name="factory_reset_warning">将清除该设备的所有数据，设备会恢复到默认的出厂状态，确认是否继续该操作。</string>
+    <string-array name="create_vault_step">
+        <item>"金库生成中…"</item>
+        <item>"系统安全检测中…"</item>
+        <item>"加密金库中…"</item>
+        <item>"芯片安全检测中…"</item>
+        <item>"写入安全芯片…"</item>
+    </string-array>
+</resources>

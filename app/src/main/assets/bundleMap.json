@@ -1,0 +1,14 @@
+{
+  "BTC": "BTC.bundle.js",
+  "BCH": "BCH.bundle.js",
+  "ETH": "ETH.bundle_b0d7ccb0dc5138935dc7.js",
+  "ETC": "ETC.bundle_b0d7ccb0dc5138935dc7.js",
+  "DASH": "DASH.bundle.js",
+  "LTC": "LTC.bundle.js",
+  "XRP": "XRP.bundle.js",
+  "XZC": "XZC.bundle.js",
+  "DCR": "DCR.bundle.js",
+  "EOS": "EOS.bundle_d0f384b2cc63ac78f25e.js",
+  "IOST": "IOST.bundle_010b6f92f916b495faad.js",
+  "TRON": "TRON.bundle.js"
+}

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020 Cobo
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_main.xml"
+    app:startDestination="@id/webAuthFragment">
+
+    <fragment
+        android:id="@+id/webAuthFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.WebAuthFragment"
+        android:label="WebAuthFragment"
+        tools:layout="@layout/web_auth">
+        <action
+            android:id="@+id/webAuth_to_QRCodeScan"
+            app:destination="@id/QRCodeScanFragment" />
+        <action
+            android:id="@+id/action_webAuthFragment_to_setPasswordFragment"
+            app:destination="@id/setPasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@id/QRCodeScanFragment"
+        android:name="com.cobo.cold.ui.fragment.main.QRCodeScanFragment"
+        android:label="QRCodeScanFragment"
+        tools:layout="@layout/qrcode_scan_fragment">
+        <action
+            android:id="@+id/action_to_webAuthResultFragment"
+            app:destination="@id/webAuthResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setupVaultFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.SetupVaultFragment"
+        android:label="SetupVaultFragment"
+        tools:layout="@layout/setup_vault">
+        <action
+            android:id="@+id/action_to_licenseFragment"
+            app:destination="@id/licenseFragment" />
+        <action
+            android:id="@+id/action_to_tabletQrcodeFragment"
+            app:destination="@id/tabletQrcodeFragment" />
+        <action
+            android:id="@+id/action_to_selectMnomenicCountFragment"
+            app:destination="@id/selectMnomenicCountFragment" />
+    </fragment>
+    <fragment
+        android:id="@id/licenseFragment"
+        android:name="com.cobo.cold.ui.fragment.setting.LicenseFragment"
+        android:label="LicenseFragment"
+        tools:layout="@layout/privacy_policy" />
+
+    <fragment
+        android:id="@+id/selectMnomenicCountFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.SelectMnomenicCountFragment"
+        android:label="SelectMnomenicCountFragment"
+        tools:layout="@layout/select_mnemonic_count">
+        <action
+            android:id="@+id/action_to_mnemonicInputFragment"
+            app:destination="@id/mnemonicInputFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mnemonicInputFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.MnemonicInputFragment"
+        android:label="MnemonicInputFragment"
+        tools:layout="@layout/mnemonic_input_fragment">
+        <action
+            android:id="@+id/action_add_coin_type2"
+            app:destination="@id/manageCoinFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setPasswordFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.SetPasswordFragment"
+        android:label="SetPasswordFragment"
+        tools:layout="@layout/set_password">
+        <action
+            android:id="@+id/action_setPasswordFragment_to_setupVaultFragment"
+            app:destination="@id/setupVaultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tabletQrcodeFragment"
+        android:name="com.cobo.cold.ui.fragment.TabletQrcodeFragment"
+        android:label="TabletQrcodeFragment"
+        tools:layout="@layout/tablet_qrcode">
+        <action
+            android:id="@+id/action_to_generateMnemonicFragment"
+            app:destination="@id/generateMnemonicFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/generateMnemonicFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.GenerateMnemonicFragment"
+        android:label="GenerateMnemonicFragment"
+        tools:layout="@layout/generate_mnemonic">
+        <action
+            android:id="@+id/action_to_confirmMnemonicFragment"
+            app:destination="@id/confirmMnemonicFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmMnemonicFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.ConfirmMnemonicFragment"
+        android:label="ConfirmMnemonicFragment"
+        tools:layout="@layout/mnemonic_input_fragment">
+        <action
+            android:id="@+id/action_add_coin_type1"
+            app:destination="@id/manageCoinFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setupSyncFragment"
+        tools:layout="@layout/setup_sync"
+        android:name="com.cobo.cold.ui.fragment.setup.SetupSyncFragment"
+        android:label="SetupSyncFragment">
+        <action
+            android:id="@+id/action_to_setupCompleteFragment"
+            app:destination="@id/setupCompleteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setupCompleteFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.SetupCompleteFragment"
+        tools:layout="@layout/setup_complete"
+        android:label="SetupCompleteFragment" />
+    <fragment
+        android:id="@+id/webAuthResultFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.WebAuthResultFragment"
+        tools:layout="@layout/web_auth_result"
+        android:label="WebAuthResultFragment">
+        <action
+            android:id="@+id/action_webAuth_retry"
+            app:destination="@id/webAuthFragment" />
+        <action
+            android:id="@+id/action_webAuthResultFragment_to_setPasswordFragment"
+            app:destination="@id/setPasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@id/manageCoinFragment"
+        tools:layout="@layout/manage_coin_fragment"
+        android:name="com.cobo.cold.ui.fragment.main.ManageCoinFragment"
+        android:label="ManageCoinFragment">
+        <action
+            android:id="@+id/action_manageCoin_to_manageWhiteList"
+            app:destination="@id/setupManageWhiteList" />
+        <action
+            android:id="@+id/action_manageCoinFragment_to_setupSyncFragment"
+            app:destination="@id/setupSyncFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/setupManageWhiteList"
+        android:name="com.cobo.cold.ui.fragment.whitelist.ManageWhiteListFragment"
+        android:label="ManageWhiteList"
+        tools:layout="@layout/manage_white_list">
+        <action
+            android:id="@id/add_white_list"
+            app:destination="@id/setupAddWhiteListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_setupManageWhiteList_to_setupSyncFragment"
+            app:destination="@id/setupSyncFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/setupAddWhiteListFragment"
+        android:name="com.cobo.cold.ui.fragment.whitelist.AddWhiteListFragment"
+        android:label="AddWhiteListFragment"
+        tools:layout="@layout/add_white_list">
+        <action
+            android:id="@id/add_white_list_scan"
+            app:destination="@id/QRCodeScanFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+</navigation>
