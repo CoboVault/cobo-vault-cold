@@ -65,6 +65,8 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
 
     public static final String MNEMONIC = "mnemonic";
 
+    private boolean paused;
+
     @Override
     protected int setView() {
         return R.layout.set_password;
@@ -83,14 +85,16 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
 
         mBinding.pwd1.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                SetupVaultViewModel.PasswordValidationResult result = viewModel.validatePassword();
-                if (result != RESULT_OK) {
-                    mBinding.hint.setTextColor(mActivity.getColor(R.color.red));
-                    mBinding.hint.setText(getHint(result));
-                    deleteAll = true;
-                    inputValid = false;
-                } else {
-                    inputValid = true;
+                if (!paused) {
+                    SetupVaultViewModel.PasswordValidationResult result = viewModel.validatePassword();
+                    if (result != RESULT_OK) {
+                        mBinding.hint.setTextColor(mActivity.getColor(R.color.red));
+                        mBinding.hint.setText(getHint(result));
+                        deleteAll = true;
+                        inputValid = false;
+                    } else {
+                        inputValid = true;
+                    }
                 }
             } else {
                 mBinding.hint.setTextColor(mActivity.getColor(R.color.white));
@@ -142,8 +146,6 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
             mBinding.toolbar.setNavigationOnClickListener(v -> {
                 Keyboard.hide(mActivity, mBinding.pwd1);
                 navigateUp();
-                viewModel.getPwd1().set("");
-                viewModel.getPwd2().set("");
             });
         }
         mBinding.confirm.setOnClickListener(v -> validatePassword());
@@ -212,8 +214,6 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
                 handler.post(() -> {
                     Keyboard.hide(mActivity, mBinding.pwd2);
                     action.run();
-                    viewModel.getPwd1().set("");
-                    viewModel.getPwd2().set("");
                 });
             });
         }
@@ -249,5 +249,6 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
         super.onPause();
         viewModel.getPwd1().set("");
         viewModel.getPwd2().set("");
+        paused = true;
     }
 }
