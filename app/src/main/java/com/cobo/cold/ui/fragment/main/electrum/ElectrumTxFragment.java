@@ -15,43 +15,45 @@
  * in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.cobo.cold.ui.fragment.main;
+package com.cobo.cold.ui.fragment.main.electrum;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 
 import androidx.lifecycle.ViewModelProviders;
 
-import com.cobo.coinlib.utils.Coins;
+import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
-import com.cobo.cold.databinding.TxBinding;
+import com.cobo.cold.databinding.ElectrumTxBinding;
 import com.cobo.cold.db.entity.TxEntity;
-import com.cobo.cold.protocol.builder.SignTxResultBuilder;
-import com.cobo.cold.ui.BindingAdapters;
 import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.fragment.main.TxConfirmFragment;
 import com.cobo.cold.viewmodel.CoinListViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.spongycastle.util.encoders.Hex;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cobo.cold.ui.fragment.main.electrum.ElectrumTxConfirmFragment.showExportTxnDialog;
 
-public class TxFragment extends BaseFragment<TxBinding> {
+
+public class ElectrumTxFragment extends BaseFragment<ElectrumTxBinding> {
 
     public static final String KEY_TX_ID = "txid";
     private TxEntity txEntity;
 
     @Override
     protected int setView() {
-        return R.layout.tx;
+        return R.layout.electrum_tx;
     }
 
     @Override
@@ -62,29 +64,40 @@ public class TxFragment extends BaseFragment<TxBinding> {
         viewModel.loadTx(data.getString(KEY_TX_ID)).observe(this, txEntity -> {
             mBinding.setTx(txEntity);
             this.txEntity = txEntity;
-            new Handler().postDelayed(() -> mBinding.qrcodeLayout.qrcode.setData(getSignTxJson(txEntity)), 500);
+            String signTx = getSignTxString(txEntity);
+            if (signTx.length() <= 1000) {
+                new Handler().postDelayed(() -> mBinding.txDetail.qrcodeLayout.qrcode.setData(signTx), 500);
+            } else {
+                mBinding.txDetail.qrcodeLayout.qrcode.setVisibility(View.GONE);
+            }
             refreshAmount();
             refreshFromList();
             refreshReceiveList();
-            refreshTokenUI();
-            refreshFeeDisplay();
-            refreshMemoDisplay();
+            mBinding.txDetail.exportToSdcard.setOnClickListener(v -> {
+                showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex());
+            });
         });
 
     }
 
-    private void refreshMemoDisplay() {
-        if (txEntity.getCoinCode().equals(Coins.EOS.coinCode())
-                || txEntity.getCoinCode().equals(Coins.IOST.coinCode())) {
-            mBinding.txDetail.memoLabel.setText(R.string.tag);
+    private void refreshFromList() {
+        String from = txEntity.getFrom();
+        List<TxConfirmFragment.TransactionItem> items = new ArrayList<>();
+        try {
+            JSONArray outputs = new JSONArray(from);
+            for (int i = 0; i < outputs.length(); i++) {
+                JSONObject out = outputs.getJSONObject(i);
+                items.add(new TxConfirmFragment.TransactionItem(i,
+                        out.getLong("value"), out.getString("address")));
+            }
+        } catch (JSONException e) {
+            return;
         }
-    }
-
-    private void refreshFeeDisplay() {
-        if (txEntity.getCoinCode().equals(Coins.EOS.coinCode())
-                || txEntity.getCoinCode().equals(Coins.IOST.coinCode())) {
-            mBinding.txDetail.feeInfo.setVisibility(View.GONE);
-        }
+        TxConfirmFragment.TransactionItemAdapter adapter
+                = new TxConfirmFragment.TransactionItemAdapter(mActivity,
+                TxConfirmFragment.TransactionItem.ItemType.INPUT);
+        adapter.setItems(items);
+        mBinding.txDetail.fromList.setAdapter(adapter);
     }
 
     private void refreshAmount() {
@@ -92,25 +105,6 @@ public class TxFragment extends BaseFragment<TxBinding> {
         style.setSpan(new ForegroundColorSpan(mActivity.getColor(R.color.colorAccent)),
                 0, txEntity.getAmount().indexOf(" "), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mBinding.txDetail.amount.setText(style);
-    }
-
-    private void refreshTokenUI() {
-        String assetCode = null;
-        try {
-            assetCode = txEntity.getAmount().split(" ")[1];
-        } catch (Exception ignore) {
-        }
-        if (TextUtils.isEmpty(assetCode)) {
-            assetCode = txEntity.getCoinCode();
-        }
-        BindingAdapters.setIcon(mBinding.txDetail.icon,
-                txEntity.getCoinCode(),
-                assetCode);
-        if (!assetCode.equals(txEntity.getCoinCode())) {
-            mBinding.txDetail.coinId.setText(assetCode);
-        } else {
-            mBinding.txDetail.coinId.setText(Coins.coinNameOfCoinId(txEntity.getCoinId()));
-        }
     }
 
     private void refreshReceiveList() {
@@ -128,29 +122,9 @@ public class TxFragment extends BaseFragment<TxBinding> {
             return;
         }
         TxConfirmFragment.TransactionItemAdapter adapter =
-                new TxConfirmFragment.TransactionItemAdapter(mActivity,
-                        TxConfirmFragment.TransactionItem.ItemType.TO);
+                new TxConfirmFragment.TransactionItemAdapter(mActivity, TxConfirmFragment.TransactionItem.ItemType.OUTPUT);
         adapter.setItems(items);
-        mBinding.txDetail.toList.setVisibility(View.VISIBLE);
-        mBinding.txDetail.toInfo.setVisibility(View.GONE);
         mBinding.txDetail.toList.setAdapter(adapter);
-    }
-
-    private void refreshFromList() {
-        String from = txEntity.getFrom();
-        mBinding.txDetail.from.setText(from);
-        List<TxConfirmFragment.TransactionItem> items = new ArrayList<>();
-        try {
-            JSONArray inputs = new JSONArray(from);
-            for (int i = 0; i < inputs.length(); i++) {
-                items.add(new TxConfirmFragment.TransactionItem(i,
-                        inputs.getJSONObject(i).getLong("value"),
-                        inputs.getJSONObject(i).getString("address")
-                ));
-            }
-            String fromAddress = inputs.getJSONObject(0).getString("address");
-            mBinding.txDetail.from.setText(fromAddress);
-        } catch (JSONException ignore) {}
     }
 
     @Override
@@ -158,12 +132,9 @@ public class TxFragment extends BaseFragment<TxBinding> {
 
     }
 
-    private String getSignTxJson(TxEntity txEntity) {
-        SignTxResultBuilder signTxResult = new SignTxResultBuilder();
-        signTxResult.setRawTx(txEntity.getSignedHex())
-                .setSignId(txEntity.getSignId())
-                .setTxId(txEntity.getTxId());
-        return signTxResult.build();
+    private String getSignTxString(TxEntity txEntity) {
+        byte[] txData = Hex.decode(txEntity.getSignedHex());
+        return Base43.encode(txData);
     }
 
 }

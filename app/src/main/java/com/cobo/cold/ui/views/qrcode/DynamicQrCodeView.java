@@ -34,7 +34,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
-import com.cobo.cold.databinding.QrcodeModalBinding;
+import com.cobo.cold.databinding.DynamicQrcodeModalBinding;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
 import com.cobo.cold.ui.modal.FullScreenModal;
 import com.cobo.cold.update.utils.Digest;
@@ -102,8 +102,8 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
 
     private void showModal() {
         FullScreenModal dialog = new FullScreenModal();
-        QrcodeModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
-                R.layout.qrcode_modal, null, false);
+        DynamicQrcodeModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
+                R.layout.dynamic_qrcode_modal, null, false);
         dialog.setBinding(binding);
         binding.close.setOnClickListener(v -> dialog.dismiss());
         binding.qrcodeLayout.qrcode.setData(data);

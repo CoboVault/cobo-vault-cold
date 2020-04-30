@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_to_syncFragment"
             app:destination="@id/syncFragment" />
+        <action
+            android:id="@+id/action_to_txnListFragment"
+            app:destination="@id/txnListFragment" />
 
         <action
             android:id="@+id/action_to_assetFragment"
@@ -76,6 +79,17 @@
             app:popExitAnim="@android:anim/slide_out_right"
             app:popUpTo="@id/assetListFragment"
             app:popUpToInclusive="false" />
+
+        <action
+            android:id="@+id/action_to_ElectrumTxConfirmFragment"
+            app:destination="@id/electrumTxConfirmFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/assetListFragment"
+            app:popUpToInclusive="false" />
+
         <action
             android:id="@+id/action_QRCodeScan_to_result"
             app:destination="@id/webAuthResultFragment" />
@@ -198,6 +212,22 @@
         android:name="com.cobo.cold.ui.fragment.SyncFragment"
         tools:layout="@layout/sync_fragment"
         android:label="SyncFragment" />
+
+    <fragment
+        android:id="@+id/txnListFragment"
+        android:name="com.cobo.cold.ui.fragment.main.electrum.ElectrumTxnListFragment"
+        tools:layout="@layout/txn_list"
+        android:label="ElectrumTxnListFragment" >
+        <action
+            android:id="@id/action_to_ElectrumTxConfirmFragment"
+            app:destination="@id/electrumTxConfirmFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            />
+    </fragment>
+
     <fragment
         android:id="@+id/mnemonicInputFragment"
         android:name="com.cobo.cold.ui.fragment.setup.MnemonicInputFragment"
@@ -222,6 +252,38 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_to_electrumTxFragment"
+            app:destination="@id/electrumTxFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@+id/action_to_electrum_guide"
+            app:destination="@id/electrumGuideFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/electrumGuideFragment"
+        android:name="com.cobo.cold.ui.fragment.main.electrum.ElectrumGuideFragment"
+        tools:layout="@layout/electrum_export_guide"
+        android:label="ElectrumGuideFragment">
+        <action android:id="@+id/export_electrum_ypub"
+            app:destination="@id/electrumExportFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/electrumExportFragment"
+        android:name="com.cobo.cold.ui.fragment.main.electrum.ElectrumExportFragment"
+        tools:layout="@layout/electrum_export"
+        android:label="ElectrumExportFragment">
     </fragment>
     <fragment
         android:id="@+id/txConfirmFragment"
@@ -246,11 +308,53 @@
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
+
+    <fragment
+        android:id="@+id/electrumTxConfirmFragment"
+        tools:layout="@layout/tx_confirm_fragment"
+        android:name="com.cobo.cold.ui.fragment.main.electrum.ElectrumTxConfirmFragment"
+        android:label="TxConfirmFragment">
+        <action
+            android:id="@+id/action_to_broadcastElectrumTxFragment"
+            app:destination="@id/broadcastElectrumTxFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+
+        <action
+            android:id="@id/action_to_home"
+            app:destination="@id/assetListFragment"
+            app:popUpTo="@id/assetListFragment"
+            app:popUpToInclusive="false"
+            app:launchSingleTop="true" />
+        <action
+            android:id="@+id/action_to_verifyMnemonic"
+            app:destination="@id/verifyMnemonicFragment1"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
     <fragment
         android:id="@+id/broadcastTxFragment"
         tools:layout="@layout/broadcast_tx_fragment"
         android:name="com.cobo.cold.ui.fragment.main.BroadcastTxFragment"
         android:label="BroadcastTxFragment">
+        <action
+            android:id="@+id/action_to_home"
+            app:destination="@id/assetListFragment"
+            app:popUpTo="@id/assetListFragment"
+            app:popUpToInclusive="false"
+            app:launchSingleTop="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/broadcastElectrumTxFragment"
+        tools:layout="@layout/broadcast_electrum_tx_fragment"
+        android:name="com.cobo.cold.ui.fragment.main.electrum.ElectrumBroadcastTxFragment"
+        android:label="ElectrumBroadcastTxFragment">
         <action
             android:id="@+id/action_to_home"
             app:destination="@id/assetListFragment"
@@ -363,6 +467,11 @@
         tools:layout="@layout/tx"
         android:name="com.cobo.cold.ui.fragment.main.TxFragment"
         android:label="TxFragment" />
+    <fragment
+        android:id="@+id/electrumTxFragment"
+        tools:layout="@layout/electrum_tx"
+        android:name="com.cobo.cold.ui.fragment.main.electrum.ElectrumTxFragment"
+        android:label="ElectrumTxFragment" />
     <fragment
         android:id="@+id/setPatternUnlockFragment"
         tools:layout="@layout/set_pattern_unlock"

@@ -45,9 +45,9 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.Holder> {
             new DrawerItem(R.id.drawer_wallet, R.drawable.drawer_wallet, R.string.drawer_menu_my_vault),
             new DrawerItem(R.id.drawer_manage, R.drawable.drawer_asset_manager, R.string.drawer_menu_add_remove),
             new DrawerItem(R.id.drawer_sync, R.drawable.drawer_asset_observation, R.string.drawer_menu_sync),
+            new DrawerItem(R.id.drawer_sdcard, R.drawable.drawer_sdcard, R.string.read_sdcard),
             new DrawerItem(R.id.drawer_settings, R.drawable.drawer_setting, R.string.drawer_menu_setting),
-            new DrawerItem(R.id.drawer_about, R.drawable.drawer_about, R.string.drawer_menu_about),
-            new DrawerItem(R.id.drawer_id, R.drawable.drawer_id, 0)
+            new DrawerItem(R.id.drawer_about, R.drawable.drawer_about, R.string.drawer_menu_about)
     );
 
     public DrawerAdapter(int currentFragmentIndex) {
@@ -78,7 +78,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.Holder> {
 
     @Override
     public int getItemCount() {
-        return dataList.size() - 1;
+        return dataList.size();
     }
 
     @NonNull
@@ -94,24 +94,16 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.Holder> {
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         final DrawerItem item = dataList.get(position);
-        if (position == dataList.size() - 1) {
-            holder.binding.setDrawerItem(item);
-            holder.binding.icon.setImageResource(item.iconRes);
-            holder.binding.getRoot().setClickable(false);
-            holder.binding.text.setText(Utilities.getVaultId(holder.binding.getRoot().getContext()));
-            holder.binding.text.setTextColor(holder.binding.getRoot().getContext().getColor(R.color.id_color));
-        } else {
-            holder.binding.setDrawerItem(item);
-            holder.binding.executePendingBindings();
-            holder.binding.getRoot().setOnClickListener(v -> {
-                dataList.forEach(i -> i.select = false);
-                item.select = true;
-                notifyDataSetChanged();
-                if (listener != null) {
-                    listener.itemClick(item.index);
-                }
-            });
-        }
+        holder.binding.setDrawerItem(item);
+        holder.binding.executePendingBindings();
+        holder.binding.getRoot().setOnClickListener(v -> {
+            dataList.forEach(i -> i.select = false);
+            item.select = true;
+            notifyDataSetChanged();
+            if (listener != null) {
+                listener.itemClick(item.index);
+            }
+        });
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {

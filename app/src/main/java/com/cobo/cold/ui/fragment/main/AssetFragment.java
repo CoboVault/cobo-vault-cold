@@ -22,12 +22,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 import androidx.fragment.app.Fragment;
@@ -38,12 +40,14 @@ import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.AssetFragmentBinding;
+import com.cobo.cold.databinding.DialogBottomSheetBinding;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.viewmodel.AddAddressViewModel;
 import com.cobo.cold.viewmodel.CoinViewModel;
 import com.cobo.cold.viewmodel.PublicKeyViewModel;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,11 +84,18 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         coinCode = data.getString(KEY_COIN_CODE);
         id = data.getLong(KEY_ID);
         showPublicKey = Coins.showPublicKey(coinCode);
-        mBinding.toolbar.inflateMenu(showPublicKey ? R.menu.asset_without_add : R.menu.asset);
+        mBinding.toolbar.inflateMenu(getMenuResId());
         mBinding.toolbar.setOnMenuItemClickListener(this);
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         initSearchView();
         initTabs();
+    }
+
+    private int getMenuResId() {
+        if (Coins.BTC.coinCode().equals(coinCode)) {
+            return R.menu.asset_hasmore;
+        }
+        return showPublicKey ? R.menu.asset_without_add : R.menu.asset;
     }
 
     private void initTabs() {
@@ -193,19 +204,44 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 enterSearch();
                 break;
             case R.id.action_add:
-                if (fragments[0] instanceof AddressFragment) {
-                    ((AddressFragment) fragments[0]).exitEditAddressName();
-                }
-                if (mAddressNumberPicker == null) {
-                    mAddressNumberPicker = new AddressNumberPicker();
-                    mAddressNumberPicker.setCallback(this);
-                }
-                mAddressNumberPicker.show(mActivity.getSupportFragmentManager(), "");
+                handleAddAddress();
+                break;
+            case R.id.action_more:
+                showBottomSheetMenu();
                 break;
             default:
                 break;
         }
         return true;
+    }
+
+    private void handleAddAddress() {
+        if (fragments[0] instanceof AddressFragment) {
+            ((AddressFragment) fragments[0]).exitEditAddressName();
+        }
+        if (mAddressNumberPicker == null) {
+            mAddressNumberPicker = new AddressNumberPicker();
+            mAddressNumberPicker.setCallback(this);
+        }
+        mAddressNumberPicker.show(mActivity.getSupportFragmentManager(), "");
+    }
+
+    private void showBottomSheetMenu() {
+        BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
+        DialogBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                R.layout.dialog_bottom_sheet,null,false);
+        binding.addAddress.setOnClickListener(v-> {
+            handleAddAddress();
+            dialog.dismiss();
+
+        });
+        binding.exportXpubToElectrum.setOnClickListener(v-> {
+            navigate(R.id.action_to_electrum_guide);
+            dialog.dismiss();
+
+        });
+        dialog.setContentView(binding.getRoot());
+        dialog.show();
     }
 
     private void enterSearch() {

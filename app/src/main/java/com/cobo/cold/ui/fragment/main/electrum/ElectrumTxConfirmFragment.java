@@ -15,70 +15,113 @@
  * in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.cobo.cold.ui.fragment.main;
+package com.cobo.cold.ui.fragment.main.electrum;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
-import com.cobo.coinlib.utils.Coins;
+import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.config.FeatureFlags;
+import com.cobo.cold.databinding.ElectrumTxConfirmFragmentBinding;
+import com.cobo.cold.databinding.ExportSdcardModalBinding;
 import com.cobo.cold.databinding.ProgressModalBinding;
-import com.cobo.cold.databinding.ReceiveItemBinding;
-import com.cobo.cold.databinding.TxConfirmFragmentBinding;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
-import com.cobo.cold.ui.BindingAdapters;
-import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.fragment.main.TxConfirmFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
+import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
+import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.util.KeyStoreUtil;
 import com.cobo.cold.viewmodel.TxConfirmViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.spongycastle.util.encoders.Hex;
 
 import java.nio.charset.StandardCharsets;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
+import static com.cobo.cold.viewmodel.ElectrumViewModel.exportSuccess;
+import static com.cobo.cold.viewmodel.ElectrumViewModel.hasSdcard;
+import static com.cobo.cold.viewmodel.ElectrumViewModel.showNoSdcardModal;
+import static com.cobo.cold.viewmodel.ElectrumViewModel.writeToSdcard;
 
-public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
+public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFragmentBinding> {
 
-    public static final String KEY_TX_DATA = "tx_data";
     private final Runnable forgetPassword = () -> {
         Bundle data = new Bundle();
         data.putInt(KEY_NAV_ID, R.id.action_to_setPasswordFragment1);
         Navigation.findNavController(Objects.requireNonNull(getView()))
                 .navigate(R.id.action_to_verifyMnemonic, data);
     };
-    private String data;
     private TxConfirmViewModel viewModel;
     private SigningDialog signingDialog;
     private TxEntity txEntity;
     private ModalDialog addingAddressDialog;
+    private String txnData;
+
+    public static void showExportTxnDialog(AppCompatActivity activity, String txId, String hex) {
+        ModalDialog modalDialog = ModalDialog.newInstance();
+        ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
+                R.layout.export_sdcard_modal, null, false);
+        String fileName = txId.substring(0, 5) + "-signed.txn";
+        binding.title.setText(R.string.export_signed_txn);
+        binding.fileName.setText(fileName);
+        binding.actionHint.setText(R.string.electrum_import_signed_txn);
+        binding.cancel.setOnClickListener(vv -> modalDialog.dismiss());
+        binding.confirm.setOnClickListener(vv -> {
+            modalDialog.dismiss();
+            if (hasSdcard(activity)) {
+                Storage storage = Storage.createByEnvironment(activity);
+                boolean result = writeToSdcard(storage, generateElectrumTxn(hex), fileName);
+                if (result) {
+                    exportSuccess(activity);
+                }
+            } else {
+                showNoSdcardModal(activity);
+            }
+        });
+        modalDialog.setBinding(binding);
+        modalDialog.show(activity.getSupportFragmentManager(), "");
+    }
+
+    private static String generateElectrumTxn(String hex) {
+        JSONObject txn = new JSONObject();
+        try {
+            txn.put("hex", hex);
+            txn.put("complete", true);
+            txn.put("final", false);
+            return txn.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     @Override
     protected int setView() {
-        return R.layout.tx_confirm_fragment;
+        return R.layout.electrum_tx_confirm_fragment;
     }
 
     @Override
@@ -86,7 +129,9 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
         Bundle bundle = Objects.requireNonNull(getArguments());
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.txDetail.txIdInfo.setVisibility(View.GONE);
-        data = bundle.getString(KEY_TX_DATA);
+        mBinding.txDetail.qrcodeLayout.qrcode.setVisibility(View.GONE);
+        mBinding.txDetail.export.setVisibility(View.GONE);
+        txnData = bundle.getString("txn");
         viewModel = ViewModelProviders.of(this).get(TxConfirmViewModel.class);
         mBinding.setViewModel(viewModel);
         subscribeTxEntityState();
@@ -104,11 +149,7 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
                             getString(R.string.password_modal_title),
                             "",
                             fingerprintSignEnable,
-                            token -> {
-                                viewModel.setToken(token);
-                                viewModel.handleSign();
-                                subscribeSignState();
-                            }, forgetPassword);
+                            signWithVerifyInfo(), forgetPassword);
                 } else {
                     Utilities.alert(mActivity, getString(R.string.hint),
                             getString(R.string.not_in_whitelist_reject),
@@ -121,29 +162,33 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
                         getString(R.string.password_modal_title),
                         "",
                         fingerprintSignEnable,
-                        token -> {
-                            viewModel.setToken(token);
-                            viewModel.handleSign();
-                            subscribeSignState();
-                        }, forgetPassword);
+                        signWithVerifyInfo(), forgetPassword);
             }
         } else {
             navigate(R.id.action_to_home);
         }
     }
 
+    private AuthenticateModal.OnVerify signWithVerifyInfo() {
+        return token -> {
+            viewModel.setToken(token);
+            viewModel.handleSign();
+            subscribeSignState();
+        };
+    }
+
     private void subscribeTxEntityState() {
-        viewModel.parseTxData(data);
+        ProgressModalDialog dialog = new ProgressModalDialog();
+        dialog.show(mActivity.getSupportFragmentManager(), "");
+        viewModel.parseTxnData(txnData);
         viewModel.getObservableTx().observe(this, txEntity -> {
             if (txEntity != null) {
+                dialog.dismiss();
                 this.txEntity = txEntity;
                 mBinding.setTx(txEntity);
                 refreshAmount();
                 refreshFromList();
                 refreshReceiveList();
-                refreshTokenUI();
-                refreshFeeDisplay();
-                refreshMemoDisplay();
             }
         });
 
@@ -166,28 +211,15 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
         viewModel.parseTxException().observe(this, ex -> {
             if (ex != null) {
                 ex.printStackTrace();
+                dialog.dismiss();
                 ModalDialog.showCommonModal(mActivity,
-                        getString(R.string.scan_failed),
+                        getString(R.string.electrum_decode_txn_fail),
                         getString(R.string.incorrect_tx_data),
                         getString(R.string.confirm),
                         null);
                 navigateUp();
             }
         });
-    }
-
-    private void refreshMemoDisplay() {
-        if (txEntity.getCoinCode().equals(Coins.EOS.coinCode())
-                || txEntity.getCoinCode().equals(Coins.IOST.coinCode())) {
-            mBinding.txDetail.memoLabel.setText(R.string.tag);
-        }
-    }
-
-    private void refreshFeeDisplay() {
-        if (txEntity.getCoinCode().equals(Coins.EOS.coinCode())
-                || txEntity.getCoinCode().equals(Coins.IOST.coinCode())) {
-            mBinding.txDetail.feeInfo.setVisibility(View.GONE);
-        }
     }
 
     private void refreshAmount() {
@@ -197,32 +229,13 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
         mBinding.txDetail.amount.setText(style);
     }
 
-    private void refreshTokenUI() {
-        String assetCode = null;
-        try {
-            assetCode = txEntity.getAmount().split(" ")[1];
-        } catch (Exception ignore) {
-        }
-        if (TextUtils.isEmpty(assetCode)) {
-            assetCode = txEntity.getCoinCode();
-        }
-        BindingAdapters.setIcon(mBinding.txDetail.icon,
-                txEntity.getCoinCode(),
-                assetCode);
-        if (!assetCode.equals(txEntity.getCoinCode())) {
-            mBinding.txDetail.coinId.setText(assetCode);
-        } else {
-            mBinding.txDetail.coinId.setText(Coins.coinNameOfCoinId(txEntity.getCoinId()));
-        }
-    }
-
     private void refreshReceiveList() {
         String to = txEntity.getTo();
-        List<TransactionItem> items = new ArrayList<>();
+        List<TxConfirmFragment.TransactionItem> items = new ArrayList<>();
         try {
             JSONArray outputs = new JSONArray(to);
             for (int i = 0; i < outputs.length(); i++) {
-                items.add(new TransactionItem(i,
+                items.add(new TxConfirmFragment.TransactionItem(i,
                         outputs.getJSONObject(i).getLong("value"),
                         outputs.getJSONObject(i).getString("address")
                 ));
@@ -230,30 +243,34 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
         } catch (JSONException e) {
             return;
         }
-        TransactionItemAdapter adapter = new TransactionItemAdapter(mActivity,
-                TransactionItem.ItemType.TO);
+        TxConfirmFragment.TransactionItemAdapter adapter
+                = new TxConfirmFragment.TransactionItemAdapter(mActivity,
+                TxConfirmFragment.TransactionItem.ItemType.OUTPUT);
         adapter.setItems(items);
         mBinding.txDetail.toList.setVisibility(View.VISIBLE);
-        mBinding.txDetail.toInfo.setVisibility(View.GONE);
         mBinding.txDetail.toList.setAdapter(adapter);
     }
 
     private void refreshFromList() {
-        String from = txEntity.getFrom();
-        mBinding.txDetail.from.setText(from);
-        List<TransactionItem> items = new ArrayList<>();
+        String to = txEntity.getFrom();
+        List<TxConfirmFragment.TransactionItem> items = new ArrayList<>();
         try {
-            JSONArray inputs = new JSONArray(from);
-            for (int i = 0; i < inputs.length(); i++) {
-                items.add(new TransactionItem(i,
-                        inputs.getJSONObject(i).getLong("value"),
-                        inputs.getJSONObject(i).getString("address")
-                ));
+            JSONArray outputs = new JSONArray(to);
+            for (int i = 0; i < outputs.length(); i++) {
+                JSONObject out = outputs.getJSONObject(i);
+                items.add(new TxConfirmFragment.TransactionItem(i,
+                        out.getLong("value"),
+                        out.getString("address")));
             }
-            String fromAddress = inputs.getJSONObject(0).getString("address");
-            mBinding.txDetail.from.setText(fromAddress);
-        } catch (JSONException ignore) {
+        } catch (JSONException e) {
+            return;
         }
+        TxConfirmFragment.TransactionItemAdapter adapter
+                = new TxConfirmFragment.TransactionItemAdapter(mActivity,
+                TxConfirmFragment.TransactionItem.ItemType.INPUT);
+        adapter.setItems(items);
+        mBinding.txDetail.fromList.setVisibility(View.VISIBLE);
+        mBinding.txDetail.fromList.setAdapter(adapter);
     }
 
     private void subscribeSignState() {
@@ -290,11 +307,21 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
     }
 
     private void onSignSuccess() {
-        String txId = viewModel.getTxId();
-        Bundle data = new Bundle();
-        data.putString(KEY_TXID, txId);
-        navigate(R.id.action_to_broadcastTxFragment, data);
+        handleTxnSignSuccess();
         viewModel.getSignState().removeObservers(this);
+    }
+
+    private void handleTxnSignSuccess() {
+        String hex = viewModel.getTxHex();
+        String base43 = Base43.encode(Hex.decode(hex));
+        if (base43.length() <= 1000) {
+            String txId = viewModel.getTxId();
+            Bundle data = new Bundle();
+            data.putString(KEY_TXID, txId);
+            navigate(R.id.action_to_broadcastElectrumTxFragment, data);
+        } else {
+            showExportTxnDialog(mActivity, viewModel.getTxId(), viewModel.getTxHex());
+        }
     }
 
     private boolean isAddressInWhiteList() {
@@ -307,93 +334,6 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
     @Override
     protected void initData(Bundle savedInstanceState) {
 
-    }
-
-    public static class TransactionItem {
-        final int id;
-        final String amount;
-        final String address;
-
-        public TransactionItem(int id, long amount, String address) {
-            this.id = id;
-            this.amount = formatSatoshi(amount);
-            this.address = address;
-        }
-
-        static String formatSatoshi(long satoshi) {
-            double value = satoshi / Math.pow(10, 8);
-            NumberFormat nf = NumberFormat.getInstance();
-            nf.setMaximumFractionDigits(20);
-            return nf.format(value) + " BTC";
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getAmount() {
-            return amount;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        public enum ItemType {
-            INPUT,
-            OUTPUT,
-            FROM,
-            TO,
-        }
-    }
-
-    public static class TransactionItemAdapter extends BaseBindingAdapter<TransactionItem, ReceiveItemBinding> {
-
-        private TransactionItem.ItemType type;
-
-        public TransactionItemAdapter(Context context, TransactionItem.ItemType type) {
-            super(context);
-            this.type = type;
-        }
-
-        @Override
-        protected int getLayoutResId(int viewType) {
-            return R.layout.receive_item;
-        }
-
-        @Override
-        protected void onBindItem(ReceiveItemBinding binding, TransactionItem item) {
-
-            if (getItemCount() == 1 && type == TransactionItem.ItemType.TO) {
-                binding.info.setText(item.address);
-                binding.label.setText(context.getString(R.string.tx_to));
-            } else {
-                binding.info.setText(item.amount + "\n" + item.address);
-                binding.label.setText(getLabel(item.id));
-            }
-        }
-
-        private String getLabel(int index) {
-            int resId;
-            switch (type) {
-                case TO:
-                    resId = R.string.receive_address;
-                    break;
-                case FROM:
-                    resId = R.string.send_address;
-                    break;
-                case INPUT:
-                    resId = R.string.input;
-                    break;
-                case OUTPUT:
-                    resId = R.string.output;
-                    break;
-                default:
-                    return "";
-            }
-
-            return context.getString(resId, index + 1);
-        }
     }
 }
 

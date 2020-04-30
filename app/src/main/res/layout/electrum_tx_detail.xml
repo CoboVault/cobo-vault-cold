@@ -27,9 +27,9 @@
             type="com.cobo.cold.model.Tx" />
     </data>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.donkingliang.consecutivescroller.ConsecutiveScrollerLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         tools:showIn="@layout/tx_confirm_fragment">
 
@@ -43,7 +43,7 @@
                 android:layout_height="28dp"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
-                tools:src="@drawable/coin_btc"
+                android:src="@drawable/coin_btc"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -58,7 +58,7 @@
                 android:textColor="@color/white40"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                tools:text="Bitcoin" />
+                android:text="Bitcoin" />
 
             <TextView
                 android:id="@+id/unit"
@@ -145,39 +145,46 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/from_row"
+            android:id="@+id/tx_source"
             android:layout_width="match_parent"
-            android:layout_height="74dp">
+            android:layout_height="60dp"
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="14dp"
-                android:text="@string/tx_from"
+                android:text="@string/transaction_source_label"
+                android:layout_centerVertical="true"
                 android:textColor="@color/white40"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/from"
                 android:layout_width="184dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="14dp"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="16dp"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                tools:text="19zhQ 2rKq Xm5r y1pj Co83 JbBK 5zUr bdKgc" />
+                android:text="Electrum" />
+
+            <include
+                layout="@layout/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true" />
         </RelativeLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/from_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/receive_item"
-            tools:itemCount="2"
-            android:visibility="gone" />
+            tools:itemCount="1"
+            android:visibility="visible" />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -190,41 +197,14 @@
                 android:src="@drawable/tx_arrow_down"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/to_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="14dp"
-                android:text="@string/tx_to"
-                android:textColor="@color/white40"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/info"
-                android:layout_width="184dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginVertical="14dp"
-                android:layout_marginEnd="16dp"
-                android:text='@{tx.to.replaceAll(",","\n\n")}'
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                tools:text="19zhQ 2rKq Xm5r y1pj Co83 JbBK 5zUr bdKgc" />
-        </RelativeLayout>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/to_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            tools:itemCount="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/receive_item"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <include
             layout="@layout/divider"
@@ -267,7 +247,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:paddingTop="14dp">
 
             <TextView
@@ -300,5 +280,33 @@
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true" />
         </RelativeLayout>
-    </LinearLayout>
+        <include
+            android:id="@+id/qrcode_layout"
+            layout="@layout/qrcode"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+        <LinearLayout
+            android:id="@+id/export"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/export_to_sdcard"
+                android:layout_width="match_parent"
+                style="@style/AcceptButton"
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/export_signed_txn_file"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/white"
+                android:text="@string/export_signed_txn_action_guide"
+                android:gravity="center"/>
+        </LinearLayout>
+
+    </com.donkingliang.consecutivescroller.ConsecutiveScrollerLayout>
 </layout>

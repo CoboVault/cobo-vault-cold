@@ -206,13 +206,12 @@ public class QrScanViewModel extends AndroidViewModel {
             if (!Coins.isCoinSupported(coinCode)) {
                 throw new CoinNotFindException("not support " + coinCode);
             }
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_TX_DATA, object.getJSONObject("signTx").toString());
+            fragment.navigate(R.id.action_to_txConfirmFragment, bundle);
         } catch (JSONException e) {
             throw new InvalidTransactionException("invalid transaction");
         }
-
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_TX_DATA, object.toString());
-        fragment.navigate(R.id.action_to_txConfirmFragment, bundle);
     }
 
     private JSONObject parseToJson(ScannedData[] res, String valueType) {

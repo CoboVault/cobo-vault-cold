@@ -120,6 +120,11 @@ public class Storage {
     }
 
     @NonNull
+    public File getElectrumDir() {
+        return mExternalDir;
+    }
+
+    @NonNull
     public File getUpdateZipFile() {
         return new File(mExternalDir, UPDATE_ZIP_FILE);
     }

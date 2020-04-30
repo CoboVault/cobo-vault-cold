@@ -80,6 +80,25 @@ public class Btc extends AbsCoin {
         }
 
         @Override
+        public JSONArray getInputs() {
+            try {
+                return metaData.getJSONArray("inputs");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        public JSONArray getOutputs() {
+            try {
+                return metaData.getJSONArray("outputs");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
         protected JSONObject extractMetaData(JSONObject signTxObject, String coinCode)
                 throws JSONException {
             if (signTxObject.has("btcTx")) {

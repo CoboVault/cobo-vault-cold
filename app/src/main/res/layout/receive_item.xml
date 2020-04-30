@@ -23,7 +23,7 @@
 
         <variable
             name="item"
-            type="com.cobo.cold.ui.fragment.main.TxConfirmFragment.ReceiveItem" />
+            type="com.cobo.cold.ui.fragment.main.TxConfirmFragment.TransactionItem" />
     </data>
 
     <RelativeLayout
@@ -31,25 +31,23 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/receive_label"
+            android:id="@+id/label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="14dp"
-            android:text="@{@string/receive_address(item.id + 1)}"
             android:textColor="@color/white40"
             android:textSize="14sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/to"
+            android:id="@+id/info"
             android:layout_width="184dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginVertical="14dp"
             android:layout_marginEnd="16dp"
             android:textColor="@color/white"
-            android:text="@{item.amount+'\n'+item.address}"
             android:textStyle="bold"
             tools:text="0.05BTC\n19zhQ 2rKq Xm5r y1pj Co83 JbBK 5zUr bdKgc" />
 

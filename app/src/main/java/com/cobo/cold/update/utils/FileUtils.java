@@ -49,6 +49,16 @@ public class FileUtils {
         return builder.toString();
     }
 
+    public static boolean writeString(@NonNull File file, String content) {
+        try(FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(content.getBytes());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     @Nullable
     public static byte[] bufferlize(@NonNull File file) {
         try (InputStream inputStream = new FileInputStream(file)) {

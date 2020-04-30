@@ -36,7 +36,7 @@ public class TxUtils {
 
     private static final NetworkParameters MAINNET = MainNetParams.get();
 
-    private static byte[] int2bytes(int i) {
+    public static byte[] int2bytes(int i) {
         return new byte[]{
                 (byte) ((i >> 24) & 0xFF),
                 (byte) ((i >> 16) & 0xFF),

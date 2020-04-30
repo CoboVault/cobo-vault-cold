@@ -32,12 +32,12 @@ import com.cobo.coinlib.coins.AbsDeriver;
 import com.cobo.coinlib.coins.AbsTx;
 import com.cobo.coinlib.coins.BTC.Btc;
 import com.cobo.coinlib.coins.BTC.BtcImpl;
+import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.coins.BTC.UtxoTx;
 import com.cobo.coinlib.exception.InvalidPathException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;
-import com.cobo.coinlib.path.Account;
 import com.cobo.coinlib.path.AddressIndex;
 import com.cobo.coinlib.path.CoinPath;
 import com.cobo.coinlib.utils.Coins;
@@ -55,6 +55,7 @@ import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryption.ChipSigner;
 import com.cobo.cold.ui.views.AuthenticateModal;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
@@ -68,6 +69,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
+
+import static com.cobo.cold.viewmodel.ElectrumViewModel.parseElectrumTxHex;
 
 public class TxConfirmViewModel extends AndroidViewModel {
 
@@ -99,22 +102,16 @@ public class TxConfirmViewModel extends AndroidViewModel {
     }
 
     public void parseTxData(String json) {
-        NumberFormat nf = NumberFormat.getInstance();
-        nf.setMaximumFractionDigits(20);
         AppExecutors.getInstance().diskIO().execute(() -> {
-            TxEntity tx = new TxEntity();
             try {
-                JSONObject object = new JSONObject(json).getJSONObject("signTx");
-
+                JSONObject object = new JSONObject(json);
                 Log.i(TAG, "object = " + object.toString(4));
-
                 transaction = AbsTx.newInstance(object);
                 if (transaction == null) {
                     observableTx.postValue(null);
                     parseTxException.postValue(new InvalidTransactionException("invalid transaction"));
                     return;
                 }
-
                 if (transaction instanceof UtxoTx) {
                     if (!checkChangeAddress(transaction)) {
                         observableTx.postValue(null);
@@ -122,19 +119,38 @@ public class TxConfirmViewModel extends AndroidViewModel {
                         return;
                     }
                 }
-                coinCode = Objects.requireNonNull(transaction).getCoinCode();
-                tx.setSignId(object.getString("signId"));
-                tx.setTimeStamp(object.getLong("timestamp"));
-                tx.setCoinCode(coinCode);
-                tx.setCoinId(Coins.coinIdFromCoinCode(coinCode));
-                tx.setFrom(getFromAddress(transaction));
-                tx.setTo(transaction.getTo());
-                tx.setAmount(nf.format(transaction.getAmount()) + " " + transaction.getUnit());
-                tx.setFee(nf.format(transaction.getFee()) + " " + coinCode);
-                tx.setMemo(transaction.getMemo());
-                tx.setBelongTo(mRepository.getBelongTo());
+                TxEntity tx = generateTxEntity(object);
                 observableTx.postValue(tx);
             } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private TxEntity generateTxEntity(JSONObject object) throws JSONException {
+        TxEntity tx = new TxEntity();
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMaximumFractionDigits(20);
+        coinCode = Objects.requireNonNull(transaction).getCoinCode();
+        tx.setSignId(object.getString("signId"));
+        tx.setTimeStamp(object.getLong("timestamp"));
+        tx.setCoinCode(coinCode);
+        tx.setCoinId(Coins.coinIdFromCoinCode(coinCode));
+        tx.setFrom(getFromAddress());
+        tx.setTo(getToAddress());
+        tx.setAmount(nf.format(transaction.getAmount()) + " " + transaction.getUnit());
+        tx.setFee(nf.format(transaction.getFee()) + " " + coinCode);
+        tx.setMemo(transaction.getMemo());
+        tx.setBelongTo(mRepository.getBelongTo());
+        return tx;
+    }
+
+    public void parseTxnData(String txnData) {
+        AppExecutors.getInstance().networkIO().execute(()-> {
+            try {
+                JSONObject signTx = parseElectrumTxHex(txnData);
+                parseTxData(signTx.toString());
+            } catch (ElectrumTx.SerializationException | JSONException e) {
                 e.printStackTrace();
             }
         });
@@ -162,9 +178,19 @@ public class TxConfirmViewModel extends AndroidViewModel {
         }
     }
 
-    private String getFromAddress(AbsTx tx) {
-        if (!TextUtils.isEmpty(tx.getFrom())) {
-            return tx.getFrom();
+    private String getToAddress() {
+        String to = transaction.getTo();
+
+        if (transaction instanceof UtxoTx) {
+            to = ((UtxoTx) transaction).getOutputs().toString();
+        }
+
+        return to;
+    }
+
+    private String getFromAddress() {
+        if (!TextUtils.isEmpty(transaction.getFrom())) {
+            return transaction.getFrom();
         }
         String[] paths = transaction.getHdPath().split(AbsTx.SEPARATOR);
         String[] externalPath = Stream.of(paths)
@@ -172,14 +198,37 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 .toArray(String[]::new);
         ensureAddressExist(externalPath);
 
-        String[] accountPath = Stream.of(paths)
-                .filter(this::isAccountPath)
-                .toArray(String[]::new);
+        try {
+            if (transaction instanceof UtxoTx) {
+                JSONArray inputsClone = new JSONArray();
+                JSONArray inputs = ((UtxoTx) transaction).getInputs();
 
-        ensureAccountAddressExist(accountPath);
+                CoinEntity coin = mRepository.loadCoinSync(Coins.coinIdFromCoinCode(coinCode));
+                String expub = mRepository.loadAccountsForCoin(coin).get(0).getExPub();
+
+                for (int i = 0; i < inputs.length(); i++) {
+                    JSONObject input = inputs.getJSONObject(i);
+                    long value = input.getJSONObject("utxo").getLong("value");
+                    String hdpath = input.getString("ownerKeyPath");
+                    AddressIndex addressIndex = CoinPath.parsePath(hdpath);
+                    int index = addressIndex.getValue();
+                    int change = addressIndex.getParent().getValue();
+
+                    String from = AbsDeriver.newInstance(transaction.getCoinCode()).derive(expub,change,index);
+                    inputsClone.put(new JSONObject().put("value", value)
+                                                    .put("address",from));
+                }
+
+                return inputsClone.toString();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (InvalidPathException e) {
+            e.printStackTrace();
+        }
 
 
-        return Stream.of(concat(accountPath, externalPath))
+        return Stream.of(externalPath)
                 .distinct()
                 .map(path -> mRepository.loadAddressBypath(path).getAddressString())
                 .reduce((s1, s2) -> s1 + AbsTx.SEPARATOR + s2)
@@ -193,36 +242,18 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
     }
 
-    private void ensureAccountAddressExist(String[] accountPath) {
-        CoinEntity coin = mRepository.loadCoinSync(Coins.coinIdFromCoinCode(coinCode));
-
-        accountPath = Stream.of(accountPath).distinct()
-                .filter(path -> mRepository.loadAddressBypath(path) == null)
-                .toArray(String[]::new);
-
-        final CountDownLatch mLatch = new CountDownLatch(1);
-        new AddAddressViewModel.AddAccountAddressTask(coin, mRepository, mLatch::countDown)
-                .execute(accountPath);
-        try {
-            mLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private boolean isAccountPath(String path) {
-        try {
-            Account.parseAccount(path);
-            return true;
-        } catch (InvalidPathException ignore) {
-        }
-
-        return false;
-    }
-
     private boolean isExternalPath(@NonNull String path) {
         try {
             return CoinPath.parsePath(path).getParent().isExternal();
+        } catch (InvalidPathException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean isInternalPath(@NonNull String path) {
+        try {
+            return !CoinPath.parsePath(path).getParent().isExternal();
         } catch (InvalidPathException e) {
             e.printStackTrace();
         }
@@ -434,6 +465,10 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
     public String getTxId() {
         return Objects.requireNonNull(observableTx.getValue()).getTxId();
+    }
+
+    public String getTxHex() {
+        return Objects.requireNonNull(observableTx.getValue()).getSignedHex();
     }
 
     private final ExecutorService sExecutor = Executors.newSingleThreadExecutor();
