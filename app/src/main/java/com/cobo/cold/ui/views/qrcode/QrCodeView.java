@@ -19,16 +19,22 @@ package com.cobo.cold.ui.views.qrcode;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
+import androidx.databinding.DataBindingUtil;
 
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
+import com.cobo.cold.databinding.QrcodeModalBinding;
+import com.cobo.cold.ui.modal.FullScreenModal;
 
 public class QrCodeView extends FrameLayout implements QrCodeHolder {
 
@@ -50,10 +56,19 @@ public class QrCodeView extends FrameLayout implements QrCodeHolder {
         showQrCode();
     }
 
+    public void disableModal() {
+        img.setOnClickListener(null);
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         img = findViewById(R.id.img);
+        img.setOnClickListener(v -> {
+            if (!TextUtils.isEmpty(data)) {
+                showModal();
+            }
+        });
         progressBar = findViewById(R.id.progress);
     }
 
@@ -71,6 +86,17 @@ public class QrCodeView extends FrameLayout implements QrCodeHolder {
         }
     }
 
+    public void showModal() {
+        FullScreenModal dialog = new FullScreenModal();
+        QrcodeModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
+                R.layout.qrcode_modal, null, false);
+        dialog.setBinding(binding);
+        binding.close.setOnClickListener(v -> dialog.dismiss());
+        binding.qrcodeLayout.qrcode.setData(data);
+        binding.qrcodeLayout.qrcode.disableModal();
+        dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "");
+    }
+
     private void setImageBitmap(Bitmap bm) {
         AppExecutors.getInstance().mainThread().execute(() -> {
             progressBar.setVisibility(GONE);
@@ -86,11 +112,11 @@ public class QrCodeView extends FrameLayout implements QrCodeHolder {
 
     @Override
     public int getViewWidth() {
-        return getWidth();
+        return img.getWidth();
     }
 
     @Override
     public int getViewHeight() {
-        return getHeight();
+        return img.getHeight();
     }
 }

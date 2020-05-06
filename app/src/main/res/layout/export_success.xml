@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   ~ Copyright (c) 2020 Cobo
   ~
@@ -17,63 +16,45 @@
   ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
-        <variable
-            name="state"
-            type="int" />
-
-        <variable
-            name="progress"
-            type="int" />
     </data>
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:keepScreenOn="true">
+        android:background="@drawable/modal_bg"
+        android:paddingVertical="20dp">
 
         <LinearLayout
-            android:layout_width="244dp"
+            android:id="@+id/success"
+            android:layout_width="224dp"
             android:layout_height="wrap_content"
-
-            android:background="@drawable/modal_bg"
-            android:gravity="center_horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/icon"
+            <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginTop="28dp" />
+                android:src="@drawable/circle_positive"
+                android:tint="@color/colorAccent"
+                tools:ignore="ContentDescription" />
 
             <TextView
-                android:id="@+id/text"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="32dp"
                 android:layout_marginTop="16dp"
                 android:textSize="15sp"
-                android:textColor="#000000"
-                android:text="@string/creating_vault_hint"
-                android:gravity="center" />
-
-            <TextView
-                android:id="@+id/step"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="32dp"
-                android:layout_marginBottom="28dp"
-                android:textSize="15sp"
-                android:textColor="@color/colorAccent"
-                android:gravity="center" />
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="@string/export_success" />
 
         </LinearLayout>
+
     </FrameLayout>
-
-
 </layout>
-

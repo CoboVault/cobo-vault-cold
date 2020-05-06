@@ -47,6 +47,7 @@ import com.cobo.cold.ui.fragment.AboutFragment;
 import com.cobo.cold.ui.fragment.SyncFragment;
 import com.cobo.cold.ui.fragment.main.AssetListFragment;
 import com.cobo.cold.ui.fragment.main.ManageCoinFragment;
+import com.cobo.cold.ui.fragment.main.electrum.ElectrumTxnListFragment;
 import com.cobo.cold.ui.fragment.setting.SettingFragment;
 import com.cobo.cold.ui.views.DrawerAdapter;
 import com.cobo.cold.ui.views.FullScreenDrawer;
@@ -92,11 +93,10 @@ public class MainActivity extends FullScreenActivity {
 
     private void initNavController() {
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
-
         mNavController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             String label = Objects.requireNonNull(destination.getLabel()).toString();
 
-            int index = getKey(mMainFragments,label);
+            int index = getFragmentIndexByLabel(label);
             if (index != -1) {
                 mBinding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 currentFragmentIndex = index;
@@ -110,10 +110,10 @@ public class MainActivity extends FullScreenActivity {
         });
     }
 
-    private int getKey(Map<Integer, String> map, String value) {
-        Set<Map.Entry<Integer, String>> set = map.entrySet();
+    private int getFragmentIndexByLabel(String label) {
+        Set<Map.Entry<Integer, String>> set = mMainFragments.entrySet();
         for (Map.Entry<Integer, String> entry : set) {
-            if (entry.getValue().equals(value)) {
+            if (entry.getValue().equals(label)) {
                 return entry.getKey();
             }
         }
@@ -159,7 +159,6 @@ public class MainActivity extends FullScreenActivity {
         if (!oldBelongTo.equals(belongTo) || !oldVaultId.equals(vaultId)) {
             recreate();
         }
-
     }
 
     public class DrawerClickListener implements DrawerAdapter.OnItemClickListener {
@@ -182,6 +181,10 @@ public class MainActivity extends FullScreenActivity {
                 case R.id.drawer_sync:
                     mNavController.navigateUp();
                     mNavController.navigate(R.id.action_to_syncFragment);
+                    break;
+                case R.id.drawer_sdcard:
+                    mNavController.navigateUp();
+                    mNavController.navigate(R.id.action_to_txnListFragment);
                     break;
                 case R.id.drawer_settings:
                     mNavController.navigateUp();
@@ -288,6 +291,7 @@ public class MainActivity extends FullScreenActivity {
         mMainFragments.put(R.id.drawer_wallet, AssetListFragment.TAG);
         mMainFragments.put(R.id.drawer_manage, ManageCoinFragment.TAG);
         mMainFragments.put(R.id.drawer_sync, SyncFragment.TAG);
+        mMainFragments.put(R.id.drawer_sdcard, ElectrumTxnListFragment.TAG);
         mMainFragments.put(R.id.drawer_settings, SettingFragment.TAG);
         mMainFragments.put(R.id.drawer_about, AboutFragment.TAG);
     }

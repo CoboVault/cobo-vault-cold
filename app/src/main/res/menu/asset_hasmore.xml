@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <!--
   ~ Copyright (c) 2020 Cobo
   ~
@@ -18,7 +16,22 @@
   ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<View xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="@drawable/divider" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="100"
+        android:title="Search"
+        android:icon="@drawable/search"
+        android:iconTint="@color/white"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_more"
+        android:orderInCategory="100"
+        android:title="More"
+        android:icon="@drawable/more"
+        android:iconTint="@color/white"
+        app:showAsAction="always" />
+
+</menu>

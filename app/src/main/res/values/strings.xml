@@ -287,4 +287,39 @@
         <item>"Secure Element verification in progress…"</item>
         <item>"Writing Secure Element…"</item>
     </string-array>
+    <string name="export_to_electrum">导出观察钱包到Electrum</string>
+    <string name="export_to_electrum_guide">1. 打开Electrum，设置钱包名称，点击下一步 \n2. 选择“标准钱包”后点击下一步 \n3. 选择“使用主密钥”后点击下一步，来到输入主公钥页面 \n4. 在输入主公钥页面点击照相机按钮，摄像头打开后扫描Cobo Vault主公钥生成的二维码 \n5. 扫描完成后点击下一步设置钱包密码 \n6. 密码设置完成后进入观察钱包</string>
+    <string name="export_xpub">导出钱包的主公钥进行适配</string>
+    <string name="export_to_electrum_guide_hint">导出观察钱包到Electrum指引</string>
+    <string name="send_address">From %d</string>
+    <string name="input">input %d</string>
+    <string name="output">output %d</string>
+    <string name="export_success">导出成功</string>
+    <string name="read_sdcard">读取TF卡</string>
+    <string name="no_sdcard">未检测到TF卡</string>
+    <string name="no_sdcard_hint">请确保TF卡成功插入到该设备中该设备仅支持FAT32格式，容量不能超过32GB</string>
+    <string name="no_unsigned_txn">未检测到待签文件</string>
+    <string name="no_unsigned_txn_hint">请检查待签文件是否已成功保存在TF卡中</string>
+    <string name="electrum_broadcast_guide">Electrum广播交易引导</string>
+    <string name="electrum_broadcast_action_guide">打开Electrum，点击【工具--加载交易--从二维码】扫描Cobo Vault的二维码\n\n 若扫码苦难，可将已签名交易导出文件，从文件加载交易后进行广播。</string>
+    <string name="electrum_decode_txn_fail">解析失败</string>
+    <string name="electrum_import_xpub_guide_title">Electrum扫描主公钥二维码引导</string>
+    <string name="electrum_import_xpub_action_guide">1. 打开Electrum，设置钱包名称，点击下一步。\n2. 选择“标准钱包”后点击下一步。\n3. 选择“使用主密钥”后点击下一步，来到输入主公钥页面。\n4. 在输入主公钥页面点击相机按钮，摄像头开启后，扫描主公钥二维码。\n\n若扫码困难，可将主密钥导出文本文件，Electrum打开该文件也可导入</string>
+    <string name="error_txn_file">错误的txn文件</string>
+    <string name="export_signed_txn">导出文件进行广播</string>
+    <string name="electrum_import_signed_txn">导出后，electrum--工具--加载交易--从文件，打开该文件</string>
+    <string name="insert_sdcard_hint">请先插入TF卡（仅支持FAT32格式，容量不能超过32G）</string>
+    <string name="electrum_import_xpub_action">在Electrum 从一个主密钥创建密钥库 页面打开该文件</string>
+    <string name="transaction_source_label">热端来源</string>
+    <string name="use_electrum_to_broadcast">请使用Electrum扫描二维码进行广播</string>
+    <string name="transaction_from_electrum">该笔交易热端来源于Electrum</string>
+    <string name="add_address">添加地址</string>
+    <string name="use_electrum_scan_xpub">请用Electrum扫描主公钥二维码</string>
+    <string name="export_signed_txn_file">导出已签名文件</string>
+    <string name="export_signed_txn_action_guide">导出后，用Electrum进行广播\n前往【Electrum--工具--加载交易--从文件】，打开该文件后点击广播</string>
+    <string name="export">导出</string>
+    <string name="export_xpub_text_file">导出主密钥文本文件</string>
+    <string name="file_name_label">该文件的文件名为：</string>
+    <string name="master_xpub">主公钥（P2SH）</string>
+    <string name="electrum_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或 <u>\"点击此处导出文件\"</u>]]></string>
 </resources>

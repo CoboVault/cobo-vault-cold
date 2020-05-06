@@ -28,8 +28,10 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
+import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.QrcodeScanFragmentBinding;
@@ -49,6 +51,7 @@ import com.cobo.cold.viewmodel.UnknowQrCodeException;
 import com.cobo.cold.viewmodel.UuidNotMatchException;
 
 import org.json.JSONException;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 
@@ -172,9 +175,28 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             alert(getString(R.string.invalid_webauth_qrcode_hint));
         } else if ("address".equals(purpose)) {
             navigateUp();
+        } else if (tryParseElecturmTx(res) != null) {
+            handleElectrumTx(res);
         } else {
             alert(getString(R.string.unsupported_qrcode));
         }
+    }
+
+    private void handleElectrumTx(String res) {
+        String data = Hex.toHexString(Base43.decode(res));
+        Bundle bundle = new Bundle();
+        bundle.putString("txn", data);
+        navigate(R.id.action_to_ElectrumTxConfirmFragment, bundle);
+    }
+
+    private ElectrumTx tryParseElecturmTx(String res) {
+        try {
+            byte[] data = Base43.decode(res);
+            return ElectrumTx.parse(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

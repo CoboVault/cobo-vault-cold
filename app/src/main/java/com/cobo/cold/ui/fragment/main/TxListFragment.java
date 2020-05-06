@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
 import static com.cobo.cold.ui.fragment.main.TxFragment.KEY_TX_ID;
+import static com.cobo.cold.viewmodel.ElectrumViewModel.ELECTRUM_SIGN_ID;
 
 public class TxListFragment extends BaseFragment<TxListBinding> {
 
@@ -78,8 +79,13 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         txCallback = tx -> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_TX_ID, tx.getTxId());
-            Navigation.findNavController(Objects.requireNonNull(getView()))
-                    .navigate(R.id.action_to_txFragment, bundle);
+            if (ELECTRUM_SIGN_ID.equals(tx.getSignId())) {
+                Navigation.findNavController(Objects.requireNonNull(getView()))
+                        .navigate(R.id.action_to_electrumTxFragment, bundle);
+            } else {
+                Navigation.findNavController(Objects.requireNonNull(getView()))
+                        .navigate(R.id.action_to_txFragment, bundle);
+            }
         };
 
         viewModel.loadTxs(data.getString(KEY_COIN_ID))
@@ -134,17 +140,32 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         protected void onBindItem(TxListItemBinding binding, TxEntity item) {
             binding.setTx(item);
             binding.setTxCallback(txCallback);
+            updateFrom(binding, item);
+            updateTo(binding, item);
+        }
+
+        private void updateTo(TxListItemBinding binding, TxEntity item) {
+            String to = item.getTo();
+            binding.to.setText(item.getTo());
             try {
-                updateTo(binding, item);
-            } catch (JSONException ignore) {
+                JSONArray outputs = new JSONArray(to);
+                binding.to.setText(outputs.getJSONObject(0).getString("address"));
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
 
-        private void updateTo(TxListItemBinding binding, TxEntity item) throws JSONException {
-            String to = item.getTo();
-            binding.to.setText(item.getTo());
-            JSONArray outputs = new JSONArray(to);
-            binding.to.setText(outputs.getJSONObject(0).getString("address"));
+        private void updateFrom(TxListItemBinding binding, TxEntity item) {
+            String from = item.getFrom();
+            binding.from.setText(item.getFrom());
+            try {
+                JSONArray inputs = new JSONArray(from);
+                String address = inputs.getJSONObject(0).getString("address");
+                binding.from.setText(address);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

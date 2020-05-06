@@ -46,7 +46,7 @@
 
             <include
                 android:id="@+id/qrcode_layout"
-                layout="@layout/qrcode" />
+                layout="@layout/dynamic_qrcode" />
         </FrameLayout>
 
 

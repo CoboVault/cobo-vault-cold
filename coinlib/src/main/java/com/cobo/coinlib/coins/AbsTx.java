@@ -71,9 +71,6 @@ public abstract class AbsTx {
         try {
             AddressIndex address = CoinPath.parsePath(hdPath, allHardend);
             Change change = address.getParent();
-            if (!change.isExternal()) {
-                throw new InvalidTransactionException("invalid hdPath,error change value");
-            }
 
             Account account = change.getParent();
             if (account.getValue() != 0) {
