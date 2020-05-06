@@ -79,7 +79,7 @@
             android:background="#000000"
             android:visibility="invisible">
 
-            <EditText
+            <com.cobo.cold.ui.views.MenuHidingEditText
                 android:id="@+id/search"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

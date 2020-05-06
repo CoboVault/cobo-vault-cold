@@ -57,7 +57,7 @@
                 android:textStyle="bold" />
 
 
-            <EditText
+            <com.cobo.cold.ui.views.MenuHidingEditText
                 android:id="@+id/input_box"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"

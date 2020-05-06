@@ -87,7 +87,7 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <EditText
+        <com.cobo.cold.ui.views.MenuHidingEditText
             android:id="@+id/addr"
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -104,7 +104,7 @@
             android:importantForAutofill="no"
             android:inputType="text" />
 
-        <EditText
+        <com.cobo.cold.ui.views.MenuHidingEditText
             android:id="@+id/memo_edit"
             android:layout_width="match_parent"
             android:layout_height="60dp"

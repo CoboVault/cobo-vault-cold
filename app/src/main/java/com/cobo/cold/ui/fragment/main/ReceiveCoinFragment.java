@@ -17,11 +17,8 @@
 
 package com.cobo.cold.ui.fragment.main;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ReceiveFragmentBinding;
@@ -48,19 +45,6 @@ public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
         mBinding.setAddressName(data.getString(KEY_ADDRESS_NAME));
         mBinding.setCoinCode(data.getString(KEY_COIN_CODE));
         mBinding.qrcode.setData(data.getString(KEY_ADDRESS));
-
-        mBinding.amount.setOnEditorActionListener((textView, i, keyEvent) -> {
-            String text = textView.getText().toString();
-            if (!TextUtils.isEmpty(text)) {
-                mBinding.qrcode.setData(data.getString(KEY_ADDRESS) + "?amount=" + textView.getText());
-            }
-            textView.clearFocus();
-            final InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) {
-                imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
-            }
-            return false;
-        });
     }
 
     @Override

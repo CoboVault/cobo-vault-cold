@@ -92,7 +92,7 @@
                 android:alpha="@{eye.checked ? 1f : 0.4f}"
                 android:button="@drawable/eye" />
 
-            <EditText
+            <com.cobo.cold.ui.views.MenuHidingEditText
                 android:id="@+id/input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
