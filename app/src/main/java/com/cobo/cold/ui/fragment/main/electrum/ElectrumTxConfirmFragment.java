@@ -30,6 +30,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
+import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
@@ -110,7 +111,7 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
         try {
             txn.put("hex", hex);
             txn.put("complete", true);
-            txn.put("final", false);
+            txn.put("final", ElectrumTx.isFinal(hex));
             return txn.toString();
         } catch (JSONException e) {
             e.printStackTrace();

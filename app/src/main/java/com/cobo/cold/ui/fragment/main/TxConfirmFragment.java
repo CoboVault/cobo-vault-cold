@@ -324,7 +324,7 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
             double value = satoshi / Math.pow(10, 8);
             NumberFormat nf = NumberFormat.getInstance();
             nf.setMaximumFractionDigits(20);
-            return nf.format(value) + " BTC";
+            return nf.format(value) + " " + Coins.BTC.coinCode();
         }
 
         public int getId() {

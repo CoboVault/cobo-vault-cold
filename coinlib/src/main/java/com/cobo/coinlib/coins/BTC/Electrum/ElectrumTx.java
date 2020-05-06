@@ -19,7 +19,9 @@ package com.cobo.coinlib.coins.BTC.Electrum;
 
 import androidx.annotation.NonNull;
 
+import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Utils;
+import org.bitcoinj.params.MainNetParams;
 import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -197,5 +199,13 @@ public class ElectrumTx {
         SerializationException(String errorMessage) {
             super(errorMessage);
         }
+    }
+
+    public static boolean isFinal(@NonNull String hex) {
+        byte[] raw = Hex.decode(hex);
+        return new Transaction(MainNetParams.get(), raw)
+               .getInputs()
+               .stream()
+               .noneMatch(input -> input.getSequenceNumber() < 0xffffffffL - 1);
     }
 }
