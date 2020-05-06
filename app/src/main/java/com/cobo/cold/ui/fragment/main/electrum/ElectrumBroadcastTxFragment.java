@@ -66,7 +66,7 @@ public class ElectrumBroadcastTxFragment extends BaseFragment<BroadcastElectrumT
         });
         mBinding.hint.setOnClickListener(v -> {
             if (txEntity != null) {
-                showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex());
+                showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(),null);
             }
         });
         mBinding.info.setOnClickListener(v -> showElectrumInfo(mActivity));

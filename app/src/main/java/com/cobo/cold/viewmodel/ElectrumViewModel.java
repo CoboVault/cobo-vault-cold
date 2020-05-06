@@ -103,10 +103,15 @@ public class ElectrumViewModel extends AndroidViewModel {
         modalDialog.show(activity.getSupportFragmentManager(), "");
     }
 
-    public static void exportSuccess(AppCompatActivity activity) {
+    public static void exportSuccess(AppCompatActivity activity, Runnable runnable) {
         ExportToSdcardDialog dialog = new ExportToSdcardDialog();
         dialog.show(activity.getSupportFragmentManager(), "");
-        new Handler().postDelayed(dialog::dismiss, 1000);
+        new Handler().postDelayed(() -> {
+            dialog.dismiss();
+            if (runnable != null) {
+                runnable.run();
+            }
+        }, 1000);
     }
 
     static JSONObject parseElectrumTxHex(String hex) throws JSONException, ElectrumTx.SerializationException {

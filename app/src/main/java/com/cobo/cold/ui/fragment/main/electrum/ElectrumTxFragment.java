@@ -70,7 +70,7 @@ public class ElectrumTxFragment extends BaseFragment<ElectrumTxBinding> {
                 new Handler().postDelayed(() -> mBinding.txDetail.qrcodeLayout.qrcode.setData(signTx), 500);
                 mBinding.txDetail.export.setVisibility(View.GONE);
                 mBinding.txDetail.exportToSdcardHint.setOnClickListener(v ->
-                        showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex()));
+                        showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(), null));
                 mBinding.txDetail.info.setOnClickListener(v -> showElectrumInfo(mActivity));
             } else {
                 mBinding.txDetail.qr.setVisibility(View.GONE);
@@ -79,7 +79,7 @@ public class ElectrumTxFragment extends BaseFragment<ElectrumTxBinding> {
             refreshFromList();
             refreshReceiveList();
             mBinding.txDetail.exportToSdcard.setOnClickListener(v -> {
-                showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex());
+                showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(),null);
             });
         });
 

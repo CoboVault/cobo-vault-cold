@@ -166,7 +166,7 @@
     <string name="Update">Update</string>
     <string name="draw_pattern_again">Please draw again to confirm</string>
     <string name="scan_to_auth">Scan QR Code</string>
-    <string name="signing_history">Signing History</string>
+    <string name="signing_history">Signing Details</string>
     <string name="add_coins">Add Cryptocurrency</string>
     <string name="not_in_whitelist_reject">Receiving address unauthorized, transaction declined!</string>
     <string name="invalid_mnemonic">recovery phrase incorrect, please check</string>
@@ -278,7 +278,7 @@
     <string name="tag">Memo</string>
     <string name="confirm_to_verify_mnemonic">Next Step</string>
     <string name="pattern_unlock_hint">Pattern password is used to unlock the vault</string>
-    <string name="new_version_footer_hint">You can also go to [Menu--Settings--Version] and touch “Update Now” later.</string>
+    <string name="new_version_footer_hint">You can also go to [Menu > Settings > Version] and touch “Update Now” later.</string>
     <string name="factory_reset_warning">Are you sure you want to permanently wipe the device?</string>
     <string-array name="create_vault_step">
         <item>"Creating vault…"</item>
@@ -287,40 +287,42 @@
         <item>"Secure Element verification in progress…"</item>
         <item>"Writing Secure Element…"</item>
     </string-array>
-    <string name="export_to_electrum">导出观察钱包到Electrum</string>
-    <string name="export_to_electrum_guide">1. 打开Electrum，设置钱包名称，点击下一步 \n2. 选择“标准钱包”后点击下一步 \n3. 选择“使用主密钥”后点击下一步，来到输入主公钥页面 \n4. 在输入主公钥页面点击照相机按钮，摄像头打开后扫描Cobo Vault主公钥生成的二维码 \n5. 扫描完成后点击下一步设置钱包密码 \n6. 密码设置完成后进入观察钱包</string>
-    <string name="export_xpub">导出钱包的主公钥进行适配</string>
-    <string name="export_to_electrum_guide_hint">导出观察钱包到Electrum指引</string>
+    <string name="export_to_electrum">Export Watch-Only Wallet to Electrum</string>
+    <string name="export_to_electrum_guide">1. Open Electrum and set the wallet name. \n2. Choose “Standard wallet”. \n3. Choose “Use a master key”. \n4. Touch “View Master Public Key” below then click the camera icon in the “Create keystore from a master key” window in Electrum to scan the QR code that displays on Cobo Vault.
+ \n5. Set a password. \n6. Enter the watch-only wallet.</string>
+    <string name="export_xpub">View Master Public Key</string>
+    <string name="export_to_electrum_guide_hint">How to create watch-only wallet in Electrum</string>
     <string name="send_address">From %d</string>
-    <string name="input">input %d</string>
-    <string name="output">output %d</string>
-    <string name="export_success">导出成功</string>
-    <string name="read_sdcard">读取TF卡</string>
-    <string name="no_sdcard">未检测到TF卡</string>
-    <string name="no_sdcard_hint">请确保TF卡成功插入到该设备中该设备仅支持FAT32格式，容量不能超过32GB</string>
-    <string name="no_unsigned_txn">未检测到待签文件</string>
-    <string name="no_unsigned_txn_hint">请检查待签文件是否已成功保存在TF卡中</string>
-    <string name="electrum_broadcast_guide">Electrum广播交易引导</string>
-    <string name="electrum_broadcast_action_guide">打开Electrum，点击【工具--加载交易--从二维码】扫描Cobo Vault的二维码\n\n 若扫码苦难，可将已签名交易导出文件，从文件加载交易后进行广播。</string>
-    <string name="electrum_decode_txn_fail">解析失败</string>
-    <string name="electrum_import_xpub_guide_title">Electrum扫描主公钥二维码引导</string>
-    <string name="electrum_import_xpub_action_guide">1. 打开Electrum，设置钱包名称，点击下一步。\n2. 选择“标准钱包”后点击下一步。\n3. 选择“使用主密钥”后点击下一步，来到输入主公钥页面。\n4. 在输入主公钥页面点击相机按钮，摄像头开启后，扫描主公钥二维码。\n\n若扫码困难，可将主密钥导出文本文件，Electrum打开该文件也可导入</string>
-    <string name="error_txn_file">错误的txn文件</string>
-    <string name="export_signed_txn">导出文件进行广播</string>
-    <string name="electrum_import_signed_txn">导出后，electrum--工具--加载交易--从文件，打开该文件</string>
-    <string name="insert_sdcard_hint">请先插入TF卡（仅支持FAT32格式，容量不能超过32G）</string>
-    <string name="electrum_import_xpub_action">在Electrum 从一个主密钥创建密钥库 页面打开该文件</string>
-    <string name="transaction_source_label">热端来源</string>
-    <string name="use_electrum_to_broadcast">请使用Electrum扫描二维码进行广播</string>
-    <string name="transaction_from_electrum">该笔交易热端来源于Electrum</string>
-    <string name="add_address">添加地址</string>
-    <string name="use_electrum_scan_xpub">请用Electrum扫描主公钥二维码</string>
-    <string name="export_signed_txn_file">导出已签名文件</string>
-    <string name="export_signed_txn_action_guide">导出后，用Electrum进行广播\n前往【Electrum--工具--加载交易--从文件】，打开该文件后点击广播</string>
-    <string name="export">导出</string>
-    <string name="export_xpub_text_file">导出主密钥文本文件</string>
-    <string name="file_name_label">该文件的文件名为：</string>
-    <string name="master_xpub">主公钥（P2SH）</string>
-    <string name="electrum_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或 <u>\"点击此处导出文件\"</u>]]></string>
-    <string name="scan_electrum_hint">If the scanned QR code is Electrum\'s pending transactions, please ensure  the transaction inputs is not more than 8; if more than 8 , you should export the pending transactions to a file(open the file of MicroSD card：Menu--MicroSD Card)</string>
+    <string name="input">Input %d</string>
+    <string name="output">Output %d</string>
+    <string name="export_success">Export Successful</string>
+    <string name="read_sdcard">MicroSD card</string>
+    <string name="no_sdcard">MicroSD Card Not Found</string>
+    <string name="no_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less.</string>
+    <string name="no_unsigned_txn">File Not Found</string>
+    <string name="no_unsigned_txn_hint">Please make sure the file you wish to sign was successfully saved to your microSD card.</string>
+    <string name="electrum_broadcast_guide">How to Broadcast</string>
+    <string name="electrum_broadcast_action_guide">In Electrum, go to Tools > Load Transaction > From QR Code\n\nDifficulty scanning? You can export the signed transaction data as a file using a microSD card and broadcast the transaction from a file with Electrum.</string>
+    <string name="electrum_decode_txn_fail">Notice</string>
+    <string name="electrum_import_xpub_guide_title">How to scan QR code</string>
+    <string name="electrum_import_xpub_action_guide">1. Open Electrum, set a wallet name, and click “Next”.\n2. Choose “Standard wallet”.\n3. Choose “Use a master key”. \n4. Click the camera icon in the “Create keystore from a master key” window in Electrum to scan the QR code that displays on Cobo Vault.\n\nDifficulty scanning? You can also export the master public key file using a microSD card.</string>
+    <string name="error_txn_file">Unable to parse file, please try exporting again.</string>
+    <string name="export_signed_txn">Export File to Broadcast</string>
+    <string name="electrum_import_signed_txn">In Electrum go to, Tools > Load Transaction > From File to open the file you want to broadcast. </string>
+    <string name="insert_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less,and that the signed transaction information has been uploaded to it.</string>
+    <string name="electrum_import_xpub_action">Open when inputting your master public key on Electrum.</string>
+    <string name="transaction_source_label">Transaction Source</string>
+    <string name="use_electrum_to_broadcast">Scan the QR code with Electrum to broadcast</string>
+    <string name="transaction_from_electrum">This transaction is from Electrum</string>
+    <string name="add_address">Add Address</string>
+    <string name="use_electrum_scan_xpub">Scan master public key using Electrum</string>
+    <string name="export_signed_txn_file">Export Signed File</string>
+    <string name="export_signed_txn_action_guide">How to broadcast with Electrum:\nIn Electrum, go to Tools > Load Transaction > From File. Open the file, and click “Broadcast”.</string>
+    <string name="export">Export</string>
+    <string name="export_xpub_text_file">Export Master Public Key File</string>
+    <string name="file_name_label">File name:</string>
+    <string name="master_xpub">Master Public Key (Nested SegWit)</string>
+    <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>\"touch here to export via microSD.\"</u>]]></string>
+    <string name="scan_electrum_hint">Difficulty scanning Electrum? You can export the pending transactions as a file using a microSD card (Menu>MicroSD Card)</string>
+    <string name="sign_txn_in_sdcard">对TF卡内文件签名</string>
 </resources>

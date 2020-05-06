@@ -81,7 +81,8 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
     private ModalDialog addingAddressDialog;
     private String txnData;
 
-    public static void showExportTxnDialog(AppCompatActivity activity, String txId, String hex) {
+    public static void showExportTxnDialog(AppCompatActivity activity, String txId, String hex,
+                                           Runnable onExportSuccess) {
         ModalDialog modalDialog = ModalDialog.newInstance();
         ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
                 R.layout.export_sdcard_modal, null, false);
@@ -96,7 +97,7 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
                 Storage storage = Storage.createByEnvironment(activity);
                 boolean result = writeToSdcard(storage, generateElectrumTxn(hex), fileName);
                 if (result) {
-                    exportSuccess(activity);
+                    exportSuccess(activity, onExportSuccess);
                 }
             } else {
                 showNoSdcardModal(activity);
@@ -321,7 +322,8 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
             data.putString(KEY_TXID, txId);
             navigate(R.id.action_to_broadcastElectrumTxFragment, data);
         } else {
-            showExportTxnDialog(mActivity, viewModel.getTxId(), viewModel.getTxHex());
+            showExportTxnDialog(mActivity, viewModel.getTxId(),
+                    viewModel.getTxHex(), this::navigateUp);
         }
     }
 

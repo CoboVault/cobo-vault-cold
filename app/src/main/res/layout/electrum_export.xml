@@ -52,88 +52,109 @@
 
         <include layout="@layout/divider" />
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:gravity="center">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/use_electrum_scan_xpub"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-            <ImageView
-                android:id="@+id/info"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:padding="5dp"
-                android:src="@drawable/info"/>
-        </LinearLayout>
+            android:layout_height="match_parent">
 
-        <com.cobo.cold.ui.views.qrcode.QrCodeView
-            android:id="@+id/qrcode"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_marginHorizontal="34dp"
-            android:layout_marginTop="24dp"
-            android:background="@color/white"
-            android:padding="5dp"
-            android:keepScreenOn="true">
-
-            <ImageView
-                android:id="@+id/img"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="visible"
-                tools:ignore="ContentDescription" />
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="visible" />
-        </com.cobo.cold.ui.views.qrcode.QrCodeView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center">
 
-        <com.cobo.cold.ui.views.SpanedTextView
-            android:id="@+id/export_to_sdcard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="26dp"
-            android:gravity="center"
-            android:text="@string/electrum_qrcode_hint"
-            android:textColor="@color/white"
-            android:textSize="12sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/use_electrum_scan_xpub"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/info"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/info" />
+                </LinearLayout>
+
+                <com.cobo.cold.ui.views.qrcode.QrCodeView
+                    android:id="@+id/qrcode"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_marginHorizontal="34dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/white"
+                    android:keepScreenOn="true"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:id="@+id/img"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible"
+                        tools:ignore="ContentDescription" />
+
+                    <ProgressBar
+                        android:id="@+id/progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="visible" />
+                </com.cobo.cold.ui.views.qrcode.QrCodeView>
+
+                <com.cobo.cold.ui.views.SpanedTextView
+                    android:id="@+id/export_to_sdcard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/electrum_qrcode_hint"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
 
 
-        <androidx.legacy.widget.Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:gravity="center"
-            android:text="@string/master_xpub"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+                <androidx.legacy.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/expub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            tools:text="ypub6D3i46Y43SFfjEBYheBK3btYMRm9Cfb8Tt4M5Bv16tArNBw5ATNyJWjdcMyLxoCdHWTvm3ak7j2BWacq5Lw478aYUeARoYm4dvaQgJBAGsb"
-            android:textColor="@color/white40"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="48dp"
-            android:textSize="15sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/master_xpub"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/expub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:textColor="@color/white40"
+                    android:textSize="15sp"
+                    tools:text="ypub6D3i46Y43SFfjEBYheBK3btYMRm9Cfb8Tt4M5Bv16tArNBw5ATNyJWjdcMyLxoCdHWTvm3ak7j2BWacq5Lw478aYUeARoYm4dvaQgJBAGsb" />
+
+                <Button
+                    android:id="@+id/done"
+                    android:layout_width="match_parent"
+                    android:layout_margin="16dp"
+                    style="@style/AcceptButton"
+                    android:text="@string/complete"/>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 </layout>
