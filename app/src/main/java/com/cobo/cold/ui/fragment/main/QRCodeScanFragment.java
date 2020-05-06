@@ -19,6 +19,7 @@ package com.cobo.cold.ui.fragment.main;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -90,6 +91,9 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         mBinding.frameView.setZxingConfig(mConfig);
         QrScanViewModel.Factory factory = new QrScanViewModel.Factory(mActivity.getApplication(), isSetupVault);
         viewModel = ViewModelProviders.of(this, factory).get(QrScanViewModel.class);
+        if (!TextUtils.isEmpty(purpose)) {
+            mBinding.electrumScanHint.setVisibility(View.GONE);
+        }
     }
 
 

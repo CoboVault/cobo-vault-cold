@@ -130,8 +130,8 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
         Bundle bundle = Objects.requireNonNull(getArguments());
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.txDetail.txIdInfo.setVisibility(View.GONE);
-        mBinding.txDetail.qrcodeLayout.qrcode.setVisibility(View.GONE);
         mBinding.txDetail.export.setVisibility(View.GONE);
+        mBinding.txDetail.qr.setVisibility(View.GONE);
         txnData = bundle.getString("txn");
         viewModel = ViewModelProviders.of(this).get(TxConfirmViewModel.class);
         mBinding.setViewModel(viewModel);

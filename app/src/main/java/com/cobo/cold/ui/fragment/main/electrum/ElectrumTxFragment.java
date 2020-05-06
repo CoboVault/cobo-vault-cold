@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cobo.cold.ui.fragment.main.electrum.ElectrumBroadcastTxFragment.showElectrumInfo;
 import static com.cobo.cold.ui.fragment.main.electrum.ElectrumTxConfirmFragment.showExportTxnDialog;
 
 
@@ -67,8 +68,12 @@ public class ElectrumTxFragment extends BaseFragment<ElectrumTxBinding> {
             String signTx = getSignTxString(txEntity);
             if (signTx.length() <= 1000) {
                 new Handler().postDelayed(() -> mBinding.txDetail.qrcodeLayout.qrcode.setData(signTx), 500);
+                mBinding.txDetail.export.setVisibility(View.GONE);
+                mBinding.txDetail.exportToSdcardHint.setOnClickListener(v ->
+                        showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex()));
+                mBinding.txDetail.info.setOnClickListener(v -> showElectrumInfo(mActivity));
             } else {
-                mBinding.txDetail.qrcodeLayout.qrcode.setVisibility(View.GONE);
+                mBinding.txDetail.qr.setVisibility(View.GONE);
             }
             refreshAmount();
             refreshFromList();

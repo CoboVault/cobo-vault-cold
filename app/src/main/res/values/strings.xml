@@ -322,4 +322,5 @@
     <string name="file_name_label">该文件的文件名为：</string>
     <string name="master_xpub">主公钥（P2SH）</string>
     <string name="electrum_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或 <u>\"点击此处导出文件\"</u>]]></string>
+    <string name="scan_electrum_hint">If the scanned QR code is Electrum\'s pending transactions, please ensure  the transaction inputs is not more than 8; if more than 8 , you should export the pending transactions to a file(open the file of MicroSD card：Menu--MicroSD Card)</string>
 </resources>

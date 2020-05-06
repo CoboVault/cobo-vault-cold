@@ -280,11 +280,58 @@
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true" />
         </RelativeLayout>
-        <include
-            android:id="@+id/qrcode_layout"
-            layout="@layout/qrcode"
+
+        <LinearLayout
+            android:id="@+id/qr"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"/>
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp">
+
+                <View
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/use_electrum_to_broadcast"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/info"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:padding="5dp"
+                    android:src="@drawable/info" />
+
+            </LinearLayout>
+            <include
+                android:id="@+id/qrcode_layout"
+                layout="@layout/qrcode"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"/>
+            <com.cobo.cold.ui.views.SpanedTextView
+                android:id="@+id/export_to_sdcard_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@string/electrum_qrcode_hint"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/export"
