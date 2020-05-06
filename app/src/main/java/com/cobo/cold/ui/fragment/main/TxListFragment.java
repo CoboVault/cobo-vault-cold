@@ -40,6 +40,7 @@ import com.cobo.cold.viewmodel.CoinListViewModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,7 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
     private TxAdapter adapter;
     private TxCallback txCallback;
     private String query;
+    private Comparator<TxEntity> txEntityComparator;
 
 
     static Fragment newInstance(@NonNull String coinId, @NonNull String coinCode) {
@@ -90,8 +92,18 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
 
         viewModel.loadTxs(data.getString(KEY_COIN_ID))
                 .observe(this, txEntities -> {
+                    txEntityComparator = (o1, o2) -> {
+                        if (o1.getSignId().equals(o2.getSignId())) {
+                            return (int) (o2.getTimeStamp() - o1.getTimeStamp());
+                        } else if (ELECTRUM_SIGN_ID.equals(o1.getSignId())) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    };
                     txEntities = txEntities.stream()
                             .filter(this::shouldShow)
+                            .sorted(txEntityComparator)
                             .collect(Collectors.toList());
                     adapter.setItems(txEntities);
                 });

@@ -255,7 +255,7 @@
     <string name="tag">标签</string>
     <string name="confirm_to_verify_mnemonic">确认，去验证</string>
     <string name="pattern_unlock_hint">手势密码将用于解锁设备</string>
-    <string name="new_version_footer_hint">弹框关闭后，您可前往【菜单—设置—版本】，点击“可更新”也可触发更新操作</string>
+    <string name="new_version_footer_hint">弹框关闭后，您可前往【菜单—设置—版本】，点击“可更新”</string>
     <string name="factory_reset_warning">将清除该设备的所有数据，设备会恢复到默认的出厂状态，确认是否继续该操作。</string>
     <string-array name="create_vault_step">
         <item>"金库生成中…"</item>
@@ -300,5 +300,5 @@
     <string name="master_xpub">主公钥（隔离见证兼容）</string>
     <string name="electrum_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或<u>\点击此处导出文件\</u>]]></string>
     <string name="scan_electrum_hint">若扫描 Electrum 困难，可将待签交易导出成文件，前往【菜单--读取TF卡】对文件签名。</string>
-    <string name="sign_txn_in_sdcard">对TF卡内文件签名</string>
+    <string name="sign_txn_in_sdcard">对文件签名</string>
 </resources>

@@ -114,21 +114,8 @@ public class ElectrumViewModel extends AndroidViewModel {
         }, 1000);
     }
 
-    static JSONObject parseElectrumTxHex(String hex) throws JSONException, ElectrumTx.SerializationException {
-        ElectrumTx tx = ElectrumTx.parse(Hex.decode(hex));
-        JSONObject btcTx = adapt(tx);
-        TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
-        builder.setCoinCode(Coins.BTC.coinCode())
-                .setSignId(ELECTRUM_SIGN_ID)
-                .setTimestamp(System.currentTimeMillis())
-                .setDecimal(8);
-        String signTransaction = new JsonFormat().printToString(builder.build());
-        JSONObject signTx = new JSONObject(signTransaction);
-        signTx.put("btcTx", btcTx);
-        return signTx;
-    }
 
-    private static JSONObject adapt(ElectrumTx tx) throws JSONException {
+    public static JSONObject adapt(ElectrumTx tx) throws JSONException {
         JSONObject object = new JSONObject();
         JSONArray inputs = new JSONArray();
         JSONArray outputs = new JSONArray();

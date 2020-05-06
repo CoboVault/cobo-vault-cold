@@ -53,7 +53,9 @@ import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryption.ChipSigner;
+import com.cobo.cold.protobuf.TransactionProtoc;
 import com.cobo.cold.ui.views.AuthenticateModal;
+import com.googlecode.protobuf.format.JsonFormat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +65,8 @@ import org.spongycastle.util.encoders.Hex;
 import java.security.SignatureException;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -70,7 +74,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
-import static com.cobo.cold.viewmodel.ElectrumViewModel.parseElectrumTxHex;
+import static com.cobo.cold.viewmodel.ElectrumViewModel.ELECTRUM_SIGN_ID;
+import static com.cobo.cold.viewmodel.ElectrumViewModel.adapt;
 
 public class TxConfirmViewModel extends AndroidViewModel {
 
@@ -133,7 +138,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         nf.setMaximumFractionDigits(20);
         coinCode = Objects.requireNonNull(transaction).getCoinCode();
         tx.setSignId(object.getString("signId"));
-        tx.setTimeStamp(object.getLong("timestamp"));
+        tx.setTimeStamp(object.optLong("timestamp"));
         tx.setCoinCode(coinCode);
         tx.setCoinId(Coins.coinIdFromCoinCode(coinCode));
         tx.setFrom(getFromAddress());
@@ -154,6 +159,31 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 e.printStackTrace();
             }
         });
+    }
+
+     private JSONObject parseElectrumTxHex(String hex) throws JSONException, ElectrumTx.SerializationException {
+        ElectrumTx tx = ElectrumTx.parse(Hex.decode(hex));
+        JSONObject btcTx = adapt(tx);
+        TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
+        builder.setCoinCode(Coins.BTC.coinCode())
+                .setSignId(ELECTRUM_SIGN_ID)
+                .setTimestamp(generateElectrumTimestamp())
+                .setDecimal(8);
+        String signTransaction = new JsonFormat().printToString(builder.build());
+        JSONObject signTx = new JSONObject(signTransaction);
+        signTx.put("btcTx", btcTx);
+        return signTx;
+    }
+
+    private long generateElectrumTimestamp() {
+        List<TxEntity> txEntityList = mRepository.loadElectrumTxsSync(Coins.BTC.coinId());
+        if (txEntityList == null || txEntityList.isEmpty()) {
+            return 0;
+        }
+        return txEntityList.stream()
+                .max(Comparator.comparing(TxEntity::getTimeStamp))
+                .get()
+                .getTimeStamp() + 1;
     }
 
     private boolean checkChangeAddress(AbsTx utxoTx) {
