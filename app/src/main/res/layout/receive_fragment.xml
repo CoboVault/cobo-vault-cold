@@ -128,59 +128,5 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="53dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
-                android:gravity="center"
-                android:text="@string/amount_hint"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-
-            <EditText
-                android:id="@+id/amount"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:gravity="center|end"
-                android:hint="0.00"
-                android:imeOptions="actionDone"
-                android:textColorHint="@color/white40"
-                android:inputType="numberDecimal"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:background="@null"
-                tools:text="0.00"
-                android:importantForAutofill="no" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="16dp"
-                android:gravity="center"
-                android:text="@{coinCode}"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                tools:text="BTC" />
-
-        </LinearLayout>
     </LinearLayout>
 </layout>
