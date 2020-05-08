@@ -38,6 +38,7 @@ import com.cobo.cold.viewmodel.CoinListViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,21 +116,25 @@ public class TxFragment extends BaseFragment<TxBinding> {
 
     private void refreshReceiveList() {
         String to = txEntity.getTo();
-        List<TxConfirmFragment.TransactionItem> items = new ArrayList<>();
+        List<TransactionItem> items = new ArrayList<>();
         try {
             JSONArray outputs = new JSONArray(to);
             for (int i = 0; i < outputs.length(); i++) {
-                items.add(new TxConfirmFragment.TransactionItem(i,
-                        outputs.getJSONObject(i).getLong("value"),
-                        outputs.getJSONObject(i).getString("address")
+                JSONObject output = outputs.getJSONObject(i);
+                if (output.optBoolean("isChange")) {
+                    continue;
+                }
+                items.add(new TransactionItem(i,
+                        output.getLong("value"),
+                        output.getString("address")
                 ));
             }
         } catch (JSONException e) {
             return;
         }
-        TxConfirmFragment.TransactionItemAdapter adapter =
-                new TxConfirmFragment.TransactionItemAdapter(mActivity,
-                        TxConfirmFragment.TransactionItem.ItemType.TO);
+        TransactionItemAdapter adapter =
+                new TransactionItemAdapter(mActivity,
+                        TransactionItem.ItemType.TO);
         adapter.setItems(items);
         mBinding.txDetail.toList.setVisibility(View.VISIBLE);
         mBinding.txDetail.toInfo.setVisibility(View.GONE);
@@ -139,11 +144,11 @@ public class TxFragment extends BaseFragment<TxBinding> {
     private void refreshFromList() {
         String from = txEntity.getFrom();
         mBinding.txDetail.from.setText(from);
-        List<TxConfirmFragment.TransactionItem> items = new ArrayList<>();
+        List<TransactionItem> items = new ArrayList<>();
         try {
             JSONArray inputs = new JSONArray(from);
             for (int i = 0; i < inputs.length(); i++) {
-                items.add(new TxConfirmFragment.TransactionItem(i,
+                items.add(new TransactionItem(i,
                         inputs.getJSONObject(i).getLong("value"),
                         inputs.getJSONObject(i).getString("address")
                 ));

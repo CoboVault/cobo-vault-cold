@@ -53,8 +53,8 @@ public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> 
     @Override
     protected void init(View view) {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
-        ElectrumViewModel viewModel = ViewModelProviders.of(this).get(ElectrumViewModel.class);
-        viewModel.getExPub().observe(this, s -> {
+        ElectrumViewModel viewModel = ViewModelProviders.of(mActivity).get(ElectrumViewModel.class);
+        viewModel.getMasterPublicKey().observe(this, s -> {
             if (!TextUtils.isEmpty(s)) {
                 exPub = s;
                 mBinding.qrcode.setData(s);

@@ -63,8 +63,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.Holder> {
         boolean supportFingerprint = FingerprintKit.isHardwareDetected(view.getContext());
         view.setText(item.titleRes);
         if (item.index == R.id.drawer_settings) {
-            if (!Utilities.hasUserClickFingerprint(view.getContext())
-                    || (supportFingerprint && !Utilities.hasUserClickPatternLock(view.getContext()))) {
+            if (!Utilities.hasUserClickPatternLock(view.getContext())
+                    || (supportFingerprint && !Utilities.hasUserClickFingerprint(view.getContext()))) {
                 BadgeFactory.create(view.getContext())
                         .setWidthAndHeight(10, 10)
                         .setBadgeBackground(Color.RED)

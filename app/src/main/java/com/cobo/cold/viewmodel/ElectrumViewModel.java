@@ -20,7 +20,7 @@ package com.cobo.cold.viewmodel;
 import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -32,6 +32,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.cobo.coinlib.Util;
+import com.cobo.coinlib.coins.AbsDeriver;
+import com.cobo.coinlib.coins.BTC.Btc;
 import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.coins.BTC.Electrum.TransactionInput;
 import com.cobo.coinlib.coins.BTC.Electrum.TransactionOutput;
@@ -45,17 +47,14 @@ import com.cobo.cold.R;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.db.entity.AccountEntity;
 import com.cobo.cold.db.entity.CoinEntity;
-import com.cobo.cold.protobuf.TransactionProtoc;
 import com.cobo.cold.ui.modal.ExportToSdcardDialog;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.FileUtils;
 import com.cobo.cold.update.utils.Storage;
-import com.googlecode.protobuf.format.JsonFormat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -67,16 +66,38 @@ import java.util.regex.Pattern;
 public class ElectrumViewModel extends AndroidViewModel {
 
     public static final String ELECTRUM_SIGN_ID = "electrum_sign_id";
+    private static final int DEFAULT_CHANGE_ADDRESS_NUM = 100;
 
     private static Pattern signedTxnPattern = Pattern.compile("[0-9a-f]{5}-signed.txn$");
     private final DataRepository mRepo;
     private MutableLiveData<String> exPub = new MutableLiveData<>();
     private Storage storage;
+    private MutableLiveData<List<String>> changeAddress = new MutableLiveData<>();
+    private String xpub;
 
     public ElectrumViewModel(@NonNull Application application) {
         super(application);
         mRepo = MainApplication.getApplication().getRepository();
         storage = Storage.createByEnvironment(application);
+        deriveChangeAddress();
+    }
+
+    private void deriveChangeAddress() {
+        AppExecutors.getInstance().networkIO().execute(()->{
+            if (TextUtils.isEmpty(xpub)) {
+                xpub = new ExpubInfo().invoke().expub;
+            }
+            List<String> changes = new ArrayList<>();
+            AbsDeriver btcDeriver = new Btc.Deriver();
+            for (int i = 0; i < DEFAULT_CHANGE_ADDRESS_NUM; i++) {
+                changes.add(btcDeriver.derive(xpub,1, i));
+            }
+            changeAddress.postValue(changes);
+        });
+    }
+
+    public LiveData<List<String>> getChangeAddress() {
+        return changeAddress;
     }
 
     public static boolean hasSdcard(Context context) {
@@ -113,7 +134,6 @@ public class ElectrumViewModel extends AndroidViewModel {
             }
         }, 1000);
     }
-
 
     public static JSONObject adapt(ElectrumTx tx) throws JSONException {
         JSONObject object = new JSONObject();
@@ -154,12 +174,16 @@ public class ElectrumViewModel extends AndroidViewModel {
         }
     }
 
-    public LiveData<String> getExPub() {
+    public String getXpub() {
+        return xpub;
+    }
+
+    public LiveData<String> getMasterPublicKey() {
         AppExecutors.getInstance().diskIO().execute(() -> {
-            CoinEntity btc = mRepo.loadCoinSync(Coins.coinIdFromCoinCode("BTC"));
-            AccountEntity accountEntity = mRepo.loadAccountsForCoin(btc).get(0);
-            String hdPath = accountEntity.getHdPath();
-            String expub = accountEntity.getExPub();
+            ExpubInfo expubInfo = new ExpubInfo().invoke();
+            String hdPath = expubInfo.getHdPath();
+            String expub = expubInfo.getExpub();
+            xpub = expub;
             try {
                 Account account = Account.parseAccount(hdPath);
                 if (account.getParent().getParent().getValue() == 49 && expub.startsWith("xpub")) {
@@ -188,7 +212,6 @@ public class ElectrumViewModel extends AndroidViewModel {
                 File[] files = storage.getElectrumDir().listFiles();
                 if (files != null) {
                     for (File f : files) {
-                        Log.w("kkk", f.getName() + " " + f.length());
                         if (f.getName().endsWith(".txn")
                                 && !isSignedTxn(f.getName())) {
                             fileList.add(f.getName());
@@ -215,5 +238,26 @@ public class ElectrumViewModel extends AndroidViewModel {
             }
         });
         return txnHex;
+    }
+
+    private class ExpubInfo {
+        private String hdPath;
+        private String expub;
+
+        public String getHdPath() {
+            return hdPath;
+        }
+
+        public String getExpub() {
+            return expub;
+        }
+
+        public ExpubInfo invoke() {
+            CoinEntity btc = mRepo.loadCoinSync(Coins.coinIdFromCoinCode("BTC"));
+            AccountEntity accountEntity = mRepo.loadAccountsForCoin(btc).get(0);
+            hdPath = accountEntity.getHdPath();
+            expub = accountEntity.getExPub();
+            return this;
+        }
     }
 }

@@ -182,7 +182,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/receive_item"
+            tools:listitem="@layout/tx_detail_item"
             tools:itemCount="1"
             android:visibility="visible" />
         <RelativeLayout
@@ -203,7 +203,7 @@
             android:layout_height="wrap_content"
             tools:itemCount="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/receive_item"
+            tools:listitem="@layout/tx_detail_item"
             android:visibility="visible" />
 
         <include

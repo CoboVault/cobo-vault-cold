@@ -17,7 +17,6 @@
 
 package com.cobo.cold.ui.fragment.main;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Spannable;
@@ -36,12 +35,10 @@ import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.config.FeatureFlags;
 import com.cobo.cold.databinding.ProgressModalBinding;
-import com.cobo.cold.databinding.ReceiveItemBinding;
 import com.cobo.cold.databinding.TxConfirmFragmentBinding;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
 import com.cobo.cold.ui.BindingAdapters;
-import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
@@ -51,9 +48,9 @@ import com.cobo.cold.viewmodel.TxConfirmViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -222,9 +219,13 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
         try {
             JSONArray outputs = new JSONArray(to);
             for (int i = 0; i < outputs.length(); i++) {
+                JSONObject output = outputs.getJSONObject(i);
+                if (output.optBoolean("isChange")) {
+                    continue;
+                }
                 items.add(new TransactionItem(i,
-                        outputs.getJSONObject(i).getLong("value"),
-                        outputs.getJSONObject(i).getString("address")
+                        output.getLong("value"),
+                        output.getString("address")
                 ));
             }
         } catch (JSONException e) {
@@ -309,92 +310,6 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
 
     }
 
-    public static class TransactionItem {
-        final int id;
-        final String amount;
-        final String address;
-
-        public TransactionItem(int id, long amount, String address) {
-            this.id = id;
-            this.amount = formatSatoshi(amount);
-            this.address = address;
-        }
-
-        static String formatSatoshi(long satoshi) {
-            double value = satoshi / Math.pow(10, 8);
-            NumberFormat nf = NumberFormat.getInstance();
-            nf.setMaximumFractionDigits(20);
-            return nf.format(value) + " " + Coins.BTC.coinCode();
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getAmount() {
-            return amount;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        public enum ItemType {
-            INPUT,
-            OUTPUT,
-            FROM,
-            TO,
-        }
-    }
-
-    public static class TransactionItemAdapter extends BaseBindingAdapter<TransactionItem, ReceiveItemBinding> {
-
-        private TransactionItem.ItemType type;
-
-        public TransactionItemAdapter(Context context, TransactionItem.ItemType type) {
-            super(context);
-            this.type = type;
-        }
-
-        @Override
-        protected int getLayoutResId(int viewType) {
-            return R.layout.receive_item;
-        }
-
-        @Override
-        protected void onBindItem(ReceiveItemBinding binding, TransactionItem item) {
-
-            if (getItemCount() == 1 && type == TransactionItem.ItemType.TO) {
-                binding.info.setText(item.address);
-                binding.label.setText(context.getString(R.string.tx_to));
-            } else {
-                binding.info.setText(item.amount + "\n" + item.address);
-                binding.label.setText(getLabel(item.id));
-            }
-        }
-
-        private String getLabel(int index) {
-            int resId;
-            switch (type) {
-                case TO:
-                    resId = R.string.receive_address;
-                    break;
-                case FROM:
-                    resId = R.string.send_address;
-                    break;
-                case INPUT:
-                    resId = R.string.input;
-                    break;
-                case OUTPUT:
-                    resId = R.string.output;
-                    break;
-                default:
-                    return "";
-            }
-
-            return context.getString(resId, index + 1);
-        }
-    }
 }
 
 

@@ -46,10 +46,12 @@ import com.cobo.cold.scan.view.PreviewFrame;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
+import com.cobo.cold.viewmodel.ElectrumViewModel;
 import com.cobo.cold.viewmodel.QrScanViewModel;
 import com.cobo.cold.viewmodel.SharedDataViewModel;
 import com.cobo.cold.viewmodel.UnknowQrCodeException;
 import com.cobo.cold.viewmodel.UuidNotMatchException;
+import com.cobo.cold.viewmodel.XpubNotMatchException;
 
 import org.json.JSONException;
 import org.spongycastle.util.encoders.Hex;
@@ -179,10 +181,16 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             alert(getString(R.string.invalid_webauth_qrcode_hint));
         } else if ("address".equals(purpose)) {
             navigateUp();
-        } else if (tryParseElecturmTx(res) != null) {
-            handleElectrumTx(res);
         } else {
-            alert(getString(R.string.unsupported_qrcode));
+            try {
+                if (tryParseElecturmTx(res) != null) {
+                    handleElectrumTx(res);
+                } else {
+                    alert(getString(R.string.unsupported_qrcode));
+                }
+            } catch (XpubNotMatchException e) {
+                alert(getString(R.string.master_pubkey_not_match));
+            }
         }
     }
 
@@ -193,14 +201,25 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         navigate(R.id.action_to_ElectrumTxConfirmFragment, bundle);
     }
 
-    private ElectrumTx tryParseElecturmTx(String res) {
+    private ElectrumTx tryParseElecturmTx(String res) throws XpubNotMatchException {
         try {
             byte[] data = Base43.decode(res);
-            return ElectrumTx.parse(data);
-        } catch (Exception e) {
+            ElectrumTx tx = ElectrumTx.parse(data);
+            if (!checkElectrumExpub(tx)) {
+                throw new XpubNotMatchException("xpub not match");
+            }
+            return tx;
+        } catch (ElectrumTx.SerializationException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private boolean checkElectrumExpub(ElectrumTx tx) {
+        String xpub = ViewModelProviders.of(mActivity).get(ElectrumViewModel.class).getXpub();
+        return tx.getInputs()
+                .stream()
+                .allMatch(input -> xpub.equals(input.pubKey.xpub));
     }
 
     @Override

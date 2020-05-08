@@ -41,14 +41,17 @@ import com.cobo.cold.databinding.ProgressModalBinding;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
 import com.cobo.cold.ui.fragment.BaseFragment;
-import com.cobo.cold.ui.fragment.main.TxConfirmFragment;
+import com.cobo.cold.ui.fragment.main.TransactionItem;
+import com.cobo.cold.ui.fragment.main.TransactionItemAdapter;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.util.KeyStoreUtil;
+import com.cobo.cold.viewmodel.ElectrumViewModel;
 import com.cobo.cold.viewmodel.TxConfirmViewModel;
+import com.cobo.cold.viewmodel.XpubNotMatchException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,6 +83,7 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
     private TxEntity txEntity;
     private ModalDialog addingAddressDialog;
     private String txnData;
+    private List<String> changeAddress = new ArrayList<>();
 
     public static void showExportTxnDialog(AppCompatActivity activity, String txId, String hex,
                                            Runnable onExportSuccess) {
@@ -137,9 +141,11 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
         viewModel = ViewModelProviders.of(this).get(TxConfirmViewModel.class);
         mBinding.setViewModel(viewModel);
         subscribeTxEntityState();
-
         mBinding.sign.setOnClickListener(v -> handleSign());
-
+        ViewModelProviders.of(mActivity)
+                .get(ElectrumViewModel.class)
+                .getChangeAddress()
+                .observe(this, address -> this.changeAddress = address);
     }
 
     private void handleSign() {
@@ -214,9 +220,14 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
             if (ex != null) {
                 ex.printStackTrace();
                 dialog.dismiss();
+
+                String errorMessage = getString(R.string.incorrect_tx_data);
+                if (ex instanceof XpubNotMatchException) {
+                    errorMessage = getString(R.string.master_pubkey_not_match);
+                }
                 ModalDialog.showCommonModal(mActivity,
                         getString(R.string.electrum_decode_txn_fail),
-                        getString(R.string.incorrect_tx_data),
+                        errorMessage,
                         getString(R.string.confirm),
                         null);
                 navigateUp();
@@ -233,11 +244,11 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
 
     private void refreshReceiveList() {
         String to = txEntity.getTo();
-        List<TxConfirmFragment.TransactionItem> items = new ArrayList<>();
+        List<TransactionItem> items = new ArrayList<>();
         try {
             JSONArray outputs = new JSONArray(to);
             for (int i = 0; i < outputs.length(); i++) {
-                items.add(new TxConfirmFragment.TransactionItem(i,
+                items.add(new TransactionItem(i,
                         outputs.getJSONObject(i).getLong("value"),
                         outputs.getJSONObject(i).getString("address")
                 ));
@@ -245,31 +256,32 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
         } catch (JSONException e) {
             return;
         }
-        TxConfirmFragment.TransactionItemAdapter adapter
-                = new TxConfirmFragment.TransactionItemAdapter(mActivity,
-                TxConfirmFragment.TransactionItem.ItemType.OUTPUT);
+        TransactionItemAdapter adapter
+                = new TransactionItemAdapter(mActivity,
+                TransactionItem.ItemType.OUTPUT,
+                changeAddress);
         adapter.setItems(items);
         mBinding.txDetail.toList.setVisibility(View.VISIBLE);
         mBinding.txDetail.toList.setAdapter(adapter);
     }
 
     private void refreshFromList() {
-        String to = txEntity.getFrom();
-        List<TxConfirmFragment.TransactionItem> items = new ArrayList<>();
+        String from = txEntity.getFrom();
+        List<TransactionItem> items = new ArrayList<>();
         try {
-            JSONArray outputs = new JSONArray(to);
-            for (int i = 0; i < outputs.length(); i++) {
-                JSONObject out = outputs.getJSONObject(i);
-                items.add(new TxConfirmFragment.TransactionItem(i,
+            JSONArray inputs = new JSONArray(from);
+            for (int i = 0; i < inputs.length(); i++) {
+                JSONObject out = inputs.getJSONObject(i);
+                items.add(new TransactionItem(i,
                         out.getLong("value"),
                         out.getString("address")));
             }
         } catch (JSONException e) {
             return;
         }
-        TxConfirmFragment.TransactionItemAdapter adapter
-                = new TxConfirmFragment.TransactionItemAdapter(mActivity,
-                TxConfirmFragment.TransactionItem.ItemType.INPUT);
+        TransactionItemAdapter adapter
+                = new TransactionItemAdapter(mActivity,
+                TransactionItem.ItemType.INPUT);
         adapter.setItems(items);
         mBinding.txDetail.fromList.setVisibility(View.VISIBLE);
         mBinding.txDetail.fromList.setAdapter(adapter);

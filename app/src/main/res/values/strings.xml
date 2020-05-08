@@ -325,4 +325,6 @@
     <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>\"touch here to export via microSD.\"</u>]]></string>
     <string name="scan_electrum_hint">Difficulty scanning Electrum? You can export the pending transactions as a file using a microSD card (Menu > MicroSD Card)</string>
     <string name="sign_txn_in_sdcard">Files Awaiting Signature</string>
+    <string name="master_pubkey_not_match">Master Public Key not match</string>
+    <string name="change">Change</string>
 </resources>

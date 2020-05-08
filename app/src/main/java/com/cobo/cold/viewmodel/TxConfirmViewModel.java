@@ -151,18 +151,32 @@ public class TxConfirmViewModel extends AndroidViewModel {
     }
 
     public void parseTxnData(String txnData) {
-        AppExecutors.getInstance().networkIO().execute(()-> {
+        AppExecutors.getInstance().networkIO().execute(() -> {
             try {
-                JSONObject signTx = parseElectrumTxHex(txnData);
+
+                String xpub = mRepository.loadCoinEntityByCoinCode(Coins.BTC.coinCode()).getExPub();
+
+                ElectrumTx tx = ElectrumTx.parse(Hex.decode(txnData));
+
+                if (tx.getInputs()
+                        .stream()
+                        .anyMatch(input -> !xpub.equals(input.pubKey.xpub))) {
+                    throw new XpubNotMatchException("xpub not match");
+                }
+
+                JSONObject signTx = parseElectrumTxHex(tx);
                 parseTxData(signTx.toString());
             } catch (ElectrumTx.SerializationException | JSONException e) {
                 e.printStackTrace();
+                parseTxException.postValue(new InvalidTransactionException("invalid transaction"));
+            } catch (XpubNotMatchException e) {
+                e.printStackTrace();
+                parseTxException.postValue(new XpubNotMatchException("invalid transaction"));
             }
         });
     }
 
-     private JSONObject parseElectrumTxHex(String hex) throws JSONException, ElectrumTx.SerializationException {
-        ElectrumTx tx = ElectrumTx.parse(Hex.decode(hex));
+     private JSONObject parseElectrumTxHex(ElectrumTx tx) throws JSONException, ElectrumTx.SerializationException {
         JSONObject btcTx = adapt(tx);
         TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
         builder.setCoinCode(Coins.BTC.coinCode())
@@ -212,7 +226,10 @@ public class TxConfirmViewModel extends AndroidViewModel {
         String to = transaction.getTo();
 
         if (transaction instanceof UtxoTx) {
-            to = ((UtxoTx) transaction).getOutputs().toString();
+            JSONArray outputs = ((UtxoTx) transaction).getOutputs();
+            if (outputs != null) {
+                return outputs.toString();
+            }
         }
 
         return to;
