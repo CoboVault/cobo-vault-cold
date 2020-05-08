@@ -90,6 +90,12 @@ public class TxUtils {
 
     }
 
+    public static boolean isMasterPublicKeyMatch(String xpub, ElectrumTx tx) {
+        return tx.getInputs()
+                .stream()
+                .allMatch(input -> xpub.equals(input.pubKey.xpub));
+    }
+
     public static class PubKeyInfo {
         public String xpub;
         public List<Long> levels;
@@ -102,7 +108,7 @@ public class TxUtils {
             // since bitcoinj current version not support ypub,
             // current we only support p2sh-p2wpkh address type,
             // we use 49 index now
-            if(xpub.startsWith("ypub") || xpub.startsWith("xpub")){
+            if(xpub.startsWith("ypub") || xpub.startsWith("xpub")) {
                 this.hdPath = String.format(Locale.US,"M/49'/0'/0'/%d/%d", this.levels.get(0), this.levels.get(1));
             }  else if(xpub.startsWith("zpub")) {
                 this.hdPath = String.format(Locale.US,"M/84'/0'/0'/%d/%d", this.levels.get(0), this.levels.get(1));

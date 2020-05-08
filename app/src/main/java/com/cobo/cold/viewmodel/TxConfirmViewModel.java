@@ -74,6 +74,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
+import static com.cobo.coinlib.coins.BTC.Electrum.TxUtils.isMasterPublicKeyMatch;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.ELECTRUM_SIGN_ID;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.adapt;
 
@@ -153,14 +154,9 @@ public class TxConfirmViewModel extends AndroidViewModel {
     public void parseTxnData(String txnData) {
         AppExecutors.getInstance().networkIO().execute(() -> {
             try {
-
                 String xpub = mRepository.loadCoinEntityByCoinCode(Coins.BTC.coinCode()).getExPub();
-
                 ElectrumTx tx = ElectrumTx.parse(Hex.decode(txnData));
-
-                if (tx.getInputs()
-                        .stream()
-                        .anyMatch(input -> !xpub.equals(input.pubKey.xpub))) {
+                if (!isMasterPublicKeyMatch(xpub, tx)) {
                     throw new XpubNotMatchException("xpub not match");
                 }
 
@@ -176,7 +172,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         });
     }
 
-     private JSONObject parseElectrumTxHex(ElectrumTx tx) throws JSONException, ElectrumTx.SerializationException {
+    private JSONObject parseElectrumTxHex(ElectrumTx tx) throws JSONException {
         JSONObject btcTx = adapt(tx);
         TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
         builder.setCoinCode(Coins.BTC.coinCode())
