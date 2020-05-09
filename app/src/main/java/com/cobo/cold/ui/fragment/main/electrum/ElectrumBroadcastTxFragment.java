@@ -22,6 +22,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -65,16 +66,16 @@ public class ElectrumBroadcastTxFragment extends BaseFragment<BroadcastElectrumT
         });
         mBinding.hint.setOnClickListener(v -> {
             if (txEntity != null) {
-                showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex());
+                showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(),null);
             }
         });
-        mBinding.info.setOnClickListener(v -> showElectrumInfo());
+        mBinding.info.setOnClickListener(v -> showElectrumInfo(mActivity));
     }
 
-    private void showElectrumInfo() {
+    static void showElectrumInfo(AppCompatActivity activity) {
         ModalDialog modalDialog = ModalDialog.newInstance();
         CommonModalBinding binding = DataBindingUtil.inflate(
-                LayoutInflater.from(mActivity), R.layout.common_modal,
+                LayoutInflater.from(activity), R.layout.common_modal,
                 null, false);
         binding.title.setText(R.string.electrum_broadcast_guide);
         binding.subTitle.setText(R.string.electrum_broadcast_action_guide);
@@ -83,7 +84,7 @@ public class ElectrumBroadcastTxFragment extends BaseFragment<BroadcastElectrumT
         binding.confirm.setText(R.string.know);
         binding.confirm.setOnClickListener(vv -> modalDialog.dismiss());
         modalDialog.setBinding(binding);
-        modalDialog.show(mActivity.getSupportFragmentManager(), "");
+        modalDialog.show(activity.getSupportFragmentManager(), "");
     }
 
     @Override

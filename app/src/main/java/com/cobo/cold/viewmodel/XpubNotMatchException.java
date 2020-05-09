@@ -15,8 +15,10 @@
  * in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.cobo.cold.ui.fragment.main.electrum;
+package com.cobo.cold.viewmodel;
 
-public interface Callback {
-    void onClick(String file);
+public class XpubNotMatchException extends Exception {
+    public XpubNotMatchException(String message) {
+        super(message);
+    }
 }

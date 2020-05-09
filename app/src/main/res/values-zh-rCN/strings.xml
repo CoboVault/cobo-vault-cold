@@ -181,7 +181,7 @@
     <string name="password_unlock">密码解锁</string>
     <string name="forget_password">忘记密码？</string>
     <string name="unlock">解锁</string>
-    <string name="eos_pubkey_sign_only">1. 若您已经创建了该公钥的地址，您可在Cobo 金库移动端进行收发币，用本设备签名时将自动同步账户信息\n2. 若您还未创建地址，您可邀请持有%s的朋友扫描以上公钥信息创建%s地址</string>
+    <string name="eos_pubkey_sign_only">1. 若您已经创建了该公钥的地址，您可在 Cobo 金库移动端进行收发币，用本设备签名时将自动同步账户信息\n2. 若您还未创建地址，您可邀请持有%s的朋友扫描以上公钥信息创建%s地址</string>
     <string name="secret_modal_title">请环顾四周</string>
     <string name="secret_modal_msg">任何人获得了助记词，意味着获取了您的资产，请确保周围无人，无摄像头。</string>
     <string name="select_mnemonic_count">选择助记词数量</string>
@@ -255,7 +255,7 @@
     <string name="tag">标签</string>
     <string name="confirm_to_verify_mnemonic">确认，去验证</string>
     <string name="pattern_unlock_hint">手势密码将用于解锁设备</string>
-    <string name="new_version_footer_hint">弹框关闭后，您可前往【菜单—设置—版本】，点击“可更新”也可触发更新操作</string>
+    <string name="new_version_footer_hint">弹框关闭后，您可前往【菜单—设置—版本】，点击“可更新”</string>
     <string name="factory_reset_warning">将清除该设备的所有数据，设备会恢复到默认的出厂状态，确认是否继续该操作。</string>
     <string-array name="create_vault_step">
         <item>"金库生成中…"</item>
@@ -264,39 +264,43 @@
         <item>"芯片安全检测中…"</item>
         <item>"写入安全芯片…"</item>
     </string-array>
-    <string name="export_to_electrum">导出观察钱包到Electrum</string>
-    <string name="export_to_electrum_guide">1. 打开Electrum，设置钱包名称，点击下一步 \n2. 选择“标准钱包”后点击下一步 \n3. 选择“使用主密钥”后点击下一步，来到输入主公钥页面 \n4. 在输入主公钥页面点击照相机按钮，摄像头打开后扫描Cobo Vault主公钥生成的二维码 \n5. 扫描完成后点击下一步设置钱包密码 \n6. 密码设置完成后进入观察钱包</string>
-    <string name="export_xpub">导出钱包的主公钥进行适配</string>
-    <string name="export_to_electrum_guide_hint">导出观察钱包到Electrum指引</string>
+    <string name="export_to_electrum">在 Electrum 创建观察钱包</string>
+    <string name="export_to_electrum_guide">1. 打开 Electrum，新建钱包 \n2. 选择“标准钱包” \n3. 选择“使用主公钥” \n4. 在输入主公钥页面点击照相机按钮，扫描主公钥二维码（点击下方按钮查看二维码）\n5. 设置钱包密码 \n6. 进入观察钱包</string>
+    <string name="export_xpub">查看主公钥二维码</string>
+    <string name="export_to_electrum_guide_hint">Electrum 创建指引</string>
     <string name="send_address">发送地址 %d</string>
     <string name="input">输入 %d</string>
     <string name="output">输出 %d</string>
     <string name="export_success">导出成功</string>
     <string name="read_sdcard">读取TF卡</string>
     <string name="no_sdcard">未检测到TF卡</string>
-    <string name="no_sdcard_hint">请确保TF卡成功插入到该设备中该设备仅支持FAT32格式，容量不能超过32GB</string>
+    <string name="no_sdcard_hint">请先插入TF卡（仅支持FAT32格式，容量不能超过32GB）</string>
     <string name="no_unsigned_txn">未检测到待签文件</string>
-    <string name="no_unsigned_txn_hint">请检查待签文件是否已成功保存在TF卡中</string>
-    <string name="electrum_broadcast_guide">Electrum广播交易引导</string>
-    <string name="electrum_broadcast_action_guide">打开Electrum，点击【工具--加载交易--从二维码】扫描Cobo Vault的二维码\n\n 若扫码苦难，可将已签名交易导出文件，从文件加载交易后进行广播。</string>
+    <string name="no_unsigned_txn_hint">请检查TF卡中是否存有待签文件</string>
+    <string name="electrum_broadcast_guide">Electrum 广播指引</string>
+    <string name="electrum_broadcast_action_guide">打开 Electrum，点击【工具--加载交易--从二维码】扫描 Cobo 金库\n\n若扫码困难，可将已签名交易导出文件，从文件加载交易。</string>
     <string name="electrum_decode_txn_fail">解析失败</string>
-    <string name="electrum_import_xpub_guide_title">Electrum扫描主公钥二维码引导</string>
-    <string name="electrum_import_xpub_action_guide">1. 打开Electrum，设置钱包名称，点击下一步。\n2. 选择“标准钱包”后点击下一步。\n3. 选择“使用主密钥”后点击下一步，来到输入主公钥页面。\n4. 在输入主公钥页面点击相机按钮，摄像头开启后，扫描主公钥二维码。\n\n若扫码困难，可将主密钥导出文本文件，Electrum打开该文件也可导入</string>
-    <string name="error_txn_file">错误的txn文件</string>
+    <string name="electrum_import_xpub_guide_title">Electrum 扫描主公钥二维码</string>
+    <string name="electrum_import_xpub_action_guide">1. 打开 Electrum，新建钱包\n2. 选择“标准钱包”\n3. 选择“使用主公钥”\n4. 在输入主公钥页面点击相机按钮，扫描主公钥二维码\n\n若扫码困难，可将主公钥导出文件。</string>
+    <string name="error_txn_file">请重新导出，导出时请不要更改文件内容或格式。</string>
     <string name="export_signed_txn">导出文件进行广播</string>
-    <string name="electrum_import_signed_txn">导出后，electrum--工具--加载交易--从文件，打开该文件</string>
-    <string name="insert_sdcard_hint">请先插入TF卡（仅支持FAT32格式，容量不能超过32G）</string>
-    <string name="electrum_import_xpub_action">在Electrum 从一个主密钥创建密钥库 页面打开该文件</string>
-    <string name="transaction_source_label">热端来源</string>
-    <string name="use_electrum_to_broadcast">请使用Electrum扫描二维码进行广播</string>
+    <string name="electrum_import_signed_txn">导出后，前往【electrum--工具--加载交易--从文件】，打开该文件。</string>
+    <string name="insert_sdcard_hint">请先插入TF卡（仅支持FAT32格式，容量不能超过32G），再前往签名记录里导出文件。</string>
+    <string name="electrum_import_xpub_action">在 Electrum 输入主公钥页面打开该文件</string>
+    <string name="transaction_source_label">热端钱包</string>
+    <string name="use_electrum_to_broadcast">请用 Electrum 扫描二维码进行广播</string>
     <string name="transaction_from_electrum">该笔交易热端来源于Electrum</string>
     <string name="add_address">添加地址</string>
-    <string name="use_electrum_scan_xpub">请用Electrum扫描主公钥二维码</string>
+    <string name="use_electrum_scan_xpub">请用 Electrum 扫描主公钥二维码</string>
     <string name="export_signed_txn_file">导出已签名文件</string>
-    <string name="export_signed_txn_action_guide">导出后，用Electrum进行广播\n前往【Electrum--工具--加载交易--从文件】，打开该文件后点击广播</string>
+    <string name="export_signed_txn_action_guide">导出后，用 Electrum 进行广播\n前往【Electrum--工具--加载交易--从文件】，打开该文件。</string>
     <string name="export">导出</string>
-    <string name="export_xpub_text_file">导出主密钥文本文件</string>
+    <string name="export_xpub_text_file">导出主公钥文件</string>
     <string name="file_name_label">该文件的文件名为：</string>
-    <string name="master_xpub">主公钥（P2SH）</string>
-    <string name="electrum_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或<u>\"点击此处导出文件\"</u>]]></string>
+    <string name="master_xpub">主公钥（隔离见证兼容）</string>
+    <string name="electrum_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或<u>\点击此处导出文件\</u>]]></string>
+    <string name="scan_electrum_hint">若扫描 Electrum 困难，可将待签交易导出成文件，前往【菜单--读取TF卡】对文件签名。</string>
+    <string name="sign_txn_in_sdcard">对文件签名</string>
+    <string name="master_pubkey_not_match">主公钥不匹配</string>
+    <string name="change">找零</string>
 </resources>

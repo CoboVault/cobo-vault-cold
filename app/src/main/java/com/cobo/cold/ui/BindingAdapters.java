@@ -17,7 +17,6 @@
 package com.cobo.cold.ui;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -74,17 +73,13 @@ public class BindingAdapters {
         view.setData(data);
     }
 
-    @BindingAdapter("underline1")
-    public static void setUnderline1(TextView view, boolean underline) {
-        if (underline) {
-            view.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        }
-    }
-
     @BindingAdapter("time")
     public static void setTimeStamp(TextView view, long time) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",
-                Locale.getDefault());
-        view.setText(formatter.format(time));
+        //timestamp before 20191001 is invalid
+        if (time > 1569859200000L) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",
+                    Locale.getDefault());
+            view.setText(formatter.format(time));
+        }
     }
 }

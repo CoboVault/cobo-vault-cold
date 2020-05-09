@@ -53,7 +53,9 @@ import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryption.ChipSigner;
+import com.cobo.cold.protobuf.TransactionProtoc;
 import com.cobo.cold.ui.views.AuthenticateModal;
+import com.googlecode.protobuf.format.JsonFormat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +65,8 @@ import org.spongycastle.util.encoders.Hex;
 import java.security.SignatureException;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -70,7 +74,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
-import static com.cobo.cold.viewmodel.ElectrumViewModel.parseElectrumTxHex;
+import static com.cobo.coinlib.coins.BTC.Electrum.TxUtils.isMasterPublicKeyMatch;
+import static com.cobo.cold.viewmodel.ElectrumViewModel.ELECTRUM_SIGN_ID;
+import static com.cobo.cold.viewmodel.ElectrumViewModel.adapt;
 
 public class TxConfirmViewModel extends AndroidViewModel {
 
@@ -133,7 +139,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         nf.setMaximumFractionDigits(20);
         coinCode = Objects.requireNonNull(transaction).getCoinCode();
         tx.setSignId(object.getString("signId"));
-        tx.setTimeStamp(object.getLong("timestamp"));
+        tx.setTimeStamp(object.optLong("timestamp"));
         tx.setCoinCode(coinCode);
         tx.setCoinId(Coins.coinIdFromCoinCode(coinCode));
         tx.setFrom(getFromAddress());
@@ -146,14 +152,48 @@ public class TxConfirmViewModel extends AndroidViewModel {
     }
 
     public void parseTxnData(String txnData) {
-        AppExecutors.getInstance().networkIO().execute(()-> {
+        AppExecutors.getInstance().networkIO().execute(() -> {
             try {
-                JSONObject signTx = parseElectrumTxHex(txnData);
+                String xpub = mRepository.loadCoinEntityByCoinCode(Coins.BTC.coinCode()).getExPub();
+                ElectrumTx tx = ElectrumTx.parse(Hex.decode(txnData));
+                if (!isMasterPublicKeyMatch(xpub, tx)) {
+                    throw new XpubNotMatchException("xpub not match");
+                }
+
+                JSONObject signTx = parseElectrumTxHex(tx);
                 parseTxData(signTx.toString());
             } catch (ElectrumTx.SerializationException | JSONException e) {
                 e.printStackTrace();
+                parseTxException.postValue(new InvalidTransactionException("invalid transaction"));
+            } catch (XpubNotMatchException e) {
+                e.printStackTrace();
+                parseTxException.postValue(new XpubNotMatchException("invalid transaction"));
             }
         });
+    }
+
+    private JSONObject parseElectrumTxHex(ElectrumTx tx) throws JSONException {
+        JSONObject btcTx = adapt(tx);
+        TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
+        builder.setCoinCode(Coins.BTC.coinCode())
+                .setSignId(ELECTRUM_SIGN_ID)
+                .setTimestamp(generateElectrumTimestamp())
+                .setDecimal(8);
+        String signTransaction = new JsonFormat().printToString(builder.build());
+        JSONObject signTx = new JSONObject(signTransaction);
+        signTx.put("btcTx", btcTx);
+        return signTx;
+    }
+
+    private long generateElectrumTimestamp() {
+        List<TxEntity> txEntityList = mRepository.loadElectrumTxsSync(Coins.BTC.coinId());
+        if (txEntityList == null || txEntityList.isEmpty()) {
+            return 0;
+        }
+        return txEntityList.stream()
+                .max(Comparator.comparing(TxEntity::getTimeStamp))
+                .get()
+                .getTimeStamp() + 1;
     }
 
     private boolean checkChangeAddress(AbsTx utxoTx) {
@@ -182,7 +222,10 @@ public class TxConfirmViewModel extends AndroidViewModel {
         String to = transaction.getTo();
 
         if (transaction instanceof UtxoTx) {
-            to = ((UtxoTx) transaction).getOutputs().toString();
+            JSONArray outputs = ((UtxoTx) transaction).getOutputs();
+            if (outputs != null) {
+                return outputs.toString();
+            }
         }
 
         return to;

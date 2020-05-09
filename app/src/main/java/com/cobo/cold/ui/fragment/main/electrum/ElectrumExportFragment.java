@@ -30,6 +30,7 @@ import com.cobo.cold.R;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.ElectrumExportBinding;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
+import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.Storage;
@@ -52,8 +53,8 @@ public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> 
     @Override
     protected void init(View view) {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
-        ElectrumViewModel viewModel = ViewModelProviders.of(this).get(ElectrumViewModel.class);
-        viewModel.getExPub().observe(this, s -> {
+        ElectrumViewModel viewModel = ViewModelProviders.of(mActivity).get(ElectrumViewModel.class);
+        viewModel.getMasterPublicKey().observe(this, s -> {
             if (!TextUtils.isEmpty(s)) {
                 exPub = s;
                 mBinding.qrcode.setData(s);
@@ -61,6 +62,10 @@ public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> 
             }
         });
         mBinding.info.setOnClickListener(v -> showElectrumInfo());
+        mBinding.done.setOnClickListener(v->{
+            MainActivity activity = (MainActivity) mActivity;
+            activity.getNavController().popBackStack(R.id.assetFragment,false);
+        });
         mBinding.exportToSdcard.setOnClickListener(v -> {
             Storage storage = Storage.createByEnvironment(mActivity);
             if (storage == null || storage.getExternalDir() == null) {
@@ -76,7 +81,7 @@ public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> 
                 binding.confirm.setOnClickListener(vv -> {
                     modalDialog.dismiss();
                     if (writeToSdcard(storage, exPub, EXTEND_PUB_FILE_NAME)) {
-                        exportSuccess(mActivity);
+                        exportSuccess(mActivity, null);
                     }
                 });
                 modalDialog.setBinding(binding);

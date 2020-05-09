@@ -33,6 +33,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -52,6 +53,7 @@ import com.cobo.cold.ui.fragment.setting.SettingFragment;
 import com.cobo.cold.ui.views.DrawerAdapter;
 import com.cobo.cold.ui.views.FullScreenDrawer;
 import com.cobo.cold.ui.views.UpdatingHelper;
+import com.cobo.cold.viewmodel.ElectrumViewModel;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -73,6 +75,7 @@ public class MainActivity extends FullScreenActivity {
 
     int currentFragmentIndex = R.id.drawer_wallet;
     private DrawerAdapter drawerAdapter;
+    private ElectrumViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +92,7 @@ public class MainActivity extends FullScreenActivity {
         if (savedInstanceState == null) {
             new UpdatingHelper(this);
         }
+        viewModel = ViewModelProviders.of(this).get(ElectrumViewModel.class);
     }
 
     private void initNavController() {
@@ -223,8 +227,8 @@ public class MainActivity extends FullScreenActivity {
     public void setSupportActionBar(@Nullable Toolbar toolbar) {
         super.setSupportActionBar(toolbar);
         boolean supportFingerprint = FingerprintKit.isHardwareDetected(this);
-        if (!Utilities.hasUserClickFingerprint(this)
-                || (supportFingerprint && !Utilities.hasUserClickPatternLock(this))) {
+        if (!Utilities.hasUserClickPatternLock(this)
+                || (supportFingerprint && !Utilities.hasUserClickFingerprint(this))) {
             this.toolbar = toolbar;
             showBadge(toolbar);
         }
