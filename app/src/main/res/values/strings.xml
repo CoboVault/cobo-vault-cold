@@ -303,7 +303,7 @@
     <string name="no_unsigned_txn_hint">Please make sure the file you wish to sign was successfully saved to your microSD card.</string>
     <string name="electrum_broadcast_guide">How to Broadcast</string>
     <string name="electrum_broadcast_action_guide">In Electrum, go to Tools > Load Transaction > From QR Code\n\nDifficulty scanning? You can export the signed transaction data as a file using a microSD card and broadcast the transaction from a file with Electrum.</string>
-    <string name="electrum_decode_txn_fail">Notice</string>
+    <string name="electrum_decode_txn_fail">Parsing Failed</string>
     <string name="electrum_import_xpub_guide_title">How to scan QR code</string>
     <string name="electrum_import_xpub_action_guide">1. Open Electrumand and create a new wallet.\n2. Choose “Standard wallet”.\n3. Choose “Use a master key”. \n4. Click the camera icon in the “Create keystore from a master key” window in Electrum to scan the QR code that displays on Cobo Vault.\n\nDifficulty scanning? You can also export the master public key file using a microSD card.</string>
     <string name="error_txn_file">Unable to parse file, please try exporting again.</string>
@@ -325,6 +325,8 @@
     <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>\"touch here to export via microSD.\"</u>]]></string>
     <string name="scan_electrum_hint">Difficulty scanning Electrum? You can export the pending transactions as a file using a microSD card (Menu > MicroSD Card)</string>
     <string name="sign_txn_in_sdcard">Files Awaiting Signature</string>
-    <string name="master_pubkey_not_match">Master Public Key not match</string>
+    <string name="master_pubkey_not_match">This transaction can\'t be recognized, your Cobo Vault doesn’t match the watch-only wallet. </string>
     <string name="change">Change</string>
+    <string name="electrum_compatibility">Electrum Compatibility</string>
+    <string name="identification_failed">Identification Failed</string>
 </resources>

@@ -87,6 +87,7 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                android:visibility="gone"
                 tools:text="2.62407806" />
 
             <TextView
@@ -102,6 +103,7 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:time="@{tx.timeStamp}"
+                android:visibility="gone"
                 tools:text="2018/06/01 15:40" />
 
             <include

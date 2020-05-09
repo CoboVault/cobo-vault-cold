@@ -189,7 +189,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
                     alert(getString(R.string.unsupported_qrcode));
                 }
             } catch (XpubNotMatchException e) {
-                alert(getString(R.string.master_pubkey_not_match));
+                alert(getString(R.string.identification_failed),
+                        getString(R.string.master_pubkey_not_match));
             }
         }
     }
@@ -234,7 +235,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             alert(getString(R.string.incorrect_qrcode));
         } catch (CoinNotFindException e) {
             e.printStackTrace();
-            alert(getString(R.string.version_not_match), () -> {
+            alert(null,getString(R.string.version_not_match), () -> {
                 navigateUp();
                 ((MainActivity) mActivity).getNavController().navigateUp();
                 ((MainActivity) mActivity).getNavController().navigate(R.id.action_to_settingFragment);
@@ -264,14 +265,22 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     }
 
     private void alert(String message) {
-        alert(message, null);
+        alert(null, message);
     }
 
-    private void alert(String message, Runnable run) {
+    private void alert(String title, String message) {
+        alert(title, message, null);
+    }
+
+    private void alert(String title, String message, Runnable run) {
         dialog = ModalDialog.newInstance();
         CommonModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.common_modal, null, false);
-        binding.title.setText(R.string.scan_failed);
+        if (title != null) {
+            binding.title.setText(title);
+        } else {
+            binding.title.setText(R.string.scan_failed);
+        }
         binding.subTitle.setText(message);
         binding.close.setVisibility(View.GONE);
         binding.confirm.setText(R.string.know);

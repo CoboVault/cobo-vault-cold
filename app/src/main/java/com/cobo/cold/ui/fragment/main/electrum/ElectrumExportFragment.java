@@ -42,7 +42,7 @@ import static com.cobo.cold.viewmodel.ElectrumViewModel.writeToSdcard;
 
 public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> {
 
-    private static final String EXTEND_PUB_FILE_NAME = "CV-P2SH-P2WPKH-pubkey.txt";
+    private static final String EXTEND_PUB_FILE_NAME = "p2wpkh-p2sh-pubkey.txt";
     private String exPub;
 
     @Override

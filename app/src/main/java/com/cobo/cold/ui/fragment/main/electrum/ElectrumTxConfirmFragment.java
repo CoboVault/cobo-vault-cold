@@ -90,7 +90,7 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
         ModalDialog modalDialog = ModalDialog.newInstance();
         ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
                 R.layout.export_sdcard_modal, null, false);
-        String fileName = txId.substring(0, 5) + "-signed.txn";
+        String fileName = "signed_" + txId.substring(0, 8) + ".txn";
         binding.title.setText(R.string.export_signed_txn);
         binding.fileName.setText(fileName);
         binding.actionHint.setText(R.string.electrum_import_signed_txn);
