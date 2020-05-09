@@ -79,8 +79,8 @@
         android:label="MnemonicInputFragment"
         tools:layout="@layout/mnemonic_input_fragment">
         <action
-            android:id="@+id/action_add_coin_type2"
-            app:destination="@id/manageCoinFragment" />
+            android:id="@id/action_to_setupSyncFragment"
+            app:destination="@id/setupSyncFragment" />
     </fragment>
     <fragment
         android:id="@+id/setPasswordFragment"
@@ -115,8 +115,8 @@
         android:label="ConfirmMnemonicFragment"
         tools:layout="@layout/mnemonic_input_fragment">
         <action
-            android:id="@+id/action_add_coin_type1"
-            app:destination="@id/manageCoinFragment" />
+            android:id="@+id/action_to_setupSyncFragment"
+            app:destination="@id/setupSyncFragment" />
     </fragment>
     <fragment
         android:id="@+id/setupSyncFragment"
@@ -143,18 +143,6 @@
         <action
             android:id="@+id/action_webAuthResultFragment_to_setPasswordFragment"
             app:destination="@id/setPasswordFragment" />
-    </fragment>
-    <fragment
-        android:id="@id/manageCoinFragment"
-        tools:layout="@layout/manage_coin_fragment"
-        android:name="com.cobo.cold.ui.fragment.main.ManageCoinFragment"
-        android:label="ManageCoinFragment">
-        <action
-            android:id="@+id/action_manageCoin_to_manageWhiteList"
-            app:destination="@id/setupManageWhiteList" />
-        <action
-            android:id="@+id/action_manageCoinFragment_to_setupSyncFragment"
-            app:destination="@id/setupSyncFragment" />
     </fragment>
 
     <fragment

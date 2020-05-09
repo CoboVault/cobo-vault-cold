@@ -43,19 +43,7 @@ public class CoinListViewModel extends AndroidViewModel {
 
     private final DataRepository mRepository;
     private final MediatorLiveData<List<CoinEntity>> mObservableCoins;
-    public static final Comparator<CoinEntity> coinEntityComparator = (o1, o2) -> {
-        if (o1.getCoinCode().equals(Coins.BTC.coinCode())) {
-            return -1;
-        } else if (o2.getCoinCode().equals(Coins.BTC.coinCode())) {
-            return 1;
-        } else if (o1.getCoinCode().equals(Coins.ETH.coinCode())) {
-            return -1;
-        } else if (o2.getCoinCode().equals(Coins.ETH.coinCode())) {
-            return 1;
-        } else {
-            return o1.getCoinCode().compareTo(o2.getCoinCode());
-        }
-    };
+    public static final Comparator<CoinEntity> coinEntityComparator = (o1, o2) -> 0;
 
     public CoinListViewModel(@NonNull Application application) {
         super(application);

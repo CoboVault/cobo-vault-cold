@@ -24,8 +24,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
-import com.cobo.coinlib.coins.EOS.Eos;
-import com.cobo.coinlib.coins.IOST.Iost;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
@@ -47,19 +45,6 @@ public class PublicKeyViewModel extends AndroidViewModel {
     }
 
     public LiveData<String> calcPubKey(String coinId) {
-        AppExecutors.getInstance().diskIO().execute(() -> {
-            CoinEntity coin = mRepo.loadCoinSync(coinId);
-            List<AccountEntity> accouts = mRepo.loadAccountsForCoin(coin);
-            String expub = accouts.get(0).getExPub();
-            String pubKey = null;
-            if ("eos".equals(coinId)) {
-                pubKey = new Eos.Deriver().derive(expub, 0, 0);
-            } else if ("iost".equals(coinId)) {
-                pubKey = new Iost.Deriver().derive(expub);
-            }
-            observablePubKey.postValue(pubKey);
-
-        });
         return observablePubKey;
     }
 

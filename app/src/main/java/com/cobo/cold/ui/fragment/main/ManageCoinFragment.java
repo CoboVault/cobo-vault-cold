@@ -150,11 +150,11 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
             case R.id.action_confirm:
                 Bundle data = Objects.requireNonNull(getArguments());
                 if (data.getBoolean(IS_SETUP_VAULT)) {
-                    if (FeatureFlags.ENABLE_WHITE_LIST) {
-                        navigate(R.id.action_manageCoin_to_manageWhiteList, data);
-                    } else {
-                        navigate(R.id.action_manageCoinFragment_to_setupSyncFragment, data);
-                    }
+//                    if (FeatureFlags.ENABLE_WHITE_LIST) {
+//                        navigate(R.id.action_manageCoin_to_manageWhiteList, data);
+//                    } else {
+//                        navigate(R.id.action_manageCoinFragment_to_setupSyncFragment, data);
+//                    }
 
                 } else {
                     startActivity(new Intent(mActivity, MainActivity.class));

@@ -399,9 +399,6 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 tx.setSignedHex(rawTx);
                 mRepository.insertTx(tx);
                 signState.postValue(STATE_SIGN_SUCCESS);
-                if (Coins.showPublicKey(tx.getCoinCode())) {
-                    persistAddress(tx.getCoinCode(), tx.getCoinId(), tx.getFrom());
-                }
                 new ClearTokenCallable().call();
             }
 
@@ -410,28 +407,6 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
             }
         };
-    }
-
-    private void persistAddress(String coinCode, String coinId, String address) {
-        String path;
-        switch (coinCode) {
-            case "EOS":
-                path = "M/44'/194'/0'/0/0";
-                break;
-            case "IOST":
-                path = "M/44'/291'/0'/0'/0'";
-                break;
-            default:
-                return;
-        }
-        AddressEntity addressEntity = new AddressEntity();
-        addressEntity.setPath(path);
-        addressEntity.setAddressString(address);
-        addressEntity.setCoinId(coinId);
-        addressEntity.setIndex(0);
-        addressEntity.setName(coinCode + "-0");
-        addressEntity.setBelongTo(Utilities.getCurrentBelongTo(getApplication()));
-        mRepository.insertAddress(addressEntity);
     }
 
     private void signTransaction(@NonNull AbsTx transaction, @NonNull SignCallback callback, Signer... signer) {

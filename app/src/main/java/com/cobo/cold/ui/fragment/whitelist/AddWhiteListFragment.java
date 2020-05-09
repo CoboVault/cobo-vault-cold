@@ -100,7 +100,7 @@ public class AddWhiteListFragment extends BaseFragment<AddWhiteListBinding>
     }
 
     private boolean shouldShowMemo(String coinCode) {
-        return "EOS".equals(coinCode) || "XRP".equals(coinCode);
+        return false;
     }
 
     private void add(View view) {

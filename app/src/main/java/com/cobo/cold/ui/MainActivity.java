@@ -178,10 +178,6 @@ public class MainActivity extends FullScreenActivity {
                 case R.id.drawer_wallet:
                     mNavController.navigateUp();
                     break;
-                case R.id.drawer_manage:
-                    mNavController.navigateUp();
-                    mNavController.navigate(R.id.action_to_manageCoinFragment);
-                    break;
                 case R.id.drawer_sync:
                     mNavController.navigateUp();
                     mNavController.navigate(R.id.action_to_syncFragment);

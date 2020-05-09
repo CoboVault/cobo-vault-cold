@@ -164,7 +164,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                         startActivity(new Intent(mActivity, MainActivity.class));
                     } else {
                         Navigation.findNavController(mActivity, R.id.nav_host_fragment)
-                                .navigate(R.id.action_to_manageCoinFragment, data);
+                                .navigate(R.id.to_assetListFragment, data);
                     }
                 };
                 List<CoinEntity> coins = PresetData.generateCoins(mActivity);

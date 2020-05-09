@@ -68,24 +68,8 @@ public class TxFragment extends BaseFragment<TxBinding> {
             refreshFromList();
             refreshReceiveList();
             refreshTokenUI();
-            refreshFeeDisplay();
-            refreshMemoDisplay();
         });
 
-    }
-
-    private void refreshMemoDisplay() {
-        if (txEntity.getCoinCode().equals(Coins.EOS.coinCode())
-                || txEntity.getCoinCode().equals(Coins.IOST.coinCode())) {
-            mBinding.txDetail.memoLabel.setText(R.string.tag);
-        }
-    }
-
-    private void refreshFeeDisplay() {
-        if (txEntity.getCoinCode().equals(Coins.EOS.coinCode())
-                || txEntity.getCoinCode().equals(Coins.IOST.coinCode())) {
-            mBinding.txDetail.feeInfo.setVisibility(View.GONE);
-        }
     }
 
     private void refreshAmount() {

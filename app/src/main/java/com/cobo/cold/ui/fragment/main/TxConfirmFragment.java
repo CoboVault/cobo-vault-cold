@@ -139,8 +139,6 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
                 refreshFromList();
                 refreshReceiveList();
                 refreshTokenUI();
-                refreshFeeDisplay();
-                refreshMemoDisplay();
             }
         });
 
@@ -171,20 +169,6 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
                 navigateUp();
             }
         });
-    }
-
-    private void refreshMemoDisplay() {
-        if (txEntity.getCoinCode().equals(Coins.EOS.coinCode())
-                || txEntity.getCoinCode().equals(Coins.IOST.coinCode())) {
-            mBinding.txDetail.memoLabel.setText(R.string.tag);
-        }
-    }
-
-    private void refreshFeeDisplay() {
-        if (txEntity.getCoinCode().equals(Coins.EOS.coinCode())
-                || txEntity.getCoinCode().equals(Coins.IOST.coinCode())) {
-            mBinding.txDetail.feeInfo.setVisibility(View.GONE);
-        }
     }
 
     private void refreshAmount() {

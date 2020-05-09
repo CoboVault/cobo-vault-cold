@@ -159,13 +159,7 @@ public class CoinImpl implements Coin {
     }
 
     private void addOption(V8Array params) {
-        switch (coinCode) {
-            case "BTC":
-            case "LTC":
-                params.push("P2SH");
-            case "BCH":
-                params.push("P2PKH");
-        }
+        params.push("P2SH");
     }
 
     class SignProviderCallback implements JavaCallback {

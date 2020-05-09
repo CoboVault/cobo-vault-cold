@@ -70,7 +70,7 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:text="ETH" />
+            tools:text="BTC" />
 
         <com.cobo.cold.ui.views.NoSuggestionEditText
             android:id="@+id/name_edit"

@@ -38,9 +38,6 @@
             android:id="@+id/action_to_aboutFragment"
             app:destination="@id/aboutFragment" />
         <action
-            android:id="@+id/action_to_manageCoinFragment"
-            app:destination="@id/manageCoinFragment" />
-        <action
             android:id="@+id/action_to_settingFragment"
             app:destination="@id/settingFragment" />
         <action
@@ -108,18 +105,7 @@
         android:name="com.cobo.cold.ui.fragment.AboutFragment"
         tools:layout="@layout/about_fragment"
         android:label="AboutFragment" />
-    <fragment
-        android:id="@+id/manageCoinFragment"
-        android:name="com.cobo.cold.ui.fragment.main.ManageCoinFragment"
-        tools:layout="@layout/asset_fragment"
-        android:label="ManageCoinFragment">
-        <action
-            android:id="@id/action_to_home"
-            app:destination="@id/assetListFragment"
-            app:popUpTo="@id/assetListFragment"
-            app:popUpToInclusive="false"
-            app:launchSingleTop="true" />
-    </fragment>
+
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.cobo.cold.ui.fragment.setting.SettingFragment"
@@ -539,10 +525,8 @@
         android:label="passphraseFragment"
         tools:layout="@layout/passphrase">
         <action
-            android:id="@id/action_to_manageCoinFragment"
-            app:destination="@id/manageCoinFragment"
-            app:popUpTo="@id/assetListFragment"
-            app:popUpToInclusive="false" />
+            android:id="@+id/to_assetListFragment"
+            app:destination="@id/assetListFragment" />
     </fragment>
 
 </navigation>

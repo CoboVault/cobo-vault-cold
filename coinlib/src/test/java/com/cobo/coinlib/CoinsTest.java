@@ -26,7 +26,6 @@ import org.junit.Test;
 
 import static com.cobo.coinlib.path.CoinPath.m;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class CoinsTest {
@@ -34,7 +33,6 @@ public class CoinsTest {
     public void testCoinCode() {
         assertEquals(Coins.coinCodeFromCoinId("bitcoin"), "BTC");
         assertEquals(Coins.coinIdFromCoinCode("BTC"), "bitcoin");
-        assertEquals(Coins.coinCodeOfIndex(60), "ETH");
     }
 
     @Test
@@ -52,32 +50,16 @@ public class CoinsTest {
     @Test
     public void testCurve() {
         assertEquals(Coins.CURVE.SECP256K1, Coins.curveFromCoinCode("BTC"));
-        assertEquals(Coins.CURVE.ED25519, Coins.curveFromCoinCode("IOST"));
     }
 
     @Test
     public void purposeNumber() {
         assertEquals(Coins.purposeNumber("BTC"), 49);
         assertEquals(Coins.purposeNumber("XTN"), 49);
-        assertEquals(Coins.purposeNumber("LTC"), 49);
-        assertEquals(Coins.purposeNumber("ETH"), 44);
-        assertEquals(Coins.purposeNumber("ETC"), 44);
     }
 
     @Test
     public void testSupportedCoin() {
         assertTrue(Coins.isCoinSupported("BTC"));
-        assertTrue(Coins.isCoinSupported("BCH"));
-        assertTrue(Coins.isCoinSupported("ETC"));
-        assertTrue(Coins.isCoinSupported("ETH"));
-        assertTrue(Coins.isCoinSupported("LTC"));
-        assertTrue(Coins.isCoinSupported("TRON"));
-        assertTrue(Coins.isCoinSupported("DASH"));
-        assertTrue(Coins.isCoinSupported("XZC"));
-        assertTrue(Coins.isCoinSupported("DCR"));
-        assertTrue(Coins.isCoinSupported("IOST"));
-        assertTrue(Coins.isCoinSupported("EOS"));
-        assertTrue(Coins.isCoinSupported("DASH"));
-        assertFalse(Coins.isCoinSupported("ABC"));
     }
 }

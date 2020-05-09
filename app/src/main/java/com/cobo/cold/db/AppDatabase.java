@@ -25,6 +25,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.cobo.cold.AppExecutors;
@@ -40,7 +41,7 @@ import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.db.entity.WhiteListEntity;
 
 @Database(entities = {CoinEntity.class, AddressEntity.class,
-        TxEntity.class, WhiteListEntity.class, AccountEntity.class}, version = 2)
+        TxEntity.class, WhiteListEntity.class, AccountEntity.class}, version = 3)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "cobo-vault-db";
     private static AppDatabase sInstance;
@@ -85,9 +86,18 @@ public abstract class AppDatabase extends RoomDatabase {
                         });
                     }
                 })
+                .addMigrations(MIGRATION_2_3)
                 .fallbackToDestructiveMigration()
                 .build();
     }
+
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            //migrate delete all altcoins
+            database.execSQL("DELETE FROM coins WHERE coinCode != 'BTC'");
+        }
+    };
 
     private void updateDatabaseCreated(final Context context) {
         if (context.getDatabasePath(DATABASE_NAME).exists()) {

@@ -38,7 +38,7 @@ public class CoinEntity implements Coin, FilterableItem {
     private String coinId;
     private String name;
     private int iconResId;
-    private boolean show = false;
+    private boolean show = true;
     private int addressCount;
     private String coinCode;
     private String exPub;

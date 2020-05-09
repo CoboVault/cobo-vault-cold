@@ -36,19 +36,6 @@ public abstract class Signer {
     public abstract String sign(String hex);
 
     public static boolean shouldProvidePublicKey(@NonNull String coinCode) {
-        switch (coinCode) {
-            case "BTC":
-            case "XRP":
-            case "BCH":
-            case "LTC":
-            case "DASH":
-            case "IOST":
-            case "XZC":
-            case "DCR":
-                return true;
-            default:
-                return false;
-        }
-
+        return true;
     }
 }

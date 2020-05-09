@@ -24,33 +24,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class Coins {
-
     public static final Coin BTC = new Coin("bitcoin", "BTC", "Bitcoin", 0);
-    public static final Coin BCH = new Coin("bitcoin_cash", "BCH", "Bitcoin Cash", 145);
-    public static final Coin DASH = new Coin("dash", "DASH", "Dash", 5);
-    public static final Coin LTC = new Coin("litecoin", "LTC", "Litecoin", 2);
-    public static final Coin ETH = new Coin("ethereum", "ETH", "Ethereum", 60);
-    public static final Coin ETC = new Coin("ethereum_classic", "ETC", "Ethereum Classic", 61);
-    public static final Coin TRON = new Coin("tron", "TRON", "Tron", 195);
-    public static final Coin DCR = new Coin("dcr", "DCR", "Dcr", 42);
-    public static final Coin XZC = new Coin("zcoin", "XZC", "Zcoin", 136);
-    public static final Coin XRP = new Coin("ripple", "XRP", "Ripple", 144);
-    public static final Coin IOST = new Coin("iost", "IOST", "IOST", 291, CURVE.ED25519);
-    public static final Coin EOS = new Coin("eos", "EOS", "EOS", 194);
+
 
     public static final List<Coin> SUPPORTED_COINS = Arrays.asList(
-            BTC,
-            ETC,
-            ETH,
-            BCH,
-            DASH,
-            LTC,
-            TRON,
-            DCR,
-            XZC,
-            XRP,
-            IOST,
-            EOS
+            BTC
     );
 
     public static boolean isCoinSupported(@NonNull String coinCode) {
@@ -58,15 +36,7 @@ public class Coins {
     }
 
     public static boolean supportMultiSigner(@NonNull String coinCode) {
-        switch (coinCode) {
-            case "BTC":
-            case "BCH":
-            case "LTC":
-            case "DASH":
-                return true;
-            default:
-                return false;
-        }
+        return true;
     }
 
     public static String coinCodeFromCoinId(String coinId) {
@@ -153,24 +123,11 @@ public class Coins {
     }
 
     public static int purposeNumber(String coinCode) {
-        switch (coinCode) {
-            case "BTC":
-            case "XTN":
-            case "LTC":
-                return 49;
-            default:
-                return 44;
-        }
+        return 49;
     }
 
     public static boolean showPublicKey(String coinCode) {
-        switch (coinCode) {
-            case "EOS":
-            case "IOST":
-                return true;
-            default:
-                return false;
-        }
+        return false;
     }
 
 }
