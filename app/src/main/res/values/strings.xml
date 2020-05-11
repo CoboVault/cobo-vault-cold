@@ -299,7 +299,7 @@
     <string name="export_success">Export Successful</string>
     <string name="read_sdcard">MicroSD card</string>
     <string name="no_sdcard">MicroSD Card Not Found</string>
-    <string name="no_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less.</string>
+    <string name="no_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less, and that the signed transaction information has been uploaded to it.</string>
     <string name="no_unsigned_txn">File Not Found</string>
     <string name="no_unsigned_txn_hint">Please make sure the file you wish to sign was successfully saved to your microSD card.</string>
     <string name="electrum_broadcast_guide">How to Broadcast</string>
@@ -310,7 +310,7 @@
     <string name="error_txn_file">Unable to parse file, please try exporting again.</string>
     <string name="export_signed_txn">Export File to Broadcast</string>
     <string name="electrum_import_signed_txn">In Electrum, go to Tools > Load Transaction > From File to open the file. </string>
-    <string name="insert_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less, and that the signed transaction information has been uploaded to it.</string>
+    <string name="insert_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less.</string>
     <string name="electrum_import_xpub_action">Open when inputting your master public key on Electrum.</string>
     <string name="transaction_source_label">Wallet</string>
     <string name="use_electrum_to_broadcast">Scan the QR code with Electrum to broadcast</string>
