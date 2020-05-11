@@ -23,7 +23,10 @@
     <data>
 
         <variable
-            name="passphrase"
+            name="passphrase1"
+            type="androidx.databinding.ObservableField&lt;String>" />
+        <variable
+            name="passphrase2"
             type="androidx.databinding.ObservableField&lt;String>" />
     </data>
 
@@ -58,7 +61,7 @@
             android:id="@+id/hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:text="@string/passphrase_hint"
             android:textColor="@android:color/white"
             android:textStyle="bold"
@@ -69,43 +72,33 @@
             android:id="@+id/hint1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:text="@string/passphrase_hint1"
             android:textColor="@android:color/white"
             android:layout_marginHorizontal="16dp"
             android:textSize="12sp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="53dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp">
 
-            <CheckBox
-                android:id="@+id/eye"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:gravity="end|center_vertical"
-                android:alpha="@{eye.checked ? 1f : 0.4f}"
-                android:button="@drawable/eye" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
 
             <com.cobo.cold.ui.views.MenuHidingEditText
-                android:id="@+id/input"
+                android:id="@+id/input1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="0dp"
-                android:layout_toStartOf="@id/eye"
+                android:layout_height="wrap_content"
                 android:background="@null"
                 android:focusable="true"
+                android:paddingVertical="5dp"
                 android:focusableInTouchMode="true"
                 android:hint="@string/passphrase_hint2"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionNext"
                 android:inputType="textPassword"
                 android:maxLength="128"
-                android:text="@={passphrase}"
+                android:text="@={passphrase1}"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white40"
                 android:textSize="14sp"
@@ -114,18 +107,48 @@
             <include
                 layout="@layout/divider"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true" />
-        </RelativeLayout>
-
+                android:layout_height="1dp" />
+        </LinearLayout>
 
         <TextView
-            android:layout_marginTop="24dp"
-            android:layout_marginHorizontal="16dp"
+            android:id="@+id/input_hint"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white40"
+            android:textColor="@color/white"
             android:text="@string/passphrase_hint3" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <com.cobo.cold.ui.views.MenuHidingEditText
+                android:id="@+id/input2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:focusable="true"
+                android:paddingVertical="5dp"
+                android:focusableInTouchMode="true"
+                android:hint="@string/passphrase_hint_agian"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLength="128"
+                android:text="@={passphrase2}"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white40"
+                android:textSize="14sp"
+                tools:ignore="Autofill" />
+
+            <include
+                layout="@layout/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+        </LinearLayout>
 
         <Space
             android:layout_width="match_parent"
@@ -138,6 +161,7 @@
             android:layout_width="match_parent"
             style="@style/AcceptButton"
             android:layout_margin="16dp"
-            android:text="@string/confirm" />
+            android:text="@string/confirm"
+            android:enabled="@{passphrase1.equals(passphrase2)}"/>
     </LinearLayout>
 </layout>

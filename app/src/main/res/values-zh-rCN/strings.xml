@@ -118,6 +118,7 @@
     <string name="password_modal_title">请输入密码</string>
     <string name="passphrase_hint3">密语长度不得超过128个字符；可用大小写字母、数字、符号，禁用空格；</string>
     <string name="passphrase_hint2">密语 (Passphrase)： 区分大小写</string>
+    <string name="passphrase_hint_agian">请再次输入密语</string>
     <string name="passphrase_hint1">注意：\n1.隐藏金库创建后，其对应的密语（Passphrase）不可修改；请牢记密语（Passphrase），忘记密语（Passphrase）将意味着隐藏金库的资产丢失；\n2. 密语为空，直接点击确定按钮将进入到默认金库</string>
     <string name="passphrase_hint">请输入 密语 (Passphrase)</string>
     <string name="passphrase_title">密语(Passphrase)金库</string>

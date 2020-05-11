@@ -18,16 +18,17 @@
 package com.cobo.cold.ui.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 import androidx.navigation.Navigation;
 
@@ -46,7 +47,6 @@ import com.cobo.cold.util.Keyboard;
 import com.cobo.cold.viewmodel.SetupVaultViewModel;
 
 import java.util.List;
-import java.util.Objects;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.Utilities.IS_SET_PASSPHRASE;
@@ -58,7 +58,8 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
 
     private static final String SPACE = " ";
     private static final int MAX_LENGTH = 128;
-    private final ObservableField<String> passphrase = new ObservableField<>("");
+    private final ObservableField<String> passphrase1 = new ObservableField<>("");
+    private final ObservableField<String> passphrase2 = new ObservableField<>("");
     private ModalDialog dialog;
 
     @Override
@@ -73,17 +74,31 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
             if (mActivity instanceof SetupVaultActivity) {
                 mActivity.finish();
             } else {
-                Keyboard.hide(mActivity, mBinding.input);
+                Keyboard.hide(mActivity, mBinding.input1);
                 navigateUp();
             }
         });
-        mBinding.setPassphrase(passphrase);
-        setFilterSpace(mBinding.input);
-        updateShowHide();
-        mBinding.eye.setOnClickListener(v -> updateShowHide());
+        mBinding.setPassphrase1(passphrase1);
+        mBinding.setPassphrase2(passphrase2);
+        setFilterSpace(mBinding.input1);
+        setFilterSpace(mBinding.input2);
         mBinding.confirm.setOnClickListener(v -> confirmInput());
-        mBinding.input.setShowSoftInputOnFocus(false);
-        mBinding.input.setOnClickListener(v -> Keyboard.show(mActivity, mBinding.input));
+        Observable.OnPropertyChangedCallback callback = new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                String input1 = passphrase1.get();
+                String input2 = passphrase2.get();
+                if (input2.length() >= input1.length() && !input1.equals(input2)) {
+                    mBinding.inputHint.setText(R.string.password_verify_wrong);
+                    mBinding.inputHint.setTextColor(Color.RED);
+                } else {
+                    mBinding.inputHint.setText(R.string.passphrase_hint3);
+                    mBinding.inputHint.setTextColor(Color.WHITE);
+                }
+            }
+        };
+        passphrase1.addOnPropertyChangedCallback(callback);
+        passphrase2.addOnPropertyChangedCallback(callback);
     }
 
     private void confirmInput() {
@@ -96,7 +111,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
         binding.confirm.setText(R.string.confirm);
         dialog.setBinding(binding);
         binding.confirm.setOnClickListener(v -> {
-            Keyboard.hide(mActivity, mBinding.input);
+            Keyboard.hide(mActivity, mBinding.input1);
             dialog.dismiss();
             updatePassphrase();
         });
@@ -105,16 +120,8 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
 
     private void updatePassphrase() {
         viewModel.setPassword(getArguments().getString(PASSWORD));
-        viewModel.updatePassphrase(passphrase.get());
+        viewModel.updatePassphrase(passphrase1.get());
         subscribeVaultState(viewModel);
-    }
-
-    private void updateShowHide() {
-        mBinding.input.setTransformationMethod(mBinding.eye.isChecked() ?
-                null
-                :
-                PasswordTransformationMethod.getInstance());
-        mBinding.input.setSelection(Objects.requireNonNull(passphrase.get()).length());
     }
 
     private void setFilterSpace(EditText editText) {
@@ -143,7 +150,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                 Utilities.setVaultCreated(mActivity);
                 Utilities.setVaultId(mActivity, viewModel.getVaultId());
                 Utilities.setCurrentBelongTo(mActivity,
-                        TextUtils.isEmpty(passphrase.get()) ? "main" : "hidden");
+                        TextUtils.isEmpty(passphrase1.get()) ? "main" : "hidden");
 
                 Runnable onComplete = () -> {
                     Bundle data = new Bundle();
@@ -153,7 +160,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                             && dialog.getDialog().isShowing()) {
                         dialog.dismiss();
                     }
-                    if (TextUtils.isEmpty(passphrase.get())) {
+                    if (TextUtils.isEmpty(passphrase1.get())) {
                         startActivity(new Intent(mActivity, MainActivity.class));
                     } else {
                         Navigation.findNavController(mActivity, R.id.nav_host_fragment)
