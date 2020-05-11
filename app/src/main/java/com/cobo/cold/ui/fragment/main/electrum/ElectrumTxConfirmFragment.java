@@ -69,6 +69,7 @@ import static com.cobo.cold.viewmodel.ElectrumViewModel.exportSuccess;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.hasSdcard;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.showNoSdcardModal;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.writeToSdcard;
+import static com.cobo.cold.viewmodel.TxConfirmViewModel.STATE_NONE;
 
 public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFragmentBinding> {
 
@@ -302,6 +303,7 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
                     }
                     signingDialog = null;
                     onSignSuccess();
+                    viewModel.getSignState().setValue(STATE_NONE);
                 }, 500);
             } else if (TxConfirmViewModel.STATE_SIGN_FAIL.equals(s)) {
                 if (signingDialog == null) {
@@ -315,6 +317,7 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
                     }
                     signingDialog = null;
                     viewModel.getSignState().removeObservers(this);
+                    viewModel.getSignState().setValue(STATE_NONE);
                 }, 2000);
             }
         });

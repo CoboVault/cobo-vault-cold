@@ -80,6 +80,7 @@ import static com.cobo.cold.viewmodel.ElectrumViewModel.adapt;
 
 public class TxConfirmViewModel extends AndroidViewModel {
 
+    public static final String STATE_NONE = "";
     public static final String STATE_SIGNING = "signing";
     public static final String STATE_SIGN_FAIL = "signing_fail";
     public static final String STATE_SIGN_SUCCESS = "signing_success";
