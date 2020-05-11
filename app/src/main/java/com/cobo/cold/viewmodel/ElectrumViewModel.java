@@ -68,7 +68,7 @@ public class ElectrumViewModel extends AndroidViewModel {
     public static final String ELECTRUM_SIGN_ID = "electrum_sign_id";
     private static final int DEFAULT_CHANGE_ADDRESS_NUM = 100;
 
-    private static Pattern signedTxnPattern = Pattern.compile("[0-9a-f]{5}-signed.txn$");
+    private static Pattern signedTxnPattern = Pattern.compile("^signed_[0-9a-fA-F]{8}.txn$");
     private final DataRepository mRepo;
     private MutableLiveData<String> exPub = new MutableLiveData<>();
     private Storage storage;
