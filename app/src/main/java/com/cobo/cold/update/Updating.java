@@ -26,7 +26,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.cobo.cold.callables.GetUpdateKeyCallable;
+import com.cobo.cold.BuildConfig;
 import com.cobo.cold.callables.UpdateCallable;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
 import com.cobo.cold.encryptioncore.utils.Preconditions;
@@ -195,7 +195,7 @@ public class Updating implements Callable<Boolean> {
 
     @Override
     public Boolean call() throws Exception {
-        String updateKey = new GetUpdateKeyCallable().call();
+        String updateKey = BuildConfig.UPDATE_PUBLIC_KEY;
 
         if (TextUtils.isEmpty(updateKey)) {
             return false;
