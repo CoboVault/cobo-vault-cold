@@ -152,6 +152,13 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         protected void onBindItem(TxListItemBinding binding, TxEntity item) {
             binding.setTx(item);
             binding.setTxCallback(txCallback);
+            if (ELECTRUM_SIGN_ID.equals(item.getSignId())) {
+                binding.fromWallet.setText(R.string.from_electrum);
+                binding.fromWallet.setVisibility(View.VISIBLE);
+                binding.amount.setVisibility(View.GONE);
+            } else {
+                binding.fromWallet.setVisibility(View.GONE);
+            }
             updateFrom(binding, item);
             updateTo(binding, item);
         }

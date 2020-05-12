@@ -307,4 +307,5 @@
     <string name="change">找零</string>
     <string name="electrum_compatibility">适配 Electrum</string>
     <string name="identification_failed">交易识别失败</string>
+    <string name="from_electrum">来自Electrum</string>
 </resources>
