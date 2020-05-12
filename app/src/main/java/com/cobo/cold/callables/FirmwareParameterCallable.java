@@ -29,7 +29,10 @@ public class FirmwareParameterCallable implements Callable<String[]> {
         try {
             String[] res = new String[2];
             final Callable<Packet> callable = new BlockingCallable(
-                    new Packet.Builder(CONSTANTS.METHODS.GET_FIRMWARE_PARAMETER).build());
+                    new Packet.Builder(CONSTANTS.METHODS.GET_FIRMWARE_PARAMETER)
+                            .setRetryTimes(5)
+                            .setTimeout(3)
+                            .build());
             final Packet result = callable.call();
             Payload payload = result.getPayload(CONSTANTS.TAGS.FIRMWARE_SN);
             if (payload != null) {
