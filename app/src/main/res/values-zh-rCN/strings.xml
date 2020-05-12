@@ -276,7 +276,7 @@
     <string name="export_success">导出成功</string>
     <string name="read_sdcard">读取TF卡</string>
     <string name="no_sdcard">未检测到TF卡</string>
-    <string name="no_sdcard_hint">请先插入TF卡（仅支持FAT32格式，容量不能超过32GB），再前往签名记录里导出文件。</string>
+    <string name="no_sdcard_hint">请先插入TF卡（仅支持FAT32格式，容量不能超过32GB）</string>
     <string name="no_unsigned_txn">未检测到待签文件</string>
     <string name="no_unsigned_txn_hint">请检查TF卡中是否存有待签文件</string>
     <string name="electrum_broadcast_guide">Electrum 广播指引</string>
@@ -290,7 +290,7 @@
     <string name="insert_sdcard_hint">请先插入TF卡（仅支持FAT32格式，容量不能超过32G）</string>
     <string name="electrum_import_xpub_action">在 Electrum 输入主公钥页面打开该文件</string>
     <string name="transaction_source_label">热端钱包</string>
-    <string name="use_electrum_to_broadcast">请用 Electrum 扫描二维码进行广播</string>
+    <string name="use_electrum_to_broadcast">请用 Electrum 扫描二维码广播</string>
     <string name="transaction_from_electrum">该笔交易热端来源于Electrum</string>
     <string name="add_address">添加地址</string>
     <string name="use_electrum_scan_xpub">请用 Electrum 扫描主公钥二维码</string>

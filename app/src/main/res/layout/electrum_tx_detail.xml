@@ -329,6 +329,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:text="@string/electrum_qrcode_hint"
                 android:textColor="@color/white"

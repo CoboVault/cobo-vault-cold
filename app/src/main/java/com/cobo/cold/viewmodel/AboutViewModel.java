@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.SystemProperties;
-import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -61,18 +60,13 @@ public class AboutViewModel extends AndroidViewModel {
     }
 
     private void getFirmwareInfo() {
+        sn.set(SystemProperties.get("persist.sys.serialno"));
         AppExecutors.getInstance().diskIO().execute(() -> {
-            String[] res = new FirmwareParameterCallable().call();
+            String res = new FirmwareParameterCallable().call();
             if (res == null) {
                 return;
             }
-            if (TextUtils.isEmpty(res[0])) {
-                sn.set(SystemProperties.get("persist.sys.serialno"));
-            } else {
-                sn.set(res[0]);
-            }
-
-            firmwareAppVersion.set(res[1]);
+            firmwareAppVersion.set(res);
         });
     }
 

@@ -23,26 +23,20 @@ import com.cobo.cold.encryptioncore.base.Payload;
 
 import java.util.concurrent.Callable;
 
-public class FirmwareParameterCallable implements Callable<String[]> {
+public class FirmwareParameterCallable implements Callable<String> {
     @Override
-    public String[] call() {
+    public String call() {
         try {
-            String[] res = new String[2];
             final Callable<Packet> callable = new BlockingCallable(
                     new Packet.Builder(CONSTANTS.METHODS.GET_FIRMWARE_PARAMETER)
                             .setRetryTimes(5)
                             .setTimeout(3)
                             .build());
             final Packet result = callable.call();
-            Payload payload = result.getPayload(CONSTANTS.TAGS.FIRMWARE_SN);
+            Payload payload = result.getPayload(CONSTANTS.TAGS.FIRMWARE_APP_VERSION);
             if (payload != null) {
-                res[0] = payload.toUtf8();
+                return payload.toUtf8();
             }
-            payload = result.getPayload(CONSTANTS.TAGS.FIRMWARE_APP_VERSION);
-            if (payload != null) {
-                res[1] = payload.toUtf8();
-            }
-            return res;
         } catch (Exception e) {
             e.printStackTrace();
         }
