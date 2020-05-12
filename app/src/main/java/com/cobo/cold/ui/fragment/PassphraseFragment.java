@@ -89,7 +89,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                 String input1 = passphrase1.get();
                 String input2 = passphrase2.get();
                 if (input2.length() >= input1.length() && !input1.equals(input2)) {
-                    mBinding.inputHint.setText(R.string.password_verify_wrong);
+                    mBinding.inputHint.setText(R.string.passphrase_not_match);
                     mBinding.inputHint.setTextColor(Color.RED);
                 } else {
                     mBinding.inputHint.setText(R.string.passphrase_hint3);

@@ -33,13 +33,17 @@ import org.json.JSONObject;
 public class Packet {
     private final int id;
     private final int retryTimes;
+    private final int timeout;
     @NonNull
     private final SparseArrayCompat<Payload> payloads;
 
-    private Packet(int id, @NonNull SparseArrayCompat<Payload> payloads, int retryTimes) {
+    private Packet(int id, @NonNull SparseArrayCompat<Payload> payloads,
+                   int retryTimes,
+                   int timeout) {
         this.id = id;
         this.payloads = payloads;
         this.retryTimes = retryTimes;
+        this.timeout = timeout;
     }
 
     public int getId() {
@@ -59,6 +63,11 @@ public class Packet {
     @IntRange(from = 0)
     public int getRetryTimes() {
         return retryTimes;
+    }
+
+    @IntRange(from = 0)
+    public int getTimeout() {
+        return timeout;
     }
 
     @NonNull
@@ -97,6 +106,7 @@ public class Packet {
         private final int id;
         private final SparseArrayCompat<Payload> payloads;
         private int retryTimes;
+        private int timeout;
 
         public Builder(int id) {
             this.id = id;
@@ -106,6 +116,11 @@ public class Packet {
 
         public Builder setRetryTimes(@IntRange(from = 0) int retryTimes) {
             this.retryTimes = retryTimes;
+            return this;
+        }
+
+        public Builder setTimeout(@IntRange(from = 0) int timeout) {
+            this.timeout = timeout;
             return this;
         }
 
@@ -154,7 +169,7 @@ public class Packet {
         }
 
         public Packet build() {
-            return new Packet(id, payloads, retryTimes);
+            return new Packet(id, payloads, retryTimes, timeout);
         }
     }
 }

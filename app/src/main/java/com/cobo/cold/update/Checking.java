@@ -26,10 +26,10 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.cobo.cold.BuildConfig;
 import com.cobo.cold.MainApplication;
 import com.cobo.cold.callables.CheckBootModeCallable;
 import com.cobo.cold.callables.CheckUpdateFirmwareCallable;
-import com.cobo.cold.callables.GetUpdateKeyCallable;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
 import com.cobo.cold.encryptioncore.utils.Preconditions;
 import com.cobo.cold.update.data.FileInfo;
@@ -215,7 +215,7 @@ public class Checking implements Callable<UpdateManifest> {
     private boolean checkSerialUpdate(FileInfo serial) {
         String serialFile = serial.fileName;
         final File updateFile = mStorage.getUpdateZipFile();
-        String updateKey = new GetUpdateKeyCallable().call();
+        String updateKey = BuildConfig.UPDATE_PUBLIC_KEY;
 
         File serialBin = null;
 
@@ -273,7 +273,7 @@ public class Checking implements Callable<UpdateManifest> {
             return null;
         }
 
-        String updateKey = new GetUpdateKeyCallable().call();
+        String updateKey = BuildConfig.UPDATE_PUBLIC_KEY;
 
         if (TextUtils.isEmpty(updateKey)) {
             return null;

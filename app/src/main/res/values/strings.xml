@@ -41,7 +41,7 @@
     <string name="www_cobo_com" translatable="false">www.cobo.com</string>
     <string name="device_info">Serial Number: %s \n Firmware Version: %s\n System Version：%s\n App Version：%s</string>
     <string name="addr" translatable="false">addr.</string>
-    <string name="asset_list_empty">Please go to \"Menu - Add / Hide Assets\" to add assets you need</string>
+    <string name="asset_list_empty">Please go to Menu - Add / Hide Assets to add assets you need</string>
     <string name="mnemonic_hint1">"The recovery phrase is used to restore your wallet. Use a Cobo Tablet to record your 24 recovery phrase words and store them securely."</string>
     <string name="mnemonic_hint2">Do not share your recovery phrase with anyone or take a picture of it. If it is lost or stolen, all assets are irretrievable.</string>
     <string name="saved">Recovery Phrase Saved</string>
@@ -113,6 +113,7 @@
     <string name="pwd_again_hint">Confirm password</string>
     <string name="pwd_hint">Please enter your password</string>
     <string name="password_verify_wrong">Passwords do not match.</string>
+    <string name="passphrase_not_match">Passphrase do not match.</string>
     <string name="password_input_wrong">Must include upper and lower case letters and numbers.</string>
     <string name="mnemonic_hint"><![CDATA[Important Information: <br>1. The recovery phrase is the only way retrieve your assets. Please use record your recovery phrase carefully and store in a safe location.  <br><br>2. Do not take photos of your recovery phrase or store on a device connected to the Internet. Do not share the recovery phrase with others.  <br><br>3. Visit <font color="#00cdc3">https://cobo.com/hardware-wallet/cobo-tablet<font/> to purchase a Cobo Tablet to store your recovery phrase with a higher degree of security.]]></string>
     <string name="generate_mnemonic">Generate Recovery Phrase</string>
@@ -299,7 +300,7 @@
     <string name="export_success">Export Successful</string>
     <string name="read_sdcard">MicroSD card</string>
     <string name="no_sdcard">MicroSD Card Not Found</string>
-    <string name="no_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less, and that the signed transaction information has been uploaded to it.</string>
+    <string name="no_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less</string>
     <string name="no_unsigned_txn">File Not Found</string>
     <string name="no_unsigned_txn_hint">Please make sure the file you wish to sign was successfully saved to your microSD card.</string>
     <string name="electrum_broadcast_guide">How to Broadcast</string>
@@ -323,11 +324,12 @@
     <string name="export_xpub_text_file">Export Master Public Key File</string>
     <string name="file_name_label">File name:</string>
     <string name="master_xpub">Master Public Key (Nested SegWit)</string>
-    <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>\"touch here to export via microSD.\"</u>]]></string>
+    <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>touch here to export via microSD.</u>]]></string>
     <string name="scan_electrum_hint">Difficulty scanning Electrum? You can export the pending transactions as a file using a microSD card (Menu > MicroSD Card)</string>
     <string name="sign_txn_in_sdcard">Files Awaiting Signature</string>
     <string name="master_pubkey_not_match">This transaction can\'t be recognized, your Cobo Vault doesn’t match the watch-only wallet. </string>
     <string name="change">Change</string>
     <string name="electrum_compatibility">Electrum Compatibility</string>
     <string name="identification_failed">Identification Failed</string>
+    <string name="from_electrum">From Electrum</string>
 </resources>

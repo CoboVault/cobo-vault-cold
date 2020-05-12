@@ -79,7 +79,8 @@ class Workshop implements Callable<Packet> {
         mPort.write(ByteBuffer.wrap(outputBytes), outputBytes.length);
 
         final Future<byte[]> future = sExecutor.submit(new SerialReader(mPort));
-        final byte[] inputBytes = future.get(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+        int timeout = mPacket.getTimeout() == 0 ? DEFAULT_TIMEOUT : mPacket.getTimeout();
+        final byte[] inputBytes = future.get(timeout, TimeUnit.SECONDS);
         logBytes(false, id, inputBytes);
 
         Packet packet = mPacker.deserialize(inputBytes);

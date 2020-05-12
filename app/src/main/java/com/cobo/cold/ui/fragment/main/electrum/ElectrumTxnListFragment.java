@@ -33,6 +33,7 @@ import com.cobo.cold.databinding.TxnListBinding;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.ElectrumViewModel;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -108,7 +109,11 @@ public class ElectrumTxnListFragment extends BaseFragment<TxnListBinding>
                 bundle.putBoolean("is_file", true);
                 navigate(R.id.action_to_ElectrumTxConfirmFragment, bundle);
             } else {
-                Toast.makeText(mActivity, R.string.error_txn_file, Toast.LENGTH_SHORT).show();
+                ModalDialog.showCommonModal(mActivity,
+                        getString(R.string.electrum_decode_txn_fail),
+                        getString(R.string.error_txn_file),
+                        getString(R.string.confirm),
+                        null);
             }
         });
     }

@@ -23,13 +23,14 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.AppCompatEditText;
 
 import java.lang.reflect.Field;
 
 @SuppressLint("AppCompatCustomView")
-public class MenuHidingEditText extends EditText {
+public class MenuHidingEditText extends AppCompatEditText {
     private final Context mContext;
 
     public MenuHidingEditText(Context context) {

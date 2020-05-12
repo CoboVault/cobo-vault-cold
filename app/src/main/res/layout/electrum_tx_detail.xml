@@ -329,6 +329,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:text="@string/electrum_qrcode_hint"
                 android:textColor="@color/white"
@@ -354,6 +355,7 @@
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white"
                 android:text="@string/export_signed_txn_action_guide"
+                android:textSize="12sp"
                 android:gravity="center"/>
         </LinearLayout>
 

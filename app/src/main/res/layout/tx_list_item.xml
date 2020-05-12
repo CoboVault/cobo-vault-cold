@@ -100,6 +100,19 @@
             app:time="@{tx.timeStamp}"
             tools:text="2018/06/01" />
 
+        <TextView
+            android:id="@+id/from_wallet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:gravity="end"
+            android:layout_centerVertical="true"
+            android:textStyle="bold"
+            android:textColor="@color/white40"
+            android:textSize="12sp"
+            android:visibility="gone"
+            tools:text="@string/from_electrum" />
 
         <include
             layout="@layout/divider"
