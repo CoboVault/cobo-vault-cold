@@ -60,6 +60,7 @@ import com.googlecode.protobuf.format.JsonFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.security.SignatureException;
@@ -163,7 +164,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
                 JSONObject signTx = parseElectrumTxHex(tx);
                 parseTxData(signTx.toString());
-            } catch (ElectrumTx.SerializationException | JSONException e) {
+            } catch (ElectrumTx.SerializationException | JSONException | DecoderException e) {
                 e.printStackTrace();
                 parseTxException.postValue(new InvalidTransactionException("invalid transaction"));
             } catch (XpubNotMatchException e) {
