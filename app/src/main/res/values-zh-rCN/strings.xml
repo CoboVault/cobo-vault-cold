@@ -76,6 +76,7 @@
     <string name="pwd_again_hint">请再次输入密码</string>
     <string name="pwd_hint">请输入密码</string>
     <string name="password_verify_wrong">两次输入不一致</string>
+    <string name="passphrase_not_match">两次输入不一致</string>
     <string name="password_input_wrong">必须同时包含大、小写字母和数字</string>
     <string name="mnemonic_hint"><![CDATA[提示：<br>1. 助记词为恢复资产的唯一途径，请按顺序正确记录，并妥善保管到安全的脱网环境中。  <br><br>2. 请勿将助记词拍照、储存在联网设备上或泄露给他人！助记词丢失或泄露将意味着资产丢失！  <br><br>3.您可访问 <font color="#00cdc3">https://cobo.com/hardware-wallet/cobo-tablet<font/> 购买 Cobo 金刚匣安全方便保存您的助记词。]]></string>
     <string name="generate_mnemonic">生成助记词</string>

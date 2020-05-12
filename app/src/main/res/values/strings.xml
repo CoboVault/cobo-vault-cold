@@ -113,6 +113,7 @@
     <string name="pwd_again_hint">Confirm password</string>
     <string name="pwd_hint">Please enter your password</string>
     <string name="password_verify_wrong">Passwords do not match.</string>
+    <string name="passphrase_not_match">Passphrase do not match.</string>
     <string name="password_input_wrong">Must include upper and lower case letters and numbers.</string>
     <string name="mnemonic_hint"><![CDATA[Important Information: <br>1. The recovery phrase is the only way retrieve your assets. Please use record your recovery phrase carefully and store in a safe location.  <br><br>2. Do not take photos of your recovery phrase or store on a device connected to the Internet. Do not share the recovery phrase with others.  <br><br>3. Visit <font color="#00cdc3">https://cobo.com/hardware-wallet/cobo-tablet<font/> to purchase a Cobo Tablet to store your recovery phrase with a higher degree of security.]]></string>
     <string name="generate_mnemonic">Generate Recovery Phrase</string>
