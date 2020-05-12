@@ -295,7 +295,7 @@
     <string name="add_address">添加地址</string>
     <string name="use_electrum_scan_xpub">请用 Electrum 扫描主公钥二维码</string>
     <string name="export_signed_txn_file">导出已签名文件</string>
-    <string name="export_signed_txn_action_guide">导出后，用 Electrum 进行广播\n前往【Electrum--工具--加载交易--从文件】，打开该文件。</string>
+    <string name="export_signed_txn_action_guide">导出后，用 Electrum 进行广播\n前往【Electrum--工具--加载交易--从文件】打开该文件</string>
     <string name="export">导出</string>
     <string name="export_xpub_text_file">导出主公钥文件</string>
     <string name="file_name_label">该文件的文件名为：</string>

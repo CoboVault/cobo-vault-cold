@@ -355,6 +355,7 @@
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white"
                 android:text="@string/export_signed_txn_action_guide"
+                android:textSize="12sp"
                 android:gravity="center"/>
         </LinearLayout>
 

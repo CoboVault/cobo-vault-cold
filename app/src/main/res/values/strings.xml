@@ -41,7 +41,7 @@
     <string name="www_cobo_com" translatable="false">www.cobo.com</string>
     <string name="device_info">Serial Number: %s \n Firmware Version: %s\n System Version：%s\n App Version：%s</string>
     <string name="addr" translatable="false">addr.</string>
-    <string name="asset_list_empty">Please go to \"Menu - Add / Hide Assets\" to add assets you need</string>
+    <string name="asset_list_empty">Please go to Menu - Add / Hide Assets to add assets you need</string>
     <string name="mnemonic_hint1">"The recovery phrase is used to restore your wallet. Use a Cobo Tablet to record your 24 recovery phrase words and store them securely."</string>
     <string name="mnemonic_hint2">Do not share your recovery phrase with anyone or take a picture of it. If it is lost or stolen, all assets are irretrievable.</string>
     <string name="saved">Recovery Phrase Saved</string>
@@ -324,7 +324,7 @@
     <string name="export_xpub_text_file">Export Master Public Key File</string>
     <string name="file_name_label">File name:</string>
     <string name="master_xpub">Master Public Key (Nested SegWit)</string>
-    <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>\"touch here to export via microSD.\"</u>]]></string>
+    <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>touch here to export via microSD.</u>]]></string>
     <string name="scan_electrum_hint">Difficulty scanning Electrum? You can export the pending transactions as a file using a microSD card (Menu > MicroSD Card)</string>
     <string name="sign_txn_in_sdcard">Files Awaiting Signature</string>
     <string name="master_pubkey_not_match">This transaction can\'t be recognized, your Cobo Vault doesn’t match the watch-only wallet. </string>
