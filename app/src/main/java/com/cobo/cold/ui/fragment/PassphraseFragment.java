@@ -160,16 +160,10 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                             && dialog.getDialog().isShowing()) {
                         dialog.dismiss();
                     }
-                    if (TextUtils.isEmpty(passphrase1.get())) {
-                        startActivity(new Intent(mActivity, MainActivity.class));
-                    } else {
-                        Navigation.findNavController(mActivity, R.id.nav_host_fragment)
-                                .navigate(R.id.to_assetListFragment, data);
-                    }
+                    startActivity(new Intent(mActivity, MainActivity.class));
                 };
                 List<CoinEntity> coins = PresetData.generateCoins(mActivity);
                 viewModel.presetData(coins, onComplete);
-
             }
         });
     }
