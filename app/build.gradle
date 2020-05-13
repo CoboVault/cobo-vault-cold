@@ -229,7 +229,7 @@ def getVersionProperties() {
     }
 
     def versionNumber = versionMajor * 10000 + versionMinor * 100 + versionPatch
-    def versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+    def versionName = "${versionMajor}.${versionMinor}.${versionPatch}(BTC-Only)"
 
     return [isVaultRelease, versionNumber, versionName]
 }
