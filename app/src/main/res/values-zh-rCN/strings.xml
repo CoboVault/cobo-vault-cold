@@ -308,4 +308,6 @@
     <string name="electrum_compatibility">适配 Electrum</string>
     <string name="identification_failed">交易识别失败</string>
     <string name="from_electrum">来自Electrum</string>
+    <string name="update_failed">升级失败</string>
+    <string name="contact_cobo_service">您可邮件联系客服：support@cobo.com\n 状态码:%s</string>
 </resources>
