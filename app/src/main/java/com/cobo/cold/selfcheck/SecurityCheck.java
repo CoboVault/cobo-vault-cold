@@ -52,6 +52,7 @@ public class SecurityCheck {
     private static final int CODE_FW_STATUS_NOT_FOUND = 0x0200;
     private static final int CODE_FW_STATUS_ATTACKED = 0x0300;
     private static final int CODE_FW_ERT_ATTACKED = 0x0400;
+    public static final int CODE_FW_IN_BOOTMODE = 0x0500;
 
     public CheckResult doSelfCheck(AppCompatActivity context) {
         Log.i(TAG, "start self checking...");
@@ -124,7 +125,7 @@ public class SecurityCheck {
                 }
             } else {
                 // has not 0102 tag ,is in boot mode
-                return CODE_FW_OK;
+                return CODE_FW_IN_BOOTMODE;
             }
         } catch (EncryptionCoreException e) {
             Log.e(TAG, e.toString());
