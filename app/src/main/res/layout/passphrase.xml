@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:focusable="true"
-                android:paddingVertical="5dp"
+                android:paddingVertical="10dp"
                 android:focusableInTouchMode="true"
                 android:hint="@string/passphrase_hint2"
                 android:imeOptions="actionNext"
@@ -113,10 +113,11 @@
         <TextView
             android:id="@+id/input_hint"
             android:layout_marginTop="10dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginHorizontal="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/white40"
+            android:textSize="12sp"
             android:text="@string/passphrase_hint3" />
 
         <LinearLayout
@@ -132,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:focusable="true"
-                android:paddingVertical="5dp"
+                android:paddingVertical="10dp"
                 android:focusableInTouchMode="true"
                 android:hint="@string/passphrase_hint_agian"
                 android:imeOptions="actionDone"

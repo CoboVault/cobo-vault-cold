@@ -93,7 +93,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                     mBinding.inputHint.setTextColor(Color.RED);
                 } else {
                     mBinding.inputHint.setText(R.string.passphrase_hint3);
-                    mBinding.inputHint.setTextColor(Color.WHITE);
+                    mBinding.inputHint.setTextColor(mActivity.getResources().getColor(R.color.white40));
                 }
             }
         };
