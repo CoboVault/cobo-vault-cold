@@ -121,7 +121,8 @@ public class TxFragment extends BaseFragment<TxBinding> {
                 }
                 items.add(new TransactionItem(i,
                         value,
-                        output.getString("address")
+                        output.getString("address"),
+                        txEntity.getCoinCode()
                 ));
             }
         } catch (JSONException e) {
@@ -145,7 +146,8 @@ public class TxFragment extends BaseFragment<TxBinding> {
             for (int i = 0; i < inputs.length(); i++) {
                 items.add(new TransactionItem(i,
                         inputs.getJSONObject(i).getLong("value"),
-                        inputs.getJSONObject(i).getString("address")
+                        inputs.getJSONObject(i).getString("address"),
+                        txEntity.getCoinCode()
                 ));
             }
             String fromAddress = inputs.getJSONObject(0).getString("address");
