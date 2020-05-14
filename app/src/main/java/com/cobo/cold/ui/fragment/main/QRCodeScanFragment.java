@@ -210,7 +210,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
                 throw new XpubNotMatchException("xpub not match");
             }
             return tx;
-        } catch (ElectrumTx.SerializationException e) {
+        } catch (ElectrumTx.SerializationException | IllegalArgumentException e) {
             e.printStackTrace();
         }
         return null;
