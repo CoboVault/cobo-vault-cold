@@ -203,7 +203,8 @@ public class QrScanViewModel extends AndroidViewModel {
             String coinCode = object.getJSONObject("signTx")
                     .getString("coinCode");
 
-            if (!Coins.isCoinSupported(coinCode)) {
+            if (!Coins.isCoinSupported(coinCode)
+                    || object.getJSONObject("signTx").has("omniTx")) {
                 throw new CoinNotFindException("not support " + coinCode);
             }
             Bundle bundle = new Bundle();
