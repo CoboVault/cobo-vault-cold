@@ -52,6 +52,9 @@ public class FileUtils {
     public static boolean writeString(@NonNull File file, String content) {
         try(FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(content.getBytes());
+            fos.getFD().sync();
+            fos.flush();
+            fos.close();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
