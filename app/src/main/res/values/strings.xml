@@ -218,7 +218,7 @@
     <string name="tx_to">To</string>
     <string name="tx_fee">Fee</string>
     <string name="tx_memo">Memo</string>
-    <string name="tx_confirm">Confirm Transaction</string>
+    <string name="tx_confirm">Confirm Transaction Details</string>
     <string name="sign">Sign</string>
     <string name="find_password">Forgot Password</string>
     <string name="update_hint">Only install firmware upgrades downloaded from the official Cobo Vault website.</string>
@@ -293,7 +293,7 @@
     <string name="export_to_electrum_guide">1. Open Electrum and create a new wallet. \n2. Choose “Standard wallet”. \n3. Choose “Use a master key”. \n4. Touch “Show Master Public Key” below then click the camera icon in the “Create keystore from a master key” window in Electrum to scan the QR code that displays on Cobo Vault.
  \n5. Set a password. \n6. Enter the watch-only wallet.</string>
     <string name="export_xpub">Show Master Public Key</string>
-    <string name="export_to_electrum_guide_hint">How to create watch-only wallet in Electrum</string>
+    <string name="export_to_electrum_guide_hint">How to create a watch-only wallet in Electrum:</string>
     <string name="send_address">From %d</string>
     <string name="input">Input %d</string>
     <string name="output">Output %d</string>
@@ -305,10 +305,10 @@
     <string name="no_unsigned_txn_hint">Please make sure the file you wish to sign was successfully saved to your microSD card.</string>
     <string name="electrum_broadcast_guide">How to Broadcast</string>
     <string name="electrum_broadcast_action_guide">In Electrum, go to Tools > Load Transaction > From QR Code\n\nDifficulty scanning? You can export the signed transaction data as a file using a microSD card and broadcast the transaction from a file with Electrum.</string>
-    <string name="electrum_decode_txn_fail">Parsing Failed</string>
+    <string name="electrum_decode_txn_fail">Read Error</string>
     <string name="electrum_import_xpub_guide_title">How to scan QR code</string>
     <string name="electrum_import_xpub_action_guide">1. Open Electrumand and create a new wallet.\n2. Choose “Standard wallet”.\n3. Choose “Use a master key”. \n4. Click the camera icon in the “Create keystore from a master key” window in Electrum to scan the QR code that displays on Cobo Vault.\n\nDifficulty scanning? You can also export the master public key file using a microSD card.</string>
-    <string name="error_txn_file">Unable to parse file, please try exporting again.</string>
+    <string name="error_txn_file">Unable to read file, please try importing again.</string>
     <string name="export_signed_txn">Export File to Broadcast</string>
     <string name="electrum_import_signed_txn">In Electrum, go to Tools > Load Transaction > From File to open the file. </string>
     <string name="insert_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less.</string>
@@ -325,11 +325,13 @@
     <string name="file_name_label">File name:</string>
     <string name="master_xpub">Master Public Key (Nested SegWit)</string>
     <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>touch here to export via microSD.</u>]]></string>
-    <string name="scan_electrum_hint">Difficulty scanning Electrum? You can export the pending transactions as a file using a microSD card (Menu > MicroSD Card)</string>
-    <string name="sign_txn_in_sdcard">Files Awaiting Signature</string>
-    <string name="master_pubkey_not_match">This transaction can\'t be recognized, your Cobo Vault doesn’t match the watch-only wallet. </string>
+    <string name="scan_electrum_hint">Difficulty scanning? You can import pending transactions from Electrum using a microSD card (Menu > MicroSD Card).</string>
+    <string name="sign_txn_in_sdcard">Unsigned Transaction Files</string>
+    <string name="master_pubkey_not_match">Transaction not recognized. Your Cobo Vault has not been successfully paired with the watch-only wallet.</string>
     <string name="change">Change</string>
-    <string name="electrum_compatibility">Electrum Compatibility</string>
+    <string name="electrum_compatibility">Electrum Watch-Only Wallet</string>
     <string name="identification_failed">Identification Failed</string>
     <string name="from_electrum">From Electrum</string>
+    <string name="update_failed">Update failed</string>
+    <string name="contact_cobo_service">contact us: support@cobo.com\n Status Code:%s</string>
 </resources>

@@ -94,6 +94,7 @@
             android:layout_marginHorizontal="16dp"
             android:textColor="@android:color/white"
             android:textSize="12sp"
+            android:gravity="center"
             android:text="@string/scan_electrum_hint"/>
 
     </RelativeLayout>

@@ -124,8 +124,19 @@ public class TxFragment extends BaseFragment<TxBinding> {
                 if (output.optBoolean("isChange")) {
                     continue;
                 }
+
+                long value;
+                Object valueObj = output.get("value");
+                if (valueObj instanceof Long) {
+                    value = (Long) valueObj;
+                } else if(valueObj instanceof Integer) {
+                    value = ((Integer) valueObj).longValue();
+                } else {
+                    double satoshi = Double.parseDouble(((String) valueObj).split(" ")[0]);
+                    value = (long) (satoshi * Math.pow(10,8));
+                }
                 items.add(new TransactionItem(i,
-                        output.getLong("value"),
+                        value,
                         output.getString("address")
                 ));
             }

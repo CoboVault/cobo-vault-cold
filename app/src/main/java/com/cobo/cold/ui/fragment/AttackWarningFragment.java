@@ -34,6 +34,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
+import static com.cobo.cold.selfcheck.SecurityCheck.CODE_FW_IN_BOOTMODE;
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.removeAllFingerprint;
 
 public class AttackWarningFragment extends BaseFragment<AttackWarningBinding> {
@@ -54,6 +55,13 @@ public class AttackWarningFragment extends BaseFragment<AttackWarningBinding> {
         Bundle data = Objects.requireNonNull(getArguments());
         mBinding.hint.setText(getString(R.string.attack_warning,
                  formatErrorCode(data)));
+        int firmware = data.getInt("firmware");
+
+        if (firmware == CODE_FW_IN_BOOTMODE) {
+            mBinding.text1.setText(R.string.update_failed);
+            mBinding.hint.setText(getString(R.string.contact_cobo_service,formatErrorCode(data)));
+        }
+
         mBinding.powerOff.setOnClickListener(v -> handleAttack(mActivity));
         mBinding.serialno.setText(getString(R.string.serialno, SystemProperties.get("persist.sys.serialno")));
         mBinding.icon.setOnClickListener(new AboutFragment.ExportLogHandler(mActivity, Executors.newSingleThreadExecutor()));
