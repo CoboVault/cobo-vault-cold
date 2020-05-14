@@ -32,6 +32,7 @@ import androidx.navigation.Navigation;
 
 import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.utils.Base43;
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.config.FeatureFlags;
@@ -251,7 +252,8 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
             for (int i = 0; i < outputs.length(); i++) {
                 items.add(new TransactionItem(i,
                         outputs.getJSONObject(i).getLong("value"),
-                        outputs.getJSONObject(i).getString("address")
+                        outputs.getJSONObject(i).getString("address"),
+                        Coins.BTC.coinCode()
                 ));
             }
         } catch (JSONException e) {
@@ -275,7 +277,8 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
                 JSONObject out = inputs.getJSONObject(i);
                 items.add(new TransactionItem(i,
                         out.getLong("value"),
-                        out.getString("address")));
+                        out.getString("address"),
+                        Coins.BTC.coinCode()));
             }
         } catch (JSONException e) {
             return;

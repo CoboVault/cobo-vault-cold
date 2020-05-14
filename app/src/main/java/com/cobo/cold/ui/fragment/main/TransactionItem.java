@@ -17,26 +17,26 @@
 
 package com.cobo.cold.ui.fragment.main;
 
-import com.cobo.coinlib.utils.Coins;
-
 import java.text.NumberFormat;
 
 public class TransactionItem {
     final int id;
     final String amount;
     final String address;
+    private final String coinCode;
 
-    public TransactionItem(int id, long amount, String address) {
+    public TransactionItem(int id, long amount, String address, String coinCode) {
         this.id = id;
+        this.coinCode = coinCode;
         this.amount = formatSatoshi(amount);
         this.address = address;
     }
 
-    static String formatSatoshi(long satoshi) {
+    private String formatSatoshi(long satoshi) {
         double value = satoshi / Math.pow(10, 8);
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(20);
-        return nf.format(value) + " " + Coins.BTC.coinCode();
+        return nf.format(value) + " " + coinCode;
     }
 
     public int getId() {
