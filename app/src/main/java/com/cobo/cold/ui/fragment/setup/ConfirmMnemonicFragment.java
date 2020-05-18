@@ -17,7 +17,6 @@
 
 package com.cobo.cold.ui.fragment.setup;
 
-import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 
@@ -25,17 +24,7 @@ import androidx.databinding.ObservableField;
 
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
-import com.cobo.cold.db.PresetData;
-import com.cobo.cold.db.entity.CoinEntity;
-import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.util.Keyboard;
-import com.cobo.cold.viewmodel.SetupVaultViewModel;
-
-import java.util.List;
-
-import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
-import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATED;
-import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING;
 
 public class ConfirmMnemonicFragment extends MnemonicInputFragment {
 
@@ -55,34 +44,6 @@ public class ConfirmMnemonicFragment extends MnemonicInputFragment {
         mBinding.importMnemonic.setOnClickListener(v -> {
             Keyboard.hide(mActivity, mBinding.importMnemonic);
             verifyMnemonic();
-        });
-    }
-
-    @Override
-    protected void subscribeVaultState(SetupVaultViewModel viewModel) {
-        viewModel.getVaultCreateState().observe(this, state -> {
-
-            if (state == VAULT_STATE_CREATING) {
-                showModal();
-            } else if (state == VAULT_STATE_CREATED) {
-                Utilities.setVaultCreated(mActivity);
-                Utilities.setVaultId(mActivity, viewModel.getVaultId());
-                Utilities.setCurrentBelongTo(mActivity, "main");
-                Utilities.setMnemonicCount(mActivity, viewModel.getMnemonicCount().get());
-
-                Runnable onComplete = () -> {
-                    if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
-                        dialog.dismiss();
-                    }
-
-                    Bundle data = new Bundle();
-                    data.putBoolean(IS_SETUP_VAULT, ((SetupVaultActivity) mActivity).isSetupVault);
-                    navigate(R.id.action_to_setupSyncFragment, data);
-                };
-
-                List<CoinEntity> coins = PresetData.generateCoins(mActivity);
-                viewModel.presetData(coins, onComplete);
-            }
         });
     }
 
