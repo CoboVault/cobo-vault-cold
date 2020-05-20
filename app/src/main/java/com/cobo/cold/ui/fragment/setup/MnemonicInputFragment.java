@@ -17,6 +17,7 @@
 
 package com.cobo.cold.ui.fragment.setup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -34,6 +35,7 @@ import com.cobo.cold.databinding.CreateVaultModalBinding;
 import com.cobo.cold.databinding.MnemonicInputFragmentBinding;
 import com.cobo.cold.db.PresetData;
 import com.cobo.cold.db.entity.CoinEntity;
+import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.util.Keyboard;
@@ -99,9 +101,16 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                     if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
                         dialog.dismiss();
                     }
-                    Bundle data = new Bundle();
-                    data.putBoolean(IS_SETUP_VAULT, ((SetupVaultActivity) mActivity).isSetupVault);
-                    navigate(R.id.action_to_setupSyncFragment, data);
+
+                    if (((SetupVaultActivity) mActivity).isSetupVault) {
+                        Bundle data = new Bundle();
+                        data.putBoolean(IS_SETUP_VAULT, ((SetupVaultActivity) mActivity).isSetupVault);
+                        navigate(R.id.action_to_setupSyncFragment, data);
+                    } else {
+                        Intent intent = new Intent(mActivity,MainActivity.class);
+                        startActivity(intent);
+                        mActivity.finish();
+                    }
                 };
 
                 List<CoinEntity> coins = PresetData.generateCoins(mActivity);
