@@ -40,6 +40,7 @@ import com.cobo.cold.callables.WebAuthCallable;
 import com.cobo.cold.callables.WriteMnemonicCallable;
 import com.cobo.cold.db.entity.AccountEntity;
 import com.cobo.cold.db.entity.CoinEntity;
+import com.cobo.cold.util.HashUtil;
 
 import org.spongycastle.util.encoders.Hex;
 
@@ -59,7 +60,7 @@ public class SetupVaultViewModel extends AndroidViewModel {
     private final ObservableField<String> webAuthCode = new ObservableField<>("");
     private final ObservableField<Integer> mnemonicCount = new ObservableField<>(24);
     private final MutableLiveData<Integer> vaultCreateState = new MutableLiveData<>(VAULT_STATE_NOT_CREATE);
-    private final MutableLiveData<String> randomMnemonic = new MutableLiveData<>("");
+    private final MutableLiveData<String> mnemonic = new MutableLiveData<>("");
     private String vaultId;
 
     private final DataRepository mRepository;
@@ -181,17 +182,22 @@ public class SetupVaultViewModel extends AndroidViewModel {
         Runnable task = () -> {
             String entropy = new GetRandomEntropyCallable().call();
             if (!MnemonicUtils.isValidateEntropy(Hex.decode(entropy))) {
-                randomMnemonic.postValue("");
+                this.mnemonic.postValue("");
             } else {
-                String mnemonic = Bip39.generateMnemonic(entropy);
-                randomMnemonic.postValue(mnemonic);
+                this.mnemonic.postValue(Bip39.generateMnemonic(entropy));
             }
         };
         executor.execute(task);
     }
 
-    public LiveData<String> getRandomMnemonic() {
-        return randomMnemonic;
+    public void generateMnemonicFromDiceRolls(String diceRolls) {
+        String entropy = Hex.toHexString(Objects.requireNonNull(HashUtil.sha256(diceRolls)));
+        String mnemonic = Bip39.generateMnemonic(entropy);
+        this.mnemonic.postValue(mnemonic);
+    }
+
+    public LiveData<String> getMnemonic() {
+        return mnemonic;
     }
 
     public void presetData(List<CoinEntity> coins, final Runnable onComplete) {

@@ -17,11 +17,13 @@
 
 package com.cobo.cold.ui.fragment.setup;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.CommonModalBinding;
@@ -33,6 +35,8 @@ import com.cobo.cold.ui.modal.SecretModalDialog;
 public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMnemonicBinding> {
 
     private SecretModalDialog dialog;
+    private boolean useDice;
+    private String diceRolls;
 
     @Override
     protected int setView() {
@@ -42,15 +46,35 @@ public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMne
     @Override
     protected void init(View view) {
         super.init(view);
-        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+        mBinding.toolbar.setNavigationOnClickListener(v -> onBackPress());
         viewModel.setMnemonicCount(MnemonicInputTable.TWEENTYFOUR);
         mBinding.table.setMnemonicNumber(MnemonicInputTable.TWEENTYFOUR);
         mBinding.table.setEditable(false);
-        mBinding.confirmSaved.setOnClickListener(this::confirmInput);
+        mBinding.confirmSaved.setOnClickListener(v -> confirmInput());
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            useDice = bundle.getBoolean("use_dice");
+            diceRolls = bundle.getString("dice_rolls");
+        }
+        if (useDice) {
+            viewModel.generateMnemonicFromDiceRolls(diceRolls);
+        } else {
+            viewModel.generateRandomMnemonic();
+        }
         observeMnemonic();
     }
 
-    private void confirmInput(View view) {
+    private void onBackPress() {
+        if (useDice) {
+            NavHostFragment.findNavController(this)
+                    .popBackStack(R.id.rollingDiceGuideFragment,false);
+        } else {
+            super.navigateUp();
+        }
+    }
+
+    private void confirmInput() {
         ModalDialog dialog = new ModalDialog();
         CommonModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.common_modal, null, false);
@@ -67,7 +91,7 @@ public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMne
     }
 
     private void observeMnemonic() {
-        viewModel.getRandomMnemonic().observe(this, s -> {
+        viewModel.getMnemonic().observe(this, s -> {
             if (TextUtils.isEmpty(s)) {
                 return;
             }
@@ -89,12 +113,11 @@ public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMne
             }
             mBinding.confirmSaved.setEnabled(true);
         });
-        viewModel.generateRandomMnemonic();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        viewModel.getRandomMnemonic().removeObservers(this);
+        viewModel.getMnemonic().removeObservers(this);
     }
 }

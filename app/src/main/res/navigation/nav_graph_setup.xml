@@ -99,6 +99,13 @@
         <action
             android:id="@+id/action_to_generateMnemonicFragment"
             app:destination="@id/generateMnemonicFragment" />
+        <action
+            android:id="@+id/action_to_rollingDiceGuideFragment"
+            app:destination="@id/rollingDiceGuideFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/generateMnemonicFragment"
@@ -186,6 +193,32 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/rollingDiceGuideFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.RollingDiceGuideFragment"
+        android:label="RollingDiceGuideFragment"
+        tools:layout="@layout/rolling_dice_guide">
+        <action
+            android:id="@+id/action_to_rollingDiceFragment"
+            app:destination="@id/rollingDiceFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/rollingDiceFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.RollingDiceFragment"
+        android:label="RollingDiceFragment"
+        tools:layout="@layout/rolling_dice">
+        <action
+            android:id="@id/action_to_generateMnemonicFragment"
+            app:destination="@id/generateMnemonicFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
 
 </navigation>

@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.SecretModalBinding;
@@ -35,6 +36,16 @@ public class SecretModalDialog extends DialogFragment {
 
     public static SecretModalDialog newInstance() {
         return new SecretModalDialog();
+    }
+
+    @Override
+    public void show(@NonNull FragmentManager manager, String tag) {
+        try {
+            manager.beginTransaction().remove(this).commit();
+            super.show(manager, tag);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @NonNull

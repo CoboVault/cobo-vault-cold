@@ -15,43 +15,25 @@
  * in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.cobo.cold.ui.fragment;
+package com.cobo.cold.ui.fragment.setup;
 
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.View;
 
 import com.cobo.cold.R;
-import com.cobo.cold.databinding.TabletQrcodeBinding;
+import com.cobo.cold.databinding.RollingDiceGuideBinding;
+import com.cobo.cold.ui.fragment.BaseFragment;
 
-public class TabletQrcodeFragment extends BaseFragment<TabletQrcodeBinding> {
+public class RollingDiceGuideFragment extends BaseFragment<RollingDiceGuideBinding> {
     @Override
     protected int setView() {
-        return R.layout.tablet_qrcode;
+        return R.layout.rolling_dice_guide;
     }
 
     @Override
     protected void init(View view) {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
-        mBinding.next.setOnClickListener(v -> next());
-        mBinding.tablet.setOnClickListener(new View.OnClickListener() {
-            final int COUNTS = 3;
-            final long DURATION = 3000L;
-            long[] mHits = new long[COUNTS];
-
-            @Override
-            public void onClick(View v) {
-                System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
-                mHits[mHits.length - 1] = SystemClock.uptimeMillis();
-                if (mHits[0] >= (SystemClock.uptimeMillis() - DURATION)) {
-                    navigate(R.id.action_to_rollingDiceGuideFragment);
-                }
-            }
-        });
-    }
-
-    private void next() {
-        navigate(R.id.action_to_generateMnemonicFragment);
+        mBinding.start.setOnClickListener(v -> navigate(R.id.action_to_rollingDiceFragment));
     }
 
     @Override
