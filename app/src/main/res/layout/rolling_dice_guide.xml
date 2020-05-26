@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/generate_mnemonic"
+                android:text="@string/dice_rolls"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
@@ -54,16 +54,16 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="10dp"
-            android:text="@string/mnemonic_hint"
+            android:text="@string/dice_roll_guide"
             android:textColor="@color/white" />
 
         <ImageView
             android:id="@+id/tablet"
-            android:layout_width="264dp"
-            android:layout_height="152dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/tablet"
+            android:src="@drawable/dice"
             tools:ignore="ContentDescription" />
 
         <androidx.legacy.widget.Space
@@ -72,11 +72,11 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/next"
+            android:id="@+id/start"
             style="@style/AcceptButton"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="18dp"
-            android:text="@string/next" />
+            android:text="@string/start" />
     </LinearLayout>
 </layout>
