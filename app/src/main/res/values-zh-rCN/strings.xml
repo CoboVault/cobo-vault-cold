@@ -311,4 +311,12 @@
     <string name="update_failed">升级失败</string>
     <string name="contact_cobo_service">您可邮件联系客服：support@cobo.com\n 状态码:%s</string>
     <string name="only_support_btc">仅支持扫描 BTC</string>
+    <string name="keep_rolling">继续投掷</string>
+    <string name="confirm_rolling">确认生成</string>
+    <string name="rolling_hint_less_than_99">您当前投掷的次数为%d；建议您最少投掷99次，获得256位的随机熵值。</string>
+    <string name="rolling_hint_less_than_50">您当前投掷的次数为%d；至少投掷50次，才能生成助记词。</string>
+    <string name="rolling_not_enough">投掷次数不足</string>
+    <string name="dice_rolls">骰子生成助记词</string>
+    <string name="dice_roll_guide"><![CDATA[请注意:<br><br> 1. 至少投掷50次，才能生成助记词；建议您最少投掷99次，获得256位的随机熵值；Cobo 金库不限制您的最大投掷次数。<br>2. 建议您使用<font color="#00cdc3">赌场级骰子<font/>（六个面向上的概率相同），操作过程中确保骰子在空中得到足够的翻转，且避免总是从骰子特定面朝上进行投掷。]]></string>
+    <string name="start">开始</string>
 </resources>

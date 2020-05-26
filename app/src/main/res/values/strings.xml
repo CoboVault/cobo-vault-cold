@@ -335,4 +335,13 @@
     <string name="update_failed">Update failed</string>
     <string name="contact_cobo_service">contact us: support@cobo.com\n Status Code:%s</string>
     <string name="only_support_btc">Please scan only BTC</string>
+    <string name="keep_rolling">Keep it Rolling</string>
+    <string name="confirm_rolling">Generate</string>
+    <string name="rolling_hint_less_than_99">You have rolled %d times. We recommend you roll 99 times for 256-bit <entropy class=""></entropy></string>
+    <string name="rolling_hint_less_than_50">You have rolled %d times. You need at least 50 rolls to generate a recovery phrase.</string>
+    <string name="rolling_not_enough">Keep it Rolling</string>
+    <string name="dice_rolls">Dice Rolls</string>
+    <string name="dice_roll_guide"><![CDATA[How to use dice to generate keys:<br><br> 1. Roll the dice at least 50 times. Roll 99 times to obtain 256-bit entropy (recommended). There is no limit to the number of rolls you can use.<br>2. We recommend you use <font color="#00cdc3">casino dice<font/> to increase the entropy of each dice throw.]]></string>
+    <string name="start">Start</string>
+
 </resources>

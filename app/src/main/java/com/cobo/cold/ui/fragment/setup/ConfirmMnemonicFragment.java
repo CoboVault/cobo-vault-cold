@@ -53,7 +53,7 @@ public class ConfirmMnemonicFragment extends MnemonicInputFragment {
                 .map(ObservableField::get)
                 .reduce((s1, s2) -> s1 + " " + s2)
                 .orElse("");
-        if (mnemonic.equals(viewModel.getRandomMnemonic().getValue())) {
+        if (mnemonic.equals(viewModel.getMnemonic().getValue())) {
             viewModel.writeMnemonic(mnemonic);
             mBinding.table.getWordsList().clear();
         } else {
