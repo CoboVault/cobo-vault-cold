@@ -66,6 +66,17 @@ public class HashUtil {
         return null;
     }
 
+    public static byte[] sha256(byte[] bytes) {
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(bytes);
+            return messageDigest.digest();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static byte[] twiceSha256(String s) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
