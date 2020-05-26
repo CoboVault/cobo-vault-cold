@@ -43,13 +43,12 @@ import com.cobo.cold.ui.modal.ModalDialog;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RollingDiceFragment extends BaseFragment<RollingDiceBinding> {
 
     private DiceGridAdapter adapter;
     private final int INIT_ROLLS = 100;
-    private int[] rolls = new int[INIT_ROLLS];
+    private byte[] rolls = new byte[INIT_ROLLS];
     private int currentPos;
 
     private final int numOfColumn = 10;
@@ -62,7 +61,7 @@ public class RollingDiceFragment extends BaseFragment<RollingDiceBinding> {
                 adapter.notifyItemRangeChanged(currentPos, 2, 1);
             }
         } else {
-            rolls[currentPos] = Integer.parseInt(tag);
+            rolls[currentPos] = Byte.parseByte(tag);
             currentPos++;
             if (currentPos == rolls.length -1) {
                 enlarge();
@@ -83,7 +82,7 @@ public class RollingDiceFragment extends BaseFragment<RollingDiceBinding> {
     };
 
     private void enlarge() {
-        int[] enlarge = new int[rolls.length + INIT_ROLLS];
+        byte[] enlarge = new byte[rolls.length + INIT_ROLLS];
         System.arraycopy(rolls, 0, enlarge, 0, rolls.length);
         rolls = enlarge;
     }
@@ -136,16 +135,9 @@ public class RollingDiceFragment extends BaseFragment<RollingDiceBinding> {
 
     private void navigateToGenerateMnemonic() {
         Bundle data = new Bundle();
-        data.putString("dice_rolls", rollsToString());
+        data.putByteArray("dice_rolls", Arrays.copyOfRange(rolls,0, currentPos));
         data.putBoolean("use_dice", true);
         navigate(R.id.action_to_generateMnemonicFragment, data);
-    }
-
-    private String rollsToString() {
-        return Arrays.stream(rolls)
-                .filter(i -> i != 0)
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining(""));
     }
 
     private void setupDiceGrid() {

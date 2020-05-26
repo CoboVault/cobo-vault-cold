@@ -36,7 +36,7 @@ public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMne
 
     private SecretModalDialog dialog;
     private boolean useDice;
-    private String diceRolls;
+    private byte[] diceRolls;
 
     @Override
     protected int setView() {
@@ -55,7 +55,7 @@ public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMne
         Bundle bundle = getArguments();
         if (bundle != null) {
             useDice = bundle.getBoolean("use_dice");
-            diceRolls = bundle.getString("dice_rolls");
+            diceRolls = bundle.getByteArray("dice_rolls");
         }
         if (useDice) {
             viewModel.generateMnemonicFromDiceRolls(diceRolls);

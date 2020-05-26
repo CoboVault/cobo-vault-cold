@@ -190,7 +190,7 @@ public class SetupVaultViewModel extends AndroidViewModel {
         executor.execute(task);
     }
 
-    public void generateMnemonicFromDiceRolls(String diceRolls) {
+    public void generateMnemonicFromDiceRolls(byte[] diceRolls) {
         String entropy = Hex.toHexString(Objects.requireNonNull(HashUtil.sha256(diceRolls)));
         String mnemonic = Bip39.generateMnemonic(entropy);
         this.mnemonic.postValue(mnemonic);
