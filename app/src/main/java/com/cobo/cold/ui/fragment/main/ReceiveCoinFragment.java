@@ -28,6 +28,7 @@ import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS;
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_NAME;
+import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_PATH;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 
 public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
@@ -44,6 +45,7 @@ public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
         mBinding.setAddress(data.getString(KEY_ADDRESS));
         mBinding.setAddressName(data.getString(KEY_ADDRESS_NAME));
         mBinding.setCoinCode(data.getString(KEY_COIN_CODE));
+        mBinding.setPath(data.getString(KEY_ADDRESS_PATH));
         mBinding.qrcode.setData(data.getString(KEY_ADDRESS));
     }
 

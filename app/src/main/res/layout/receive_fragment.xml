@@ -33,6 +33,9 @@
         <variable
             name="address"
             type="String" />
+        <variable
+            name="path"
+            type="String" />
     </data>
 
     <LinearLayout
@@ -87,13 +90,23 @@
             android:textColor="@color/white40"
             android:textSize="12sp"
             tools:text="19zhQ 2rKq Xm5r y1pj Co83 JbBK 5zUr bdKgc" />
+        <TextView
+            android:layout_width="148dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="5dp"
+            android:text="@{'('+path+')'}"
+            android:textColor="@color/white40"
+            android:textSize="12sp"
+            tools:text="m/49'/0'/0'" />
 
         <com.cobo.cold.ui.views.qrcode.QrCodeView
             android:id="@+id/qrcode"
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:layout_marginHorizontal="34dp"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="20dp"
             android:background="@color/white"
             android:padding="5dp"
             android:keepScreenOn="true">
