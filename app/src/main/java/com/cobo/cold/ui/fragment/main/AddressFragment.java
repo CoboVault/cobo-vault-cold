@@ -39,6 +39,7 @@ import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS;
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_NAME;
+import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_PATH;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
 import static com.cobo.cold.ui.fragment.Constants.KEY_ID;
@@ -58,6 +59,7 @@ public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
                 data.putString(KEY_COIN_CODE, bundle.getString(KEY_COIN_CODE));
                 data.putString(KEY_ADDRESS, addr.getAddressString());
                 data.putString(KEY_ADDRESS_NAME, addr.getName());
+                data.putString(KEY_ADDRESS_PATH, addr.getPath());
                 navigate(R.id.action_to_receiveCoinFragment, data);
             }
         }
