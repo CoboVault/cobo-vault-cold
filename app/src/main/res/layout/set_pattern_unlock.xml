@@ -63,6 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="34dp"
+            android:visibility="gone"
             app:step="2" />
 
 
@@ -74,10 +75,17 @@
             android:text="@string/pattern_unlock_hint"
             android:textColor="@color/white"
             android:textSize="15sp" />
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pattern_lock_hide_track"
+            android:textColor="@color/white40"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/hint1"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/pattern_lock_hint"
@@ -89,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="10dp"
             app:aspectRatio="square"
             app:aspectRatioEnabled="true"
             app:correctStateColor="@color/colorAccent"
