@@ -319,4 +319,5 @@
     <string name="dice_rolls">骰子生成助记词</string>
     <string name="dice_roll_guide"><![CDATA[请注意:<br><br> 1. 至少投掷50次，才能生成助记词；建议您最少投掷99次，获得256位的随机熵值；Cobo 金库不限制您的最大投掷次数。<br>2. 建议您使用<font color="#00cdc3">赌场级骰子<font/>（六个面向上的概率相同），操作过程中确保骰子在空中得到足够的翻转，且避免总是从骰子特定面朝上进行投掷。]]></string>
     <string name="start">开始</string>
+    <string name="pattern_lock_hide_track">为防偷窥，解锁时将隐藏轨迹</string>
 </resources>
