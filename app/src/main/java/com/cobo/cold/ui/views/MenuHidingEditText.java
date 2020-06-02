@@ -18,6 +18,7 @@ package com.cobo.cold.ui.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -61,6 +62,8 @@ public class MenuHidingEditText extends AppCompatEditText {
             MenuHidingEditText.this.clearFocus();
             return false;
         });
+        setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        setTransformationMethod(null);
     }
 
     @Override

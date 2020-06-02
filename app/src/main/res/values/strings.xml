@@ -342,4 +342,5 @@
     <string name="dice_rolls">Dice Rolls</string>
     <string name="dice_roll_guide"><![CDATA[How to use dice to generate keys:<br><br> 1. Roll the dice at least 50 times. Roll 99 times to obtain 256-bit entropy (recommended). There is no limit to the number of rolls you can use.<br>2. We recommend you use <font color="#00cdc3">casino dice<font/> to increase the entropy of each dice throw.]]></string>
     <string name="start">Start</string>
+    <string name="pattern_lock_hide_track">To prevent peeping, track will be hidden when unlocked</string>
 </resources>
