@@ -18,35 +18,17 @@
 package com.cobo.cold.ui.views;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.graphics.Color;
 import android.os.PowerManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.LinearLayout;
 
-import com.cobo.cold.R;
-import com.cobo.cold.Utilities;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import static android.content.Context.MODE_PRIVATE;
-import static com.cobo.cold.Utilities.PREFERENCE_KEY_BELONG_TO;
-import static com.cobo.cold.Utilities.PREFERENCE_SECRET;
 
 public class StatusBarView extends LinearLayout {
 
     private static final String TAG = "Vault.StatusBarView";
-
-    private final SharedPreferences sp;
-
-    private final OnSharedPreferenceChangeListener listener = (sp, key) -> {
-        if (PREFERENCE_KEY_BELONG_TO.equals(key)) {
-            updateBg();
-        }
-    };
 
     public StatusBarView(Context context) {
         this(context, null);
@@ -62,37 +44,8 @@ public class StatusBarView extends LinearLayout {
 
     public StatusBarView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        sp = getContext().getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        updateBg();
-    }
-
-    private void updateBg() {
-        String belongTo = Utilities.getCurrentBelongTo(getContext());
-        if ("hidden".equals(belongTo)) {
-            setBackgroundColor(Color.parseColor("#FFC700"));
-            findViewById(R.id.passphrase).setVisibility(VISIBLE);
-        } else {
-            setBackgroundColor(Color.TRANSPARENT);
-            findViewById(R.id.passphrase).setVisibility(GONE);
-        }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        sp.registerOnSharedPreferenceChangeListener(listener);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        sp.unregisterOnSharedPreferenceChangeListener(listener);
-    }
 
     private boolean isDryCell() {
         boolean isDryCell = false;
