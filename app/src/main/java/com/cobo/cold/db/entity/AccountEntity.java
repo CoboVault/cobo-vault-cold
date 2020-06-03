@@ -94,4 +94,16 @@ public class AccountEntity {
     public void setCoinId(Long coinId) {
         this.coinId = coinId;
     }
+
+    @Override
+    public String toString() {
+        return "AccountEntity{" +
+                "id=" + id +
+                ", hdPath='" + hdPath + '\'' +
+                ", exPub='" + exPub + '\'' +
+                ", addressLength=" + addressLength +
+                ", isMultiSign=" + isMultiSign +
+                ", coinId=" + coinId +
+                '}';
+    }
 }

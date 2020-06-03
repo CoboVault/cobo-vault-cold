@@ -19,10 +19,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_scan"
         android:orderInCategory="100"
         android:title="Search"
-        android:icon="@drawable/search"
+        android:icon="@drawable/scan_qr_code"
+        android:iconTint="@color/white"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_sdcard"
+        android:orderInCategory="100"
+        android:title="Search"
+        android:icon="@drawable/sdcard"
         android:iconTint="@color/white"
         app:showAsAction="always" />
 

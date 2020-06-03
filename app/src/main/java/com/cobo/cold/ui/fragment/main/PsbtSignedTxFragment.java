@@ -15,30 +15,25 @@
  * in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.cobo.cold.ui.fragment.main.electrum;
+package com.cobo.cold.ui.fragment.main;
 
-import android.os.Bundle;
 import android.view.View;
 
-import com.cobo.cold.R;
-import com.cobo.cold.databinding.ElectrumExportGuideBinding;
-import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.db.entity.TxEntity;
+import com.cobo.cold.ui.fragment.main.electrum.SignedTxFragment;
 
-public class ElectrumGuideFragment extends BaseFragment<ElectrumExportGuideBinding> {
+import static com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment.showExportPsbtDialog;
 
+public class PsbtSignedTxFragment extends SignedTxFragment {
     @Override
-    protected int setView() {
-        return R.layout.electrum_export_guide;
+    protected void displaySignResult(TxEntity txEntity) {
+        mBinding.txDetail.qr.setVisibility(View.GONE);
+        mBinding.txDetail.broadcastGuide.setVisibility(View.GONE);
     }
 
     @Override
-    protected void init(View view) {
-        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
-        mBinding.export.setOnClickListener(v -> navigate(R.id.export_electrum_ypub));
-    }
-
-    @Override
-    protected void initData(Bundle savedInstanceState) {
-
+    protected void showExportDialog() {
+        showExportPsbtDialog(mActivity, txEntity.getTxId(),
+                txEntity.getSignedHex(), this::navigateUp);
     }
 }

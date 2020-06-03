@@ -43,8 +43,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.Holder> {
     public OnItemClickListener listener;
     private final List<DrawerItem> dataList = Arrays.asList(
             new DrawerItem(R.id.drawer_wallet, R.drawable.drawer_wallet, R.string.drawer_menu_my_vault),
-            new DrawerItem(R.id.drawer_sync, R.drawable.drawer_asset_observation, R.string.drawer_menu_sync),
-            new DrawerItem(R.id.drawer_sdcard, R.drawable.drawer_sdcard, R.string.read_sdcard),
             new DrawerItem(R.id.drawer_settings, R.drawable.drawer_setting, R.string.drawer_menu_setting),
             new DrawerItem(R.id.drawer_about, R.drawable.drawer_about, R.string.drawer_menu_about)
     );

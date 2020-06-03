@@ -29,7 +29,7 @@
         android:background="#181717">
 
         <RelativeLayout
-            android:id="@+id/add_address"
+            android:id="@+id/sign_history"
             android:layout_width="match_parent"
             android:layout_height="53dp"
             android:orientation="horizontal"
@@ -38,7 +38,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/add_address"
+                android:text="@string/signing_history"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white" />
@@ -59,7 +59,7 @@
             android:background="#12ffffff" />
 
         <RelativeLayout
-            android:id="@+id/export_xpub_to_electrum"
+            android:id="@+id/export_xpub"
             android:layout_width="match_parent"
             android:layout_height="53dp"
             android:orientation="horizontal"
@@ -68,7 +68,37 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/export_to_electrum"
+                android:text="@string/export_wallet"
+                android:layout_centerVertical="true"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow_right"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="#12ffffff" />
+
+        <RelativeLayout
+            android:id="@+id/wallet_info"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:orientation="horizontal"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wallet_info"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white" />

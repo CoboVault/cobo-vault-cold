@@ -21,7 +21,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
@@ -29,8 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ElectrumTxnBinding;
-import com.cobo.cold.databinding.TxnListBinding;
-import com.cobo.cold.ui.MainActivity;
+import com.cobo.cold.databinding.FileListBinding;
 import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
@@ -38,9 +36,9 @@ import com.cobo.cold.viewmodel.ElectrumViewModel;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.cobo.cold.viewmodel.ElectrumViewModel.hasSdcard;
+import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
 
-public class ElectrumTxnListFragment extends BaseFragment<TxnListBinding>
+public class ElectrumTxnListFragment extends BaseFragment<FileListBinding>
         implements Callback {
 
     public static final String TAG = "ElectrumTxnListFragment";
@@ -50,14 +48,12 @@ public class ElectrumTxnListFragment extends BaseFragment<TxnListBinding>
 
     @Override
     protected int setView() {
-        return R.layout.txn_list;
+        return R.layout.file_list;
     }
 
     @Override
     protected void init(View view) {
-        mActivity.setSupportActionBar(mBinding.toolbar);
-        mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
-        mBinding.toolbar.setTitle("");
+        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         viewModel = ViewModelProviders.of(mActivity).get(ElectrumViewModel.class);
         adapter = new TxnAdapter(mActivity, this);
         initViews();

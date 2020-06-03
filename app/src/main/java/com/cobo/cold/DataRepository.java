@@ -17,6 +17,7 @@
 
 package com.cobo.cold;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DataRepository {
+    @SuppressLint("StaticFieldLeak")
     private static DataRepository sInstance;
 
     private final AppDatabase mDb;
@@ -106,6 +108,10 @@ public class DataRepository {
         return mDb.coinDao().loadCoinSync(coinId, getBelongTo());
     }
 
+    public LiveData<CoinEntity> loadCoin(final String coinId) {
+        return mDb.coinDao().loadCoin(coinId, getBelongTo());
+    }
+
     public LiveData<List<AddressEntity>> loadAddress(String coinId) {
         return mDb.addressDao().loadAddressForCoin(coinId, getBelongTo());
     }
@@ -128,6 +134,10 @@ public class DataRepository {
 
     public List<TxEntity> loadElectrumTxsSync(String coinId) {
         return mDb.txDao().loadElectrumTxsSync(coinId);
+    }
+
+    public List<TxEntity> loadWasabiTxsSync(String coinId) {
+        return mDb.txDao().loadWasabiTxsSync(coinId);
     }
 
     public LiveData<TxEntity> loadTx(String txId) {
@@ -190,6 +200,14 @@ public class DataRepository {
 
     public List<AccountEntity> loadAccountsForCoin(CoinEntity coin) {
         return mDb.accountDao().loadForCoin(coin.getId());
+    }
+
+    public AccountEntity loadAccountsByXpub(long id, String xpub) {
+        return mDb.accountDao().loadAccountByXpub(id, xpub);
+    }
+
+    public AccountEntity loadAccountsByPath(long id, String path) {
+        return mDb.accountDao().loadAccountByPath(id,path);
     }
 
     public CoinEntity loadCoinEntityByCoinCode(String coinCode) {

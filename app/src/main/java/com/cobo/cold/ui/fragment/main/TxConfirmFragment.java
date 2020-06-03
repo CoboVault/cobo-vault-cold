@@ -58,7 +58,7 @@ import java.util.Objects;
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
 
-public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
+public class TxConfirmFragment<T> extends BaseFragment<TxConfirmFragmentBinding> {
 
     public static final String KEY_TX_DATA = "tx_data";
     private final Runnable forgetPassword = () -> {
@@ -245,6 +245,7 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
 
     private void subscribeSignState() {
         viewModel.getSignState().observe(this, s -> {
+
             if (TxConfirmViewModel.STATE_SIGNING.equals(s)) {
                 signingDialog = SigningDialog.newInstance();
                 signingDialog.show(mActivity.getSupportFragmentManager(), "");

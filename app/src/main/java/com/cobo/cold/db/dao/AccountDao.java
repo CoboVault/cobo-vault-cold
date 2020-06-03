@@ -35,6 +35,12 @@ public interface AccountDao {
     @Query("SELECT * FROM accounts WHERE coinId=:id")
     List<AccountEntity> loadForCoin(long id);
 
+    @Query("SELECT * FROM accounts WHERE coinId =:id AND exPub=:expub")
+    AccountEntity loadAccountByXpub(long id, String expub);
+
+    @Query("SELECT * FROM accounts WHERE coinId =:id AND hdPath=:path")
+    AccountEntity loadAccountByPath(long id, String path);
+
     @Update
     void update(AccountEntity account);
 }

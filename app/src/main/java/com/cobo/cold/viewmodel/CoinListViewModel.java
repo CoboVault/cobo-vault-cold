@@ -25,7 +25,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
@@ -36,23 +35,19 @@ import com.cobo.cold.model.Coin;
 import com.cobo.cold.protocol.EncodeConfig;
 import com.cobo.cold.protocol.builder.SyncBuilder;
 
-import java.util.Comparator;
 import java.util.List;
 
 public class CoinListViewModel extends AndroidViewModel {
 
     private final DataRepository mRepository;
     private final MediatorLiveData<List<CoinEntity>> mObservableCoins;
-    public static final Comparator<CoinEntity> coinEntityComparator = (o1, o2) -> 0;
 
     public CoinListViewModel(@NonNull Application application) {
         super(application);
 
         mObservableCoins = new MediatorLiveData<>();
         mObservableCoins.setValue(null);
-
         mRepository = ((MainApplication) application).getRepository();
-
         mObservableCoins.addSource(mRepository.loadCoins(), mObservableCoins::setValue);
     }
 
@@ -78,7 +73,7 @@ public class CoinListViewModel extends AndroidViewModel {
         return mRepository.loadTxs(coinId);
     }
 
-    public List<AccountEntity> loadAccountForCoin(CoinEntity coin) {
+    private List<AccountEntity> loadAccountForCoin(CoinEntity coin) {
         return mRepository.loadAccountsForCoin(coin);
     }
 

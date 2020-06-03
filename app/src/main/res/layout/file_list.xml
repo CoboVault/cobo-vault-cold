@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:navigationIcon="@drawable/menu"
+            app:navigationIcon="@drawable/arrow_left"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <TextView

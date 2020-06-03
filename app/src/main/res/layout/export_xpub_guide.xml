@@ -51,6 +51,7 @@
         <include layout="@layout/divider" />
 
         <TextView
+            android:id="@+id/text1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -60,7 +61,8 @@
             android:textSize="15sp"
             android:textStyle="bold" />
 
-        <TextView
+        <com.cobo.cold.ui.views.SpanedTextView
+            android:id="@+id/text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="6dp"
@@ -79,8 +81,18 @@
             style="@style/AcceptButton"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="0dp"
             android:text="@string/export_xpub" />
+        
+        <TextView
+            android:id="@+id/skip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:textColor="@color/colorAccent"
+            android:gravity="center"
+            android:text="@string/skip_export"/>
 
     </LinearLayout>
 </layout>

@@ -71,7 +71,7 @@
                 android:textColor="#8F95AA"
                 tools:ignore="LabelFor"
                 android:importantForAutofill="no"
-                android:inputType="text" />
+                android:inputType="" />
 
             <Button
                 android:id="@+id/confirm"

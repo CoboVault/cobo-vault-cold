@@ -26,23 +26,25 @@ import android.view.View;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.ElectrumExportBinding;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
 import com.cobo.cold.ui.MainActivity;
+import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.Storage;
-import com.cobo.cold.viewmodel.ElectrumViewModel;
+import com.cobo.cold.viewmodel.GlobalViewModel;
 
-import static com.cobo.cold.viewmodel.ElectrumViewModel.exportSuccess;
-import static com.cobo.cold.viewmodel.ElectrumViewModel.showNoSdcardModal;
-import static com.cobo.cold.viewmodel.ElectrumViewModel.writeToSdcard;
+import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
+import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
+import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
+
 
 public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> {
 
-    private static final String EXTEND_PUB_FILE_NAME = "p2wpkh-p2sh-pubkey.txt";
     private String exPub;
 
     @Override
@@ -53,8 +55,13 @@ public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> 
     @Override
     protected void init(View view) {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
-        ElectrumViewModel viewModel = ViewModelProviders.of(mActivity).get(ElectrumViewModel.class);
-        viewModel.getMasterPublicKey().observe(this, s -> {
+        GlobalViewModel viewModel;
+        if (mActivity instanceof SetupVaultActivity) {
+            viewModel = ViewModelProviders.of(this).get(GlobalViewModel.class);
+        } else {
+            viewModel = ViewModelProviders.of(mActivity).get(GlobalViewModel.class);
+        }
+        viewModel.getExtendPublicKey().observe(this, s -> {
             if (!TextUtils.isEmpty(s)) {
                 exPub = s;
                 mBinding.qrcode.setData(s);
@@ -62,9 +69,15 @@ public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> 
             }
         });
         mBinding.info.setOnClickListener(v -> showElectrumInfo());
-        mBinding.done.setOnClickListener(v->{
-            MainActivity activity = (MainActivity) mActivity;
-            activity.getNavController().popBackStack(R.id.assetFragment,false);
+        mBinding.addressType.setText(getString(R.string.master_xpub,
+                GlobalViewModel.getAddressFormat(mActivity)));
+        mBinding.done.setOnClickListener(v -> {
+            if (mActivity instanceof SetupVaultActivity) {
+                navigate(R.id.action_to_setupCompleteFragment);
+            } else {
+                MainActivity activity = (MainActivity) mActivity;
+                activity.getNavController().popBackStack(R.id.assetFragment, false);
+            }
         });
         mBinding.exportToSdcard.setOnClickListener(v -> {
             Storage storage = Storage.createByEnvironment(mActivity);
@@ -75,12 +88,12 @@ public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> 
                 ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                         R.layout.export_sdcard_modal, null, false);
                 binding.title.setText(R.string.export_xpub_text_file);
-                binding.fileName.setText(EXTEND_PUB_FILE_NAME);
+                binding.fileName.setText(getFileName());
                 binding.actionHint.setText(R.string.electrum_import_xpub_action);
                 binding.cancel.setOnClickListener(vv -> modalDialog.dismiss());
                 binding.confirm.setOnClickListener(vv -> {
                     modalDialog.dismiss();
-                    if (writeToSdcard(storage, exPub, EXTEND_PUB_FILE_NAME)) {
+                    if (writeToSdcard(storage, exPub, getFileName())) {
                         exportSuccess(mActivity, null);
                     }
                 });
@@ -103,6 +116,19 @@ public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> 
         binding.confirm.setOnClickListener(vv -> modalDialog.dismiss());
         modalDialog.setBinding(binding);
         modalDialog.show(mActivity.getSupportFragmentManager(), "");
+    }
+
+    private String getFileName() {
+        Coins.Account account = GlobalViewModel.getAccount(mActivity);
+        switch (account) {
+            case SegWit:
+                return "p2wpkh-pubkey.txt";
+            case P2SH:
+                return "p2wpkh-p2sh-pubkey.txt";
+            case P2PKH:
+                return "p2pkh-pubkey.txt";
+        }
+        return "p2wpkh-p2sh-pubkey.txt";
     }
 
     @Override

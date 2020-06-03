@@ -50,8 +50,10 @@ import com.cobo.cold.ui.modal.SigningDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.util.KeyStoreUtil;
-import com.cobo.cold.viewmodel.ElectrumViewModel;
+import com.cobo.cold.viewmodel.GlobalViewModel;
+import com.cobo.cold.viewmodel.SupportedWatchWallet;
 import com.cobo.cold.viewmodel.TxConfirmViewModel;
+import com.cobo.cold.viewmodel.WatchWalletNotMatchException;
 import com.cobo.cold.viewmodel.XpubNotMatchException;
 
 import org.json.JSONArray;
@@ -66,13 +68,13 @@ import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
-import static com.cobo.cold.viewmodel.ElectrumViewModel.exportSuccess;
-import static com.cobo.cold.viewmodel.ElectrumViewModel.hasSdcard;
-import static com.cobo.cold.viewmodel.ElectrumViewModel.showNoSdcardModal;
-import static com.cobo.cold.viewmodel.ElectrumViewModel.writeToSdcard;
+import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
+import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
+import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
+import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
 import static com.cobo.cold.viewmodel.TxConfirmViewModel.STATE_NONE;
 
-public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFragmentBinding> {
+public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBinding> {
 
     private final Runnable forgetPassword = () -> {
         Bundle data = new Bundle();
@@ -80,15 +82,14 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
         Navigation.findNavController(Objects.requireNonNull(getView()))
                 .navigate(R.id.action_to_verifyMnemonic, data);
     };
-    private TxConfirmViewModel viewModel;
+    protected TxConfirmViewModel viewModel;
     private SigningDialog signingDialog;
     private TxEntity txEntity;
     private ModalDialog addingAddressDialog;
-    private String txnData;
     private List<String> changeAddress = new ArrayList<>();
 
-    public static void showExportTxnDialog(AppCompatActivity activity, String txId, String hex,
-                                           Runnable onExportSuccess) {
+    static void showExportTxnDialog(AppCompatActivity activity, String txId, String hex,
+                                    Runnable onExportSuccess) {
         ModalDialog modalDialog = ModalDialog.newInstance();
         ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
                 R.layout.export_sdcard_modal, null, false);
@@ -101,7 +102,8 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
             modalDialog.dismiss();
             if (hasSdcard(activity)) {
                 Storage storage = Storage.createByEnvironment(activity);
-                boolean result = writeToSdcard(storage, generateElectrumTxn(hex), fileName);
+                boolean result = writeToSdcard(Objects.requireNonNull(storage),
+                        generateElectrumTxn(hex), fileName);
                 if (result) {
                     exportSuccess(activity, onExportSuccess);
                 }
@@ -134,20 +136,23 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
 
     @Override
     protected void init(View view) {
-        Bundle bundle = Objects.requireNonNull(getArguments());
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.txDetail.txIdInfo.setVisibility(View.GONE);
         mBinding.txDetail.export.setVisibility(View.GONE);
         mBinding.txDetail.qr.setVisibility(View.GONE);
-        txnData = bundle.getString("txn");
+
+        String walletName = SupportedWatchWallet.getSupportedWatchWallet(mActivity)
+                .getWalletName(mActivity);
+        mBinding.txDetail.watchWallet.setText(walletName);
+
         viewModel = ViewModelProviders.of(this).get(TxConfirmViewModel.class);
         mBinding.setViewModel(viewModel);
-        subscribeTxEntityState();
-        mBinding.sign.setOnClickListener(v -> handleSign());
         ViewModelProviders.of(mActivity)
-                .get(ElectrumViewModel.class)
+                .get(GlobalViewModel.class)
                 .getChangeAddress()
                 .observe(this, address -> this.changeAddress = address);
+        subscribeTxEntityState();
+        mBinding.sign.setOnClickListener(v -> handleSign());
     }
 
     private void handleSign() {
@@ -179,7 +184,7 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
         }
     }
 
-    private AuthenticateModal.OnVerify signWithVerifyInfo() {
+    protected AuthenticateModal.OnVerify signWithVerifyInfo() {
         return token -> {
             viewModel.setToken(token);
             viewModel.handleSign();
@@ -187,21 +192,53 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
         };
     }
 
+    protected void parseTx() {
+        String txnData = Objects.requireNonNull(getArguments()).getString("txn");
+        viewModel.parseTxnData(txnData);
+    }
+
     private void subscribeTxEntityState() {
         ProgressModalDialog dialog = new ProgressModalDialog();
         dialog.show(mActivity.getSupportFragmentManager(), "");
-        viewModel.parseTxnData(txnData);
+        parseTx();
         viewModel.getObservableTx().observe(this, txEntity -> {
             if (txEntity != null) {
                 dialog.dismiss();
                 this.txEntity = txEntity;
                 mBinding.setTx(txEntity);
-                refreshAmount();
-                refreshFromList();
-                refreshReceiveList();
+                refreshUI();
             }
         });
+        observeParseTx(dialog);
+    }
 
+    private void refreshUI() {
+        refreshAmount();
+        refreshFromList();
+        refreshReceiveList();
+    }
+
+    private void observeParseTx(ProgressModalDialog dialog) {
+        viewModel.parseTxException().observe(this, ex -> {
+            if (ex != null) {
+                ex.printStackTrace();
+                dialog.dismiss();
+
+                String errorMessage = getString(R.string.incorrect_tx_data);
+                if (ex instanceof XpubNotMatchException || ex instanceof WatchWalletNotMatchException) {
+                    errorMessage = getString(R.string.master_pubkey_not_match);
+                }
+                ModalDialog.showCommonModal(mActivity,
+                        getString(R.string.electrum_decode_txn_fail),
+                        errorMessage,
+                        getString(R.string.confirm),
+                        null);
+                navigateUp();
+            }
+        });
+    }
+
+    private void observeAddAddress() {
         viewModel.getAddingAddressState().observe(this, b -> {
             if (b) {
                 addingAddressDialog = ModalDialog.newInstance();
@@ -215,24 +252,6 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
                 if (addingAddressDialog != null) {
                     addingAddressDialog.dismiss();
                 }
-            }
-        });
-
-        viewModel.parseTxException().observe(this, ex -> {
-            if (ex != null) {
-                ex.printStackTrace();
-                dialog.dismiss();
-
-                String errorMessage = getString(R.string.incorrect_tx_data);
-                if (ex instanceof XpubNotMatchException) {
-                    errorMessage = getString(R.string.master_pubkey_not_match);
-                }
-                ModalDialog.showCommonModal(mActivity,
-                        getString(R.string.electrum_decode_txn_fail),
-                        errorMessage,
-                        getString(R.string.confirm),
-                        null);
-                navigateUp();
             }
         });
     }
@@ -291,7 +310,7 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
         mBinding.txDetail.fromList.setAdapter(adapter);
     }
 
-    private void subscribeSignState() {
+    protected void subscribeSignState() {
         viewModel.getSignState().observe(this, s -> {
             if (TxConfirmViewModel.STATE_SIGNING.equals(s)) {
                 signingDialog = SigningDialog.newInstance();
@@ -326,7 +345,7 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
         });
     }
 
-    private void onSignSuccess() {
+    protected void onSignSuccess() {
         handleTxnSignSuccess();
         viewModel.getSignState().removeObservers(this);
     }

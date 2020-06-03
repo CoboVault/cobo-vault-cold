@@ -81,10 +81,6 @@ public abstract class AbsTx {
             if (!coinCode.equals(Coins.coinCodeOfIndex(coinType.getValue()))) {
                 throw new InvalidTransactionException("invalid hdPath, error coinIndex");
             }
-
-            if (Coins.purposeNumber(coinCode) != coinType.getParent().getValue()) {
-                throw new InvalidTransactionException("invalid hdPath, error purpose number");
-            }
         } catch (InvalidPathException e) {
             e.printStackTrace();
             throw new InvalidTransactionException("invalid hdPath");
@@ -94,7 +90,6 @@ public abstract class AbsTx {
     public static AbsTx newInstance(JSONObject object) throws JSONException {
 
         String coinCode = object.getString("coinCode");
-
         try {
             Class<?> clazz = Class.forName(CoinReflect.getCoinClassByCoinCode(coinCode) + "$Tx");
             return (AbsTx) clazz.getDeclaredConstructor(JSONObject.class, String.class)

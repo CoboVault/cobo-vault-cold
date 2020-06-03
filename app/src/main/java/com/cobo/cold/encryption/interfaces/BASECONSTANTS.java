@@ -37,6 +37,7 @@ public abstract class BASECONSTANTS {
         int VERIFY_MNEMONIC = 0x0502;
         int UPDATE_PASSPHRASE = 0x0303;
         int GET_EXTENDED_PUBLICKEY = 0x0305;
+        int GET_MASTER_FINGERPRINT = 0x0308;
         int WEB_AUTH = 0x0701;
         int GET_UPDATE_KEY = 0x0702;
         int REQUEST_UPDATE = 0x0108;
@@ -87,6 +88,7 @@ public abstract class BASECONSTANTS {
         int NEED_TOKEN = 0x0405;
         int MESSAGE = 0x0406;
         int MESSAGE_SIGNATURE = 0x0407;
+        int MASTER_FINGERPRINT = 0x020B;
     }
 
     public interface VALS {

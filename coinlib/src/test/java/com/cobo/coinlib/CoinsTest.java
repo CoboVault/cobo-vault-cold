@@ -53,12 +53,6 @@ public class CoinsTest {
     }
 
     @Test
-    public void purposeNumber() {
-        assertEquals(Coins.purposeNumber("BTC"), 49);
-        assertEquals(Coins.purposeNumber("XTN"), 49);
-    }
-
-    @Test
     public void testSupportedCoin() {
         assertTrue(Coins.isCoinSupported("BTC"));
     }

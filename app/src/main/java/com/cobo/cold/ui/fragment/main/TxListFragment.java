@@ -22,10 +22,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cobo.cold.R;
@@ -36,18 +33,16 @@ import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.ui.common.FilterableBaseBindingAdapter;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.viewmodel.CoinListViewModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.cobo.cold.viewmodel.SupportedWatchWallet;
 
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
 import static com.cobo.cold.ui.fragment.main.TxFragment.KEY_TX_ID;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.ELECTRUM_SIGN_ID;
+import static com.cobo.cold.viewmodel.PsbtViewModel.WASABI_SIGN_ID;
 
 public class TxListFragment extends BaseFragment<TxListBinding> {
 
@@ -55,16 +50,6 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
     private TxCallback txCallback;
     private String query;
     private Comparator<TxEntity> txEntityComparator;
-
-
-    static Fragment newInstance(@NonNull String coinId, @NonNull String coinCode) {
-        TxListFragment fragment = new TxListFragment();
-        Bundle args = new Bundle();
-        args.putString(KEY_COIN_ID, coinId);
-        args.putString(KEY_COIN_CODE, coinCode);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     protected int setView() {
@@ -78,15 +63,16 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
                 .get(CoinListViewModel.class);
         adapter = new TxAdapter(mActivity);
         mBinding.list.setAdapter(adapter);
+        mBinding.toolbar.setNavigationOnClickListener(v->navigateUp());
         txCallback = tx -> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_TX_ID, tx.getTxId());
-            if (ELECTRUM_SIGN_ID.equals(tx.getSignId())) {
-                Navigation.findNavController(Objects.requireNonNull(getView()))
-                        .navigate(R.id.action_to_electrumTxFragment, bundle);
-            } else {
-                Navigation.findNavController(Objects.requireNonNull(getView()))
-                        .navigate(R.id.action_to_txFragment, bundle);
+            if (WASABI_SIGN_ID.equals(tx.getSignId())) {
+                navigate(R.id.action_to_psbtSignedTxFragment, bundle);
+            } else if(ELECTRUM_SIGN_ID.equals(tx.getSignId())){
+                navigate(R.id.action_to_electrumTxFragment, bundle);
+            }else {
+                navigate(R.id.action_to_txFragment, bundle);
             }
         };
 
@@ -103,6 +89,7 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
                     };
                     txEntities = txEntities.stream()
                             .filter(this::shouldShow)
+                            .filter(this::filterByMode)
                             .sorted(txEntityComparator)
                             .collect(Collectors.toList());
                     adapter.setItems(txEntities);
@@ -120,6 +107,21 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
                 }
             }
         });
+    }
+
+    private boolean filterByMode(TxEntity txEntity) {
+        SupportedWatchWallet watchWallet = SupportedWatchWallet.getSupportedWatchWallet(mActivity);
+        switch (watchWallet) {
+            case COBO:
+                return !txEntity.getSignId().endsWith("_sign_id");
+            case ELECTRUM:
+                return ELECTRUM_SIGN_ID.equals(txEntity.getSignId());
+            case WASABI:
+                return WASABI_SIGN_ID.equals(txEntity.getSignId());
+            case BLUE:
+                return ELECTRUM_SIGN_ID.equals(txEntity.getSignId());
+        }
+        return false;
     }
 
     private boolean shouldShow(TxEntity tx) {
@@ -152,38 +154,6 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         protected void onBindItem(TxListItemBinding binding, TxEntity item) {
             binding.setTx(item);
             binding.setTxCallback(txCallback);
-            if (ELECTRUM_SIGN_ID.equals(item.getSignId())) {
-                binding.fromWallet.setText(R.string.from_electrum);
-                binding.fromWallet.setVisibility(View.VISIBLE);
-                binding.amount.setVisibility(View.GONE);
-            } else {
-                binding.fromWallet.setVisibility(View.GONE);
-            }
-            updateFrom(binding, item);
-            updateTo(binding, item);
-        }
-
-        private void updateTo(TxListItemBinding binding, TxEntity item) {
-            String to = item.getTo();
-            binding.to.setText(item.getTo());
-            try {
-                JSONArray outputs = new JSONArray(to);
-                binding.to.setText(outputs.getJSONObject(0).getString("address"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private void updateFrom(TxListItemBinding binding, TxEntity item) {
-            String from = item.getFrom();
-            binding.from.setText(item.getFrom());
-            try {
-                JSONArray inputs = new JSONArray(from);
-                String address = inputs.getJSONObject(0).getString("address");
-                binding.from.setText(address);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
         }
     }

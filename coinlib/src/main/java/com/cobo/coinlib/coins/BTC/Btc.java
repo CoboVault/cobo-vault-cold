@@ -20,19 +20,16 @@ package com.cobo.coinlib.coins.BTC;
 import androidx.annotation.NonNull;
 
 import com.cobo.coinlib.coins.AbsCoin;
-import com.cobo.coinlib.coins.AbsDeriver;
 import com.cobo.coinlib.coins.AbsTx;
+import com.cobo.coinlib.coins.SignPsbtResult;
 import com.cobo.coinlib.coins.SignTxResult;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.Coin;
 import com.cobo.coinlib.interfaces.SignCallback;
+import com.cobo.coinlib.interfaces.SignPsbtCallback;
 import com.cobo.coinlib.interfaces.Signer;
 import com.cobo.coinlib.utils.Coins;
 
-import org.bitcoinj.core.LegacyAddress;
-import org.bitcoinj.crypto.DeterministicKey;
-import org.bitcoinj.script.Script;
-import org.bitcoinj.script.ScriptBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,6 +50,23 @@ public class Btc extends AbsCoin {
         SignTxResult result = ((BtcImpl) impl).generateOmniTx(tx, signers);
         if (result != null && result.isValid()) {
             callback.onSuccess(result.txId, result.txHex);
+        } else {
+            callback.onFail();
+        }
+    }
+
+    public JSONObject parsePsbt(@NonNull String psbt) {
+        return ((BtcImpl)impl).parsePsbt(psbt);
+    }
+
+    public void signPsbt(@NonNull String psbt, SignPsbtCallback callback, Signer... signers) {
+        if (signers == null) {
+            callback.onFail();
+            return;
+        }
+        SignPsbtResult result = ((BtcImpl)impl).signPsbt(psbt, signers);
+        if (result != null && result.isValid()) {
+            callback.onSuccess(result.txId, result.psbtB64);
         } else {
             callback.onFail();
         }
@@ -179,6 +193,7 @@ public class Btc extends AbsCoin {
             for (int i = 0; i < inputs.length(); i++) {
                 JSONObject input = inputs.getJSONObject(i);
                 String path = input.getString("ownerKeyPath");
+                input.put("bip32Derivation",new JSONArray());
                 checkHdPath(path, false);
                 paths.append(path).append(SEPARATOR);
                 int index = input.optInt("index");
@@ -206,30 +221,11 @@ public class Btc extends AbsCoin {
             return sat / Math.pow(10, decimal);
         }
     }
-
-    public static class Deriver extends AbsDeriver {
-
-        @Override
-        public String derive(String accountXpub, int changeIndex, int addressIndex) {
-            DeterministicKey address = getAddrDeterministicKey(accountXpub, changeIndex, addressIndex);
-            LegacyAddress addr = LegacyAddress.fromScriptHash(MAINNET,
-                    segWitOutputScript(address.getPubKeyHash()).getPubKeyHash());
-            return addr.toBase58();
-        }
-
-        @Override
-        public String derive(String xPubKey) {
-            DeterministicKey key = DeterministicKey.deserializeB58(xPubKey, MAINNET);
-            return LegacyAddress.fromScriptHash(MAINNET,
-                    segWitOutputScript(key.getPubKeyHash()).getPubKeyHash()).toBase58();
-        }
-
-        protected Script segWitOutputScript(byte[] pubKeyHash) {
-            return ScriptBuilder.createP2SHOutputScript(segWitRedeemScript(pubKeyHash));
-        }
-
-        private Script segWitRedeemScript(byte[] pubKeyHash) {
-            return new ScriptBuilder().smallNum(0).data(pubKeyHash).build();
-        }
+    public enum AddressType {
+        P2PKH,
+        P2SH,
+        SegWit
     }
+
+
 }

@@ -52,9 +52,17 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             tools:listitem="@layout/setting_item_selectable"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="match_parent"
+            style="@style/AcceptButton"
+            android:layout_margin="16dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 </layout>

@@ -48,6 +48,9 @@ public interface CoinDao {
     @Query("SELECT * FROM coins WHERE coinId = :coinId AND belongTo = :belongTo")
     CoinEntity loadCoinSync(String coinId, String belongTo);
 
+    @Query("SELECT * FROM coins WHERE coinId = :coinId AND belongTo = :belongTo")
+    LiveData<CoinEntity> loadCoin(String coinId, String belongTo);
+
     @Update
     int update(CoinEntity coinEntity);
 

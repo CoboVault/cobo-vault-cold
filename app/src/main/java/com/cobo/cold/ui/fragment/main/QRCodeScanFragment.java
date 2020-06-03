@@ -43,14 +43,15 @@ import com.cobo.cold.scan.bean.ZxingConfig;
 import com.cobo.cold.scan.bean.ZxingConfigBuilder;
 import com.cobo.cold.scan.camera.CameraManager;
 import com.cobo.cold.scan.view.PreviewFrame;
-import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
-import com.cobo.cold.viewmodel.ElectrumViewModel;
+import com.cobo.cold.viewmodel.GlobalViewModel;
 import com.cobo.cold.viewmodel.QrScanViewModel;
 import com.cobo.cold.viewmodel.SharedDataViewModel;
+import com.cobo.cold.viewmodel.SupportedWatchWallet;
 import com.cobo.cold.viewmodel.UnknowQrCodeException;
 import com.cobo.cold.viewmodel.UuidNotMatchException;
+import com.cobo.cold.viewmodel.WatchWalletNotMatchException;
 import com.cobo.cold.viewmodel.XpubNotMatchException;
 
 import org.json.JSONException;
@@ -59,6 +60,8 @@ import org.spongycastle.util.encoders.Hex;
 import java.io.IOException;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
+import static com.cobo.cold.viewmodel.SupportedWatchWallet.ELECTRUM;
+import static com.cobo.cold.viewmodel.SupportedWatchWallet.getSupportedWatchWallet;
 
 public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         implements SurfaceHolder.Callback, Host {
@@ -73,6 +76,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
 
     private QrScanViewModel viewModel;
     private ModalDialog dialog;
+    private SupportedWatchWallet watchWallet;
 
     @Override
     protected int setView() {
@@ -81,6 +85,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
 
     @Override
     protected void init(View view) {
+        watchWallet = getSupportedWatchWallet(mActivity);
         boolean isSetupVault = getArguments() != null && getArguments().getBoolean(IS_SETUP_VAULT);
         purpose = getArguments() != null ? getArguments().getString("purpose") : "";
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
@@ -97,7 +102,6 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             mBinding.electrumScanHint.setVisibility(View.GONE);
         }
     }
-
 
     @Override
     public void onResume() {
@@ -183,8 +187,16 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             navigateUp();
         } else {
             try {
-                if (tryParseElecturmTx(res) != null) {
-                    handleElectrumTx(res);
+                if (tryParseElectrumTx(res) != null) {
+                    if (SupportedWatchWallet.getSupportedWatchWallet(mActivity) == ELECTRUM) {
+                        handleElectrumTx(res);
+                    } else {
+                        alert(getString(R.string.identification_failed),
+                                getString(R.string.master_pubkey_not_match) +
+                                        getString(R.string.watch_wallet_not_match,
+                                        SupportedWatchWallet.getSupportedWatchWallet(mActivity)
+                                                .getWalletName(mActivity)));
+                    }
                 } else {
                     alert(getString(R.string.unsupported_qrcode));
                 }
@@ -202,7 +214,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         navigate(R.id.action_to_ElectrumTxConfirmFragment, bundle);
     }
 
-    private ElectrumTx tryParseElecturmTx(String res) throws XpubNotMatchException {
+    private ElectrumTx tryParseElectrumTx(String res) throws XpubNotMatchException {
         try {
             byte[] data = Base43.decode(res);
             ElectrumTx tx = ElectrumTx.parse(data);
@@ -217,7 +229,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     }
 
     private boolean checkElectrumExpub(ElectrumTx tx) {
-        String xpub = ViewModelProviders.of(mActivity).get(ElectrumViewModel.class).getXpub();
+        String xpub = ViewModelProviders.of(mActivity).get(GlobalViewModel.class).getXpub();
         return tx.getInputs()
                 .stream()
                 .allMatch(input -> xpub.equals(input.pubKey.xpub));
@@ -242,6 +254,12 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } catch (UnknowQrCodeException e) {
             e.printStackTrace();
             alert(getString(R.string.unsupported_qrcode));
+        } catch (WatchWalletNotMatchException e) {
+            e.printStackTrace();
+            alert(getString(R.string.identification_failed),
+                    getString(R.string.master_pubkey_not_match)
+                            + getString(R.string.watch_wallet_not_match,
+                            SupportedWatchWallet.getSupportedWatchWallet(mActivity).getWalletName(mActivity)));
         }
     }
 

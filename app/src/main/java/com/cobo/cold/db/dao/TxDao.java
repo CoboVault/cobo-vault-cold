@@ -36,6 +36,9 @@ public interface TxDao {
     @Query("SELECT * FROM txs where coinId = :coinId and signId = 'electrum_sign_id' ORDER BY timeStamp DESC")
     List<TxEntity> loadElectrumTxsSync(String coinId);
 
+    @Query("SELECT * FROM txs where coinId = :coinId and signId = 'wasabi_sign_id' ORDER BY timeStamp DESC")
+    List<TxEntity> loadWasabiTxsSync(String coinId);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(TxEntity tx);
 

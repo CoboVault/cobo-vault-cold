@@ -47,6 +47,7 @@ import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.fingerprint.FingerprintKit;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
+import com.cobo.cold.ui.fragment.Constants;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.ui.preference.SimplePreference;
@@ -55,6 +56,7 @@ import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.ui.views.UpdatingHelper;
 import com.cobo.cold.update.data.UpdateManifest;
 import com.cobo.cold.util.DataCleaner;
+import com.cobo.cold.viewmodel.SupportedWatchWallet;
 import com.cobo.cold.viewmodel.UpdatingViewModel;
 
 import java.util.List;
@@ -83,6 +85,8 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     private static final String SETTING_VERSION = "setting_version";
     private static final String SETTING_FINGERPRINT = "setting_fingerprint";
     private static final String SETTING_PASSPHRASE = "setting_passphrase";
+    public static final String SETTING_CHOOSE_WATCH_WALLET = "setting_choose_watch_only_wallet";
+    public static final String SETTING_ADDRESS_FORMAT = "setting_address_format";
 
     private SwitchPreference switchPreference;
     private SimplePreference versionPreference;
@@ -97,7 +101,6 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     private UpdatingViewModel viewModel;
 
     protected AppCompatActivity mActivity;
-
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -138,7 +141,12 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
         switchPreference = findPreference(SETTING_PATTERN_UNLOCK);
         if (switchPreference != null) {
             switchPreference.setChecked(Utilities.isPatternUnlock(mActivity));
+        }
 
+        SimplePreference chooseWalletPreference = findPreference(SETTING_CHOOSE_WATCH_WALLET);
+        if (chooseWalletPreference != null) {
+            chooseWalletPreference.setRemindText(SupportedWatchWallet.getSupportedWatchWallet(mActivity)
+                    .getWalletName(mActivity));
         }
 
         Looper.getMainLooper().getQueue().addIdleHandler(() -> {
@@ -261,6 +269,12 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                 } else {
                     update();
                 }
+                break;
+            case SETTING_CHOOSE_WATCH_WALLET:
+                Bundle data = new Bundle();
+                data.putInt(Constants.KEY_TITLE, R.string.setting_language);
+                Navigation.findNavController(Objects.requireNonNull(getView()))
+                        .navigate(R.id.action_to_chooseWatchOnly, data);
                 break;
             default:
                 break;

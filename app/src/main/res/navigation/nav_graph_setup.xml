@@ -80,7 +80,7 @@
         tools:layout="@layout/mnemonic_input_fragment">
         <action
             android:id="@id/action_to_setupSyncFragment"
-            app:destination="@id/setupSyncFragment" />
+            app:destination="@id/SetupWatchWalletFragment" />
     </fragment>
     <fragment
         android:id="@+id/setPasswordFragment"
@@ -123,16 +123,29 @@
         tools:layout="@layout/mnemonic_input_fragment">
         <action
             android:id="@+id/action_to_setupSyncFragment"
-            app:destination="@id/setupSyncFragment" />
+            app:destination="@id/SetupWatchWalletFragment" />
     </fragment>
     <fragment
-        android:id="@+id/setupSyncFragment"
-        tools:layout="@layout/setup_sync"
-        android:name="com.cobo.cold.ui.fragment.setup.SetupSyncFragment"
-        android:label="SetupSyncFragment">
+        android:id="@+id/SetupWatchWalletFragment"
+        tools:layout="@layout/setup_watch_wallet"
+        android:name="com.cobo.cold.ui.fragment.setup.SetupWatchWalletFragment"
+        android:label="SetupWatchWalletFragment">
+
         <action
-            android:id="@+id/action_to_setupCompleteFragment"
-            app:destination="@id/setupCompleteFragment" />
+            android:id="@+id/action_to_selectAddressFormatFragment"
+            app:destination="@id/selectAddressFormatFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+
+        <action
+            android:id="@id/action_to_export_xpub_guide"
+            app:destination="@id/exportXpubGuideFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/setupCompleteFragment"
@@ -166,7 +179,7 @@
             app:popExitAnim="@android:anim/slide_out_right" />
         <action
             android:id="@+id/action_setupManageWhiteList_to_setupSyncFragment"
-            app:destination="@id/setupSyncFragment" />
+            app:destination="@id/SetupWatchWalletFragment" />
     </fragment>
 
     <fragment
@@ -207,6 +220,70 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/selectAddressFormatFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.SelectAddressFormatFragment"
+        android:label="SelectAddressFormatFragment">
+
+        <action
+            android:id="@id/action_to_export_xpub_guide"
+            app:destination="@id/exportXpubGuideFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@id/exportXpubGuideFragment"
+        android:name="com.cobo.cold.ui.fragment.main.electrum.ExportXpubGuideFragment"
+        tools:layout="@layout/export_xpub_guide"
+        android:label="ElectrumGuideFragment">
+        <action android:id="@id/action_to_setupCompleteFragment"
+            app:destination="@id/setupCompleteFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@id/export_electrum_ypub"
+            app:destination="@id/electrumExportFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@+id/export_xpub_cobo"
+            app:destination="@id/syncFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@id/syncFragment"
+        android:name="com.cobo.cold.ui.fragment.SyncFragment"
+        tools:layout="@layout/sync_fragment"
+        android:label="SyncFragment" >
+        <action android:id="@id/action_to_setupCompleteFragment"
+            app:destination="@id/setupCompleteFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@id/electrumExportFragment"
+        android:name="com.cobo.cold.ui.fragment.main.electrum.ElectrumExportFragment"
+        tools:layout="@layout/electrum_export"
+        android:label="ElectrumExportFragment">
+        <action android:id="@+id/action_to_setupCompleteFragment"
+            app:destination="@id/setupCompleteFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
 </navigation>

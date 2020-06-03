@@ -26,7 +26,7 @@ public final class Change {
     private final int change;
     private final String string;
 
-    Change(final Account account, final int change) {
+    public Change(final Account account, final int change) {
         this.account = account;
         this.change = change;
         string = String.format(Locale.US, "%s/%d", account, change);

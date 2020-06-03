@@ -44,11 +44,14 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
 
     @Override
     protected void init(View view) {
-        mActivity.setSupportActionBar(mBinding.toolbar);
-        mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
-        mBinding.toolbar.setTitle("");
+        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
         subscribe(viewModel.getCoins());
+        if (mActivity instanceof MainActivity) {
+            mBinding.complete.setVisibility(View.GONE);
+        } else {
+            mBinding.complete.setOnClickListener(v -> navigate(R.id.action_to_setupCompleteFragment));
+        }
     }
 
     private void subscribe(LiveData<List<CoinEntity>> coins) {
@@ -56,11 +59,13 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
     }
 
     private void generateSyncData(List<CoinEntity> coinEntities) {
-        viewModel.generateSync(coinEntities).observe(this, sync -> {
-            if (!TextUtils.isEmpty(sync)) {
-                mBinding.sync.qrcodeLayout.qrcode.setData(sync);
-            }
-        });
+        if (coinEntities != null) {
+            viewModel.generateSync(coinEntities).observe(this, sync -> {
+                if (!TextUtils.isEmpty(sync)) {
+                    mBinding.sync.qrcodeLayout.qrcode.setData(sync);
+                }
+            });
+        }
     }
 
     @Override

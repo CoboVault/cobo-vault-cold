@@ -29,13 +29,14 @@ import androidx.lifecycle.ViewModelProviders;
 import com.cobo.coinlib.utils.Base43;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
-import com.cobo.cold.databinding.ElectrumTxBinding;
+import com.cobo.cold.databinding.SignedTxBinding;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.fragment.main.TransactionItem;
 import com.cobo.cold.ui.fragment.main.TransactionItemAdapter;
 import com.cobo.cold.viewmodel.CoinListViewModel;
-import com.cobo.cold.viewmodel.ElectrumViewModel;
+import com.cobo.cold.viewmodel.GlobalViewModel;
+import com.cobo.cold.viewmodel.SupportedWatchWallet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,51 +48,46 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.main.electrum.ElectrumBroadcastTxFragment.showElectrumInfo;
-import static com.cobo.cold.ui.fragment.main.electrum.ElectrumTxConfirmFragment.showExportTxnDialog;
+import static com.cobo.cold.ui.fragment.main.electrum.UnsignedTxFragment.showExportTxnDialog;
 
 
-public class ElectrumTxFragment extends BaseFragment<ElectrumTxBinding> {
+public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
 
-    public static final String KEY_TX_ID = "txid";
-    private TxEntity txEntity;
+    private static final String KEY_TX_ID = "txid";
+    protected TxEntity txEntity;
     private List<String> changeAddress = new ArrayList<>();
 
     @Override
     protected int setView() {
-        return R.layout.electrum_tx;
+        return R.layout.signed_tx;
     }
 
     @Override
     protected void init(View view) {
         Bundle data = Objects.requireNonNull(getArguments());
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+        String walletName = SupportedWatchWallet.getSupportedWatchWallet(mActivity)
+                .getWalletName(mActivity);
+        mBinding.txDetail.watchWallet.setText(walletName);
+
+        ViewModelProviders.of(mActivity)
+                .get(GlobalViewModel.class)
+                .getChangeAddress()
+                .observe(this, address -> this.changeAddress = address);
         CoinListViewModel viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
         viewModel.loadTx(data.getString(KEY_TX_ID)).observe(this, txEntity -> {
             mBinding.setTx(txEntity);
             this.txEntity = txEntity;
-            String signTx = getSignTxString(txEntity);
-            if (signTx.length() <= 1000) {
-                new Handler().postDelayed(() -> mBinding.txDetail.qrcodeLayout.qrcode.setData(signTx), 500);
-                mBinding.txDetail.export.setVisibility(View.GONE);
-                mBinding.txDetail.exportToSdcardHint.setOnClickListener(v ->
-                        showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(), null));
-                mBinding.txDetail.info.setOnClickListener(v -> showElectrumInfo(mActivity));
-            } else {
-                mBinding.txDetail.qr.setVisibility(View.GONE);
-            }
+            displaySignResult(txEntity);
             refreshAmount();
             refreshFromList();
             refreshReceiveList();
-            mBinding.txDetail.exportToSdcard.setOnClickListener(v -> {
-                showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(),null);
-            });
+            mBinding.txDetail.exportToSdcard.setOnClickListener(v -> showExportDialog());
         });
+    }
 
-        ViewModelProviders.of(mActivity)
-                .get(ElectrumViewModel.class)
-                .getChangeAddress()
-                .observe(this, address -> this.changeAddress = address);
-
+    protected void showExportDialog() {
+        showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(),null);
     }
 
     private void refreshFromList() {
@@ -150,9 +146,18 @@ public class ElectrumTxFragment extends BaseFragment<ElectrumTxBinding> {
 
     }
 
-    private String getSignTxString(TxEntity txEntity) {
+    protected void displaySignResult(TxEntity txEntity) {
         byte[] txData = Hex.decode(txEntity.getSignedHex());
-        return Base43.encode(txData);
+        String base43 = Base43.encode(txData);
+        if (base43.length() <= 1000) {
+            new Handler().postDelayed(() -> mBinding.txDetail.qrcodeLayout.qrcode.setData(base43), 500);
+            mBinding.txDetail.export.setVisibility(View.GONE);
+            mBinding.txDetail.exportToSdcardHint.setOnClickListener(v ->
+                    showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(), null));
+            mBinding.txDetail.info.setOnClickListener(v -> showElectrumInfo(mActivity));
+        } else {
+            mBinding.txDetail.qr.setVisibility(View.GONE);
+        }
     }
 
 }
