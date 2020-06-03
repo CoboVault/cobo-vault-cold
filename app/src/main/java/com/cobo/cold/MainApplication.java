@@ -17,6 +17,7 @@
 
 package com.cobo.cold;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.BroadcastReceiver;
@@ -24,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
@@ -35,13 +35,11 @@ import com.cobo.cold.logging.FileLogger;
 import com.cobo.cold.service.AttackCheckingService;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.UnlockActivity;
-import com.cobo.cold.util.HashUtil;
-
-import org.spongycastle.util.encoders.Hex;
 
 import java.lang.ref.SoftReference;
 
 public class MainApplication extends Application {
+    @SuppressLint("StaticFieldLeak")
     private static MainApplication sApplication;
     private AppExecutors mAppExecutors;
     private SoftReference<Activity> topActivity;
@@ -67,9 +65,6 @@ public class MainApplication extends Application {
         });
         initBackgroundCallBack();
         ScriptLoader.init(this);
-        if (TextUtils.isEmpty(Utilities.getRandomSalt(this))) {
-            Utilities.setRandomSalt(this, Hex.toHexString(HashUtil.getNextSalt()));
-        }
 
         IntentFilter mScreenOffFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mScreenOReceiver, mScreenOffFilter);

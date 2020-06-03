@@ -204,4 +204,14 @@ public class Util {
         System.arraycopy(checksum, 0, result, bytes.length, 4);
         return Base58.encode(result);
     }
+
+    public static String convertXpubToZpub(String xpub) {
+        byte[] bytes = Base58.decodeChecked(xpub);
+        byte[] result = new byte[bytes.length + 4];
+        System.arraycopy(int2bytes(0x04b24746), 0, bytes, 0, 4);
+        byte[] checksum = Sha256Hash.hashTwice(bytes, 0, bytes.length);
+        System.arraycopy(bytes, 0, result, 0, bytes.length);
+        System.arraycopy(checksum, 0, result, bytes.length, 4);
+        return Base58.encode(result);
+    }
 }

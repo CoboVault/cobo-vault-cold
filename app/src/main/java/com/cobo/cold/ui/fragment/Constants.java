@@ -23,6 +23,9 @@ public interface Constants {
     String KEY_ID = "id";
     String KEY_ADDRESS = "address";
     String KEY_ADDRESS_NAME = "address_name";
+    String KEY_ADDRESS_PATH = "address_path";
+    String KEY_IS_CHANGE_ADDRESS = "is_change_address";
+    String KEY_ACCOUNT_HDPATH = "account_hd_path";
     String KEY_TITLE = "title";
     String KEY_NAV_ID = "nav_id";
     String IS_FORCE = "is_force";

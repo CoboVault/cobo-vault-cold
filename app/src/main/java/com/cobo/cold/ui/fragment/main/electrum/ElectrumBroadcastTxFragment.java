@@ -39,7 +39,7 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.util.Objects;
 
-import static com.cobo.cold.ui.fragment.main.electrum.ElectrumTxConfirmFragment.showExportTxnDialog;
+import static com.cobo.cold.ui.fragment.main.electrum.UnsignedTxFragment.showExportTxnDialog;
 
 public class ElectrumBroadcastTxFragment extends BaseFragment<BroadcastElectrumTxFragmentBinding> {
 

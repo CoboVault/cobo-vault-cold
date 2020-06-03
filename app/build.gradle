@@ -195,6 +195,7 @@ preBuild {
             XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
         } catch (FileNotFoundException ignored) {
             // nop, iml not found
+            println 'iml not found'
         }
     }
 }

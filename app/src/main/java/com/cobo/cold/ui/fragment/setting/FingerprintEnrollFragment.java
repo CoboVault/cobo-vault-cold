@@ -19,6 +19,8 @@ package com.cobo.cold.ui.fragment.setting;
 
 import android.hardware.fingerprint.Fingerprint;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -231,6 +233,9 @@ public class FingerprintEnrollFragment extends BaseFragment<FingerprintEnrollBin
         binding.title.setText(R.string.fingerprint_rename_subtitle);
         binding.setInput(input);
         binding.inputBox.setSelectAllOnFocus(true);
+        binding.inputBox.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
+        binding.inputBox.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        binding.inputBox.setTransformationMethod(null);
         binding.close.setOnClickListener(v -> dialog.dismiss());
         binding.confirm.setOnClickListener(v -> {
             fingerprintKit.renameFingerprint(currentEnrolled, Objects.requireNonNull(input.get()));

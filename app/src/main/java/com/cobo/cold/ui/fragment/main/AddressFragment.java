@@ -22,11 +22,11 @@ import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.AddressFragmentBinding;
 import com.cobo.cold.db.entity.AddressEntity;
@@ -39,14 +39,19 @@ import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS;
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_NAME;
+import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_PATH;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
-import static com.cobo.cold.ui.fragment.Constants.KEY_ID;
+import static com.cobo.cold.ui.fragment.Constants.KEY_IS_CHANGE_ADDRESS;
+import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
 
 public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
 
-    String query;
+    private String query;
     private CoinViewModel viewModel;
+    private boolean isChangeAddress;
+    private String accountHdPath;
+    private List<AddressEntity> addressEntities;
     private final AddressCallback mAddrCallback = new AddressCallback() {
         @Override
         public void onClick(AddressEntity addr) {
@@ -58,6 +63,7 @@ public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
                 data.putString(KEY_COIN_CODE, bundle.getString(KEY_COIN_CODE));
                 data.putString(KEY_ADDRESS, addr.getAddressString());
                 data.putString(KEY_ADDRESS_NAME, addr.getName());
+                data.putString(KEY_ADDRESS_PATH, addr.getPath());
                 navigate(R.id.action_to_receiveCoinFragment, data);
             }
         }
@@ -70,18 +76,13 @@ public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
 
     private AddressAdapter mAddressAdapter;
 
-    public void exitEditAddressName() {
-        if (mAddressAdapter.isEditing()) {
-            mAddressAdapter.exitEdit();
-        }
-    }
-
-    public static Fragment newInstance(long id, @NonNull String coinId, @NonNull String coinCode) {
+    public static AddressFragment newInstance(@NonNull String coinId,
+                                       boolean isChange) {
         AddressFragment fragment = new AddressFragment();
         Bundle args = new Bundle();
-        args.putLong(KEY_ID, id);
         args.putString(KEY_COIN_ID, coinId);
-        args.putString(KEY_COIN_CODE, coinCode);
+        args.putString(KEY_COIN_CODE, Coins.coinCodeFromCoinId(coinId));
+        args.putBoolean(KEY_IS_CHANGE_ADDRESS, isChange);
         fragment.setArguments(args);
         return fragment;
     }
@@ -113,28 +114,31 @@ public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
     @Override
     protected void initData(Bundle savedInstanceState) {
         Bundle data = Objects.requireNonNull(getArguments());
+        isChangeAddress = data.getBoolean(KEY_IS_CHANGE_ADDRESS);
+        accountHdPath = Objects.requireNonNull(getAccount(mActivity)).getPath();
         Objects.requireNonNull(getParentFragment());
         CoinViewModel.Factory factory = new CoinViewModel.Factory(mActivity.getApplication(),
-                data.getLong(KEY_ID),
                 data.getString(KEY_COIN_ID));
-        viewModel = ViewModelProviders.of(getParentFragment(), factory)
-                .get(CoinViewModel.class);
+        viewModel = ViewModelProviders.of(getParentFragment(), factory).get(CoinViewModel.class);
         subscribeUi(viewModel.getAddress());
-
     }
 
     private void subscribeUi(LiveData<List<AddressEntity>> address) {
-        address.observe(this, entities -> mAddressAdapter.setItems(entities));
+        if (addressEntities != null) {
+            updateAddressList(addressEntities);
+        }
+        address.observe(this, entities -> {
+            addressEntities = entities;
+            updateAddressList(entities);
+        });
     }
 
-    public void setQuery(String s) {
-        query = s;
-        mAddressAdapter.getFilter().filter(s);
-    }
-
-    public void enterSearch() {
-        if (mAddressAdapter != null) {
-            mAddressAdapter.enterSearch();
+    private void updateAddressList(List<AddressEntity> entities) {
+        List<AddressEntity> filteredEntity = viewModel.filterByAccountHdPath(entities, accountHdPath);
+        if (isChangeAddress) {
+            mAddressAdapter.setItems(viewModel.filterChangeAddress(filteredEntity));
+        } else {
+            mAddressAdapter.setItems(viewModel.filterReceiveAddress(filteredEntity));
         }
     }
 

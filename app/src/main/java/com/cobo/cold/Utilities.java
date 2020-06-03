@@ -36,7 +36,6 @@ import static com.cobo.cold.ui.fragment.setting.FingerprintPreferenceFragment.FI
 
 public class Utilities {
     public static final String PREFERENCE_SECRET = "secret";
-    public static final String PREFERENCE_KEY_PASSWORD = "password";
     public static final String PREFERENCE_KEY_PATTERN = "pattern";
     public static final String PREFERENCE_KEY_VAULT_CREATED = "vault_created";
     public static final String PREFERENCE_KEY_LANGUAGE_SET = "language_set";
@@ -52,7 +51,6 @@ public class Utilities {
     public static final String PREFERENCE_KEY_MNEMONIC_COUNT = "mnemonic_count";
     public static final String FINGERPRINT_CLICKED = "fingerprint_clicked";
     public static final String PATTERN_LOCK_CLICKED = "pattern_lock_clicked";
-    public static final String PREFERENCE_KEY_RANDOM_SALT = "random_salt";
     public static final String FINGERPRINT_PASSWORD = "fingerprint_password";
     public static final String ATTACK_DETECTED = "attack_detected";
 
@@ -117,16 +115,6 @@ public class Utilities {
     public static void setVaultId(Context context, String id) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
         sp.edit().putString(PREFERENCE_KEY_VAULT_ID, id).apply();
-    }
-
-    public static void setRandomSalt(Context context, String salt) {
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
-        sp.edit().putString(PREFERENCE_KEY_RANDOM_SALT, salt).apply();
-    }
-
-    public static String getRandomSalt(Context context) {
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
-        return sp.getString(PREFERENCE_KEY_RANDOM_SALT, "");
     }
 
     public static void setCurrentBelongTo(Context context, String s) {

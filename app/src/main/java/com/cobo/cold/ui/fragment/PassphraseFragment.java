@@ -30,7 +30,6 @@ import android.widget.EditText;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
-import androidx.navigation.Navigation;
 
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;

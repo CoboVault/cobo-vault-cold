@@ -41,17 +41,45 @@
             android:layout_marginTop="34dp"
             app:step="3" />
 
-        <include
-            android:id="@+id/sync"
-            layout="@layout/sync"
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_marginTop="32dp"
+            android:text="@string/choose_watch_only_wallet"
+            />
+
+        <fragment
+            android:id="@+id/list"
+            android:name="com.cobo.cold.ui.fragment.setting.ChooseWatchWalletFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/white40"
+            android:text="@string/switch_watch_only_wallet_guide"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"/>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/complete"
             style="@style/AcceptButton"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/complete" />
 
 

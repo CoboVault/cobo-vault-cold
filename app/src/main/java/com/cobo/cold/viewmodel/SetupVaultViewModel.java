@@ -28,7 +28,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.cobo.coinlib.MnemonicUtils;
 import com.cobo.coinlib.utils.Bip39;
-import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
@@ -204,26 +203,32 @@ public class SetupVaultViewModel extends AndroidViewModel {
         AppExecutors.getInstance().diskIO().execute(() -> {
             for (CoinEntity coin : coins) {
                 CoinEntity coinEntity = mRepository.loadCoinSync(coin.getCoinId());
-                if (coinEntity != null) {
-                    continue;
+                long id;
+                if (coinEntity == null) {
+                    id = mRepository.insertCoin(coin);
+                    coinEntity = mRepository.loadCoinSync(coin.getCoinId());
+                } else {
+                    id = coinEntity.getId();
+                    coinEntity = mRepository.loadCoinSync(coin.getCoinId());
                 }
-                String xPub = new GetExtendedPublicKeyCallable(coin.getAccounts().get(0).getHdPath()).call();
-                coin.setExPub(xPub);
-                long id = mRepository.insertCoin(coin);
-                coin.setId(id);
-                boolean isFirstAccount = true;
+
+                List<AccountEntity> existsAccount = mRepository.loadAccountsForCoin(coinEntity);
+
                 for (AccountEntity account : coin.getAccounts()) {
-                    if (!isFirstAccount) {
-                        xPub = new GetExtendedPublicKeyCallable(account.getHdPath()).call();
+                    if (existsAccount.stream()
+                            .anyMatch(exist -> exist.getHdPath().equals(account.getHdPath()))) {
+                        continue;
                     }
-                    isFirstAccount = false;
+                    String xPub = new GetExtendedPublicKeyCallable(account.getHdPath()).call();
                     account.setCoinId(id);
                     account.setExPub(xPub);
                     mRepository.insertAccount(account);
-                    if (!Coins.showPublicKey(coin.getCoinCode())) {
-                        new AddAddressViewModel.AddAddressTask(coin, mRepository, null)
-                                .execute(coin.getCoinCode() + "-1");
-                    }
+                    new AddAddressViewModel.AddAddressTask(coinEntity, mRepository,
+                            null, xPub,0)
+                            .execute(1);
+                    new AddAddressViewModel.AddAddressTask(coinEntity, mRepository,
+                            null, xPub,1)
+                            .execute(1);
                 }
             }
             if (onComplete != null) {

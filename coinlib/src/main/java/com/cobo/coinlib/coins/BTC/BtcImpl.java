@@ -20,12 +20,24 @@ package com.cobo.coinlib.coins.BTC;
 import androidx.annotation.NonNull;
 
 import com.cobo.coinlib.coins.AbsTx;
+import com.cobo.coinlib.coins.SignPsbtResult;
 import com.cobo.coinlib.coins.SignTxResult;
 import com.cobo.coinlib.interfaces.Signer;
 import com.cobo.coinlib.v8.CoinImpl;
+import com.eclipsesource.v8.V8Array;
+import com.eclipsesource.v8.V8Function;
 import com.eclipsesource.v8.V8Object;
+import com.eclipsesource.v8.V8ScriptExecutionException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.stream.Stream;
 
 public class BtcImpl extends CoinImpl {
+
+    private V8Function parsePsbt;
+    private V8Function signPsbt;
     public BtcImpl() {
         super("BTC");
     }
@@ -34,4 +46,64 @@ public class BtcImpl extends CoinImpl {
         V8Object txData = constructTxData(tx.getMetaData());
         return signTxImpl(txData, "generateOmniTransactionSync", signers);
     }
+
+    SignPsbtResult signPsbt(@NonNull String psbt, Signer... signers) {
+        if (this.signPsbt == null) {
+            this.signPsbt = (V8Function) coin.get("signPSBTBase64Sync");
+        }
+        v8.registerResource(signPsbt);
+
+        V8Array params = new V8Array(v8);
+        v8.registerResource(params);
+        params.push(psbt);
+
+        if (signers.length > 0) {
+            V8Array signProviders = new V8Array(v8);
+            v8.registerResource(signProviders);
+            Stream.of(signers).forEach(signer -> signProviders.push(createSignerProvider(signer)));
+            params.push(signProviders);
+        } else {
+            return null;
+        }
+
+        try {
+            V8Object object = (V8Object) signPsbt.call(coin, params);
+            return new SignPsbtResult(object.getString("txId"),
+                    object.getString("psbtB64"));
+        } catch (V8ScriptExecutionException e) {
+            e.printStackTrace();
+        } finally {
+            v8.release(false);
+        }
+        return null;
+    }
+
+    JSONObject parsePsbt(@NonNull String psbtBase64) {
+        if (this.parsePsbt == null) {
+            this.parsePsbt = (V8Function) coin.get("parsePsbt");
+        }
+        v8.registerResource(parsePsbt);
+        V8Array params = new V8Array(v8);
+        v8.registerResource(params);
+        params.push(psbtBase64);
+        try {
+            V8Object result = (V8Object) parsePsbt.call(coin, params);
+            v8.registerResource(result);
+
+            V8Object json = v8.getObject("JSON");
+            v8.registerResource(json);
+
+            V8Array parameters = new V8Array(v8).push(result);
+            v8.registerResource(parameters);
+            String jsonResult = json.executeStringFunction("stringify", parameters);
+            return new JSONObject(jsonResult);
+
+        } catch (V8ScriptExecutionException | JSONException e) {
+            e.printStackTrace();
+        } finally {
+            v8.release(false);
+        }
+        return null;
+    }
+
 }

@@ -17,60 +17,58 @@
 
 package com.cobo.cold.ui.fragment.main;
 
-import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.provider.Settings;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.Observable;
-import androidx.databinding.ObservableField;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
+import com.cobo.cold.databinding.AddAddressBottomSheetBinding;
 import com.cobo.cold.databinding.AssetFragmentBinding;
 import com.cobo.cold.databinding.DialogBottomSheetBinding;
+import com.cobo.cold.db.PresetData;
 import com.cobo.cold.db.entity.CoinEntity;
+import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.viewmodel.AddAddressViewModel;
 import com.cobo.cold.viewmodel.CoinViewModel;
-import com.cobo.cold.viewmodel.PublicKeyViewModel;
+import com.cobo.cold.viewmodel.SetupVaultViewModel;
+import com.cobo.cold.viewmodel.SupportedWatchWallet;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
-import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
-import static com.cobo.cold.ui.fragment.Constants.KEY_ID;
+import static com.cobo.cold.viewmodel.GlobalViewModel.getAddressType;
 
 public class AssetFragment extends BaseFragment<AssetFragmentBinding>
-        implements Toolbar.OnMenuItemClickListener, NumberPickerCallback {
+        implements NumberPickerCallback {
 
-    private final ObservableField<String> query = new ObservableField<>();
-
-    private boolean isInSearch;
+    public static final String TAG = "AssetFragment";
     private Fragment[] fragments;
-    private boolean showPublicKey;
     private String coinId;
-    private String coinCode;
-    private long id;
-    private AddressNumberPicker mAddressNumberPicker;
-    private boolean hasAddress;
+    private String[] title;
+    private SupportedWatchWallet watchWallet;
 
     @Override
     protected int setView() {
@@ -79,57 +77,58 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
 
     @Override
     protected void init(View view) {
-        Bundle data = Objects.requireNonNull(getArguments());
-        coinId = data.getString(KEY_COIN_ID);
-        coinCode = data.getString(KEY_COIN_CODE);
-        id = data.getLong(KEY_ID);
-        showPublicKey = Coins.showPublicKey(coinCode);
-        mBinding.toolbar.inflateMenu(getMenuResId());
-        mBinding.toolbar.setOnMenuItemClickListener(this);
-        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
-        initSearchView();
-        initTabs();
+        coinId = Coins.BTC.coinId();
+        watchWallet = SupportedWatchWallet.getSupportedWatchWallet(mActivity);
+        mActivity.setSupportActionBar(mBinding.toolbar);
+        mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
+        String walletName = watchWallet.getWalletName(mActivity);
+        mBinding.toolbar.setTitle(walletName);
+        mBinding.fab.setOnClickListener(v -> addAddress());
+        title = new String[]{ getString(R.string.tab_my_address), getString(R.string.tab_my_change_address)};
+        initViewPager();
     }
 
-    private int getMenuResId() {
-        if (Coins.BTC.coinCode().equals(coinCode)) {
-            return R.menu.asset_hasmore;
-        }
-        return showPublicKey ? R.menu.asset_without_add : R.menu.asset;
+    private void addAddress() {
+        BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
+        AddAddressBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                R.layout.add_address_bottom_sheet,null,false);
+        String[] displayValue = IntStream.range(0, 9)
+                .mapToObj(i -> String.valueOf(i + 1))
+                .toArray(String[]::new);
+        binding.setValue(1);
+        binding.title.setText(getString(R.string.select_address_num, title[mBinding.tab.getSelectedTabPosition()]));
+        binding.close.setOnClickListener(v -> dialog.dismiss());
+        binding.picker.setValue(0);
+        binding.picker.setDisplayedValues(displayValue);
+        binding.picker.setMinValue(0);
+        binding.picker.setMaxValue(8);
+        binding.picker.setOnValueChangedListener((picker, oldVal, newVal) -> binding.setValue(newVal + 1));
+        binding.confirm.setOnClickListener(v-> {
+            onValueSet(binding.picker.getValue() + 1);
+            dialog.dismiss();
+
+        });
+        dialog.setContentView(binding.getRoot());
+        dialog.show();
     }
 
-    private void initTabs() {
-        if (!showPublicKey) {
-            initViewPager();
-        } else {
-            PublicKeyViewModel viewModel = ViewModelProviders.of(this)
-                    .get(PublicKeyViewModel.class);
-            Handler handler = new Handler();
-            AppExecutors.getInstance().diskIO().execute(() -> {
-                String address = viewModel.getAddress(coinId);
-                hasAddress = !TextUtils.isEmpty(address);
-                handler.post(this::initViewPager);
-
-            });
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.asset_hasmore, menu);
+        if (watchWallet == SupportedWatchWallet.COBO
+                || watchWallet == SupportedWatchWallet.BLUE) {
+            menu.findItem(R.id.action_sdcard).setVisible(false);
         }
-
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void initViewPager() {
-        String[] title = {showPublicKey && !hasAddress ? getString(R.string.tab_my_pubkey)
-                : getString(R.string.tab_my_address),
-                getString(R.string.tab_transaction_history)};
         if (fragments == null) {
             fragments = new Fragment[title.length];
-            if (showPublicKey) {
-                fragments[0] = PublicKeyFragment.newInstance(coinId);
-            } else {
-                fragments[0] = AddressFragment.newInstance(id, coinId, coinCode);
-            }
-            fragments[1] = TxListFragment.newInstance(coinId, coinCode);
+            fragments[0] = AddressFragment.newInstance(coinId, false);
+            fragments[1] = AddressFragment.newInstance(coinId, true);
         }
-
-        mBinding.viewpager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager(),
+        mBinding.viewpager.setAdapter(new FragmentStatePagerAdapter(getChildFragmentManager(),
                 BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
             @Override
@@ -150,46 +149,23 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         mBinding.tab.setupWithViewPager(mBinding.viewpager);
     }
 
-    private void initSearchView() {
-        mBinding.btnCancel.setOnClickListener(v -> exitSearch());
-        View.OnKeyListener backListener = (view, key_code, keyEvent) -> {
-            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                if (key_code == KeyEvent.KEYCODE_BACK) {
-                    if (isInSearch) {
-                        exitSearch();
-                        return true;
-                    }
-                }
-            }
-            return false;
-        };
-        mBinding.search.setOnKeyListener(backListener);
-        query.set("");
-        mBinding.setQuery(query);
-        query.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-            public void onPropertyChanged(Observable sender, int propertyId) {
-                if (fragments[0] instanceof AddressFragment) {
-                    AddressFragment addressFragment = (AddressFragment) fragments[0];
-                    addressFragment.setQuery(query.get());
-                }
-
-                TxListFragment txListFragment = (TxListFragment) fragments[1];
-                txListFragment.setQuery(query.get());
-
-            }
-        });
-
-    }
-
     @Override
     protected void initData(Bundle savedInstanceState) {
-        CoinViewModel.Factory factory = new CoinViewModel.Factory(mActivity.getApplication(), id, coinId);
+        CoinViewModel.Factory factory = new CoinViewModel.Factory(mActivity.getApplication(), coinId);
         CoinViewModel viewModel = ViewModelProviders.of(this, factory)
                 .get(CoinViewModel.class);
-
         mBinding.setCoinViewModel(viewModel);
         subscribeUi(viewModel);
+        checkAndAddNewCoins();
+    }
+
+    private void checkAndAddNewCoins() {
+        SetupVaultViewModel viewModel = ViewModelProviders.of(mActivity)
+                .get(SetupVaultViewModel.class);
+        AppExecutors.getInstance().diskIO().execute(()
+                -> viewModel.presetData(PresetData.generateCoins(mActivity), null)
+        );
+
     }
 
     private void subscribeUi(CoinViewModel viewModel) {
@@ -197,84 +173,83 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     }
 
     @Override
-    public boolean onMenuItemClick(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_search:
-                enterSearch();
-                break;
-            case R.id.action_add:
-                handleAddAddress();
-                break;
             case R.id.action_more:
                 showBottomSheetMenu();
                 break;
+            case R.id.action_scan:
+                scanQrCode();
+                break;
+            case R.id.action_sdcard:
+                showFileList();
             default:
                 break;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
-    private void handleAddAddress() {
-        if (fragments[0] instanceof AddressFragment) {
-            ((AddressFragment) fragments[0]).exitEditAddressName();
+    private void showFileList() {
+        switch (watchWallet) {
+            case ELECTRUM:
+            case GENERIC:
+                navigate(R.id.action_to_txnListFragment);
+                break;
+            case WASABI:
+                navigate(R.id.action_to_psbtListFragment);
+                break;
         }
-        if (mAddressNumberPicker == null) {
-            mAddressNumberPicker = new AddressNumberPicker();
-            mAddressNumberPicker.setCallback(this);
-        }
-        mAddressNumberPicker.show(mActivity.getSupportFragmentManager(), "");
+    }
+
+    private void scanQrCode() {
+        AndPermission.with(this)
+                .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE)
+                .onGranted(permissions -> navigate(R.id.action_to_scan))
+                .onDenied(permissions -> {
+                    Uri packageURI = Uri.parse("package:" + mActivity.getPackageName());
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    Toast.makeText(mActivity, getString(R.string.scan_permission_denied), Toast.LENGTH_LONG).show();
+                }).start();
     }
 
     private void showBottomSheetMenu() {
         BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
         DialogBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.dialog_bottom_sheet,null,false);
-        binding.addAddress.setOnClickListener(v-> {
-            handleAddAddress();
+        binding.exportXpub.setOnClickListener(v-> {
+            if (watchWallet == SupportedWatchWallet.GENERIC) {
+                navigate(R.id.action_to_export_xpub_generic);
+            } else {
+                navigate(R.id.action_to_export_xpub_guide);
+            }
             dialog.dismiss();
 
         });
-        binding.exportXpubToElectrum.setOnClickListener(v-> {
-            navigate(R.id.action_to_electrum_guide);
+
+        binding.signHistory.setOnClickListener(v-> {
+            Bundle data = new Bundle();
+            data.putString(KEY_COIN_ID, coinId);
+            navigate(R.id.action_to_txList, data);
             dialog.dismiss();
 
         });
+
+        binding.walletInfo.setOnClickListener(v-> {
+            navigate(R.id.action_to_walletInfoFragment);
+            dialog.dismiss();
+
+        });
+
         dialog.setContentView(binding.getRoot());
         dialog.show();
     }
 
-    private void enterSearch() {
-        isInSearch = true;
-        if (fragments[0] != null && fragments[0] instanceof AddressFragment) {
-            ((AddressFragment) fragments[0]).enterSearch();
-        }
-        mBinding.searchBar.setVisibility(View.VISIBLE);
-        mBinding.search.requestFocus();
-        InputMethodManager inputManager =
-                (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (inputManager != null) {
-            inputManager.showSoftInput(mBinding.search, 0);
-        }
-    }
-
-    private void exitSearch() {
-        isInSearch = false;
-        mBinding.search.setText("");
-        mBinding.searchBar.setVisibility(View.INVISIBLE);
-        mBinding.search.clearFocus();
-        InputMethodManager inputManager =
-                (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (inputManager != null) {
-            inputManager.hideSoftInputFromWindow(mBinding.search.getWindowToken(), 0);
-        }
-    }
-
     @Override
     public void onValueSet(int value) {
-        AddAddressViewModel.Factory factory = new AddAddressViewModel.Factory(mActivity.getApplication(),
-                id);
-        AddAddressViewModel viewModel = ViewModelProviders.of(this, factory)
+        AddAddressViewModel viewModel = ViewModelProviders.of(this)
                 .get(AddAddressViewModel.class);
 
         ProgressModalDialog dialog = ProgressModalDialog.newInstance();
@@ -283,14 +258,16 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         AppExecutors.getInstance().diskIO().execute(() -> {
             CoinEntity coinEntity = viewModel.getCoin(coinId);
             if (coinEntity != null) {
-                int addrCount = coinEntity.getAddressCount();
-                List<String> observableAddressNames = new ArrayList<>();
-                for (int i = addrCount; i < value + addrCount; i++) {
-                    String name = coinEntity.getCoinCode() + "-" + (i + 1);
-                    observableAddressNames.add(name);
-                }
-                viewModel.addAddress(observableAddressNames);
 
+                int tabPosition = mBinding.tab.getSelectedTabPosition();
+                int changeIndex;
+                if (tabPosition == 0) {
+                    changeIndex = 0;
+                } else {
+                    changeIndex = 1;
+                }
+
+                viewModel.addAddress(value, getAddressType(mActivity), changeIndex);
                 handler.post(() -> viewModel.getObservableAddState().observe(this, complete -> {
                     if (complete) {
                         handler.postDelayed(dialog::dismiss, 500);

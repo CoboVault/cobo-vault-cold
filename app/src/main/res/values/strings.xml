@@ -79,6 +79,38 @@
         <item>en</item>
     </string-array>
 
+    <string-array name="watch_wallet_list">
+        <item>Cobo Vault App</item>
+        <item>Electrum</item>
+        <item>Wasabi Wallet</item>
+        <item>BlueWallet</item>
+        <item>Generic Wallet</item>
+    </string-array>
+
+    <string-array name="watch_wallet_list_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+
+    <string-array name="address_format">
+        <item>Nested SegWit（P2WPKH-P2SH）</item>
+        <item>Native Segwit（P2WPKH）</item>
+    </string-array>
+
+    <string-array name="address_format_subtitle" translatable="false">
+        <item><![CDATA[eg. <font color="#00cdc3">3<font/>kgdahdkhghahdgkhaldshg]]></item>
+        <item><![CDATA[eg. <font color="#00cdc3">bc1<font/>akjhdfhkashdhdhsaghlh]]></item>
+    </string-array>
+
+    <string-array name="address_format_value" translatable="false">
+        <item>P2WPKH-P2SH</item>
+        <item>P2WPKH</item>
+    </string-array>
+
     <string-array name="screen_off_entries">
         <item>15 secs</item>
         <item>30 secs</item>
@@ -97,7 +129,8 @@
         <item>600000</item>
     </string-array>
 
-    <string name="tab_my_address">MY ADDRESSES</string>
+    <string name="tab_my_address">Receiving</string>
+    <string name="tab_my_change_address">Change</string>
     <string name="web_auth1"><![CDATA[1. Please visit <font color="#00cdc3">https://cobo.com/hardware-wallet/web-authentication<font/>]]></string>
     <string name="web_auth2"><![CDATA[2. Click on <font color="#00cdc3">\"Scan QR Code\" <font/>below and scan the QR code displayed on the website]]></string>
     <string name="web_auth3">3. Enter the code displayed on your Cobo Vault on the official website for authentication;</string>
@@ -126,7 +159,7 @@
     <string name="complete">Done</string>
     <string name="password_verify_too_short">Too short</string>
     <string name="sync_hint2"><![CDATA[Download Cobo Vault Mobile:<br><font color="#00cdc3"><u>https://cobo.com/hardware-wallet/cobo-vault-app</u><font/><br>]]></string>
-    <string name="sync_hint1"><![CDATA[Scan <font color="#00cdc3">QR Code<font/> with Cobo Vault Mobile]]></string>
+    <string name="sync_hint1"><![CDATA[Scan QR Code with Cobo Vault Mobile]]></string>
     <string name="wrong_mnemonic_please_check">recovery phrase incorrect, please try again.</string>
     <string name="dots_not_enough">Please connect at least 4 dots.</string>
     <string name="input_pattern_again">Please draw again to confirm.</string>
@@ -168,7 +201,7 @@
     <string name="Update">Update</string>
     <string name="draw_pattern_again">Please draw again to confirm</string>
     <string name="scan_to_auth">Scan QR Code</string>
-    <string name="signing_history">Signing Details</string>
+    <string name="signing_history">Signatures</string>
     <string name="add_coins">Add Cryptocurrency</string>
     <string name="not_in_whitelist_reject">Receiving address unauthorized, transaction declined!</string>
     <string name="invalid_mnemonic">recovery phrase incorrect, please check</string>
@@ -290,8 +323,10 @@
         <item>"Writing Secure Element…"</item>
     </string-array>
     <string name="export_to_electrum">Create Watch-Only Wallet in Electrum</string>
-    <string name="export_to_electrum_guide">1. Open Electrum and create a new wallet. \n2. Choose “Standard wallet”. \n3. Choose “Use a master key”. \n4. Touch “Show Master Public Key” below then click the camera icon in the “Create keystore from a master key” window in Electrum to scan the QR code that displays on Cobo Vault.
- \n5. Set a password. \n6. Enter the watch-only wallet.</string>
+    <string name="export_to_electrum_guide"><![CDATA[
+1. Open Electrum and create a new wallet. <br>2. Choose “Standard wallet”. <br>3. Choose “Use a master key”. <br>4. Touch “Show Master Public Key” below then click the camera icon in the “Create keystore from a master key” window in Electrum to scan the QR code that displays on Cobo Vault.
+ <br>5. Set a password. <br>6. Enter the watch-only wallet.
+    ]]></string>
     <string name="export_xpub">Show Master Public Key</string>
     <string name="export_to_electrum_guide_hint">How to create a watch-only wallet in Electrum:</string>
     <string name="send_address">From %d</string>
@@ -318,12 +353,13 @@
     <string name="transaction_from_electrum">This transaction is from Electrum</string>
     <string name="add_address">Add Address</string>
     <string name="use_electrum_scan_xpub">Scan master public key using Electrum</string>
+    <string name="scan_xpub">Scan master public key</string>
     <string name="export_signed_txn_file">Export Signed File</string>
     <string name="export_signed_txn_action_guide">How to broadcast with Electrum:\nIn Electrum, go to Tools > Load Transaction > From File. Open the file, and click “Broadcast”.</string>
     <string name="export">Export</string>
     <string name="export_xpub_text_file">Export Master Public Key File</string>
     <string name="file_name_label">File name:</string>
-    <string name="master_xpub">Master Public Key (Nested SegWit)</string>
+    <string name="master_xpub">Master Public Key (%s)</string>
     <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>touch here to export via microSD.</u>]]></string>
     <string name="scan_electrum_hint">Difficulty scanning? You can import pending transactions from Electrum using a microSD card (Menu > MicroSD Card).</string>
     <string name="sign_txn_in_sdcard">Unsigned Transaction Files</string>
@@ -337,11 +373,74 @@
     <string name="only_support_btc">Please scan only BTC</string>
     <string name="keep_rolling">Keep it Rolling</string>
     <string name="confirm_rolling">Generate</string>
-    <string name="rolling_hint_less_than_99">You have rolled %d times. We recommend you roll 99 times for 256-bit <entropy class=""></entropy></string>
+    <string name="rolling_hint_less_than_99">You have rolled %d times. We recommend you roll 99 times for 256-bit </string>
     <string name="rolling_hint_less_than_50">You have rolled %d times. You need at least 50 rolls to generate a recovery phrase.</string>
     <string name="rolling_not_enough">Keep it Rolling</string>
     <string name="dice_rolls">Dice Rolls</string>
     <string name="dice_roll_guide"><![CDATA[How to use dice to generate keys:<br><br> 1. Roll the dice at least 50 times. Roll 99 times to obtain 256-bit entropy (recommended). There is no limit to the number of rolls you can use.<br>2. We recommend you use <font color="#00cdc3">casino dice<font/> to increase the entropy of each dice throw.]]></string>
     <string name="start">Start</string>
     <string name="pattern_lock_hide_track">To prevent peeping, track will be hidden when unlocked</string>
+    <string name="select_address_format">Toggle Address Type</string>
+    <string name="select_address_num">Select number（%s）</string>
+    <string name="change_address">Change Address</string>
+    <string name="export_xpub_guide_title_electrum">Export Electrum Watch-Only Wallet</string>
+    <string name="export_xpub_guide_title_wasabi">Export Wasabi Watch-Only Wallet</string>
+    <string name="export_xpub_guide_title_cobo">Export Cobo Vault Mobile Watch-Only Wallet</string>
+    <string name="export_xpub_guide_title_blue">Export BlueWallet Watch-Only Wallet</string>
+    <string name="export_xpub_guide_text1_electrum">How to create a watch-only wallet in BlueWallet:</string>
+    <string name="export_xpub_guide_text1_cobo">How to create a watch-only wallet in Cobo Vault Mobile:</string>
+    <string name="export_xpub_guide_text1_wasabi">How to create a watch-only wallet in Wasabi:</string>
+    <string name="export_xpub_guide_text1_blue">How to create a watch-only wallet in BlueWallet:</string>
+    <string name="export_xpub_guide_text2_electrum"><![CDATA[
+        1. Open Electrum and create a new wallet. <br>
+        2. Choose <font color="#00cdc3">“Standard wallet”<font/>. <br>
+        3. Choose <font color="#00cdc3">“Use a master key”<font/>. <br>
+        4. Touch “Display Master Public Key QR Code” below then click the camera icon in Electrum to scan the QR code that displays on Cobo Vault.<br>
+        5. Set a password. <br>
+        6. Enter the watch-only wallet.
+    ]]></string>
+
+    <string name="export_xpub_guide_text2_cobo"><![CDATA[
+        1. Open Cobo Vault Mobile and add new wallet. <br>
+        2. Choose <font color="#00cdc3">“Hardware Wallet”<font/>, and touch "Bind" button. <br>
+        3. Touch <font color="#00cdc3">“Display Master Public Key QR Code”<font/> below then scan the OR code with Cobo Vault App. <br><br>
+        Download Cobo Vault  Mobile App:<br>
+        <font color="#00cdc3">https://cobo.com/hardware-wallet/downloads<font/>
+    ]]></string>
+
+    <string name="export_xpub_guide_text2_wasabi"><![CDATA[
+        1. open Wasabi and create a new wallet <br>
+        2. Choose <font color="#00cdc3">“Hardware Wallet”<font/> <br>
+        3. Choose <font color="#00cdc3">“Import CoboVault”<font/> <br>
+        4. Touch <font color="#00cdc3">"Export Wallet"<font/> below then open the file in Wasabi <br>
+        5. Click <font color="#00cdc3">“Load Wallet”<font/> <br>
+        6. After loading, you can enter the watch-only wallet<br><br>
+        Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting
+    ]]></string>
+
+    <string name="export_xpub_guide_text2_blue"><![CDATA[
+        1. Open BlueWallet，add wallet.<br>
+        2. Choose “Import Cobo Vault”.
+        3. Touch <font color="#00cdc3">“Show QR code”<font/> and scan the QR code with BlueWallet.<br>
+    ]]></string>
+    <string name="show_master_public_key_qrcode">Display Master Public Key QR Code</string>
+    <string name="show_qrcode">Display QR Code</string>
+    <string name="export_wallet">Export Wallet</string>
+    <string name="native_segwit">Native Segwit</string>
+    <string name="p2pkh">Pay To Public Key Hash</string>
+    <string name="nested_segwit">Nested SegWit</string>
+    <string name="txid">TxID</string>
+    <string name="skip_export">Export Later</string>
+    <string name="choose_watch_only_wallet">Choose Watch Wallet</string>
+    <string name="switch_watch_only_wallet_guide">Go to Menu > Setting > Watch-only wallet to switch</string>
+    <string name="wallet_info">Wallet Info</string>
+    <string name="wallet">Key Fingerprint:</string>
+    <string name="addressType">Address Type:</string>
+    <string name="switch_address_type">Toggle Address Type</string>
+    <string name="script_type">Script Type:</string>
+    <string name="address_path">Account Key Path:</string>
+    <string name="xpub">Account Extended Public Key:</string>
+    <string name="wallet_info_hint">*Do not share Public Key with others, Account Extended Public Key can get your addresses and find out how may coins you have</string>
+    <string name="confirm_add_address">Confirm</string>
+    <string name="watch_wallet_not_match">Please use %s generate unsigned transaction</string>
 </resources>

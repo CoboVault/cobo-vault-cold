@@ -19,7 +19,6 @@ package com.cobo.cold.db;
 
 import android.content.Context;
 
-import com.cobo.coinlib.path.CoinPath;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.db.entity.AccountEntity;
@@ -44,18 +43,12 @@ public class PresetData {
         entity.setIndex(coin.coinIndex());
         entity.setBelongTo(Utilities.getCurrentBelongTo(context));
         entity.setAddressCount(0);
-        AccountEntity account = new AccountEntity();
-        String defaultHdPath = CoinPath.M()
-                .purpose(Coins.purposeNumber(entity.getCoinCode()))
-                .coinType(entity.getIndex())
-                .account(0)
-                .toString();
 
-        if (Coins.CURVE.ED25519 == getCurveByPath(defaultHdPath)) {
-            defaultHdPath += "/0'/0'";
+        for (String path : coin.accountPaths()) {
+            AccountEntity accountEntity = new AccountEntity();
+            accountEntity.setHdPath(path);
+            entity.addAccount(accountEntity);
         }
-        account.setHdPath(defaultHdPath);
-        entity.addAccount(account);
         return entity;
     }
 

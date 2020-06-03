@@ -24,8 +24,34 @@ import java.util.List;
 import java.util.Optional;
 
 public class Coins {
-    public static final Coin BTC = new Coin("bitcoin", "BTC", "Bitcoin", 0);
+    public static final Coin BTC = new Coin("bitcoin", "BTC", "Bitcoin", 0,
+            new String[] {
+                    Account.P2PKH.getPath(),
+                    Account.P2SH.getPath(),
+                    Account.SegWit.getPath(),
+            });
 
+    public enum Account{
+        P2PKH("M/44'/0'/0'","P2PKH"),
+        P2SH("M/49'/0'/0'","P2WPKH-P2SH"),
+        SegWit("M/84'/0'/0'","P2WPKH");
+
+        private String path;
+        private String type;
+
+        Account(String path, String type) {
+            this.path = path;
+            this.type = type;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public String getType() {
+            return type;
+        }
+    }
 
     public static final List<Coin> SUPPORTED_COINS = Arrays.asList(
             BTC
@@ -74,24 +100,36 @@ public class Coins {
         return coin.isPresent() ? coin.get().coinName() : "";
     }
 
+    public static boolean showPublicKey(String coinCode) {
+        return false;
+    }
+
+    public enum CURVE {
+        ED25519,
+        SECP256K1,
+        SECP256R1
+    }
+
     public static class Coin {
         private final String coinId;
         private final String coinCode;
         private final String coinName;
         private final int coinIndex;
         private final CURVE curve;
+        private final String[] accountPaths;
 
 
-        public Coin(String coinId, String coinCode, String coinName, int coinIndex) {
-            this(coinId, coinCode, coinName, coinIndex, CURVE.SECP256K1);
+        public Coin(String coinId, String coinCode, String coinName, int coinIndex, String[] accountPaths) {
+            this(coinId, coinCode, coinName, coinIndex, accountPaths, CURVE.SECP256K1);
         }
 
-        public Coin(String coinId, String coinCode, String coinName, int coinIndex, CURVE curve) {
+        public Coin(String coinId, String coinCode, String coinName, int coinIndex, String[] accountPaths, CURVE curve) {
             this.coinId = coinId;
             this.coinCode = coinCode;
             this.coinName = coinName;
             this.coinIndex = coinIndex;
             this.curve = curve;
+            this.accountPaths = accountPaths;
         }
 
         public String
@@ -114,20 +152,10 @@ public class Coins {
         public CURVE curve() {
             return curve;
         }
-    }
 
-    public enum CURVE {
-        ED25519,
-        SECP256K1,
-        SECP256R1
-    }
-
-    public static int purposeNumber(String coinCode) {
-        return 49;
-    }
-
-    public static boolean showPublicKey(String coinCode) {
-        return false;
+        public String[] accountPaths() {
+            return accountPaths;
+        }
     }
 
 }

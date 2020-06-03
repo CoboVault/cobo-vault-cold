@@ -19,57 +19,62 @@ package com.cobo.cold.viewmodel;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.ObservableField;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.cobo.coinlib.coins.AbsDeriver;
+import com.cobo.coinlib.coins.BTC.Btc;
+import com.cobo.coinlib.coins.BTC.Deriver;
 import com.cobo.coinlib.exception.InvalidPathException;
-import com.cobo.coinlib.path.Account;
+import com.cobo.coinlib.path.AddressIndex;
+import com.cobo.coinlib.path.CoinPath;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
-import com.cobo.cold.callables.GetExtendedPublicKeyCallable;
 import com.cobo.cold.db.entity.AccountEntity;
 import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AddAddressViewModel extends AndroidViewModel {
 
     private final DataRepository mRepo;
     public CoinEntity coin;
-    private final ObservableField<Boolean> loading = new ObservableField<>();
+
     private final MutableLiveData<Boolean> addComplete = new MutableLiveData<>();
 
-    private AddAddressViewModel(@NonNull Application application, DataRepository repository,
-                                final long id) {
+    public AddAddressViewModel(@NonNull Application application) {
         super(application);
-        mRepo = repository;
+        mRepo = ((MainApplication)application).getRepository();
     }
 
-    public ObservableField<Boolean> getLoading() {
-        return loading;
-    }
+    public void addAddress(int count, Btc.AddressType type, int changeIndex) {
+        String hdPath;
+        switch (type) {
+            case P2SH:
+                hdPath = Coins.Account.P2SH.getPath();
+                break;
+            case SegWit:
+                hdPath = Coins.Account.SegWit.getPath();
+                break;
+           default:
+                hdPath = Coins.Account.P2PKH.getPath();
+                break;
+        }
+        List<AccountEntity> accounts = mRepo.loadAccountsForCoin(coin);
 
-    public void addAddress(List<String> addrs) {
-        loading.set(true);
-        new AddAddressTask(coin, mRepo, () -> {
-            loading.set(false);
-            addComplete.setValue(Boolean.TRUE);
-        }).execute(addrs.toArray(new String[0]));
-    }
+        accounts.stream()
+                .filter(account -> account.getHdPath().toUpperCase().equals(hdPath))
+                .findFirst()
+                .ifPresent(accountEntity -> new AddAddressTask(coin, mRepo,
+                        () -> addComplete.setValue(Boolean.TRUE), accountEntity.getExPub(),
+                        changeIndex).execute(count));
 
-    public void addAddress(CoinEntity coinEntity, DataRepository repo, String addrName) {
-        new AddAddressTask(coinEntity, repo, null).execute(addrName);
     }
 
     public CoinEntity getCoin(String coinId) {
@@ -81,83 +86,77 @@ public class AddAddressViewModel extends AndroidViewModel {
         return addComplete;
     }
 
-    public static class Factory extends ViewModelProvider.NewInstanceFactory {
-        @NonNull
-        private final Application mApplication;
-
-        private final long mId;
-
-        private final DataRepository mRepository;
-
-        public Factory(@NonNull Application application, long id) {
-            mApplication = application;
-            mId = id;
-            mRepository = ((MainApplication) application).getRepository();
-        }
-
-        @NonNull
-        @Override
-        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            //noinspection unchecked
-            return (T) new AddAddressViewModel(mApplication, mRepository, mId);
-        }
-    }
-
-    static class AddAddressTask extends AsyncTask<String, Void, Void> {
+    static class AddAddressTask extends AsyncTask<Integer, Void, Void> {
         private final CoinEntity coinEntity;
         private final DataRepository repo;
         private final Runnable onComplete;
+        private String xpub;
+        private int changeIndex;
 
-        AddAddressTask(CoinEntity coinEntity, DataRepository repo, Runnable onComplete) {
+        AddAddressTask(CoinEntity coinEntity,
+                       DataRepository repo,
+                       Runnable onComplete,
+                       @NonNull String xpub,
+                       int changeIndex) {
             this.coinEntity = coinEntity;
             this.repo = repo;
             this.onComplete = onComplete;
+            this.changeIndex = changeIndex;
+            this.xpub = xpub;
         }
 
         @Override
-        protected Void doInBackground(String... strings) {
+        protected Void doInBackground(Integer... count) {
+            AccountEntity accountEntity = repo.loadAccountsByXpub(coinEntity.getId(), xpub);
+            List<AddressEntity> address = repo.loadAddressSync(coinEntity.getCoinId());
 
-            AccountEntity defaultAccount = repo.loadAccountsForCoin(coinEntity).get(0);
-            int addressCount = coinEntity.getAddressCount();
-            Account account;
-            try {
-                account = Account.parseAccount(defaultAccount.getHdPath());
-            } catch (InvalidPathException e) {
-                return null;
-            }
-
-            String exPub = defaultAccount.getExPub();
-            if (TextUtils.isEmpty(exPub)) {
-                exPub = new GetExtendedPublicKeyCallable(account.toString()).call();
-                defaultAccount.setExPub(exPub);
-            }
-
-            List<AddressEntity> entities = new ArrayList<>();
-            for (int i = 0; i < strings.length; i++) {
-                AddressEntity addressEntity = new AddressEntity();
-                addressEntity.setPath(
-                        account.external()
-                                .address(i + addressCount).toString());
-
-                int coinType = account.getParent().getValue();
-                AbsDeriver deriver = AbsDeriver.newInstance(Coins.coinCodeOfIndex(coinType));
-                if (deriver != null) {
-                    String addr = deriver.derive(exPub, 0, i + addressCount);
-                    addressEntity.setAddressString(addr);
-                    addressEntity.setCoinId(coinEntity.getCoinId());
-                    addressEntity.setIndex(i + addressCount);
-                    addressEntity.setName(strings[i]);
-                    addressEntity.setBelongTo(coinEntity.getBelongTo());
-                    entities.add(addressEntity);
+            Optional<AddressEntity> optional = address.stream()
+                    .filter(addressEntity -> addressEntity.getPath()
+                    .startsWith(accountEntity.getHdPath()+"/" + changeIndex))
+                    .max((o1, o2) -> o1.getIndex() - o2.getIndex());
+            int index = -1;
+            if (optional.isPresent()) {
+                try {
+                    AddressIndex addressIndex = CoinPath.parsePath(optional.get().getPath());
+                    index = addressIndex.getValue();
+                } catch (InvalidPathException e) {
+                    e.printStackTrace();
                 }
             }
 
-            coinEntity.setAddressCount(coinEntity.getAddressCount() + strings.length);
-            defaultAccount.setAddressLength(addressCount + strings.length);
-            repo.updateAccount(defaultAccount);
+            int addressCount = index + 1;
+            Btc.AddressType addressType = getAddressType(accountEntity);
+            List<AddressEntity> entities = new ArrayList<>();
+            for (int i = 0; i < count[0]; i++) {
+                AddressEntity addressEntity = new AddressEntity();
+                addressEntity.setPath(accountEntity.getHdPath()+"/" + changeIndex+"/" + (addressCount + i));
+                String addr = new Deriver()
+                        .derive(xpub, changeIndex, i + addressCount, addressType);
+                addressEntity.setAddressString(addr);
+                addressEntity.setCoinId(coinEntity.getCoinId());
+                addressEntity.setIndex(i + addressCount);
+                addressEntity.setName("BTC-" + (i + addressCount));
+                addressEntity.setBelongTo(coinEntity.getBelongTo());
+                entities.add(addressEntity);
+            }
+
+            coinEntity.setAddressCount(coinEntity.getAddressCount() + count[0]);
+            accountEntity.setAddressLength(addressCount + count[0]);
+            repo.updateAccount(accountEntity);
             repo.updateCoin(coinEntity);
             repo.insertAddress(entities);
             return null;
+        }
+
+        static Btc.AddressType getAddressType(AccountEntity accountEntity) {
+            String hdPath = accountEntity.getHdPath();
+            if (Coins.Account.P2SH.getPath().equals(hdPath)) {
+                return Btc.AddressType.P2SH;
+            } else if(Coins.Account.SegWit.getPath().equals(hdPath)) {
+                return Btc.AddressType.SegWit;
+            } else {
+                return Btc.AddressType.P2PKH;
+            }
         }
 
         @Override

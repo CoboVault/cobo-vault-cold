@@ -64,7 +64,7 @@
 
         <TextView
             android:id="@+id/addr"
-            android:layout_width="133dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/name"
             android:ellipsize="middle"
@@ -87,7 +87,8 @@
             android:alpha="0.5"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/edit"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription"
+            android:visibility="gone"/>
 
         <include
             layout="@layout/divider"

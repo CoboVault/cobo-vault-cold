@@ -18,37 +18,18 @@
 package com.cobo.cold.viewmodel;
 
 import android.app.Application;
-import android.content.Context;
-import android.os.Handler;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.cobo.coinlib.Util;
-import com.cobo.coinlib.coins.AbsDeriver;
-import com.cobo.coinlib.coins.BTC.Btc;
 import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.coins.BTC.Electrum.TransactionInput;
 import com.cobo.coinlib.coins.BTC.Electrum.TransactionOutput;
-import com.cobo.coinlib.exception.InvalidPathException;
-import com.cobo.coinlib.path.Account;
-import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
-import com.cobo.cold.R;
-import com.cobo.cold.databinding.CommonModalBinding;
-import com.cobo.cold.db.entity.AccountEntity;
-import com.cobo.cold.db.entity.CoinEntity;
-import com.cobo.cold.ui.modal.ExportToSdcardDialog;
-import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.FileUtils;
 import com.cobo.cold.update.utils.Storage;
 
@@ -66,73 +47,16 @@ import java.util.regex.Pattern;
 public class ElectrumViewModel extends AndroidViewModel {
 
     public static final String ELECTRUM_SIGN_ID = "electrum_sign_id";
-    private static final int DEFAULT_CHANGE_ADDRESS_NUM = 100;
 
     private static Pattern signedTxnPattern = Pattern.compile("^signed_[0-9a-fA-F]{8}.txn$");
     private final DataRepository mRepo;
     private MutableLiveData<String> exPub = new MutableLiveData<>();
     private Storage storage;
-    private MutableLiveData<List<String>> changeAddress = new MutableLiveData<>();
-    private String xpub;
 
     public ElectrumViewModel(@NonNull Application application) {
         super(application);
         mRepo = MainApplication.getApplication().getRepository();
         storage = Storage.createByEnvironment(application);
-        deriveChangeAddress();
-    }
-
-    private void deriveChangeAddress() {
-        AppExecutors.getInstance().networkIO().execute(()->{
-            if (TextUtils.isEmpty(xpub)) {
-                xpub = new ExpubInfo().invoke().expub;
-            }
-            List<String> changes = new ArrayList<>();
-            AbsDeriver btcDeriver = new Btc.Deriver();
-            for (int i = 0; i < DEFAULT_CHANGE_ADDRESS_NUM; i++) {
-                changes.add(btcDeriver.derive(xpub,1, i));
-            }
-            changeAddress.postValue(changes);
-        });
-    }
-
-    public LiveData<List<String>> getChangeAddress() {
-        return changeAddress;
-    }
-
-    public static boolean hasSdcard(Context context) {
-        Storage storage = Storage.createByEnvironment(context);
-        return storage != null && storage.getExternalDir() != null;
-    }
-
-    public static boolean writeToSdcard(Storage storage, String content, String fileName) {
-        File file = new File(storage.getElectrumDir(), fileName);
-        return FileUtils.writeString(file, content);
-    }
-
-    public static void showNoSdcardModal(AppCompatActivity activity) {
-        ModalDialog modalDialog = ModalDialog.newInstance();
-        CommonModalBinding binding = DataBindingUtil.inflate(
-                LayoutInflater.from(activity), R.layout.common_modal,
-                null, false);
-        binding.title.setText(R.string.hint);
-        binding.subTitle.setText(R.string.insert_sdcard_hint);
-        binding.close.setVisibility(View.GONE);
-        binding.confirm.setText(R.string.know);
-        binding.confirm.setOnClickListener(vv -> modalDialog.dismiss());
-        modalDialog.setBinding(binding);
-        modalDialog.show(activity.getSupportFragmentManager(), "");
-    }
-
-    public static void exportSuccess(AppCompatActivity activity, Runnable runnable) {
-        ExportToSdcardDialog dialog = new ExportToSdcardDialog();
-        dialog.show(activity.getSupportFragmentManager(), "");
-        new Handler().postDelayed(() -> {
-            dialog.dismiss();
-            if (runnable != null) {
-                runnable.run();
-            }
-        }, 1000);
     }
 
     public static JSONObject adapt(ElectrumTx tx) throws JSONException {
@@ -174,31 +98,6 @@ public class ElectrumViewModel extends AndroidViewModel {
         }
     }
 
-    public String getXpub() {
-        return xpub;
-    }
-
-    public LiveData<String> getMasterPublicKey() {
-        AppExecutors.getInstance().diskIO().execute(() -> {
-            ExpubInfo expubInfo = new ExpubInfo().invoke();
-            String hdPath = expubInfo.getHdPath();
-            String expub = expubInfo.getExpub();
-            xpub = expub;
-            try {
-                Account account = Account.parseAccount(hdPath);
-                if (account.getParent().getParent().getValue() == 49 && expub.startsWith("xpub")) {
-                    exPub.postValue(Util.convertXpubToYpub(expub));
-                } else if (expub.startsWith("ypub")) {
-                    exPub.postValue(expub);
-                }
-            } catch (InvalidPathException e) {
-                e.printStackTrace();
-            }
-
-        });
-        return exPub;
-    }
-
     private boolean isSignedTxn(String fileName) {
         Matcher matcher = signedTxnPattern.matcher(fileName);
         return matcher.matches();
@@ -238,26 +137,5 @@ public class ElectrumViewModel extends AndroidViewModel {
             }
         });
         return txnHex;
-    }
-
-    private class ExpubInfo {
-        private String hdPath;
-        private String expub;
-
-        public String getHdPath() {
-            return hdPath;
-        }
-
-        public String getExpub() {
-            return expub;
-        }
-
-        public ExpubInfo invoke() {
-            CoinEntity btc = mRepo.loadCoinSync(Coins.coinIdFromCoinCode("BTC"));
-            AccountEntity accountEntity = mRepo.loadAccountsForCoin(btc).get(0);
-            hdPath = accountEntity.getHdPath();
-            expub = accountEntity.getExPub();
-            return this;
-        }
     }
 }

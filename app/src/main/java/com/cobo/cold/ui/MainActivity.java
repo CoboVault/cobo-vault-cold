@@ -45,15 +45,12 @@ import com.cobo.cold.databinding.ActivityMainBinding;
 import com.cobo.cold.fingerprint.FingerprintKit;
 import com.cobo.cold.ui.common.FullScreenActivity;
 import com.cobo.cold.ui.fragment.AboutFragment;
-import com.cobo.cold.ui.fragment.SyncFragment;
-import com.cobo.cold.ui.fragment.main.AssetListFragment;
-import com.cobo.cold.ui.fragment.main.ManageCoinFragment;
-import com.cobo.cold.ui.fragment.main.electrum.ElectrumTxnListFragment;
+import com.cobo.cold.ui.fragment.main.AssetFragment;
 import com.cobo.cold.ui.fragment.setting.SettingFragment;
 import com.cobo.cold.ui.views.DrawerAdapter;
 import com.cobo.cold.ui.views.FullScreenDrawer;
 import com.cobo.cold.ui.views.UpdatingHelper;
-import com.cobo.cold.viewmodel.ElectrumViewModel;
+import com.cobo.cold.viewmodel.GlobalViewModel;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -75,7 +72,6 @@ public class MainActivity extends FullScreenActivity {
 
     int currentFragmentIndex = R.id.drawer_wallet;
     private DrawerAdapter drawerAdapter;
-    private ElectrumViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +88,7 @@ public class MainActivity extends FullScreenActivity {
         if (savedInstanceState == null) {
             new UpdatingHelper(this);
         }
-        viewModel = ViewModelProviders.of(this).get(ElectrumViewModel.class);
+        ViewModelProviders.of(this).get(GlobalViewModel.class);
     }
 
     private void initNavController() {
@@ -178,14 +174,6 @@ public class MainActivity extends FullScreenActivity {
                 case R.id.drawer_wallet:
                     mNavController.navigateUp();
                     break;
-                case R.id.drawer_sync:
-                    mNavController.navigateUp();
-                    mNavController.navigate(R.id.action_to_syncFragment);
-                    break;
-                case R.id.drawer_sdcard:
-                    mNavController.navigateUp();
-                    mNavController.navigate(R.id.action_to_txnListFragment);
-                    break;
                 case R.id.drawer_settings:
                     mNavController.navigateUp();
                     mNavController.navigate(R.id.action_to_settingFragment);
@@ -211,7 +199,7 @@ public class MainActivity extends FullScreenActivity {
         } else {
             NavDestination destination = mNavController.getCurrentDestination();
             if (destination != null && destination.getLabel() != null) {
-                if (AssetListFragment.TAG.equals(destination.getLabel().toString())) {
+                if (AssetFragment.TAG.equals(destination.getLabel().toString())) {
                     return;
                 }
             }
@@ -288,10 +276,7 @@ public class MainActivity extends FullScreenActivity {
     private final static Map<Integer, String> mMainFragments = new HashMap<>();
 
     static {
-        mMainFragments.put(R.id.drawer_wallet, AssetListFragment.TAG);
-        mMainFragments.put(R.id.drawer_manage, ManageCoinFragment.TAG);
-        mMainFragments.put(R.id.drawer_sync, SyncFragment.TAG);
-        mMainFragments.put(R.id.drawer_sdcard, ElectrumTxnListFragment.TAG);
+        mMainFragments.put(R.id.drawer_wallet, AssetFragment.TAG);
         mMainFragments.put(R.id.drawer_settings, SettingFragment.TAG);
         mMainFragments.put(R.id.drawer_about, AboutFragment.TAG);
     }

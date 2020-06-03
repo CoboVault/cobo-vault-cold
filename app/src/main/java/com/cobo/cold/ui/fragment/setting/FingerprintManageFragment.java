@@ -21,6 +21,7 @@ import android.graphics.Color;
 import android.hardware.fingerprint.Fingerprint;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -115,6 +116,8 @@ public class FingerprintManageFragment extends BaseFragment<FingerprintManageBin
         binding.setInput(input);
         binding.inputBox.setSelectAllOnFocus(true);
         binding.inputBox.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
+        binding.inputBox.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        binding.inputBox.setTransformationMethod(null);
         binding.close.setOnClickListener(v -> dialog.dismiss());
         binding.confirm.setOnClickListener(v -> {
             fpKit.renameFingerprint(fingerprint, input.get());

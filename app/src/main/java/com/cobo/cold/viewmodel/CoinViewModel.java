@@ -26,6 +26,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.cobo.coinlib.exception.InvalidPathException;
+import com.cobo.coinlib.path.AddressIndex;
+import com.cobo.coinlib.path.CoinPath;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
@@ -33,6 +36,7 @@ import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CoinViewModel extends AndroidViewModel {
 
@@ -41,15 +45,42 @@ public class CoinViewModel extends AndroidViewModel {
     private final LiveData<List<AddressEntity>> mObservableAddress;
     public final ObservableField<CoinEntity> coin = new ObservableField<>();
 
-    private CoinViewModel(@NonNull Application application, DataRepository repository,
-                          final long id, final String coinId) {
+    private CoinViewModel(@NonNull Application application,final String coinId) {
         super(application);
-        mRepository = repository;
-        mObservableCoin = repository.loadCoin(id);
-        mObservableAddress = repository.loadAddress(coinId);
+        mRepository = ((MainApplication)application).getRepository();
+        mObservableCoin = mRepository.loadCoin(coinId);
+        mObservableAddress = mRepository.loadAddress(coinId);
 
     }
 
+    public List<AddressEntity> filterChangeAddress(List<AddressEntity> addressEntities) {
+        return addressEntities.stream()
+                .filter(this::isChangeAddress)
+                .collect(Collectors.toList());
+    }
+
+    public List<AddressEntity> filterReceiveAddress(List<AddressEntity> addressEntities) {
+        return addressEntities.stream()
+                .filter(addressEntity -> !isChangeAddress(addressEntity))
+                .collect(Collectors.toList());
+    }
+
+    public List<AddressEntity> filterByAccountHdPath(List<AddressEntity> addressEntities, String hdPath) {
+        return addressEntities.stream()
+                .filter(addressEntity -> addressEntity.getPath().toUpperCase().startsWith(hdPath))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isChangeAddress(AddressEntity addressEntity) {
+        String path = addressEntity.getPath();
+        try {
+            AddressIndex addressIndex = CoinPath.parsePath(path);
+            return !addressIndex.getParent().isExternal();
+        } catch (InvalidPathException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     public LiveData<CoinEntity> getObservableCoin() {
         return mObservableCoin;
     }
@@ -69,22 +100,19 @@ public class CoinViewModel extends AndroidViewModel {
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
         @NonNull
         private final Application mApplication;
-        private final long mId;
-        private final String mCoinId;
-        private final DataRepository mRepository;
 
-        public Factory(@NonNull Application application, long id, String coinId) {
+        private final String mCoinId;
+
+        public Factory(@NonNull Application application, String coinId) {
             mApplication = application;
-            mId = id;
             mCoinId = coinId;
-            mRepository = ((MainApplication) application).getRepository();
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             //noinspection unchecked
-            return (T) new CoinViewModel(mApplication, mRepository, mId, mCoinId);
+            return (T) new CoinViewModel(mApplication, mCoinId);
         }
     }
 }
