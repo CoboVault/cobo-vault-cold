@@ -66,9 +66,10 @@ public class FingerprintKit {
         fp = (FingerprintManager) mContext.getSystemService(FINGERPRINT_SERVICE);
         if (!lockPatternUtils.isLockPasswordEnabled(mUserId)) {
             String password = HashUtil.generateRandomPassword(20);
-            lockPatternUtils.saveLockPassword(password, null,
-                    DevicePolicyManager.PASSWORD_QUALITY_NUMERIC, mUserId);
-            Utilities.setFingerprintPassword(mContext, password);
+            if (Utilities.setFingerprintPassword(mContext, password)) {
+                lockPatternUtils.saveLockPassword(password, null,
+                        DevicePolicyManager.PASSWORD_QUALITY_NUMERIC, mUserId);
+            }
         }
     }
 
