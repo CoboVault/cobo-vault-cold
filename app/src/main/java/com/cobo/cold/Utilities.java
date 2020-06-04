@@ -213,8 +213,8 @@ public class Utilities {
         return Settings.System.getString(context.getContentResolver(), FINGERPRINT_PASSWORD);
     }
 
-    public static void setFingerprintPassword(Context context, String pwd) {
-        Settings.System.putString(context.getContentResolver(), FINGERPRINT_PASSWORD, pwd);
+    public static boolean setFingerprintPassword(Context context, String pwd) {
+        return Settings.System.putString(context.getContentResolver(), FINGERPRINT_PASSWORD, pwd);
     }
 
     public static void setAttackDetected(Context context) {
