@@ -23,6 +23,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.fingerprint.Fingerprint;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.Gravity;
@@ -64,6 +65,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
+import static android.content.Context.FINGERPRINT_SERVICE;
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.Utilities.SHARED_PREFERENCES_KEY;
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
@@ -361,20 +363,20 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     }
 
     public static void removeAllFingerprint(AppCompatActivity activity) {
-        if (!FingerprintKit.isHardwareDetected(activity)) {
-            return;
-        }
-        FingerprintKit fpKit = new FingerprintKit(activity);
-        if (FingerprintKit.isHardwareDetected(activity)) {
-            List<Fingerprint> fingerprints = fpKit.getEnrolledFingerprints();
-            fingerprints.forEach(f -> {
-                fpKit.removeFingerprint(f, null);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            });
+        FingerprintManager fm = (FingerprintManager) activity.getSystemService(FINGERPRINT_SERVICE);
+        if (fm.isHardwareDetected() && fm.hasEnrolledFingerprints()) {
+            FingerprintKit fpKit = new FingerprintKit(activity);
+            if (FingerprintKit.isHardwareDetected(activity)) {
+                List<Fingerprint> fingerprints = fpKit.getEnrolledFingerprints();
+                fingerprints.forEach(f -> {
+                    fpKit.removeFingerprint(f, null);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
         }
     }
 
