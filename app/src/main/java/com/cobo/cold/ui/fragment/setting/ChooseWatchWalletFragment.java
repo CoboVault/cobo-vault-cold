@@ -23,6 +23,7 @@ import android.view.View;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.viewmodel.SupportedWatchWallet;
 
@@ -31,6 +32,7 @@ import java.util.Arrays;
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_ADDRESS_FORMAT;
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_CHOOSE_WATCH_WALLET;
+import static com.cobo.cold.viewmodel.SupportedWatchWallet.getSupportedWatchWallet;
 
 public class ChooseWatchWalletFragment extends ListPreferenceFragment {
 
@@ -54,6 +56,31 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
             adapter.setItems(Arrays.asList(entries));
         }
         mBinding.list.setAdapter(adapter);
+        mBinding.confirm.setText(R.string.next);
+        mBinding.confirm.setOnClickListener(v -> next());
+        if (mActivity instanceof MainActivity) {
+            mBinding.confirm.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void next() {
+        int navId = 0;
+        Bundle data = new Bundle();
+        SupportedWatchWallet selectWatchOnlyWallet = getSupportedWatchWallet(mActivity);
+        switch (selectWatchOnlyWallet) {
+            case ELECTRUM:
+            case GENERIC:
+                data.putInt(KEY_TITLE, R.string.select_address_format);
+                navId = R.id.action_to_selectAddressFormatFragment;
+                break;
+            case COBO:
+            case WASABI:
+            case BLUE:
+                navId = R.id.action_to_export_xpub_guide;
+                break;
+
+        }
+        navigate(navId, data);
     }
 
     @Override

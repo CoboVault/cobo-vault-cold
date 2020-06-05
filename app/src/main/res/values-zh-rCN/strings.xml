@@ -310,6 +310,7 @@
     <string name="master_pubkey_not_match">该交易无法识别，您的 Cobo 金库与此观察钱包不匹配。</string>
     <string name="change">找零</string>
     <string name="electrum_compatibility">适配 Electrum</string>
+    <string name="generic_compatibility">适配通用钱包</string>
     <string name="identification_failed">交易识别失败</string>
     <string name="from_electrum">来自Electrum</string>
     <string name="update_failed">升级失败</string>
@@ -374,7 +375,7 @@
     <string name="p2pkh">支付给公钥哈希</string>
     <string name="nested_segwit">隔离见证兼容</string>
     <string name="txid">交易ID</string>
-    <string name="skip_export">暂不导出</string>
+    <string name="skip_export">已导出 / 暂不导出</string>
     <string name="choose_watch_only_wallet">选择观察钱包</string>
     <string name="switch_watch_only_wallet_guide">切换观察钱包可前往【菜单--设置--选择观察钱包】</string>
     <string name="wallet_info">钱包信息</string>
@@ -387,6 +388,11 @@
     <string name="wallet_info_hint">*请不要随意泄露该信息（可通过 Public Key 获取钱包地址及知道地址上存有的资产）</string>
     <string name="confirm_add_address">确认创建</string>
     <string name="watch_wallet_not_match">请使用%s生成待签交易</string>
+    <string name="scan_qrcode_with_generic_wallet">请用已适配 Cobo 金库的钱包扫描二维码</string>
+    <string name="confirm_toggle">确认是否切换</string>
+    <string name="toggle_address_hint">切换地址格式后，您的收款地址、导出钱包、钱包信息都将切换，您需导出该地址格式的观察钱包</string>
+    <string name="toggle_later">暂不切换</string>
+    <string name="toggle_confirm">确认切换</string>
     <string-array name="watch_wallet_list">
         <item>Cobo 金库 App</item>
         <item>Electrum</item>

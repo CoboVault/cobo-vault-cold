@@ -22,6 +22,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
@@ -57,7 +59,8 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
         mBinding.toolbarTitle.setText(getTitle());
         mBinding.export.setOnClickListener(v -> export());
         if (mActivity instanceof MainActivity) {
-            mBinding.skip.setVisibility(View.GONE);
+            mBinding.skip.setOnClickListener( v -> popBackStack(R.id.assetFragment,false));
+
         } else {
             mBinding.skip.setOnClickListener(v -> navigate(R.id.action_to_setupCompleteFragment));
         }

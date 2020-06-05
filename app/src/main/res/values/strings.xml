@@ -366,6 +366,7 @@
     <string name="master_pubkey_not_match">Transaction not recognized. Your Cobo Vault has not been successfully paired with the watch-only wallet.</string>
     <string name="change">Change</string>
     <string name="electrum_compatibility">Electrum Watch-Only Wallet</string>
+    <string name="generic_compatibility">Generic Wallet</string>
     <string name="identification_failed">Identification Failed</string>
     <string name="from_electrum">From Electrum</string>
     <string name="update_failed">Update failed</string>
@@ -430,7 +431,7 @@
     <string name="p2pkh">Pay To Public Key Hash</string>
     <string name="nested_segwit">Nested SegWit</string>
     <string name="txid">TxID</string>
-    <string name="skip_export">Export Later</string>
+    <string name="skip_export">Exported / Export Later</string>
     <string name="choose_watch_only_wallet">Choose Watch Wallet</string>
     <string name="switch_watch_only_wallet_guide">Go to Menu > Setting > Watch-only wallet to switch</string>
     <string name="wallet_info">Wallet Info</string>
@@ -443,4 +444,9 @@
     <string name="wallet_info_hint">*Do not share Public Key with others, Account Extended Public Key can get your addresses and find out how may coins you have</string>
     <string name="confirm_add_address">Confirm</string>
     <string name="watch_wallet_not_match">Please use %s generate unsigned transaction</string>
+    <string name="scan_qrcode_with_generic_wallet">Please scan the QR code with the wallet that has been adapted to the Cobo vault</string>
+    <string name="confirm_toggle">确认是否切换</string>
+    <string name="toggle_address_hint">切换地址格式后，您的收款地址、导出钱包、钱包信息都将切换，您需导出该地址格式的观察钱包</string>
+    <string name="toggle_later">暂不切换</string>
+    <string name="toggle_confirm">确认切换</string>
 </resources>

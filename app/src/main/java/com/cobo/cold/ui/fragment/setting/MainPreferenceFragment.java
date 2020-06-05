@@ -274,7 +274,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                 break;
             case SETTING_CHOOSE_WATCH_WALLET:
                 Bundle data = new Bundle();
-                data.putInt(Constants.KEY_TITLE, R.string.setting_language);
+                data.putInt(Constants.KEY_TITLE, R.string.choose_watch_only_wallet);
                 Navigation.findNavController(Objects.requireNonNull(getView()))
                         .navigate(R.id.action_to_chooseWatchOnly, data);
                 break;
