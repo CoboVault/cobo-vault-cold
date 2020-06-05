@@ -163,7 +163,23 @@
     <fragment
         android:id="@+id/chooseWatchOnly"
         android:name="com.cobo.cold.ui.fragment.setting.ChooseWatchWalletFragment"
-        android:label="ChooseWatchOnlyFragment" />
+        android:label="ChooseWatchOnlyFragment" >
+        <action
+            android:id="@id/action_to_selectAddressFormatFragment"
+            app:destination="@id/selectAddressFormatFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+
+        <action
+            android:id="@id/action_to_export_xpub_guide"
+            app:destination="@id/exportXpubGuideFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
     <fragment
         android:id="@+id/syncFragment"
         android:name="com.cobo.cold.ui.fragment.SyncFragment"
@@ -268,6 +284,19 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@id/export_electrum_ypub"
+            app:destination="@id/electrumExportFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action android:id="@id/export_xpub_cobo"
+            app:destination="@id/syncFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -311,6 +340,20 @@
         android:id="@id/selectAddressFormatFragment"
         android:name="com.cobo.cold.ui.fragment.setup.SelectAddressFormatFragment"
         android:label="SelectAddressFormatFragment">
+        <action
+            android:id="@id/action_to_export_xpub_guide"
+            app:destination="@id/exportXpubGuideFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+        <action
+            android:id="@id/action_to_export_xpub_generic"
+            app:destination="@id/exportGenericXpubFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/txListFragment"

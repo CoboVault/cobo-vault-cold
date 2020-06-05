@@ -220,10 +220,21 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         DialogBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.dialog_bottom_sheet,null,false);
         binding.exportXpub.setOnClickListener(v-> {
-            if (watchWallet == SupportedWatchWallet.GENERIC) {
-                navigate(R.id.action_to_export_xpub_generic);
-            } else {
-                navigate(R.id.action_to_export_xpub_guide);
+            switch (watchWallet) {
+                case ELECTRUM:
+                    navigate(R.id.export_electrum_ypub);
+                    break;
+                case COBO:
+                    navigate(R.id.export_xpub_cobo);
+                    break;
+                case WASABI:
+                    navigate(R.id.action_to_export_xpub_guide);
+                    break;
+                case GENERIC:
+                    navigate(R.id.action_to_export_xpub_generic);
+                    break;
+                case BLUE:
+                    break;
             }
             dialog.dismiss();
 

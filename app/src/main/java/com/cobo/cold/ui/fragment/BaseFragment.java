@@ -139,6 +139,10 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment {
         NavHostFragment.findNavController(this).navigate(id);
     }
 
+    public void popBackStack(@IdRes int id, boolean inclusive) {
+        NavHostFragment.findNavController(this).popBackStack(id, inclusive);
+    }
+
     public void navigate(@IdRes int id, Bundle data) {
         NavHostFragment.findNavController(this).navigate(id, data);
     }

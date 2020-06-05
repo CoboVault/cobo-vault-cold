@@ -19,15 +19,20 @@ package com.cobo.cold.ui.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.cold.R;
+import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.SyncFragmentBinding;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.ui.MainActivity;
+import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.CoinListViewModel;
 
 import java.util.List;
@@ -48,10 +53,11 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
         viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
         subscribe(viewModel.getCoins());
         if (mActivity instanceof MainActivity) {
-            mBinding.complete.setVisibility(View.GONE);
+            mBinding.complete.setOnClickListener(v -> popBackStack(R.id.assetFragment, false));
         } else {
             mBinding.complete.setOnClickListener(v -> navigate(R.id.action_to_setupCompleteFragment));
         }
+        mBinding.sync.info.setOnClickListener(v -> showCoboInfo());
     }
 
     private void subscribe(LiveData<List<CoinEntity>> coins) {
@@ -71,5 +77,20 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
     @Override
     protected void initData(Bundle savedInstanceState) {
 
+    }
+
+    private void showCoboInfo() {
+        ModalDialog modalDialog = ModalDialog.newInstance();
+        CommonModalBinding binding = DataBindingUtil.inflate(
+                LayoutInflater.from(mActivity), R.layout.common_modal,
+                null, false);
+        binding.title.setText(R.string.export_xpub_guide_text1_cobo);
+        binding.subTitle.setText(R.string.export_xpub_guide_text2_cobo);
+        binding.subTitle.setGravity(Gravity.START);
+        binding.close.setVisibility(View.GONE);
+        binding.confirm.setText(R.string.know);
+        binding.confirm.setOnClickListener(vv -> modalDialog.dismiss());
+        modalDialog.setBinding(binding);
+        modalDialog.show(mActivity.getSupportFragmentManager(), "");
     }
 }

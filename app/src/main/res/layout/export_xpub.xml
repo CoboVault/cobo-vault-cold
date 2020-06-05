@@ -45,7 +45,7 @@
                 android:layout_marginEnd="20dp"
                 android:ellipsize="middle"
                 android:singleLine="true"
-                android:text="@string/electrum_compatibility"
+                android:text="@string/export_wallet"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
@@ -72,7 +72,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="@string/scan_xpub"
+                        android:layout_marginHorizontal="16dp"
+                        android:text="@string/scan_qrcode_with_generic_wallet"
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         android:textStyle="bold" />

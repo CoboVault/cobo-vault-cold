@@ -17,12 +17,17 @@
 
 package com.cobo.cold.ui.fragment.setup;
 
+import android.view.LayoutInflater;
 import android.view.View;
+
+import androidx.databinding.DataBindingUtil;
 
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
-import com.cobo.cold.ui.MainActivity;
+import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
 import com.cobo.cold.ui.fragment.setting.ListPreferenceFragment;
+import com.cobo.cold.ui.modal.ModalDialog;
+import com.cobo.cold.viewmodel.SupportedWatchWallet;
 
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_ADDRESS_FORMAT;
 
@@ -35,13 +40,15 @@ public class SelectAddressFormatFragment extends ListPreferenceFragment {
         mBinding.confirm.setVisibility(View.VISIBLE);
         mBinding.confirm.setText(R.string.next);
         mBinding.confirm.setOnClickListener(v -> next());
-        if (mActivity instanceof MainActivity) {
-            mBinding.confirm.setVisibility(View.GONE);
-        }
     }
 
     private void next() {
-        navigate(R.id.action_to_export_xpub_guide);
+        if (SupportedWatchWallet.getSupportedWatchWallet(mActivity)
+                == SupportedWatchWallet.GENERIC) {
+            navigate(R.id.action_to_export_xpub_generic);
+        } else {
+            navigate(R.id.action_to_export_xpub_guide);
+        }
     }
 
     @Override
@@ -69,8 +76,25 @@ public class SelectAddressFormatFragment extends ListPreferenceFragment {
         String old = value;
         value = values[position].toString();
         if (!old.equals(value)) {
-            prefs.edit().putString(getKey(), value).apply();
-            adapter.notifyDataSetChanged();
+            ModalDialog dialog = new ModalDialog();
+            ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                    R.layout.modal_with_two_button,
+                    null, false);
+            binding.title.setText(R.string.confirm_toggle);
+            binding.subTitle.setText(R.string.toggle_address_hint);
+            binding.left.setText(R.string.toggle_later);
+            binding.left.setOnClickListener(v -> {
+                dialog.dismiss();
+                value = old;
+            });
+            binding.right.setText(R.string.toggle_confirm);
+            binding.right.setOnClickListener(v -> {
+                dialog.dismiss();
+                prefs.edit().putString(getKey(), value).apply();
+                adapter.notifyDataSetChanged();
+            });
+            dialog.setBinding(binding);
+            dialog.show(mActivity.getSupportFragmentManager(), "");
         }
     }
 }
