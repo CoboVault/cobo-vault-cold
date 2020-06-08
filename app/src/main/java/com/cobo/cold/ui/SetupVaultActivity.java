@@ -19,6 +19,7 @@ package com.cobo.cold.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -51,6 +52,7 @@ public class SetupVaultActivity extends FullScreenActivity {
             SetupVaultViewModel model = ViewModelProviders.of(this).get(SetupVaultViewModel.class);
             model.setPassword(password);
         }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void setupNavController(Bundle savedInstanceState) {
