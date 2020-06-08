@@ -24,6 +24,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -71,6 +72,17 @@ public class MainApplication extends Application {
         shouldLock = Utilities.hasVaultCreated(this);
 
         startAttackCheckingService();
+        resetInputMethodSettings();
+    }
+
+    private void resetInputMethodSettings() {
+        if (!Utilities.isInputSettingsCleared(this)) {
+            new Thread(() -> {
+                PackageManager pm = getPackageManager();
+                pm.clearApplicationUserData("com.google.android.inputmethod.pinyin", null);
+                Utilities.setInputSettingsCleared(this);
+            }).start();
+        }
     }
 
     private void startAttackCheckingService() {
