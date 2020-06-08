@@ -53,6 +53,7 @@ public class Utilities {
     public static final String PATTERN_LOCK_CLICKED = "pattern_lock_clicked";
     public static final String FINGERPRINT_PASSWORD = "fingerprint_password";
     public static final String ATTACK_DETECTED = "attack_detected";
+    public static final String INPUT_SETTINGS_CLEARED = "input_settings_cleared";
 
     public static void alert(AppCompatActivity activity,
                              @Nullable String title, @NonNull String message,
@@ -213,5 +214,15 @@ public class Utilities {
     public static boolean isAttackDetected(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
         return sp.getBoolean(ATTACK_DETECTED,false);
+    }
+
+    public static boolean isInputSettingsCleared(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
+        return sp.getBoolean(INPUT_SETTINGS_CLEARED,false);
+    }
+
+    public static void setInputSettingsCleared(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
+        sp.edit().putBoolean(INPUT_SETTINGS_CLEARED,true).apply();
     }
 }
