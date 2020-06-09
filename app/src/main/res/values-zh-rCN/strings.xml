@@ -56,7 +56,7 @@
     <string name="receive_warning">此地址只接收 %s体系资产,\n发送其他体系币种到此地址将无法找回。</string>
     <string name="receive_coin">接收 %s</string>
     <string name="amount_hint">设置收币额度</string>
-    <string name="version_update_hint"><![CDATA[请访问: <font color="#00cdc3">https://cobo.com/hardware-wallet/firmware<font/> 查看是否有更新。如需更新，请按下图依次取下电池和TF卡，下载最新安装包到TF卡根目录下（TF卡仅支持FAT32格式，且容量不能超过32G），插回卡后开机，按照系统提示更新。]]></string>
+    <string name="version_update_hint"><![CDATA[请访问: <font color="#00cdc3">https://cobo.com/hardware-wallet/downloads<font/> 查看是否有更新。如需更新，请按下图依次取下电池和TF卡，下载最新安装包到TF卡根目录下（TF卡仅支持FAT32格式，且容量不能超过32G），插回卡后开机，按照系统提示更新。]]></string>
     <string name="version">版本</string>
     <string name="setting_language">语言设置</string>
     <string name="setting_vibrator">震动开关</string>
@@ -106,7 +106,7 @@
         <item>"开始使用"</item>
     </string-array>
 
-    <string name="sync_hint2"><![CDATA[Cobo 金库移动端可在 Cobo 官网下载：<br><font color="#00cdc3"><u>https://cobo.com/hardware-wallet/cobo-vault-app</u><font/><br>]]></string>
+    <string name="sync_hint2"><![CDATA[Cobo 金库移动端可在 Cobo 官网下载：<br><font color="#00cdc3"><u>https://cobo.com/hardware-wallet/downloads</u><font/><br>]]></string>
     <string name="sync_hint1"><![CDATA[请使用 Cobo 金库移动端扫描二维码]]></string>
     <string name="wrong_mnemonic_please_check">助记词有误，请逐字检查</string>
     <string name="dots_not_enough">请至少连接四个点</string>
@@ -292,7 +292,7 @@
     <string name="electrum_import_signed_txn">导出后，前往【electrum--工具--加载交易--从文件】，打开该文件。</string>
     <string name="insert_sdcard_hint">请先插入TF卡（仅支持FAT32格式，容量不能超过32G）</string>
     <string name="electrum_import_xpub_action">在 Electrum 输入主公钥页面打开该文件</string>
-    <string name="transaction_source_label">热端钱包</string>
+    <string name="transaction_source_label">观察钱包</string>
     <string name="use_electrum_to_broadcast">请用 Electrum 扫描二维码广播</string>
     <string name="transaction_from_electrum">该笔交易热端来源于Electrum</string>
     <string name="add_address">添加地址</string>
@@ -305,7 +305,7 @@
     <string name="file_name_label">该文件的文件名为：</string>
     <string name="master_xpub">主公钥（%s）</string>
     <string name="electrum_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或<u>\点击此处导出文件\</u>]]></string>
-    <string name="scan_electrum_hint">若扫描 Electrum 困难，可将待签交易导出成文件，前往【菜单--读取TF卡】对文件签名。</string>
+    <string name="scan_electrum_hint">若扫描 Electrum 困难，可将待签交易导出成文件，点击首页的TF卡按钮，对文件签名。</string>
     <string name="sign_txn_in_sdcard">对文件签名</string>
     <string name="master_pubkey_not_match">该交易无法识别，您的 Cobo 金库与此观察钱包不匹配。</string>
     <string name="change">找零</string>
@@ -334,7 +334,7 @@
     <string name="export_xpub_guide_title_blue">导出到BlueWallet</string>
     <string name="export_xpub_guide_text1_electrum">Electrum 导入指引:</string>
     <string name="export_xpub_guide_text1_cobo">Cobo 金库移动端导入指引:</string>
-    <string name="export_xpub_guide_text1_wasabi">Wasabi 导入指引:</string>
+    <string name="export_xpub_guide_text1_wasabi">Wasabi Wallet 导入指引:</string>
     <string name="export_xpub_guide_text1_blue">BlueWallet 导入指引:</string>
     <string name="export_xpub_guide_text2_electrum"><![CDATA[
         1. 打开 Electrum，新建钱包 <br>
@@ -354,9 +354,9 @@
     ]]></string>
 
     <string name="export_xpub_guide_text2_wasabi"><![CDATA[
-        1. 打开Wasabi，创建新钱包 <br>
+        1. 打开 Wasabi Wallet，创建新钱包 <br>
         2. 选择<font color="#00cdc3">“Hardware Wallet”<font/> <br>
-        3. 选择<font color="#00cdc3">“Import CoboVault”<font/> <br>
+        3. 选择<font color="#00cdc3">“Import Hardware Wallet”<font/> <br>
         4. 打开 Cobo 金库导出的钱包文件（点击下方按钮导出）<br>
         5. 点击<font color="#00cdc3">“Load Wallet”<font/> <br>
         6. 加载完成后即可进入观察钱包<br><br>
@@ -364,8 +364,8 @@
     ]]></string>
 
     <string name="export_xpub_guide_text2_blue"><![CDATA[
-        1. 打开BlueWallet，添加新钱包<br>
-        2. 选择“导入 Cobo 金库”<br>
+        1. 打开 BlueWallet，添加新钱包<br>
+        2. 选择“导入钱包”<br>
         3. 扫描 Cobo 金库二维码（点击下方按钮查看）<br>
     ]]></string>
     <string name="show_master_public_key_qrcode">查看主公钥二维码</string>
@@ -385,16 +385,16 @@
     <string name="script_type">脚本类型：</string>
     <string name="address_path">地址路径：</string>
     <string name="xpub">扩展公钥：</string>
-    <string name="wallet_info_hint">*请不要随意泄露该信息（可通过 Public Key 获取钱包地址及知道地址上存有的资产）</string>
+    <string name="wallet_info_hint">*请不要随意泄露该信息（可通过扩展公钥获取钱包地址及知道地址上存有的资产）</string>
     <string name="confirm_add_address">确认创建</string>
     <string name="watch_wallet_not_match">请使用%s生成待签交易</string>
     <string name="scan_qrcode_with_generic_wallet">请用已适配 Cobo 金库的钱包扫描二维码</string>
-    <string name="confirm_toggle">确认是否切换</string>
+    <string name="confirm_toggle">确认是否切换？</string>
     <string name="toggle_address_hint">切换地址格式后，您的收款地址、导出钱包、钱包信息都将切换，您需导出该地址格式的观察钱包</string>
     <string name="toggle_later">暂不切换</string>
     <string name="toggle_confirm">确认切换</string>
     <string-array name="watch_wallet_list">
-        <item>Cobo 金库 App</item>
+        <item>Cobo 金库移动端</item>
         <item>Electrum</item>
         <item>Wasabi Wallet</item>
         <item>BlueWallet</item>
