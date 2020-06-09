@@ -19,6 +19,7 @@ package com.cobo.cold.ui.fragment.main;
 
 import android.view.View;
 
+import com.cobo.cold.R;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.ui.fragment.main.electrum.SignedTxFragment;
 
@@ -34,6 +35,6 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
     @Override
     protected void showExportDialog() {
         showExportPsbtDialog(mActivity, txEntity.getTxId(),
-                txEntity.getSignedHex(), this::navigateUp);
+                txEntity.getSignedHex(), () -> popBackStack(R.id.assetFragment, false));
     }
 }

@@ -409,4 +409,9 @@
         <item><![CDATA[举例：<font color="#00cdc3">3<font/>kgdahdkhghahdgkhaldshg]]></item>
         <item><![CDATA[举例：<font color="#00cdc3">bc1<font/>akjhdfhkashdhdhsaghlh]]></item>
     </string-array>
+
+    <string name="abnormal_tx">异常交易</string>
+    <string name="fee_attack_warning">检测到该笔交易有风险，不能对其签名，您可前往：https://cobo.com/hardware-wallet/XXX 了解详情，您也可邮件联系客服：support@cobo.com</string>
+    <string name="already_signed">检测到您已对该笔交易签名，您可直接广播该交易</string>
+
 </resources>

@@ -146,5 +146,9 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment {
     public void navigate(@IdRes int id, Bundle data) {
         NavHostFragment.findNavController(this).navigate(id, data);
     }
+
+    public AppCompatActivity getHostActivity() {
+        return mActivity;
+    }
 }
 

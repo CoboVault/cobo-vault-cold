@@ -26,6 +26,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
@@ -44,6 +45,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.KEY_DUPLICATE_TX;
+
 
 public class TxFragment extends BaseFragment<TxBinding> {
 
@@ -58,7 +61,14 @@ public class TxFragment extends BaseFragment<TxBinding> {
     @Override
     protected void init(View view) {
         Bundle data = Objects.requireNonNull(getArguments());
-        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+        mBinding.toolbar.setNavigationOnClickListener(v -> {
+            if (data.getBoolean(KEY_DUPLICATE_TX)) {
+                NavHostFragment.findNavController(this)
+                        .popBackStack(R.id.assetFragment, false);
+            } else {
+                navigateUp();
+            }
+        });
         CoinListViewModel viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
         viewModel.loadTx(data.getString(KEY_TX_ID)).observe(this, txEntity -> {
             mBinding.setTx(txEntity);
