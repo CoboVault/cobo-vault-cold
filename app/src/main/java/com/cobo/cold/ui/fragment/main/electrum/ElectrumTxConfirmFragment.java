@@ -42,6 +42,7 @@ import com.cobo.cold.databinding.ProgressModalBinding;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
 import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.fragment.main.FeeAttackChecking;
 import com.cobo.cold.ui.fragment.main.TransactionItem;
 import com.cobo.cold.ui.fragment.main.TransactionItemAdapter;
 import com.cobo.cold.ui.modal.ModalDialog;
@@ -66,6 +67,9 @@ import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.DUPLICATE_TX;
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.exportSuccess;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.hasSdcard;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.showNoSdcardModal;
@@ -86,6 +90,8 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
     private ModalDialog addingAddressDialog;
     private String txnData;
     private List<String> changeAddress = new ArrayList<>();
+    private int feeAttackCheckingState;
+    private FeeAttackChecking feeAttackChecking;
 
     public static void showExportTxnDialog(AppCompatActivity activity, String txId, String hex,
                                            Runnable onExportSuccess) {
@@ -151,6 +157,10 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
     }
 
     private void handleSign() {
+        if (feeAttackCheckingState == SAME_OUTPUTS) {
+            feeAttackChecking.showFeeAttackWarning();
+            return;
+        }
         boolean fingerprintSignEnable = Utilities.isFingerprintSignEnable(mActivity);
         if (txEntity != null) {
             if (FeatureFlags.ENABLE_WHITE_LIST) {
@@ -233,6 +243,16 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
                         getString(R.string.confirm),
                         null);
                 navigateUp();
+            }
+        });
+
+        viewModel.feeAttackChecking().observe(this, state -> {
+            feeAttackCheckingState = state;
+            if (state != NORMAL) {
+                feeAttackChecking = new FeeAttackChecking(this);
+            }
+            if(state == DUPLICATE_TX) {
+                feeAttackChecking.showDuplicateTx(viewModel.getPreviousSignTx());
             }
         });
     }
