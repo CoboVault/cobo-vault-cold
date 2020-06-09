@@ -57,6 +57,9 @@ import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.DUPLICATE_TX;
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
 
 public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
 
@@ -72,6 +75,8 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
     private SigningDialog signingDialog;
     private TxEntity txEntity;
     private ModalDialog addingAddressDialog;
+    private int feeAttackCheckingState;
+    private FeeAttackChecking feeAttackChecking;
 
     @Override
     protected int setView() {
@@ -93,6 +98,10 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
     }
 
     private void handleSign() {
+        if (feeAttackCheckingState == SAME_OUTPUTS) {
+            feeAttackChecking.showFeeAttackWarning();
+            return;
+        }
         boolean fingerprintSignEnable = Utilities.isFingerprintSignEnable(mActivity);
         if (txEntity != null) {
             if (FeatureFlags.ENABLE_WHITE_LIST) {
@@ -169,6 +178,16 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
                         getString(R.string.confirm),
                         null);
                 navigateUp();
+            }
+        });
+
+        viewModel.feeAttackChecking().observe(this, state -> {
+            feeAttackCheckingState = state;
+            if (state != NORMAL) {
+                feeAttackChecking = new FeeAttackChecking(this);
+            }
+            if(state == DUPLICATE_TX) {
+                feeAttackChecking.showDuplicateTx(viewModel.getPreviousSignTx());
             }
         });
     }

@@ -25,6 +25,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.cobo.coinlib.utils.Base43;
 import com.cobo.coinlib.utils.Coins;
@@ -46,13 +47,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.KEY_DUPLICATE_TX;
 import static com.cobo.cold.ui.fragment.main.electrum.ElectrumBroadcastTxFragment.showElectrumInfo;
 import static com.cobo.cold.ui.fragment.main.electrum.ElectrumTxConfirmFragment.showExportTxnDialog;
 
 
 public class ElectrumTxFragment extends BaseFragment<ElectrumTxBinding> {
 
-    public static final String KEY_TX_ID = "txid";
+    private static final String KEY_TX_ID = "txid";
     private TxEntity txEntity;
     private List<String> changeAddress = new ArrayList<>();
 
@@ -64,7 +66,14 @@ public class ElectrumTxFragment extends BaseFragment<ElectrumTxBinding> {
     @Override
     protected void init(View view) {
         Bundle data = Objects.requireNonNull(getArguments());
-        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+        mBinding.toolbar.setNavigationOnClickListener(v -> {
+            if (data.getBoolean(KEY_DUPLICATE_TX)) {
+                NavHostFragment.findNavController(this)
+                        .popBackStack(R.id.assetListFragment, false);
+            } else {
+                navigateUp();
+            }
+        });
         CoinListViewModel viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
         viewModel.loadTx(data.getString(KEY_TX_ID)).observe(this, txEntity -> {
             mBinding.setTx(txEntity);

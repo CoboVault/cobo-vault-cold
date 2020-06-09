@@ -307,6 +307,12 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@id/action_to_txFragment"
+            app:destination="@id/txFragment"/>
+        <action
+            android:id="@id/action_to_electrumTxFragment"
+            app:destination="@id/electrumTxFragment" />
     </fragment>
 
     <fragment
@@ -335,6 +341,12 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@id/action_to_txFragment"
+            app:destination="@id/txFragment" />
+        <action
+            android:id="@id/action_to_electrumTxFragment"
+            app:destination="@id/electrumTxFragment" />
     </fragment>
 
     <fragment
