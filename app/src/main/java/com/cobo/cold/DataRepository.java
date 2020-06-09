@@ -140,6 +140,10 @@ public class DataRepository {
         return mDb.txDao().loadWasabiTxsSync(coinId);
     }
 
+    public List<TxEntity> loadAllTxSync(String coinId) {
+        return mDb.txDao().loadTxsSync(coinId);
+    }
+
     public LiveData<TxEntity> loadTx(String txId) {
         return mDb.txDao().load(txId);
     }

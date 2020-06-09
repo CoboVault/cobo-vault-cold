@@ -79,6 +79,9 @@ import java.util.stream.Stream;
 
 import static com.cobo.coinlib.coins.BTC.Electrum.TxUtils.isMasterPublicKeyMatch;
 import static com.cobo.cold.viewmodel.AddAddressViewModel.AddAddressTask.getAddressType;
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.DUPLICATE_TX;
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.ELECTRUM_SIGN_ID;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.adapt;
 import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
@@ -95,10 +98,13 @@ public class TxConfirmViewModel extends AndroidViewModel {
     private final MutableLiveData<TxEntity> observableTx = new MutableLiveData<>();
     private final MutableLiveData<Exception> parseTxException = new MutableLiveData<>();
     private final MutableLiveData<Boolean> addingAddress = new MutableLiveData<>();
+    private final MutableLiveData<Integer> feeAttachCheckingResult = new MutableLiveData<>();
     private AbsTx transaction;
     private String coinCode;
     private final MutableLiveData<String> signState = new MutableLiveData<>();
     private AuthenticateModal.OnVerify.VerifyToken token;
+    private TxEntity previousSignedTx;
+
 
     public TxConfirmViewModel(@NonNull Application application) {
         super(application);
@@ -128,16 +134,47 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 if (transaction instanceof UtxoTx) {
                     if (!checkChangeAddress(transaction)) {
                         observableTx.postValue(null);
-                        parseTxException.postValue(new InvalidTransactionException("invlid change address"));
+                        parseTxException.postValue(new InvalidTransactionException("invalid change address"));
                         return;
                     }
                 }
                 TxEntity tx = generateTxEntity(object);
                 observableTx.postValue(tx);
+                if (Coins.BTC.coinCode().equals(transaction.getCoinCode())) {
+                    feeAttackChecking(tx);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    public TxEntity getPreviousSignTx() {
+        return previousSignedTx;
+    }
+
+    private void feeAttackChecking(TxEntity txEntity) {
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            String inputs = txEntity.getFrom();
+            String outputs = txEntity.getTo();
+            List<TxEntity> txs = mRepository.loadAllTxSync(Coins.BTC.coinId());
+            for (TxEntity tx : txs) {
+                if (inputs.equals(tx.getFrom()) && outputs.equals(tx.getTo())) {
+                    previousSignedTx = tx;
+                    feeAttachCheckingResult.postValue(DUPLICATE_TX);
+                    break;
+                } else if (outputs.equals(tx.getTo())) {
+                    feeAttachCheckingResult.postValue(SAME_OUTPUTS);
+                    break;
+                } else {
+                    feeAttachCheckingResult.postValue(NORMAL);
+                }
+            }
+        });
+    }
+
+    public LiveData<Integer> feeAttackChecking() {
+        return feeAttachCheckingResult;
     }
 
     private TxEntity generateTxEntity(JSONObject object) throws JSONException {

@@ -454,4 +454,8 @@
     <string name="toggle_address_hint">Once you toggle the address format, your receiving addresses, exported wallet, and wallet info will all be changed to this format. You will need to export your wallet information again using the new address format if you have not already. Do you still want to change the format?</string>
     <string name="toggle_later">Cancel</string>
     <string name="toggle_confirm">Confirm</string>
+    <string name="abnormal_tx">Abnormal Transaction</string>
+    <string name="fee_attack_warning">Detect that the transaction is risky and cannot be signed. You can go to: https// for details, or contact  us: support@cobo.com</string>
+    <string name="already_signed">You have signed the transaction,  can broadcast the transaction directly</string>
+
 </resources>

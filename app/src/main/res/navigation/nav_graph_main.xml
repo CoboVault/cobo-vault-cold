@@ -320,7 +320,11 @@
     <fragment
         android:id="@+id/psbtTxConfirmFragment"
         android:name="com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment"
-        android:label="PsbtTxConfirmFragment"/>
+        android:label="PsbtTxConfirmFragment">
+        <action
+            android:id="@id/action_to_psbtSignedTxFragment"
+            app:destination="@id/psbtSignedTxFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/walletInfoFragment"
@@ -437,6 +441,15 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@id/action_to_txFragment"
+            app:destination="@id/txFragment"/>
+        <action
+            android:id="@id/action_to_electrumTxFragment"
+            app:destination="@id/electrumTxFragment" />
+        <action
+            android:id="@id/action_to_psbtSignedTxFragment"
+            app:destination="@id/psbtSignedTxFragment" />
     </fragment>
 
     <fragment
@@ -465,6 +478,15 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@id/action_to_txFragment"
+            app:destination="@id/txFragment" />
+        <action
+            android:id="@id/action_to_electrumTxFragment"
+            app:destination="@id/electrumTxFragment" />
+        <action
+            android:id="@id/action_to_psbtSignedTxFragment"
+            app:destination="@id/psbtSignedTxFragment" />
     </fragment>
 
     <fragment
