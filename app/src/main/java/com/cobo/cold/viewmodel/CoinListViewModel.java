@@ -25,6 +25,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
@@ -88,12 +89,15 @@ public class CoinListViewModel extends AndroidViewModel {
                 coin.setCoinCode(entity.getCoinCode());
                 List<AccountEntity> accounts = loadAccountForCoin(entity);
                 for (AccountEntity accountEntity : accounts) {
-                    SyncBuilder.Account account = new SyncBuilder.Account();
-                    account.addressLength = accountEntity.getAddressLength();
-                    account.hdPath = accountEntity.getHdPath();
-                    account.xPub = accountEntity.getExPub();
-                    account.isMultiSign = false;
-                    coin.addAccount(account);
+                    //only sync account M/49'/0'/0' to cobo vault mobile
+                    if (accountEntity.getHdPath().equals(Coins.Account.P2SH.getPath())) {
+                        SyncBuilder.Account account = new SyncBuilder.Account();
+                        account.addressLength = accountEntity.getAddressLength();
+                        account.hdPath = accountEntity.getHdPath();
+                        account.xPub = accountEntity.getExPub();
+                        account.isMultiSign = false;
+                        coin.addAccount(account);
+                    }
                 }
                 syncBuilder.addCoin(coin);
             }
