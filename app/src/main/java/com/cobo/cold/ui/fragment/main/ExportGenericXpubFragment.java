@@ -27,8 +27,7 @@ import com.cobo.coinlib.Util;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
-import com.cobo.cold.databinding.ExportXpubBinding;
-import com.cobo.cold.ui.MainActivity;
+import com.cobo.cold.databinding.ExportXpubGenericBinding;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
@@ -44,13 +43,13 @@ import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
 import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
 
 
-public class ExportGenericXpubFragment extends BaseFragment<ExportXpubBinding> {
+public class ExportGenericXpubFragment extends BaseFragment<ExportXpubGenericBinding> {
 
     private JSONObject xpubInfo;
 
     @Override
     protected int setView() {
-        return R.layout.export_xpub;
+        return R.layout.export_xpub_generic;
     }
 
     @Override
@@ -62,20 +61,19 @@ public class ExportGenericXpubFragment extends BaseFragment<ExportXpubBinding> {
             exPub = convertExtpub(exPub, getAccount(mActivity));
             xpubInfo.put("ExtPubKey", exPub);
             mBinding.qrcode.setData(xpubInfo.toString());
-            mBinding.expub.setText(exPub);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mBinding.addressType.setText(getString(R.string.master_xpub,
-                GlobalViewModel.getAddressFormat(mActivity)));
+
         mBinding.done.setOnClickListener(v -> {
             if (mActivity instanceof SetupVaultActivity) {
                 navigate(R.id.action_to_setupCompleteFragment);
             } else {
-                MainActivity activity = (MainActivity) mActivity;
-                activity.getNavController().popBackStack(R.id.assetFragment, false);
+                popBackStack(R.id.assetFragment, false);
             }
         });
+        mBinding.skip.setOnClickListener(v -> popBackStack(R.id.assetFragment,false));
         mBinding.exportToSdcard.setOnClickListener(v -> {
             Storage storage = Storage.createByEnvironment(mActivity);
             if (storage == null || storage.getExternalDir() == null) {

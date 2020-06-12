@@ -350,7 +350,7 @@
     <string name="electrum_import_xpub_action">Open when inputting your master public key on Electrum.</string>
     <string name="transaction_source_label">Wallet</string>
     <string name="use_electrum_to_broadcast">Scan the QR code with Electrum to broadcast</string>
-    <string name="use_blue_to_broadcast">Scan the QR code by BlueWallet to broadcast</string>
+    <string name="use_wallet_to_broadcast">Scan the QR code by %s to broadcast</string>
     <string name="transaction_from_electrum">This transaction is from Electrum</string>
     <string name="add_address">Add Address</string>
     <string name="use_electrum_scan_xpub">Scan master public key using Electrum</string>
@@ -362,6 +362,7 @@
     <string name="file_name_label">File name:</string>
     <string name="master_xpub">Master Public Key (%s)</string>
     <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>touch here to export the file with microSD</u>.]]></string>
+    <string name="generic_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>No scanning? <u>touch here to export the file with microSD</u>.]]></string>
     <string name="scan_electrum_hint">Difficulty scanning? You can import pending transactions from Electrum using a microSD card (Menu > MicroSD Card).</string>
     <string name="sign_txn_in_sdcard">Unsigned Transaction Files</string>
     <string name="master_pubkey_not_match">Transaction not recognized. Your Cobo Vault has not been successfully paired with the watch-only wallet.</string>
@@ -431,7 +432,7 @@
     ]]></string>
     <string name="show_master_public_key_qrcode">Display Master Public Key QR Code</string>
     <string name="show_qrcode">Display QR Code</string>
-    <string name="export_wallet">Export with MicroSD</string>
+    <string name="export_wallet">Export Wallet</string>
     <string name="native_segwit">Native SegWit</string>
     <string name="p2pkh">Pay To Public Key Hash</string>
     <string name="nested_segwit">Nested SegWit</string>

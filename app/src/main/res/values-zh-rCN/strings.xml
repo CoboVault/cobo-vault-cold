@@ -294,7 +294,7 @@
     <string name="electrum_import_xpub_action">在 Electrum 输入主公钥页面打开该文件</string>
     <string name="transaction_source_label">观察钱包</string>
     <string name="use_electrum_to_broadcast">请用 Electrum 扫描二维码广播</string>
-    <string name="use_blue_to_broadcast">请用 BlueWallet 扫描二维码广播</string>
+    <string name="use_wallet_to_broadcast">请用 %s 扫描二维码广播</string>
     <string name="transaction_from_electrum">该笔交易热端来源于Electrum</string>
     <string name="add_address">添加地址</string>
     <string name="use_electrum_scan_xpub">请用 Electrum 扫描主公钥二维码</string>
@@ -306,6 +306,7 @@
     <string name="file_name_label">该文件的文件名为：</string>
     <string name="master_xpub">主公钥（%s）</string>
     <string name="electrum_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或<u>\点击此处导出文件\</u>]]></string>
+    <string name="generic_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>无扫码功能？<u>\点击此处导出文件\</u>]]></string>
     <string name="scan_electrum_hint">若扫描 Electrum 困难，可将待签交易导出成文件，点击首页的TF卡按钮，对文件签名。</string>
     <string name="sign_txn_in_sdcard">对文件签名</string>
     <string name="master_pubkey_not_match">该交易无法识别，您的 Cobo 金库与此观察钱包不匹配。</string>

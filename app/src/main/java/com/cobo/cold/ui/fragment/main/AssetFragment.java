@@ -115,8 +115,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.asset_hasmore, menu);
-        if (watchWallet == WatchWallet.COBO
-                || watchWallet == WatchWallet.BLUE) {
+        if (!watchWallet.supportSdcard()) {
             menu.findItem(R.id.action_sdcard).setVisible(false);
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -193,10 +192,10 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     private void showFileList() {
         switch (watchWallet) {
             case ELECTRUM:
-            case GENERIC:
                 navigate(R.id.action_to_txnListFragment);
                 break;
             case WASABI:
+            case GENERIC:
                 navigate(R.id.action_to_psbtListFragment);
                 break;
         }

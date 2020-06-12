@@ -23,24 +23,29 @@ import android.view.View;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.cold.R;
-import com.cobo.cold.databinding.BroadcastBlueTxFragmentBinding;
+import com.cobo.cold.databinding.BroadcastPsbtTxFragmentBinding;
+import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.views.qrcode.DynamicQrCodeView;
 import com.cobo.cold.viewmodel.CoinListViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.Hex;
 
 import java.util.Objects;
 
-public class BlueWalletBroadcastTxFragment extends BaseFragment<BroadcastBlueTxFragmentBinding> {
+import static com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment.showExportPsbtDialog;
+
+public class PsbtBroadcastTxFragment extends BaseFragment<BroadcastPsbtTxFragmentBinding> {
 
     public static final String KEY_TXID = "txId";
     private View.OnClickListener goHome = v -> popBackStack(R.id.assetFragment,false);
+    private TxEntity txEntity;
 
     @Override
     protected int setView() {
-        return R.layout.broadcast_blue_tx_fragment;
+        return R.layout.broadcast_psbt_tx_fragment;
     }
 
     @Override
@@ -50,10 +55,25 @@ public class BlueWalletBroadcastTxFragment extends BaseFragment<BroadcastBlueTxF
         mBinding.complete.setOnClickListener(goHome);
         CoinListViewModel viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
         viewModel.loadTx(data.getString(KEY_TXID)).observe(this, txEntity -> {
+            this.txEntity = txEntity;
             mBinding.setCoinCode(txEntity.getCoinCode());
             mBinding.qrcodeLayout.qrcode.setEncodingScheme(DynamicQrCodeView.EncodingScheme.Bc32);
             mBinding.qrcodeLayout.qrcode.setData(Hex.toHexString(Base64.decode(txEntity.getSignedHex())));
         });
+
+        WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
+
+        if (wallet.supportSdcard()) {
+            mBinding.qrcodeLayout.hint.setVisibility(View.GONE);
+            mBinding.exportToSdcard.setVisibility(View.VISIBLE);
+            mBinding.exportToSdcard.setOnClickListener(v ->
+                    showExportPsbtDialog(mActivity, txEntity.getTxId(),
+                            txEntity.getSignedHex(), null));
+        } else {
+            mBinding.exportToSdcard.setVisibility(View.GONE);
+        }
+        mBinding.scanHint.setText(getString(R.string.use_wallet_to_broadcast,
+                WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
     }
 
 
@@ -61,4 +81,5 @@ public class BlueWalletBroadcastTxFragment extends BaseFragment<BroadcastBlueTxF
     protected void initData(Bundle savedInstanceState) {
 
     }
+
 }

@@ -67,4 +67,34 @@ public enum WatchWallet {
                 default:return false;
         }
     }
+
+    public boolean supportBc32QrCode() {
+        switch (this) {
+            case GENERIC:
+            case BLUE:
+                return true;
+            default:return false;
+        }
+    }
+
+    public boolean supportQrCode() {
+        switch (this) {
+            case ELECTRUM:
+            case COBO:
+            case GENERIC:
+            case BLUE:
+                return true;
+            default:return false;
+        }
+    }
+
+    public boolean supportSdcard() {
+        switch (this) {
+            case ELECTRUM:
+            case GENERIC:
+            case WASABI:
+                return true;
+            default:return false;
+        }
+    }
 }

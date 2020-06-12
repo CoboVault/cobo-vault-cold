@@ -339,8 +339,8 @@
         <action
             android:id="@id/action_to_psbtSignedTxFragment"
             app:destination="@id/psbtSignedTxFragment" />
-        <action android:id="@+id/action_to_blue_wallet_broadcast"
-            app:destination="@+id/blueWalletBroadcastTxFragment"
+        <action android:id="@+id/action_to_psbt_broadcast"
+            app:destination="@id/psbtBroadcastTxFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -428,6 +428,12 @@
 
         <action android:id="@+id/export_xpub_cobo"
             app:destination="@id/syncFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@id/action_to_export_xpub_blue"
+            app:destination="@id/blueWalletExportFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -723,9 +729,9 @@
         tools:layout="@layout/blue_export"/>
 
     <fragment
-        android:id="@+id/blueWalletBroadcastTxFragment"
-        android:name="com.cobo.cold.ui.fragment.main.BlueWalletBroadcastTxFragment"
-        android:label="BlueWalletBroadcastTxFragment"
-        tools:layout="@layout/broadcast_blue_tx_fragment"/>
+        android:id="@+id/psbtBroadcastTxFragment"
+        android:name="com.cobo.cold.ui.fragment.main.PsbtBroadcastTxFragment"
+        android:label="PsbtBroadcastTxFragment"
+        tools:layout="@layout/broadcast_psbt_tx_fragment"/>
 
 </navigation>
