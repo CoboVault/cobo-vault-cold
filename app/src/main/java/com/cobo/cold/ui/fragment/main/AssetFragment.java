@@ -49,7 +49,7 @@ import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.viewmodel.AddAddressViewModel;
 import com.cobo.cold.viewmodel.CoinViewModel;
 import com.cobo.cold.viewmodel.SetupVaultViewModel;
-import com.cobo.cold.viewmodel.SupportedWatchWallet;
+import com.cobo.cold.viewmodel.WatchWallet;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
@@ -68,7 +68,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     private Fragment[] fragments;
     private String coinId;
     private String[] title;
-    private SupportedWatchWallet watchWallet;
+    private WatchWallet watchWallet;
 
     @Override
     protected int setView() {
@@ -78,7 +78,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     @Override
     protected void init(View view) {
         coinId = Coins.BTC.coinId();
-        watchWallet = SupportedWatchWallet.getSupportedWatchWallet(mActivity);
+        watchWallet = WatchWallet.getWatchWallet(mActivity);
         mActivity.setSupportActionBar(mBinding.toolbar);
         mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
         String walletName = watchWallet.getWalletName(mActivity);
@@ -115,8 +115,8 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.asset_hasmore, menu);
-        if (watchWallet == SupportedWatchWallet.COBO
-                || watchWallet == SupportedWatchWallet.BLUE) {
+        if (watchWallet == WatchWallet.COBO
+                || watchWallet == WatchWallet.BLUE) {
             menu.findItem(R.id.action_sdcard).setVisible(false);
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -234,6 +234,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                     navigate(R.id.action_to_export_xpub_generic);
                     break;
                 case BLUE:
+                    navigate(R.id.action_to_export_xpub_blue);
                     break;
             }
             dialog.dismiss();

@@ -48,7 +48,7 @@ import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.GlobalViewModel;
 import com.cobo.cold.viewmodel.QrScanViewModel;
 import com.cobo.cold.viewmodel.SharedDataViewModel;
-import com.cobo.cold.viewmodel.SupportedWatchWallet;
+import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.UnknowQrCodeException;
 import com.cobo.cold.viewmodel.UuidNotMatchException;
 import com.cobo.cold.viewmodel.WatchWalletNotMatchException;
@@ -60,8 +60,8 @@ import org.spongycastle.util.encoders.Hex;
 import java.io.IOException;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
-import static com.cobo.cold.viewmodel.SupportedWatchWallet.ELECTRUM;
-import static com.cobo.cold.viewmodel.SupportedWatchWallet.getSupportedWatchWallet;
+import static com.cobo.cold.viewmodel.WatchWallet.ELECTRUM;
+import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
 
 public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         implements SurfaceHolder.Callback, Host {
@@ -76,7 +76,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
 
     private QrScanViewModel viewModel;
     private ModalDialog dialog;
-    private SupportedWatchWallet watchWallet;
+    private WatchWallet watchWallet;
 
     @Override
     protected int setView() {
@@ -85,7 +85,10 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
 
     @Override
     protected void init(View view) {
-        watchWallet = getSupportedWatchWallet(mActivity);
+        watchWallet = getWatchWallet(mActivity);
+        if (watchWallet != ELECTRUM) {
+            mBinding.electrumScanHint.setVisibility(View.GONE);
+        }
         boolean isSetupVault = getArguments() != null && getArguments().getBoolean(IS_SETUP_VAULT);
         purpose = getArguments() != null ? getArguments().getString("purpose") : "";
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
@@ -188,13 +191,13 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } else {
             try {
                 if (tryParseElectrumTx(res) != null) {
-                    if (SupportedWatchWallet.getSupportedWatchWallet(mActivity) == ELECTRUM) {
+                    if (WatchWallet.getWatchWallet(mActivity) == ELECTRUM) {
                         handleElectrumTx(res);
                     } else {
                         alert(getString(R.string.identification_failed),
                                 getString(R.string.master_pubkey_not_match) +
                                         getString(R.string.watch_wallet_not_match,
-                                        SupportedWatchWallet.getSupportedWatchWallet(mActivity)
+                                        WatchWallet.getWatchWallet(mActivity)
                                                 .getWalletName(mActivity)));
                     }
                 } else {
@@ -259,7 +262,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             alert(getString(R.string.identification_failed),
                     getString(R.string.master_pubkey_not_match)
                             + getString(R.string.watch_wallet_not_match,
-                            SupportedWatchWallet.getSupportedWatchWallet(mActivity).getWalletName(mActivity)));
+                            WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
         }
     }
 

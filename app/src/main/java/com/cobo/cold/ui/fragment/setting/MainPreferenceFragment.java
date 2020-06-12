@@ -57,7 +57,7 @@ import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.ui.views.UpdatingHelper;
 import com.cobo.cold.update.data.UpdateManifest;
 import com.cobo.cold.util.DataCleaner;
-import com.cobo.cold.viewmodel.SupportedWatchWallet;
+import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.UpdatingViewModel;
 
 import java.util.List;
@@ -147,7 +147,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
 
         SimplePreference chooseWalletPreference = findPreference(SETTING_CHOOSE_WATCH_WALLET);
         if (chooseWalletPreference != null) {
-            chooseWalletPreference.setRemindText(SupportedWatchWallet.getSupportedWatchWallet(mActivity)
+            chooseWalletPreference.setRemindText(WatchWallet.getWatchWallet(mActivity)
                     .getWalletName(mActivity));
         }
 

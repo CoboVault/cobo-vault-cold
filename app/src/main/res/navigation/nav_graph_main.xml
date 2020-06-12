@@ -46,6 +46,15 @@
             app:popExitAnim="@android:anim/slide_out_right"
             app:popUpTo="@id/assetFragment"
             app:popUpToInclusive="false" />
+        <action
+            android:id="@id/action_to_psbtTxConfirmFragment"
+            app:destination="@id/psbtTxConfirmFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/assetFragment"
+            app:popUpToInclusive="false" />
 
         <action
             android:id="@+id/action_QRCodeScan_to_result"
@@ -237,6 +246,12 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@+id/action_to_export_xpub_blue"
+            app:destination="@id/blueWalletExportFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
         <action android:id="@+id/action_to_txList"
             app:destination="@id/txListFragment"
             app:enterAnim="@anim/slide_in_right"
@@ -324,6 +339,12 @@
         <action
             android:id="@id/action_to_psbtSignedTxFragment"
             app:destination="@id/psbtSignedTxFragment" />
+        <action android:id="@+id/action_to_blue_wallet_broadcast"
+            app:destination="@+id/blueWalletBroadcastTxFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -694,5 +715,17 @@
             android:id="@+id/to_assetListFragment"
             app:destination="@id/assetFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/blueWalletExportFragment"
+        android:name="com.cobo.cold.ui.fragment.main.BlueWalletExportFragment"
+        android:label="blueWalletExportFragment"
+        tools:layout="@layout/blue_export"/>
+
+    <fragment
+        android:id="@+id/blueWalletBroadcastTxFragment"
+        android:name="com.cobo.cold.ui.fragment.main.BlueWalletBroadcastTxFragment"
+        android:label="BlueWalletBroadcastTxFragment"
+        tools:layout="@layout/broadcast_blue_tx_fragment"/>
 
 </navigation>

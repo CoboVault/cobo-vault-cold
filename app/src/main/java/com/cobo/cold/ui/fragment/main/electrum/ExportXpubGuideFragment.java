@@ -22,8 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
@@ -34,7 +32,7 @@ import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.viewmodel.GlobalViewModel;
-import com.cobo.cold.viewmodel.SupportedWatchWallet;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import org.json.JSONObject;
 
@@ -44,7 +42,7 @@ import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
 
 public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding> {
 
-    private SupportedWatchWallet watchWallet;
+    private WatchWallet watchWallet;
     private JSONObject wasabiXpubJson;
     private static final String WASABI_XPUB_FILENAME = "CoboVault-Wasabi.json";
     @Override
@@ -54,7 +52,7 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
 
     @Override
     protected void init(View view) {
-        watchWallet = SupportedWatchWallet.getSupportedWatchWallet(mActivity);
+        watchWallet = WatchWallet.getWatchWallet(mActivity);
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.toolbarTitle.setText(getTitle());
         mBinding.export.setOnClickListener(v -> export());
@@ -83,7 +81,7 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
                 exportXpub();
                 break;
             case BLUE:
-                //return R.string.show_qrcode;
+                navigate(R.id.action_to_export_xpub_blue);
                 break;
             case GENERIC:
                 //navigate(R.id.export_electrum_ypub);

@@ -31,10 +31,12 @@ import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.update.utils.FileUtils;
 import com.cobo.cold.update.utils.Storage;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.io.File;
 import java.util.Objects;
 
+import static com.cobo.cold.ui.fragment.main.BlueWalletBroadcastTxFragment.KEY_TXID;
 import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
 import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
 import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
@@ -90,8 +92,14 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
     }
 
     protected void onSignSuccess() {
-        showExportPsbtDialog(mActivity, viewModel.getTxId(),
-                viewModel.getTxHex(), this::navigateUp);
+        if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.BLUE) {
+            Bundle data = new Bundle();
+            data.putString(KEY_TXID,viewModel.getTxId());
+            navigate(R.id.action_to_blue_wallet_broadcast, data);
+        } else {
+            showExportPsbtDialog(mActivity, viewModel.getTxId(),
+                    viewModel.getTxHex(), this::navigateUp);
+        }
         viewModel.getSignState().removeObservers(this);
     }
 

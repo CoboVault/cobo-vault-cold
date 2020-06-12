@@ -24,7 +24,7 @@ import com.cobo.cold.Utilities;
 
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_CHOOSE_WATCH_WALLET;
 
-public enum SupportedWatchWallet {
+public enum WatchWallet {
     COBO("0"),
     ELECTRUM("1"),
     WASABI("2"),
@@ -32,7 +32,7 @@ public enum SupportedWatchWallet {
     GENERIC("4");
 
     private String walletId;
-    SupportedWatchWallet(String walletId) {
+    WatchWallet(String walletId) {
         this.walletId = walletId;
     }
 
@@ -45,16 +45,26 @@ public enum SupportedWatchWallet {
                 .getStringArray(R.array.watch_wallet_list)[Integer.parseInt(walletId)];
     }
 
-    public static SupportedWatchWallet getSupportedWatchWallet(Context context) {
+    public static WatchWallet getWatchWallet(Context context) {
         String wallet = Utilities.getPrefs(context)
                 .getString(SETTING_CHOOSE_WATCH_WALLET, ELECTRUM.getWalletId());
-        SupportedWatchWallet selectWatchWallet = ELECTRUM;
-        for (SupportedWatchWallet watchWallet: SupportedWatchWallet.values()) {
+        WatchWallet selectWatchWallet = ELECTRUM;
+        for (WatchWallet watchWallet: WatchWallet.values()) {
             if (watchWallet.getWalletId().equals(wallet)) {
                 selectWatchWallet = watchWallet;
                 break;
             }
         }
         return selectWatchWallet;
+    }
+
+    public boolean supportPsbt() {
+        switch (this) {
+            case GENERIC:
+            case BLUE:
+            case WASABI:
+                return true;
+                default:return false;
+        }
     }
 }

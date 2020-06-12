@@ -37,7 +37,7 @@ import com.cobo.cold.ui.fragment.main.TransactionItem;
 import com.cobo.cold.ui.fragment.main.TransactionItemAdapter;
 import com.cobo.cold.viewmodel.CoinListViewModel;
 import com.cobo.cold.viewmodel.GlobalViewModel;
-import com.cobo.cold.viewmodel.SupportedWatchWallet;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,6 +58,7 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
     private static final String KEY_TX_ID = "txid";
     protected TxEntity txEntity;
     private List<String> changeAddress = new ArrayList<>();
+    protected WatchWallet watchWallet;
 
     @Override
     protected int setView() {
@@ -75,8 +76,8 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
                 navigateUp();
             }
         });
-        String walletName = SupportedWatchWallet.getSupportedWatchWallet(mActivity)
-                .getWalletName(mActivity);
+        watchWallet = WatchWallet.getWatchWallet(mActivity);
+        String walletName = watchWallet.getWalletName(mActivity);
         mBinding.txDetail.watchWallet.setText(walletName);
 
         ViewModelProviders.of(mActivity)

@@ -350,6 +350,7 @@
     <string name="electrum_import_xpub_action">Open when inputting your master public key on Electrum.</string>
     <string name="transaction_source_label">Wallet</string>
     <string name="use_electrum_to_broadcast">Scan the QR code with Electrum to broadcast</string>
+    <string name="use_blue_to_broadcast">Scan the QR code by BlueWallet to broadcast</string>
     <string name="transaction_from_electrum">This transaction is from Electrum</string>
     <string name="add_address">Add Address</string>
     <string name="use_electrum_scan_xpub">Scan master public key using Electrum</string>
@@ -436,7 +437,7 @@
     <string name="nested_segwit">Nested SegWit</string>
     <string name="txid">TxID</string>
     <string name="skip_export">Exported / Export Later</string>
-    <string name="choose_watch_only_wallet">Select a watch-only wallet:</string>
+    <string name="choose_watch_only_wallet">Select a watch-only wallet</string>
     <string name="switch_watch_only_wallet_guide">Go to Menu > Settings > Select Watch-Only Wallet</string>
     <string name="wallet_info">Wallet Info</string>
     <string name="wallet">Key Fingerprint:</string>
@@ -457,5 +458,8 @@
     <string name="abnormal_tx">Abnormal Transaction</string>
     <string name="fee_attack_warning">Detect that the transaction is risky and cannot be signed. You can go to: https// for details, or contact  us: support@cobo.com</string>
     <string name="already_signed">You have signed the transaction,  can broadcast the transaction directly</string>
+    <string name="scan_with_blue_wallet">Scan QR code using BlueWallet</string>
+    <string name="blue_wallet_broadcast_guide">How to broadcast using BlueWallet</string>
+    <string name="blue_wallet_broadcast_guide1">Open the Watch-only wallet in BlueWallet,  enter wallet information, touch "Broadcast transaction" and scan the QR code of Cobo Vault</string>
 
 </resources>
