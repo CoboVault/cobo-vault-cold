@@ -34,7 +34,7 @@ public class ScannedData {
     public final String valueType;
 
 
-    private ScannedData(int index, int total, String checkSum, String value, boolean compress,
+    public ScannedData(int index, int total, String checkSum, String value, boolean compress,
                         String rawString, String valueType) {
         this.index = index;
         this.total = total;

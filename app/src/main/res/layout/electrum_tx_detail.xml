@@ -302,6 +302,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:id="@+id/scan_hint"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -324,6 +325,12 @@
                 layout="@layout/qrcode"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"/>
+            <include
+                android:id="@+id/dynamic_qrcode_layout"
+                layout="@layout/dynamic_qrcode"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:visibility="gone"/>
             <com.cobo.cold.ui.views.SpanedTextView
                 android:id="@+id/export_to_sdcard_hint"
                 android:layout_width="match_parent"

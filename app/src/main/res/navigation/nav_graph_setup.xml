@@ -258,6 +258,12 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@+id/action_to_export_xpub_blue"
+            app:destination="@id/blueWalletExportFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -279,6 +285,20 @@
         tools:layout="@layout/electrum_export"
         android:label="ElectrumExportFragment">
         <action android:id="@+id/action_to_setupCompleteFragment"
+            app:destination="@id/setupCompleteFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+
+    <fragment
+        android:id="@id/blueWalletExportFragment"
+        android:name="com.cobo.cold.ui.fragment.main.BlueWalletExportFragment"
+        android:label="blueWalletExportFragment"
+        tools:layout="@layout/blue_export">
+        <action android:id="@id/action_to_setupCompleteFragment"
             app:destination="@id/setupCompleteFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"

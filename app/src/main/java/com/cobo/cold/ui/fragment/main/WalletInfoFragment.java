@@ -23,12 +23,13 @@ import android.view.View;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import com.cobo.coinlib.Util;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.WalletInfoBinding;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.viewmodel.GlobalViewModel;
-import com.cobo.cold.viewmodel.SupportedWatchWallet;
+import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.WalletInfoViewModel;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
@@ -46,9 +47,9 @@ public class WalletInfoFragment extends BaseFragment<WalletInfoBinding> {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.switchAddress.setOnClickListener(v -> switchAddressFormat());
         account = GlobalViewModel.getAccount(mActivity);
-        SupportedWatchWallet watchOnly = SupportedWatchWallet.getSupportedWatchWallet(mActivity);
-        if (watchOnly != SupportedWatchWallet.ELECTRUM
-                && watchOnly != SupportedWatchWallet.GENERIC) {
+        WatchWallet watchOnly = WatchWallet.getWatchWallet(mActivity);
+        if (watchOnly != WatchWallet.ELECTRUM
+                && watchOnly != WatchWallet.GENERIC) {
             mBinding.switchAddress.setVisibility(View.GONE);
         }
         mBinding.addressFormat.setText(getAddressFormat());
@@ -64,9 +65,12 @@ public class WalletInfoFragment extends BaseFragment<WalletInfoBinding> {
             }
         });
 
-        viewModel.getXpub(account).observe(this, s -> {
-            if (!TextUtils.isEmpty(s)) {
-                mBinding.xpub.setText(s);
+        viewModel.getXpub(account).observe(this, xpub -> {
+            if (!TextUtils.isEmpty(xpub)) {
+                if (watchOnly == WatchWallet.BLUE) {
+                    xpub = Util.convertXpubToZpub(xpub);
+                }
+                mBinding.xpub.setText(xpub);
             }
         });
 

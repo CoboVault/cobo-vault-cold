@@ -27,7 +27,7 @@ import com.cobo.cold.R;
 import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
 import com.cobo.cold.ui.fragment.setting.ListPreferenceFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
-import com.cobo.cold.viewmodel.SupportedWatchWallet;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_ADDRESS_FORMAT;
 
@@ -43,8 +43,8 @@ public class SelectAddressFormatFragment extends ListPreferenceFragment {
     }
 
     private void next() {
-        if (SupportedWatchWallet.getSupportedWatchWallet(mActivity)
-                == SupportedWatchWallet.GENERIC) {
+        if (WatchWallet.getWatchWallet(mActivity)
+                == WatchWallet.GENERIC) {
             navigate(R.id.action_to_export_xpub_generic);
         } else {
             navigate(R.id.action_to_export_xpub_guide);

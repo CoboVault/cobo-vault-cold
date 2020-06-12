@@ -19,6 +19,7 @@ package com.cobo.cold.scan;
 import android.os.Handler;
 import android.os.Message;
 
+import com.cobo.bcUniformResource.Workload;
 import com.cobo.cold.scan.camera.CameraManager;
 import com.cobo.cold.scan.common.Constant;
 import com.cobo.cold.scan.decode.DecodeThread;
@@ -65,9 +66,13 @@ public final class CaptureHandler extends Handler {
                 break;
             case Constant.DECODE_SUCCEEDED:
                 String text = ((Result) message.obj).getText();
-                try {
-                    JSONObject obj = new JSONObject(text);
-                    ScannedData data = ScannedData.fromJson(obj);
+
+                ScannedData data = tryDecodeCoboDynamicQrCode(text);
+                if (data == null) {
+                    data = tryDecodeBc32qrcode(text);
+                }
+
+                if (data != null) {
                     if (mScannedDatas == null) {
                         mScannedDatas = new ScannedData[data.total];
                     }
@@ -75,9 +80,7 @@ public final class CaptureHandler extends Handler {
                         mScannedDatas[data.index] = data;
                     }
                     publishProgress();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    //not json return
+                } else {
                     state = State.SUCCESS;
                     host.handleDecode(text);
                     return;
@@ -103,12 +106,34 @@ public final class CaptureHandler extends Handler {
         }
     }
 
+    private ScannedData tryDecodeBc32qrcode(String text) {
+        try {
+            Workload workload = Workload.fromString(text.toLowerCase());
+            return new ScannedData(workload.index - 1,
+                    workload.total,
+                    workload.checksum, workload.value, false, text, workload.type);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private ScannedData tryDecodeCoboDynamicQrCode(String text) {
+        try {
+            JSONObject obj = new JSONObject(text);
+            return ScannedData.fromJson(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
     private void publishProgress() {
         int scan;
         scan = (int) Arrays.stream(mScannedDatas).filter(Objects::nonNull).count();
         host.handleProgress(mScannedDatas.length, scan);
     }
-
 
     public void quitSynchronously() {
         state = State.DONE;

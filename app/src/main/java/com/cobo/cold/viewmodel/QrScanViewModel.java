@@ -19,6 +19,7 @@ package com.cobo.cold.viewmodel;
 
 import android.app.Application;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.cobo.bcUniformResource.UniformResource;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Coins;
@@ -45,6 +47,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.DecoderException;
+import org.spongycastle.util.encoders.Hex;
+
+import java.util.Arrays;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.KEY_TX_DATA;
@@ -65,16 +70,51 @@ public class QrScanViewModel extends AndroidViewModel {
         repository.loadCoins();
     }
 
-    public void handleDecode(QRCodeScanFragment owner, ScannedData[] res)
+    public void handleDecode(QRCodeScanFragment owner, ScannedData[] data)
             throws InvalidTransactionException, JSONException, CoinNotFindException,
             UuidNotMatchException, UnknowQrCodeException, WatchWalletNotMatchException {
         this.fragment = owner;
-        String valueType = res[0].valueType;
-        JSONObject object = parseToJson(res, valueType);
-        if (object == null) {
-            throw new JSONException("object null");
+        String valueType = data[0].valueType;
+
+        if("bytes".equals(valueType)) {
+            String[] workload = Arrays.stream(data)
+                    .map(d -> d.rawString.toLowerCase())
+                    .toArray(String[]::new);
+
+            String hex = null;
+            try {
+                 hex = UniformResource.Decoder.decode(workload);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (!TextUtils.isEmpty(hex)) {
+                handleBc32Qrcode(hex);
+            }
+
+        } else {
+            JSONObject object = parseToJson(data, valueType);
+            if (object == null) {
+                throw new JSONException("object null");
+            }
+            decodeAndProcess(object);
         }
-        decodeAndProcess(object);
+    }
+
+    private void handleBc32Qrcode(String hex) throws UnknowQrCodeException {
+        if (hex.startsWith(Hex.toHexString("psbt".getBytes()))) {
+            WatchWallet watchWallet = WatchWallet.getWatchWallet(getApplication());
+            if (watchWallet.supportPsbt()) {
+                handleSignPsbt(hex);
+                return;
+            }
+        }
+        throw new UnknowQrCodeException("unknow bc32 qrcode");
+    }
+
+    private void handleSignPsbt(String hex) {
+        Bundle bundle = new Bundle();
+        bundle.putString("psbt_base64", Base64.toBase64String(Hex.decode(hex)));
+        fragment.navigate(R.id.action_to_psbtTxConfirmFragment, bundle);
     }
 
     private void decodeAndProcess(JSONObject object)
@@ -127,8 +167,8 @@ public class QrScanViewModel extends AndroidViewModel {
             CoinNotFindException,
             UuidNotMatchException, WatchWalletNotMatchException {
 
-        if (SupportedWatchWallet.getSupportedWatchWallet(getApplication())
-                != SupportedWatchWallet.COBO) {
+        if (WatchWallet.getWatchWallet(getApplication())
+                != WatchWallet.COBO) {
             throw new WatchWalletNotMatchException("");
         }
 

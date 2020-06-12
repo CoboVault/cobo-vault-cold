@@ -22,10 +22,10 @@ import android.view.View;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.SetupWatchWalletBinding;
-import com.cobo.cold.viewmodel.SupportedWatchWallet;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
-import static com.cobo.cold.viewmodel.SupportedWatchWallet.getSupportedWatchWallet;
+import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
 
 public class SetupWatchWalletFragment extends SetupVaultBaseFragment<SetupWatchWalletBinding> {
 
@@ -43,7 +43,7 @@ public class SetupWatchWalletFragment extends SetupVaultBaseFragment<SetupWatchW
     private void complete() {
         int navId = 0;
         Bundle data = new Bundle();
-        SupportedWatchWallet selectWatchOnlyWallet = getSupportedWatchWallet(mActivity);
+        WatchWallet selectWatchOnlyWallet = getWatchWallet(mActivity);
         switch (selectWatchOnlyWallet) {
             case ELECTRUM:
                 data.putInt(KEY_TITLE, R.string.select_address_format);

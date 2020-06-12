@@ -25,14 +25,14 @@ import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
-import com.cobo.cold.viewmodel.SupportedWatchWallet;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.Arrays;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_ADDRESS_FORMAT;
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_CHOOSE_WATCH_WALLET;
-import static com.cobo.cold.viewmodel.SupportedWatchWallet.getSupportedWatchWallet;
+import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
 
 public class ChooseWatchWalletFragment extends ListPreferenceFragment {
 
@@ -66,7 +66,7 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
     private void next() {
         int navId = 0;
         Bundle data = new Bundle();
-        SupportedWatchWallet selectWatchOnlyWallet = getSupportedWatchWallet(mActivity);
+        WatchWallet selectWatchOnlyWallet = getWatchWallet(mActivity);
         switch (selectWatchOnlyWallet) {
             case ELECTRUM:
             case GENERIC:
@@ -100,7 +100,7 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
 
     @Override
     protected String defaultValue() {
-        return SupportedWatchWallet.ELECTRUM.getWalletId();
+        return WatchWallet.ELECTRUM.getWalletId();
     }
 
     @Override
@@ -115,10 +115,10 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
 
     private void setWatchWallet() {
         prefs.edit().putString(SETTING_CHOOSE_WATCH_WALLET, value).apply();
-        if (value.equals(SupportedWatchWallet.COBO.getWalletId())) {
+        if (value.equals(WatchWallet.COBO.getWalletId())) {
             prefs.edit().putString(SETTING_ADDRESS_FORMAT, Coins.Account.P2SH.getType()).apply();
-        } else if (value.equals(SupportedWatchWallet.WASABI.getWalletId())
-                || value.equals(SupportedWatchWallet.BLUE.getWalletId())) {
+        } else if (value.equals(WatchWallet.WASABI.getWalletId())
+                || value.equals(WatchWallet.BLUE.getWalletId())) {
             prefs.edit().putString(SETTING_ADDRESS_FORMAT, Coins.Account.SegWit.getType()).apply();
         }
     }

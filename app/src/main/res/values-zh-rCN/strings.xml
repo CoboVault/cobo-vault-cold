@@ -294,6 +294,7 @@
     <string name="electrum_import_xpub_action">在 Electrum 输入主公钥页面打开该文件</string>
     <string name="transaction_source_label">观察钱包</string>
     <string name="use_electrum_to_broadcast">请用 Electrum 扫描二维码广播</string>
+    <string name="use_blue_to_broadcast">请用 BlueWallet 扫描二维码广播</string>
     <string name="transaction_from_electrum">该笔交易热端来源于Electrum</string>
     <string name="add_address">添加地址</string>
     <string name="use_electrum_scan_xpub">请用 Electrum 扫描主公钥二维码</string>
@@ -413,5 +414,8 @@
     <string name="abnormal_tx">异常交易</string>
     <string name="fee_attack_warning">检测到该笔交易有风险，不能对其签名，您可前往：https://cobo.com/hardware-wallet/XXX 了解详情，您也可邮件联系客服：support@cobo.com</string>
     <string name="already_signed">检测到您已对该笔交易签名，您可直接广播该交易</string>
+    <string name="scan_with_blue_wallet">请用 BlueWallet 扫描二维码</string>
+    <string name="blue_wallet_broadcast_guide">BlueWallet 广播交易引导</string>
+    <string name="blue_wallet_broadcast_guide1">在BlueWallet侧打开该观察钱包，进入钱包详情，点击广播交易后，扫描 Cobo 金库的二维码</string>
 
 </resources>

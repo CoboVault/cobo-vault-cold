@@ -32,6 +32,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.cobo.bcUniformResource.UniformResource;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.DynamicQrcodeModalBinding;
@@ -47,6 +48,10 @@ import java.util.List;
 
 public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
 
+    public enum EncodingScheme {
+        Cobo,
+        Bc32
+    }
     private static final int CAPACITY = 800;
     private static final int DURATION = 330; //ms
     private String data;
@@ -56,6 +61,7 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
     private final Cache mCache = Cache.getInstance();
     private ProgressBar progressBar;
     private ImageView img;
+    private EncodingScheme scheme = EncodingScheme.Cobo;
 
     int currentIndex = 0;
 
@@ -68,11 +74,28 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
         splitData = new ArrayList<>();
     }
 
+    public void setEncodingScheme(EncodingScheme scheme) {
+        this.scheme = scheme;
+    }
+
     public void setData(String s) {
         data = s;
-        checksum = checksum(data);
-        count = (int) Math.ceil(data.length() / (float) CAPACITY);
-        splitData();
+        if (scheme == EncodingScheme.Cobo) {
+            checksum = checksum(data);
+            count = (int) Math.ceil(data.length() / (float) CAPACITY);
+            splitData();
+        } else if(scheme == EncodingScheme.Bc32) {
+            try {
+                String[] workloads = UniformResource.Encoder.encode(data.toUpperCase(),900);
+                count = workloads.length;
+                splitData.clear();
+                for (int i = 0; i < count; i++) {
+                    splitData.add(workloads[i].toUpperCase());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         showQrCode();
     }
 
@@ -106,6 +129,7 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
                 R.layout.dynamic_qrcode_modal, null, false);
         dialog.setBinding(binding);
         binding.close.setOnClickListener(v -> dialog.dismiss());
+        binding.qrcodeLayout.qrcode.setEncodingScheme(scheme);
         binding.qrcodeLayout.qrcode.setData(data);
         binding.qrcodeLayout.qrcode.disableModal();
         dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "");

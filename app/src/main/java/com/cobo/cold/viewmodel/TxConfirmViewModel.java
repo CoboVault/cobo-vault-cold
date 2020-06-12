@@ -85,6 +85,8 @@ import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackChecking
 import static com.cobo.cold.viewmodel.ElectrumViewModel.ELECTRUM_SIGN_ID;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.adapt;
 import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
+import static com.cobo.cold.viewmodel.PsbtViewModel.BLUE_WALLET_SIGN_ID;
+import static com.cobo.cold.viewmodel.PsbtViewModel.GENERIC_WALLET_SIGN_ID;
 import static com.cobo.cold.viewmodel.PsbtViewModel.WASABI_SIGN_ID;
 
 public class TxConfirmViewModel extends AndroidViewModel {
@@ -252,7 +254,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
                     parseTxException.postValue(
                             new InvalidTransactionException("master fingerprint not match, or nothing can be sign"));
                 }
-                JSONObject signTx = parseWasabiTx(adaptTx);
+                JSONObject signTx = parsePsbtTx(adaptTx);
                 parseTxData(signTx.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -265,16 +267,30 @@ public class TxConfirmViewModel extends AndroidViewModel {
         });
     }
 
-    private JSONObject parseWasabiTx(JSONObject adaptTx) throws JSONException {
+    private JSONObject parsePsbtTx(JSONObject adaptTx) throws JSONException {
         TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
         builder.setCoinCode(Coins.BTC.coinCode())
-                .setSignId(WASABI_SIGN_ID)
+                .setSignId(getSignId())
                 .setTimestamp(generateAutoIncreaseId())
                 .setDecimal(8);
         String signTransaction = new JsonFormat().printToString(builder.build());
         JSONObject signTx = new JSONObject(signTransaction);
         signTx.put("btcTx", adaptTx);
         return signTx;
+    }
+
+    private String getSignId() {
+        switch (WatchWallet.getWatchWallet(getApplication())) {
+            case BLUE:
+                return BLUE_WALLET_SIGN_ID;
+            case WASABI:
+                return WASABI_SIGN_ID;
+            case GENERIC:
+                return GENERIC_WALLET_SIGN_ID;
+            case ELECTRUM:
+                return ELECTRUM_SIGN_ID;
+        }
+        return null;
     }
 
     private long generateAutoIncreaseId() {

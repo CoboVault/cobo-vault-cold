@@ -52,7 +52,7 @@ import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.util.KeyStoreUtil;
 import com.cobo.cold.viewmodel.GlobalViewModel;
-import com.cobo.cold.viewmodel.SupportedWatchWallet;
+import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.TxConfirmViewModel;
 import com.cobo.cold.viewmodel.WatchWalletNotMatchException;
 import com.cobo.cold.viewmodel.XpubNotMatchException;
@@ -75,7 +75,6 @@ import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
 import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
 import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
 
-import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.DUPLICATE_TX;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
 import static com.cobo.cold.viewmodel.TxConfirmViewModel.STATE_NONE;
@@ -149,7 +148,7 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
         mBinding.txDetail.export.setVisibility(View.GONE);
         mBinding.txDetail.qr.setVisibility(View.GONE);
 
-        String walletName = SupportedWatchWallet.getSupportedWatchWallet(mActivity)
+        String walletName = WatchWallet.getWatchWallet(mActivity)
                 .getWalletName(mActivity);
         mBinding.txDetail.watchWallet.setText(walletName);
 
@@ -253,9 +252,6 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
             feeAttackCheckingState = state;
             if (state != NORMAL) {
                 feeAttackChecking = new FeeAttackChecking(this);
-            }
-            if(state == DUPLICATE_TX) {
-                feeAttackChecking.showDuplicateTx(viewModel.getPreviousSignTx());
             }
         });
     }
