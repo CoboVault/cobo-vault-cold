@@ -70,7 +70,8 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_TX_ID, tx.getTxId());
             if (WASABI_SIGN_ID.equals(tx.getSignId())
-                    || BLUE_WALLET_SIGN_ID.equals(tx.getSignId())) {
+                    || BLUE_WALLET_SIGN_ID.equals(tx.getSignId())
+                    || GENERIC_WALLET_SIGN_ID.equals(tx.getSignId())) {
                 navigate(R.id.action_to_psbtSignedTxFragment, bundle);
             } else if(ELECTRUM_SIGN_ID.equals(tx.getSignId())){
                 navigate(R.id.action_to_electrumTxFragment, bundle);

@@ -36,7 +36,7 @@ import com.cobo.cold.viewmodel.WatchWallet;
 import java.io.File;
 import java.util.Objects;
 
-import static com.cobo.cold.ui.fragment.main.BlueWalletBroadcastTxFragment.KEY_TXID;
+import static com.cobo.cold.ui.fragment.main.PsbtBroadcastTxFragment.KEY_TXID;
 import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
 import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
 import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
@@ -92,10 +92,11 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
     }
 
     protected void onSignSuccess() {
-        if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.BLUE) {
+        WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
+        if (wallet == WatchWallet.BLUE || wallet == WatchWallet.GENERIC) {
             Bundle data = new Bundle();
             data.putString(KEY_TXID,viewModel.getTxId());
-            navigate(R.id.action_to_blue_wallet_broadcast, data);
+            navigate(R.id.action_to_psbt_broadcast, data);
         } else {
             showExportPsbtDialog(mActivity, viewModel.getTxId(),
                     viewModel.getTxHex(), this::navigateUp);

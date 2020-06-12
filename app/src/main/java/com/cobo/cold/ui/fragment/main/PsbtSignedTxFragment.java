@@ -42,16 +42,36 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
         if (watchWallet == WatchWallet.WASABI) {
             mBinding.txDetail.qr.setVisibility(View.GONE);
             mBinding.txDetail.broadcastGuide.setVisibility(View.GONE);
-        } else if (watchWallet == WatchWallet.BLUE) {
-            mBinding.txDetail.info.setOnClickListener(v -> showBlueWalletInfo());
-            mBinding.txDetail.scanHint.setText(R.string.use_blue_to_broadcast);
+        } else if (watchWallet == WatchWallet.BLUE || watchWallet == WatchWallet.GENERIC) {
+            if (watchWallet == WatchWallet.BLUE) {
+                mBinding.txDetail.info.setOnClickListener(v -> showBlueWalletInfo());
+            }
+            mBinding.txDetail.scanHint.setText(mActivity.getString(R.string.use_wallet_to_broadcast,
+                    watchWallet.getWalletName(mActivity)));
+            if (watchWallet.supportBc32QrCode()) {
+                mBinding.txDetail.dynamicQrcodeLayout.qrcode
+                        .setEncodingScheme(DynamicQrCodeView.EncodingScheme.Bc32);
+                mBinding.txDetail.dynamicQrcodeLayout.qrcode
+                        .setData(Hex.toHexString(Base64.decode(txEntity.getSignedHex())));
+            }
+
             mBinding.txDetail.exportToSdcardHint.setVisibility(View.GONE);
             mBinding.txDetail.qrcodeLayout.qrcode.setVisibility(View.GONE);
             mBinding.txDetail.dynamicQrcodeLayout.qrcode.setVisibility(View.VISIBLE);
             mBinding.txDetail.broadcastGuide.setVisibility(View.GONE);
-            mBinding.txDetail.export.setVisibility(View.GONE);
-            mBinding.txDetail.dynamicQrcodeLayout.qrcode.setEncodingScheme(DynamicQrCodeView.EncodingScheme.Bc32);
-            mBinding.txDetail.dynamicQrcodeLayout.qrcode.setData(Hex.toHexString(Base64.decode(txEntity.getSignedHex())));
+            if (!watchWallet.supportSdcard()) {
+                mBinding.txDetail.export.setVisibility(View.GONE);
+            }
+            if (watchWallet == WatchWallet.GENERIC) {
+                mBinding.txDetail.dynamicQrcodeLayout.hint.setVisibility(View.GONE);
+                mBinding.txDetail.info.setVisibility(View.INVISIBLE);
+                mBinding.txDetail.exportToSdcardHint.setVisibility(View.VISIBLE);
+                mBinding.txDetail.exportToSdcardHint.setText(R.string.generic_qrcode_hint);
+                mBinding.txDetail.exportToSdcardHint.setOnClickListener(v -> showExportDialog());
+                mBinding.txDetail.export.setVisibility(View.GONE);
+
+            }
+
         }
     }
 

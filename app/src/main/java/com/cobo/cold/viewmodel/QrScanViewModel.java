@@ -88,7 +88,12 @@ public class QrScanViewModel extends AndroidViewModel {
                 e.printStackTrace();
             }
             if (!TextUtils.isEmpty(hex)) {
-                handleBc32Qrcode(hex);
+                WatchWallet wallet = WatchWallet.getWatchWallet(getApplication());
+                if (wallet.supportBc32QrCode()) {
+                    handleBc32Qrcode(hex);
+                } else {
+                    throw new UnknowQrCodeException("not support bc32 qrcode in current wallet mode");
+                }
             }
 
         } else {

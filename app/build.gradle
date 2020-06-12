@@ -170,7 +170,7 @@ dependencies {
     implementation 'net.lingala.zip4j:zip4j:1.3.2@jar'
     implementation 'com.wei.android.lib:fingerprintidentify:1.2.6'
     implementation 'com.github.donkingliang:ConsecutiveScroller:2.5.0'
-    implementation 'com.github.CoboVault:bc32-java:v0.05-alpha'
+    implementation 'com.github.CoboVault:bc32-java:v0.0.6-alpha'
     annotationProcessor 'androidx.room:room-compiler:2.1.0'
 
     implementation project(':encryption-core')
