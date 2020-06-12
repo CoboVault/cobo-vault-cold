@@ -107,6 +107,8 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
                     Runnable runnable = null;
                     if (mActivity instanceof SetupVaultActivity) {
                         runnable = () -> navigate(R.id.action_to_setupCompleteFragment);
+                    } else {
+                        runnable = () -> popBackStack(R.id.assetFragment,false);
                     }
                     exportSuccess(mActivity, runnable);
                 }
