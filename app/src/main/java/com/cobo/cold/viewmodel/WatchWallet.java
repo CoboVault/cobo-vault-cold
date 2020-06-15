@@ -47,8 +47,8 @@ public enum WatchWallet {
 
     public static WatchWallet getWatchWallet(Context context) {
         String wallet = Utilities.getPrefs(context)
-                .getString(SETTING_CHOOSE_WATCH_WALLET, ELECTRUM.getWalletId());
-        WatchWallet selectWatchWallet = ELECTRUM;
+                .getString(SETTING_CHOOSE_WATCH_WALLET, COBO.getWalletId());
+        WatchWallet selectWatchWallet = COBO;
         for (WatchWallet watchWallet: WatchWallet.values()) {
             if (watchWallet.getWalletId().equals(wallet)) {
                 selectWatchWallet = watchWallet;

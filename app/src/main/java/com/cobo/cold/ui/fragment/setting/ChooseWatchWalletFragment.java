@@ -100,7 +100,7 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
 
     @Override
     protected String defaultValue() {
-        return WatchWallet.ELECTRUM.getWalletId();
+        return WatchWallet.COBO.getWalletId();
     }
 
     @Override
