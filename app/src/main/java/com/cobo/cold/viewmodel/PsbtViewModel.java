@@ -24,7 +24,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.cobo.coinlib.Util;
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
+import com.cobo.cold.MainApplication;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.update.utils.Storage;
 
@@ -37,6 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
 
 
 public class PsbtViewModel extends AndroidViewModel {
@@ -60,6 +66,7 @@ public class PsbtViewModel extends AndroidViewModel {
         if (inputs.length() < 1) {
             throw new WatchWalletNotMatchException("no input match masterFingerprint");
         }
+
         adaptOutputs(psbt.getJSONArray("outputs"), outputs);
         object.put("inputs", inputs);
         object.put("outputs", outputs);
@@ -68,6 +75,8 @@ public class PsbtViewModel extends AndroidViewModel {
 
     private static void adaptInputs(JSONArray psbtInputs, JSONArray inputs) throws JSONException {
         String masterKeyFingerprint = new GetMasterFingerprintCallable().call();
+        Coins.Account account = getAccount(MainApplication.getApplication());
+
         for (int i = 0; i < psbtInputs.length(); i++) {
             JSONObject psbtInput = psbtInputs.getJSONObject(i);
             JSONObject in = new JSONObject();
@@ -77,11 +86,13 @@ public class PsbtViewModel extends AndroidViewModel {
             JSONArray bip32Derivation = psbtInput.getJSONArray("hdPath");
             for (int j = 0; j < bip32Derivation.length(); j++) {
                 JSONObject item = bip32Derivation.getJSONObject(j);
-                if (item.getString("masterFingerprint").equals(masterKeyFingerprint)) {
+                String hdPath = item.getString("path");
+                if (item.getString("masterFingerprint").equals(masterKeyFingerprint)
+                    && hdPath.toUpperCase().startsWith(account.getPath())) {
                     utxo.put("publicKey", item.getString("pubkey"));
                     utxo.put("value", psbtInput.optInt("value"));
                     in.put("utxo", utxo);
-                    in.put("ownerKeyPath", item.getString("path"));
+                    in.put("ownerKeyPath", hdPath);
                     in.put("masterFingerprint", item.getString("masterFingerprint"));
                     inputs.put(in);
                     break;
@@ -93,11 +104,27 @@ public class PsbtViewModel extends AndroidViewModel {
     }
 
     private static void adaptOutputs(JSONArray psbtOutputs, JSONArray outputs) throws JSONException {
+        String masterKeyFingerprint = new GetMasterFingerprintCallable().call();
+        Coins.Account account = getAccount(MainApplication.getApplication());
         for(int i = 0; i < psbtOutputs.length(); i++) {
             JSONObject psbtOutput = psbtOutputs.getJSONObject(i);
             JSONObject out = new JSONObject();
             out.put("address", psbtOutput.getString("address"));
             out.put("value", psbtOutput.getInt("value"));
+            JSONArray bip32Derivation = psbtOutput.optJSONArray("hdPath");
+            if (bip32Derivation != null) {
+                for (int j = 0; j < bip32Derivation.length(); j++) {
+                    JSONObject item = bip32Derivation.getJSONObject(j);
+                    String hdPath = item.getString("path");
+                    if (item.getString("masterFingerprint").equals(masterKeyFingerprint)
+                            && hdPath.toUpperCase().startsWith(account.getPath())) {
+                        out.put("isChange",true);
+                        out.put("changeAddressPath", hdPath);
+
+                    }
+                }
+            }
+
             outputs.put(out);
         }
     }

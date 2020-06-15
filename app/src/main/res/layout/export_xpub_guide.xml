@@ -50,49 +50,61 @@
 
         <include layout="@layout/divider" />
 
-        <TextView
-            android:id="@+id/text1"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:padding="16dp"
-            android:text="@string/export_to_electrum_guide_hint"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-        <com.cobo.cold.ui.views.SpanedTextView
-            android:id="@+id/text2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lineSpacingExtra="6dp"
-            android:padding="16dp"
-            android:text="@string/export_to_electrum_guide"
-            android:textColor="@color/white"
-            android:textSize="13sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+                <TextView
+                    android:id="@+id/text1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:padding="16dp"
+                    android:text="@string/export_to_electrum_guide_hint"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/export"
-            style="@style/AcceptButton"
-            android:layout_width="match_parent"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="0dp"
-            android:text="@string/export_xpub" />
-        
-        <TextView
-            android:id="@+id/skip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="10dp"
-            android:textColor="@color/colorAccent"
-            android:gravity="center"
-            android:text="@string/skip_export"/>
+                <com.cobo.cold.ui.views.SpanedTextView
+                    android:id="@+id/text2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="6dp"
+                    android:padding="16dp"
+                    android:text="@string/export_to_electrum_guide"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
 
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/export"
+                    style="@style/AcceptButton"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginBottom="0dp"
+                    android:text="@string/export_xpub" />
+
+                <TextView
+                    android:id="@+id/skip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/skip_export"
+                    android:textColor="@color/colorAccent" />
+            </LinearLayout>
+
+        </ScrollView>
     </LinearLayout>
 </layout>
