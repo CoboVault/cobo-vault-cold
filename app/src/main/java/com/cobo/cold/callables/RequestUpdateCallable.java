@@ -68,7 +68,6 @@ public class RequestUpdateCallable implements Callable<Boolean> {
     }
 
     private boolean updating() throws Exception {
-        final byte[] checksum = calculateChecksum(updateData);
         final byte[] readBuffer = new byte[CONSTANTS.CONFIG.PAGE_SIZE];
         try (InputStream inputStream = new ByteArrayInputStream(updateData)) {
             // skip metadata
@@ -89,9 +88,6 @@ public class RequestUpdateCallable implements Callable<Boolean> {
                             .addBytePayload(CONSTANTS.TAGS.UPDATING_PACKAGE_TYPE, type)
                             .addHexPayload(CONSTANTS.TAGS.CURRENT_PASSWORD, password)
                             .addBytesPayload(CONSTANTS.TAGS.UPDATING_PACKAGE, availableBuffer);
-                    if (type == TYPE_PACKAGE_END) {
-                        builder.addBytesPayload(CONSTANTS.TAGS.UPDATING_CHECKSUM, checksum);
-                    }
                     final Callable callable = new BlockingCallable(builder.build());
                     try {
                         Log.w(TAG, String.format("write the %sth package", packageIndex));
