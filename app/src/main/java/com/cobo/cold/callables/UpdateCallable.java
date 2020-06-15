@@ -106,8 +106,6 @@ public class UpdateCallable implements Callable<Void> {
     }
 
     private void updating() throws Exception {
-        final byte[] checksum = calculateChecksum(mUpdateData);
-
         final byte[] readBuffer = new byte[CONSTANTS.CONFIG.PAGE_SIZE];
 
         try (InputStream inputStream = new ByteArrayInputStream(mUpdateData)) {
@@ -124,7 +122,7 @@ public class UpdateCallable implements Callable<Void> {
                 final byte[] availableBuffer = fitBuffer(readBuffer, read);
                 final int type = calculatePackageType(packageSize, readPosition, read);
                 for (int i = 1; i <= PACKET_RETRY_TIMES; ++i) {
-                    if (writeUpdateBytes(checksum, packageIndex, availableBuffer, type, i)) break;
+                    if (writeUpdateBytes(packageIndex, availableBuffer, type, i)) break;
                 }
                 readPosition += read;
                 ++packageIndex;
@@ -154,16 +152,12 @@ public class UpdateCallable implements Callable<Void> {
         return false;
     }
 
-    private boolean writeUpdateBytes(byte[] checksum, int packageIndex, byte[] availableBuffer, int type, int i) {
+    private boolean writeUpdateBytes(int packageIndex, byte[] availableBuffer, int type, int i) {
         boolean writeSuccess = true;
         final Packet.Builder builder = new Packet.Builder(CONSTANTS.METHODS.WRITE_UPDATE_BYTES)
                 .addBytePayload(CONSTANTS.TAGS.UPDATING_PACKAGE_TYPE, type)
                 .addHexPayload(CONSTANTS.TAGS.CURRENT_PASSWORD, password)
                 .addBytesPayload(CONSTANTS.TAGS.UPDATING_PACKAGE, availableBuffer);
-
-        if (type == TYPE_PACKAGE_END) {
-            builder.addBytesPayload(CONSTANTS.TAGS.UPDATING_CHECKSUM, checksum);
-        }
 
         final Callable callable = new BlockingCallable(builder.build());
 

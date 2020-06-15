@@ -104,11 +104,27 @@ public class PsbtViewModel extends AndroidViewModel {
     }
 
     private static void adaptOutputs(JSONArray psbtOutputs, JSONArray outputs) throws JSONException {
+        String masterKeyFingerprint = new GetMasterFingerprintCallable().call();
+        Coins.Account account = getAccount(MainApplication.getApplication());
         for(int i = 0; i < psbtOutputs.length(); i++) {
             JSONObject psbtOutput = psbtOutputs.getJSONObject(i);
             JSONObject out = new JSONObject();
             out.put("address", psbtOutput.getString("address"));
             out.put("value", psbtOutput.getInt("value"));
+            JSONArray bip32Derivation = psbtOutput.optJSONArray("hdPath");
+            if (bip32Derivation != null) {
+                for (int j = 0; j < bip32Derivation.length(); j++) {
+                    JSONObject item = bip32Derivation.getJSONObject(j);
+                    String hdPath = item.getString("path");
+                    if (item.getString("masterFingerprint").equals(masterKeyFingerprint)
+                            && hdPath.toUpperCase().startsWith(account.getPath())) {
+                        out.put("isChange",true);
+                        out.put("changeAddressPath", hdPath);
+
+                    }
+                }
+            }
+
             outputs.put(out);
         }
     }
