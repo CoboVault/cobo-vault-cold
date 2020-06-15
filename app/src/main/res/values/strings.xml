@@ -31,7 +31,7 @@
     <string name="drawer_menu_about">About Cobo Vault</string>
     <string name="title_about">About Cobo Vault</string>
     <string name="title_setting">Settings</string>
-    <string name="title_sync">Sync Cobo Vault Mobile</string>
+    <string name="title_sync">Export to Cobo Vault Watch-Only</string>
     <string name="add_remove_coin">Add / Hide Assets</string>
     <string name="scan">Scan QR Code</string>
     <string name="scan_hint">Align QR Code within frame to scan</string>
@@ -102,8 +102,8 @@
     </string-array>
 
     <string-array name="address_format_subtitle" translatable="false">
-        <item><![CDATA[eg. <font color="#00cdc3">3<font/>kgdahdkhghahdgkhaldshg]]></item>
-        <item><![CDATA[eg. <font color="#00cdc3">bc1<font/>akjhdfhkashdhdhsaghlh]]></item>
+        <item><![CDATA[eg. <font color="#00cdc3">3<font/>7VucYSaXLCAsxYyAPfbSi9eh4iEcbShgf]]></item>
+        <item><![CDATA[eg. <font color="#00cdc3">bc1<font/>qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu]]></item>
     </string-array>
 
     <string-array name="address_format_value" translatable="false">
@@ -225,7 +225,7 @@
     <string name="broadcast_tx">Broadcast Transaction</string>
     <string name="please_broadcast_with_hot">Scan QR code with Cobo Vault Mobile to broadcast the transaction to the blockchain</string>
     <string name="please_confirm">Please Confirm</string>
-    <string name="know">I Understand</string>
+    <string name="know">Understood</string>
     <string name="creating_vault_hint">Creating Vault, please keep screen on.</string>
     <string name="delete_white_list">Delete White List</string>
     <string name="self_check_under_disassemble">Someone has attempted to hack your device!</string>
@@ -361,13 +361,13 @@
     <string name="export_xpub_text_file">Export Master Public Key File</string>
     <string name="file_name_label">File name:</string>
     <string name="master_xpub">Master Public Key (%s)</string>
-    <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>touch here to export the file with microSD</u>.]]></string>
-    <string name="generic_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>No scanning? <u>touch here to export the file with microSD</u>.]]></string>
+    <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning? Tap the QR code to enlarge<br>or <u>touch here to export the file with microSD</u>.]]></string>
+    <string name="generic_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>No scanning?  <u>Touch here to export the file with microSD</u>.]]></string>
     <string name="scan_electrum_hint">Difficulty scanning? You can import pending transactions from Electrum using a microSD card (Menu > MicroSD Card).</string>
     <string name="sign_txn_in_sdcard">Unsigned Transaction Files</string>
     <string name="master_pubkey_not_match">Transaction not recognized. Your Cobo Vault has not been successfully paired with the watch-only wallet.</string>
     <string name="change">Change</string>
-    <string name="electrum_compatibility">Electrum Watch-Only Wallet</string>
+    <string name="electrum_compatibility">Export to Electrum Watch-Only</string>
     <string name="generic_compatibility">Generic Wallet</string>
     <string name="identification_failed">Identification Failed</string>
     <string name="from_electrum">From Electrum</string>
@@ -383,8 +383,9 @@
     <string name="dice_roll_guide"><![CDATA[How to use dice to generate keys:<br><br> 1. Roll the dice at least 50 times. Roll 99 times to obtain 256-bit entropy (recommended). There is no limit to the number of rolls you can use.<br>2. We recommend you use <font color="#00cdc3">casino dice<font/> to increase the entropy of each dice throw.]]></string>
     <string name="start">Start</string>
     <string name="pattern_lock_hide_track">Trace marks are hidden to prevent your password from being stolen by an onlooker.</string>
-    <string name="select_address_format">Toggle Address Type</string>
-    <string name="select_address_num">Select number of %s</string>
+    <string name="toggle_address_format">Toggle Address Type</string>
+    <string name="select_address_format">Select Address Type</string>
+    <string name="select_address_num">Select number of %s addresses</string>
     <string name="change_address">Change Address</string>
     <string name="export_xpub_guide_title_electrum">Export to Electrum Watch-Only</string>
     <string name="export_xpub_guide_title_wasabi">Export to Wasabi Watch-Only</string>
@@ -409,26 +410,26 @@
         3. Touch <font color="#00cdc3">“Display QR Code”<font/> below then scan the OR code with the Cobo Vault mobile app. <br><br>
         Cobo Vault mobile app download:<br>
         <font color="#00cdc3">https://cobo.com/hardware-wallet/downloads<font/><br>
-        Cobo Vault mobile app requires the xPub, firmware version, derivation path, and assets to be used as a watch-only wallet. This information will be exported if you touch “Display QR Code” below.
+        <font color="#808080">Cobo Vault mobile app requires the xPub, firmware version to be used as a watch-only wallet. This information will be exported if you touch “Display QR Code” below.<font/>
     ]]></string>
 
     <string name="export_xpub_guide_text2_wasabi"><![CDATA[
         1. Open Wasabi and create a new wallet. <br>
         2. Choose <font color="#00cdc3">“Hardware Wallet”<font/>. <br>
         3. Choose <font color="#00cdc3">“Import Hardware Wallet”<font/>. <br>
-        4. Insert a microSD card, then touch <font color="#00cdc3">"Export with MicroSD"<font/> below. <br>
+        4. Insert a microSD card, then touch <font color="#00cdc3">"Export Wallet"<font/> below. <br>
         5. Migrate the wallet file to your computer using the microSD card. <br>
-        6. Click <font color="#00cdc3">“Load Wallet”<font/> and open the file in Wadabi.<br>
+        6. Click <font color="#00cdc3">“Load Wallet”<font/> and open the file in Wasabi.<br>
         7. Enter the watch-only wallet.<br><br>
-        Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting.<br>
-        Wasabi requires the xPub, hardware wallet fingerprint, and firmware version to be used as a watch-only wallet. This information will be exported if you touch “Export with MicroSD” below.
+        <font color="#808080">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting.<br>
+        Wasabi requires the xPub, hardware wallet fingerprint, and firmware version to be used as a watch-only wallet. This information will be exported if you touch “Export with MicroSD” below.<font/>
     ]]></string>
 
     <string name="export_xpub_guide_text2_blue"><![CDATA[
         1. Open BlueWallet and add a new wallet.<br>
-        2. Choose “Import Wallet”.
+        2. Choose “Import Wallet”.<br>
         3. Touch <font color="#00cdc3">“Display QR Code”<font/> below, then touch "Scan or import file" in BlueWallet to scan the QR code that displays on Cobo Vault.<br><br>
-        BlueWallet requires the xPub, wallet type, hardware wallet type and fingerprint, and derivation path to be used as a watch-only wallet. This information will be exported if you touch “Display QR Code” below.
+        <font color="#808080">BlueWallet requires the zPub, wallet type, hardware wallet fingerprint, and firmware version to be used as a watch-only wallet. This information will be exported if you touch “Display QR Code” below.<font/>
     ]]></string>
     <string name="show_master_public_key_qrcode">Display Master Public Key QR Code</string>
     <string name="show_qrcode">Display QR Code</string>
@@ -438,9 +439,10 @@
     <string name="nested_segwit">Nested SegWit</string>
     <string name="txid">TxID</string>
     <string name="skip_export">Exported / Export Later</string>
+    <string name="export_later">Export Later</string>
     <string name="choose_watch_only_wallet">Select a watch-only wallet</string>
     <string name="watch_only_wallet">Watch-only Wallet</string>
-    <string name="switch_watch_only_wallet_guide">Go to Menu > Settings > Select Watch-Only Wallet</string>
+    <string name="switch_watch_only_wallet_guide">Go to Menu > Settings > Watch-Only Wallet to switch</string>
     <string name="wallet_info">Wallet Info</string>
     <string name="wallet">Key Fingerprint:</string>
     <string name="addressType">Address Type:</string>
@@ -457,11 +459,14 @@
     <string name="toggle_address_hint">Once you toggle the address format, your receiving addresses, exported wallet, and wallet info will all be changed to this format. You will need to export your wallet information again using the new address format if you have not already. Do you still want to change the format?</string>
     <string name="toggle_later">Cancel</string>
     <string name="toggle_confirm">Confirm</string>
-    <string name="abnormal_tx">Abnormal Transaction</string>
-    <string name="fee_attack_warning">Detect that the transaction is risky and cannot be signed. You can go to: https// for details, or contact  us: support@cobo.com</string>
+    <string name="abnormal_tx">Possible Fee Attack</string>
+    <string name="fee_attack_warning">We detected something strange about this transaction and have prevented it from being signed to protect you. Please visit https://cobo.com/hardware-wallet/fee-attack for details, or contact us at support@cobo.com.</string>
     <string name="already_signed">You have signed the transaction,  can broadcast the transaction directly</string>
     <string name="scan_with_blue_wallet">Scan QR code using BlueWallet</string>
     <string name="blue_wallet_broadcast_guide">How to broadcast using BlueWallet</string>
     <string name="blue_wallet_broadcast_guide1">Open the Watch-only wallet in BlueWallet,  enter wallet information, touch "Broadcast transaction" and scan the QR code of Cobo Vault</string>
+    <string name="no_signatures">No Signatures</string>
+    <string name="scan_blue_hint">Difficulty scanning with BlueWallet? Try scanning these static QR codes instead of the single dynamic QR code.</string>
+    <string name="scan_wasabi_hint">Wasabi Wallet does not support exporting transactions by QR code. Please export transactions using microSD.</string>
 
 </resources>

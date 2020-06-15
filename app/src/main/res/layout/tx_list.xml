@@ -46,6 +46,7 @@
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
         <TextView
+            android:id="@+id/txid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white40"
@@ -69,7 +70,7 @@
             android:textColor="@color/white"
             android:gravity="center"
             android:paddingBottom="200dp"
-            android:text="@string/tx_list_empty"
+            android:text="@string/no_signatures"
             android:visibility="gone" />
     </LinearLayout>
 </layout>

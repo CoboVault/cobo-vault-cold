@@ -269,7 +269,12 @@
     </string-array>
     <string name="export_to_electrum">在 Electrum 创建观察钱包</string>
     <string name="export_to_electrum_guide"><![CDATA[
-1. 打开 Electrum，新建钱包 <br>2. 选择“标准钱包” <br>3. 选择“使用主公钥” <br>4. 在输入主公钥页面点击照相机按钮，扫描主公钥二维码（点击下方按钮查看二维码）<br>5. 设置钱包密码 <br>6. 进入观察钱包
+1. 打开 Electrum，新建钱包 <br>
+2. 选择“标准钱包” <br>
+3. 选择“使用主公钥” <br>
+4. 在输入主公钥页面点击照相机按钮，扫描主公钥二维码（点击下方按钮查看二维码）<br>
+5. 设置钱包密码 <br>
+6. 进入观察钱包
     ]]></string>
     <string name="export_xpub">查看主公钥二维码</string>
     <string name="export_to_electrum_guide_hint">Electrum 创建指引</string>
@@ -327,6 +332,7 @@
     <string name="dice_roll_guide"><![CDATA[请注意:<br><br> 1. 至少投掷50次，才能生成助记词；建议您最少投掷99次，获得256位的随机熵值；Cobo 金库不限制您的最大投掷次数。<br>2. 建议您使用<font color="#00cdc3">赌场级骰子<font/>（六个面向上的概率相同），操作过程中确保骰子在空中得到足够的翻转，且避免总是从骰子特定面朝上进行投掷。]]></string>
     <string name="start">开始</string>
     <string name="pattern_lock_hide_track">为防偷窥，解锁时将隐藏轨迹</string>
+    <string name="toggle_address_format">切换地址格式</string>
     <string name="select_address_format">选择地址格式</string>
     <string name="select_address_num">选择数量（%s）</string>
     <string name="change_address">找零地址</string>
@@ -362,7 +368,7 @@
         4. 打开 Cobo 金库导出的钱包文件（点击下方按钮导出）<br>
         5. 点击<font color="#00cdc3">“Load Wallet”<font/> <br>
         6. 加载完成后即可进入观察钱包<br><br>
-        请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）
+        <font color="#808080">请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）<font/>
     ]]></string>
 
     <string name="export_xpub_guide_text2_blue"><![CDATA[
@@ -378,6 +384,7 @@
     <string name="nested_segwit">隔离见证兼容</string>
     <string name="txid">交易ID</string>
     <string name="skip_export">已导出 / 暂不导出</string>
+    <string name="export_later">暂不导出</string>
     <string name="choose_watch_only_wallet">选择观察钱包</string>
     <string name="watch_only_wallet">观察钱包</string>
     <string name="switch_watch_only_wallet_guide">切换观察钱包可前往【菜单--设置--选择观察钱包】</string>
@@ -414,10 +421,13 @@
     </string-array>
 
     <string name="abnormal_tx">异常交易</string>
-    <string name="fee_attack_warning">检测到该笔交易有风险，不能对其签名，您可前往：https://cobo.com/hardware-wallet/XXX 了解详情，您也可邮件联系客服：support@cobo.com</string>
+    <string name="fee_attack_warning">检测到该笔交易存在费用超付攻击风险，禁止对其签名，您可前往：https://cobo.com/hardware-wallet/fee-attack 了解详情，您也可邮件联系客服：support@cobo.com</string>
     <string name="already_signed">检测到您已对该笔交易签名，您可直接广播该交易</string>
     <string name="scan_with_blue_wallet">请用 BlueWallet 扫描二维码</string>
     <string name="blue_wallet_broadcast_guide">BlueWallet 广播交易引导</string>
     <string name="blue_wallet_broadcast_guide1">在BlueWallet侧打开该观察钱包，进入钱包详情，点击广播交易后，扫描 Cobo 金库的二维码</string>
+    <string name="no_signatures">暂无签名记录</string>
+    <string name="scan_blue_hint">若扫描 BlueWallet 动态二维码困难，您可扫描分页二维码</string>
+    <string name="scan_wasabi_hint">Wasabi Wallet 暂不支持将交易导成二维码，您可将待签交易导出成文件</string>
 
 </resources>

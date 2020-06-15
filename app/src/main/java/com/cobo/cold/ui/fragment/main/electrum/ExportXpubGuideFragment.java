@@ -58,8 +58,8 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
         mBinding.export.setOnClickListener(v -> export());
         if (mActivity instanceof MainActivity) {
             mBinding.skip.setOnClickListener( v -> popBackStack(R.id.assetFragment,false));
-
         } else {
+            mBinding.skip.setText(R.string.export_later);
             mBinding.skip.setOnClickListener(v -> navigate(R.id.action_to_setupCompleteFragment));
         }
 

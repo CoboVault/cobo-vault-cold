@@ -86,9 +86,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     @Override
     protected void init(View view) {
         watchWallet = getWatchWallet(mActivity);
-        if (watchWallet != ELECTRUM) {
-            mBinding.electrumScanHint.setVisibility(View.GONE);
-        }
+        mBinding.scanHint.setText(getScanhint());
         boolean isSetupVault = getArguments() != null && getArguments().getBoolean(IS_SETUP_VAULT);
         purpose = getArguments() != null ? getArguments().getString("purpose") : "";
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
@@ -102,10 +100,22 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         QrScanViewModel.Factory factory = new QrScanViewModel.Factory(mActivity.getApplication(), isSetupVault);
         viewModel = ViewModelProviders.of(this, factory).get(QrScanViewModel.class);
         if (!TextUtils.isEmpty(purpose)) {
-            mBinding.electrumScanHint.setVisibility(View.GONE);
+            mBinding.scanHint.setVisibility(View.GONE);
         }
     }
 
+    public String getScanhint() {
+        switch (watchWallet){
+            case ELECTRUM:
+                return getString(R.string.scan_electrum_hint);
+            case BLUE:
+                return getString(R.string.scan_blue_hint);
+            case WASABI:
+                return getString(R.string.scan_wasabi_hint);
+
+        }
+        return "";
+    }
     @Override
     public void onResume() {
         super.onResume();
