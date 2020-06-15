@@ -379,6 +379,7 @@
     <string name="txid">交易ID</string>
     <string name="skip_export">已导出 / 暂不导出</string>
     <string name="choose_watch_only_wallet">选择观察钱包</string>
+    <string name="watch_only_wallet">观察钱包</string>
     <string name="switch_watch_only_wallet_guide">切换观察钱包可前往【菜单--设置--选择观察钱包】</string>
     <string name="wallet_info">钱包信息</string>
     <string name="wallet">钱包：</string>

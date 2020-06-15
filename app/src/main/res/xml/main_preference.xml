@@ -20,7 +20,7 @@
 
     <com.cobo.cold.ui.preference.SimplePreference
         android:key="setting_choose_watch_only_wallet"
-        android:title="@string/choose_watch_only_wallet" />
+        android:title="@string/watch_only_wallet" />
     <com.cobo.cold.ui.preference.SimplePreference
         android:key="setting_change_pwd"
         android:title="@string/change_password" />

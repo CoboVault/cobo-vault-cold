@@ -106,7 +106,10 @@ public class SecurityCheck {
         Log.i(TAG, "check firmware status");
         try {
             final Callable<Packet> callable = new BlockingCallable(
-                    new Packet.Builder(CONSTANTS.METHODS.GET_FIRMWARE_STATUS).setRetryTimes(2).build());
+                    new Packet.Builder(CONSTANTS.METHODS.GET_FIRMWARE_STATUS)
+                            .setRetryTimes(5)
+                            .setTimeout(5)
+                            .build());
             final Packet result = callable.call();
             final Payload payload = result.getPayload(CONSTANTS.TAGS.FIRMWARE_STATUS);
 
@@ -143,7 +146,9 @@ public class SecurityCheck {
         Log.i(TAG, "check firmware status");
         try {
             final Callable<Packet> callable = new BlockingCallable(
-                    new Packet.Builder(CONSTANTS.METHODS.GET_FIRMWARE_STATUS).setRetryTimes(2).build());
+                    new Packet.Builder(CONSTANTS.METHODS.GET_FIRMWARE_STATUS)
+                            .setTimeout(5)
+                            .setRetryTimes(5).build());
             final Packet result = callable.call();
             final Payload payload = result.getPayload(CONSTANTS.TAGS.FIRMWARE_STATUS);
 

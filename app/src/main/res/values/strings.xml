@@ -439,6 +439,7 @@
     <string name="txid">TxID</string>
     <string name="skip_export">Exported / Export Later</string>
     <string name="choose_watch_only_wallet">Select a watch-only wallet</string>
+    <string name="watch_only_wallet">Watch-only Wallet</string>
     <string name="switch_watch_only_wallet_guide">Go to Menu > Settings > Select Watch-Only Wallet</string>
     <string name="wallet_info">Wallet Info</string>
     <string name="wallet">Key Fingerprint:</string>
