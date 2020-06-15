@@ -178,6 +178,7 @@ public class Btc extends AbsCoin {
             StringBuilder paths = new StringBuilder();
             for (int i = 0; i < inputs.length(); i++) {
                 JSONObject input = inputs.getJSONObject(i);
+                input.put("bip32Derivation",new JSONArray());
                 String path = input.getString("ownerKeyPath");
                 checkHdPath(path, false);
                 paths.append(path).append(SEPARATOR);
