@@ -86,7 +86,7 @@
             android:text="@string/scan_hint" />
 
         <TextView
-            android:id="@+id/electrum_scan_hint"
+            android:id="@+id/scan_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/align_hint"

@@ -90,7 +90,7 @@ public class WalletInfoFragment extends BaseFragment<WalletInfoBinding> {
 
     private void switchAddressFormat() {
         Bundle data = new Bundle();
-        data.putInt(KEY_TITLE, R.string.select_address_format);
+        data.putInt(KEY_TITLE, R.string.toggle_address_format);
         navigate(R.id.action_to_selectAddressFormatFragment, data);
     }
 

@@ -200,7 +200,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp">
+            android:layout_height="160dp">
 
             <TextView
                 android:id="@+id/xpub_label"
@@ -224,21 +224,17 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 tools:text="ypub6WizmVHgZZHMNUtq4T84HzzrTakvdpwUzsmSsFT4ZaRoJpavKYmZweKd1A4aDZz3p51KMPbWwfii9UMnUKvsXgVFdmQrgPYhy7APibMeT3Z" />
-
-            <include
-                layout="@layout/divider"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:layout_marginHorizontal="16dp"
+                android:layout_below="@id/xpub"
+                android:textSize="13sp"
+                android:text="@string/wallet_info_hint"/>
         </RelativeLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
-            android:layout_margin="16dp"
-            android:textSize="13sp"
-            android:text="@string/wallet_info_hint"/>
+
 
     </LinearLayout>
 </layout>

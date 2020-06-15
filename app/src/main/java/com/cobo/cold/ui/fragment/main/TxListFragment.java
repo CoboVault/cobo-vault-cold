@@ -96,7 +96,13 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
                             .filter(this::filterByMode)
                             .sorted(txEntityComparator)
                             .collect(Collectors.toList());
-                    adapter.setItems(txEntities);
+
+                    if (txEntities.isEmpty()) {
+                        showEmpty(true);
+                    } else {
+                        showEmpty(false);
+                        adapter.setItems(txEntities);
+                    }
                 });
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -111,6 +117,18 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
                 }
             }
         });
+    }
+
+    private void showEmpty(boolean empty) {
+        if (empty) {
+            mBinding.list.setVisibility(View.GONE);
+            mBinding.txid.setVisibility(View.GONE);
+            mBinding.empty.setVisibility(View.VISIBLE);
+        } else {
+            mBinding.list.setVisibility(View.VISIBLE);
+            mBinding.txid.setVisibility(View.VISIBLE);
+            mBinding.empty.setVisibility(View.GONE);
+        }
     }
 
     private boolean filterByMode(TxEntity txEntity) {
