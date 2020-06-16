@@ -170,8 +170,6 @@ public class Btc extends AbsCoin {
                             output.getString("address"),
                             output.getString("changeAddressPath"),
                             output.getLong("value"));
-                    outputsClone.remove(i);
-                    continue;
                 }
 
                 NumberFormat nf = NumberFormat.getInstance();
