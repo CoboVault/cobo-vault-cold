@@ -106,7 +106,7 @@
                         android:visibility="visible" />
                 </com.cobo.cold.ui.views.qrcode.QrCodeView>
 
-                <com.cobo.cold.ui.views.SpanedTextView
+                <com.cobo.cold.ui.views.UnderLineTextView
                     android:id="@+id/enlarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                     android:paddingVertical="10dp"
                     android:gravity="center"
                     android:text="@string/enlarge_qrcode"
-                    android:textColor="@color/white"
+                    android:textColor="@color/white40"
                     android:textSize="12sp" />
 
 
