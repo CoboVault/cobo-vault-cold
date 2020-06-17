@@ -70,6 +70,8 @@
         <TextView
             android:id="@+id/hint"
             android:layout_marginTop="30dp"
+            android:layout_marginHorizontal="16dp"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/pattern_unlock_hint"
@@ -79,6 +81,8 @@
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:gravity="center"
             android:text="@string/pattern_lock_hide_track"
             android:textColor="@color/white40"
             android:textSize="12sp" />

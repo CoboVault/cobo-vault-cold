@@ -17,6 +17,7 @@
 
 package com.cobo.cold.ui.fragment.setup;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -33,9 +34,16 @@ import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_A
 
 public class SelectAddressFormatFragment extends ListPreferenceFragment {
 
+    public static final String KEY_NEED_CONFIRM = "need_confirm";
+    private boolean needConfirm;
+
     @Override
     protected void init(View view) {
         super.init(view);
+        Bundle data = getArguments();
+        if (data != null) {
+            needConfirm = data.getBoolean(KEY_NEED_CONFIRM);
+        }
         subTitles = getResources().getStringArray(R.array.address_format_subtitle);
         mBinding.confirm.setVisibility(View.VISIBLE);
         mBinding.confirm.setText(R.string.next);
@@ -76,6 +84,10 @@ public class SelectAddressFormatFragment extends ListPreferenceFragment {
         String old = value;
         value = values[position].toString();
         if (!old.equals(value)) {
+            if (!needConfirm) {
+                onSwitchAddressFormat();
+                return;
+            }
             ModalDialog dialog = new ModalDialog();
             ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                     R.layout.modal_with_two_button,
@@ -90,11 +102,15 @@ public class SelectAddressFormatFragment extends ListPreferenceFragment {
             binding.right.setText(R.string.toggle_confirm);
             binding.right.setOnClickListener(v -> {
                 dialog.dismiss();
-                prefs.edit().putString(getKey(), value).apply();
-                adapter.notifyDataSetChanged();
+                onSwitchAddressFormat();
             });
             dialog.setBinding(binding);
             dialog.show(mActivity.getSupportFragmentManager(), "");
         }
+    }
+
+    private void onSwitchAddressFormat() {
+        prefs.edit().putString(getKey(), value).apply();
+        adapter.notifyDataSetChanged();
     }
 }

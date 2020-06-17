@@ -376,6 +376,30 @@
         2. 选择“导入钱包”<br>
         3. 扫描 Cobo 金库二维码（点击下方按钮查看）<br>
     ]]></string>
+
+    <string name="export_xpub_guide_text2_cobo_info"><![CDATA[
+        1. 打开 Cobo 金库移动端，添加新钱包 <br>
+        2. 选择<font color="#00cdc3">“硬件钱包”<font/>，点击绑定按钮<font/> <br>
+        3. 勾选隐私协议和服务条款后，点击确定按钮，扫描钱包二维码 <br><br>
+        Cobo 金库移动端可在 Cobo 官网下载：<br>
+        <font color="#00cdc3">https://cobo.com/hardware-wallet/downloads<font/>
+    ]]></string>
+
+    <string name="export_xpub_guide_text2_electrum_info"><![CDATA[
+        1. 打开 Electrum，新建钱包 <br>
+        2. 选择<font color="#00cdc3">“标准钱包”<font/> <br>
+        3. 选择<font color="#00cdc3">“使用主公钥”<font/> <br>
+        4. 在输入主公钥页面点击照相机按钮，扫描主公钥二维码<br>
+        5. 设置钱包密码 <br>
+        6. 进入观察钱包
+    ]]></string>
+
+    <string name="export_xpub_guide_text2_blue_info"><![CDATA[
+        1. 打开 BlueWallet，添加新钱包<br>
+        2. 选择<font color="#00cdc3">“导入钱包”<font/><br>
+        3. 扫描 Cobo 金库二维码<br>
+    ]]></string>
+
     <string name="show_master_public_key_qrcode">查看主公钥二维码</string>
     <string name="show_qrcode">查看二维码</string>
     <string name="export_wallet">导出钱包</string>

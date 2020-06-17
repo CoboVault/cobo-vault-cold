@@ -85,7 +85,7 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
                 LayoutInflater.from(mActivity), R.layout.common_modal,
                 null, false);
         binding.title.setText(R.string.export_xpub_guide_text1_cobo);
-        binding.subTitle.setText(R.string.export_xpub_guide_text2_cobo);
+        binding.subTitle.setText(R.string.export_xpub_guide_text2_cobo_info);
         binding.subTitle.setGravity(Gravity.START);
         binding.close.setVisibility(View.GONE);
         binding.confirm.setText(R.string.know);
