@@ -17,6 +17,8 @@
 
 package com.cobo.cold.ui.fragment.setup;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputFilter;
@@ -35,6 +37,7 @@ import com.cobo.cold.callables.ChangePasswordCallable;
 import com.cobo.cold.callables.ResetPasswordCallable;
 import com.cobo.cold.databinding.ModalBinding;
 import com.cobo.cold.databinding.SetPasswordBinding;
+import com.cobo.cold.ui.AttackWarningActivity;
 import com.cobo.cold.ui.UnlockActivity;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.util.HashUtil;
@@ -213,13 +216,17 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
                         action = () -> popBackStack(R.id.preImportFragment, true);
                     }
                 } else {
-                    new ResetPasswordCallable(passwordHash, mnemonic, slip39MasterSeed, slip39Id).call();
-                    viewModel.setPassword(passwordHash);
-                    action = () -> {
-                        Bundle data = new Bundle();
-                        data.putBoolean(IS_SETUP_VAULT, true);
-                        navigate(R.id.action_setPasswordFragment_to_setupVaultFragment, data);
-                    };
+                    if (new ResetPasswordCallable(passwordHash, mnemonic, slip39MasterSeed, slip39Id).call()) {
+                        viewModel.setPassword(passwordHash);
+                        action = () -> {
+                            Bundle data = new Bundle();
+                            data.putBoolean(IS_SETUP_VAULT, true);
+                            navigate(R.id.action_setPasswordFragment_to_setupVaultFragment, data);
+                        };
+                    } else {
+                        handleSeStateAbnormal(mActivity);
+                        return;
+                    }
                 }
 
                 handler.post(() -> {
@@ -228,6 +235,17 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
                 });
             });
         }
+    }
+
+    public static void handleSeStateAbnormal(Activity activity) {
+        Utilities.setAttackDetected(activity);
+        Bundle data = new Bundle();
+        data.putInt("firmware", 0x0600);
+        data.putInt("system", 0);
+        data.putInt("signature", 0);
+        Intent intent = new Intent(activity, AttackWarningActivity.class);
+        intent.putExtras(data);
+        activity.startActivity(intent);
     }
 
     private void showInvalidPasswordHint(SetupVaultViewModel.PasswordValidationResult result) {

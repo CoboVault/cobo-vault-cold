@@ -35,6 +35,7 @@ import com.cobo.cold.viewmodel.SetupVaultViewModel;
 import java.util.List;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
+import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.handleSeStateAbnormal;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATED;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING_FAILED;
@@ -111,6 +112,7 @@ public class ConfirmMnemonicFragment extends MnemonicInputFragment {
                 if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
                     dialog.dismiss();
                 }
+                handleSeStateAbnormal(mActivity);
             }
         });
     }

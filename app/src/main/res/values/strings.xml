@@ -415,5 +415,11 @@
     <string name="generate_slip39_phrase">Create a Vault with Shamir Backup</string>
     <string name="generate_bip39_phrase">Create a Vault with Single Backup</string>
     <string name="shard_setting">Setting</string>
+    <string name="opration_failed">Operation Failed</string>
+    <string name="reboot_hint">Please restart or contact us at support@cobo.com\n Status Code:%s</string>
+    <string name="reboot">Restart</string>
+    <string name="clear_and_power_off">Erase all Information and Power off</string>
+    <string name="abnormal_state_hint">It is recommended that you wipe the device and then reset it.Repeated retries failed, you can contact us：support@cobo.com\n  Status Code:%s</string>
+    <string name="abnormal_state_title">Abnormal State</string>
 
 </resources>

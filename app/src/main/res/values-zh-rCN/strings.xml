@@ -344,7 +344,6 @@
     <string name="mnemonic_not_match">输入的助记词和当前金库的不一致，请重新输入。</string>
     <string name="adding_dot_hint">正在添加%s，请勿锁屏</string>
     <string name="dot_tip">小费</string>
-
     <string name="shading_guide"><![CDATA[
     1. 您创建的是<font color="#00cdc3">%1$d<font/>/<font color="#00cdc3">%2$d<font/>的分片助记词；总片数为<font color="#00cdc3">%3$d<font/>片，恢复助记词时最少需要<font color="#00cdc3">%4$d<font/>片。<br> <br>
     2. 接下来展示和确认每一分片的助记词，若分片由多个管理员分别保管，请确认各片管理员的身份，确保是由本人进行操作。<br> <br>
@@ -390,4 +389,10 @@
     <string name="generate_slip39_phrase">生成分片助记词</string>
     <string name="generate_bip39_phrase">生成助记词</string>
     <string name="shard_setting">助记词分片设置</string>
+    <string name="opration_failed">操作失败</string>
+    <string name="reboot_hint">请重新启动机器，多次重试未果请联系客服：support@cobo.com\n 状态码:%s</string>
+    <string name="reboot">重新启动</string>
+    <string name="clear_and_power_off">删除所有信息并关机</string>
+    <string name="abnormal_state_hint">建议您将设备恢复出厂（擦除设备的所有信息）后重新设置。多次重试未果，您可邮件联系客服：support@cobo.com\n状态码:%s</string>
+    <string name="abnormal_state_title">设备状态异常</string>
 </resources>

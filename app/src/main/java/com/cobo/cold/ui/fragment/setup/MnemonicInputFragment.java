@@ -58,6 +58,7 @@ import iton.slip.secret.SharedSecretException;
 import iton.slip.secret.words.Mnemonic;
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
+import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.handleSeStateAbnormal;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATED;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING_FAILED;
@@ -298,6 +299,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                 if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
                     dialog.dismiss();
                 }
+                handleSeStateAbnormal(mActivity);
             }
         });
     }

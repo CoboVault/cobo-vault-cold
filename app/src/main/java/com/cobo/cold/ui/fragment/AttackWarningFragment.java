@@ -17,8 +17,12 @@
 
 package com.cobo.cold.ui.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.IPowerManager;
+import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.SystemProperties;
 import android.view.View;
 
@@ -34,8 +38,11 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
+import static com.cobo.cold.selfcheck.SecurityCheck.CODE_FW_GET_STATUS_FAILED;
 import static com.cobo.cold.selfcheck.SecurityCheck.CODE_FW_IN_BOOTMODE;
+import static com.cobo.cold.selfcheck.SecurityCheck.CODE_STATUS_MIS_MATCH;
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.removeAllFingerprint;
+import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.reset;
 
 public class AttackWarningFragment extends BaseFragment<AttackWarningBinding> {
 
@@ -59,16 +66,45 @@ public class AttackWarningFragment extends BaseFragment<AttackWarningBinding> {
 
         if (firmware == CODE_FW_IN_BOOTMODE) {
             mBinding.text1.setText(R.string.update_failed);
-            mBinding.hint.setText(getString(R.string.contact_cobo_service,formatErrorCode(data)));
+            mBinding.hint.setText(getString(R.string.contact_cobo_service, formatErrorCode(data)));
+        } else if(firmware == CODE_FW_GET_STATUS_FAILED) {
+            mBinding.text1.setText(R.string.opration_failed);
+            mBinding.hint.setText(getString(R.string.reboot_hint,formatErrorCode(data)));
+        } else if ((firmware & 0xff00) == CODE_STATUS_MIS_MATCH) {
+            mBinding.text1.setText(R.string.abnormal_state_title);
+            mBinding.hint.setText(getString(R.string.abnormal_state_hint,formatErrorCode(data)));
         }
 
-        mBinding.powerOff.setOnClickListener(v -> handleAttack(mActivity));
+        if (firmware == CODE_FW_GET_STATUS_FAILED) {
+            mBinding.powerOff.setText(R.string.reboot);
+            mBinding.powerOff.setOnClickListener(v -> reboot());
+        } else if ((firmware & 0xff00) == CODE_STATUS_MIS_MATCH) {
+            mBinding.powerOff.setText(R.string.factory_reset);
+            mBinding.powerOff.setOnClickListener(v -> reset(mActivity));
+        } else {
+            mBinding.powerOff.setText(R.string.clear_and_power_off);
+            mBinding.powerOff.setOnClickListener(v -> handleAttack(mActivity));
+        }
         mBinding.serialno.setText(getString(R.string.serialno, SystemProperties.get("persist.sys.serialno")));
         mBinding.icon.setOnClickListener(new AboutFragment.ExportLogHandler(mActivity, Executors.newSingleThreadExecutor()));
     }
 
+    private void reboot() {
+        new Thread("reboot") {
+            @Override
+            public void run() {
+                IPowerManager pm = IPowerManager.Stub.asInterface(ServiceManager.getService(Context.POWER_SERVICE));
+                try {
+                    pm.reboot(false, null, false);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
 
-    public void handleAttack(AppCompatActivity activity) {
+
+    private void handleAttack(AppCompatActivity activity) {
         ProgressModalDialog dialog = ProgressModalDialog.newInstance();
         dialog.show(Objects.requireNonNull(activity.getSupportFragmentManager()), "");
         Executors.newSingleThreadExecutor().execute(() -> {
