@@ -48,7 +48,7 @@ public class SecurityCheck {
     private static final int CODE_SYS_OK = 0x00;
     private static final int CODE_SYS_ATTACKED = 0x01;
     private static final int CODE_FW_OK = 0x0000;
-    private static final int CODE_FW_GET_STATUS_FAILED = 0x0100;
+    public static final int CODE_FW_GET_STATUS_FAILED = 0x0100;
     private static final int CODE_FW_STATUS_NOT_FOUND = 0x0200;
     private static final int CODE_FW_STATUS_ATTACKED = 0x0300;
     private static final int CODE_FW_ERT_ATTACKED = 0x0400;

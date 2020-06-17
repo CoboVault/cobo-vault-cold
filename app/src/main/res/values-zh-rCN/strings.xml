@@ -453,5 +453,9 @@
     <string name="no_signatures">暂无签名记录</string>
     <string name="scan_blue_hint">若扫描 BlueWallet 动态二维码困难，您可扫描分页二维码</string>
     <string name="scan_wasabi_hint">Wasabi Wallet 暂不支持将交易导成二维码，您可将待签交易导出成文件</string>
+    <string name="opration_failed">操作失败</string>
+    <string name="reboot_hint">请重新启动机器，多次重试未果请联系客服：support@cobo.com\n 状态码:%s</string>
+    <string name="reboot">重新启动</string>
+    <string name="clear_and_power_off">删除所有信息并关机</string>
 
 </resources>

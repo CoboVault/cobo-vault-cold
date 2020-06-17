@@ -492,5 +492,9 @@
     <string name="no_signatures">No Signatures</string>
     <string name="scan_blue_hint">Difficulty scanning with BlueWallet? Try scanning these static QR codes instead of the single dynamic QR code.</string>
     <string name="scan_wasabi_hint">Wasabi Wallet does not support exporting transactions by QR code. Please export transactions using microSD.</string>
+    <string name="opration_failed">Operation Failed</string>
+    <string name="reboot_hint">Please restart or contact us at support@cobo.com\n Status Code:%s</string>
+    <string name="reboot">Restart</string>
+    <string name="clear_and_power_off">Erase all Information and Power off</string>
 
 </resources>
