@@ -46,9 +46,6 @@ public class SetupWatchWalletFragment extends SetupVaultBaseFragment<SetupWatchW
         WatchWallet selectWatchOnlyWallet = getWatchWallet(mActivity);
         switch (selectWatchOnlyWallet) {
             case ELECTRUM:
-                data.putInt(KEY_TITLE, R.string.select_address_format);
-                navId = R.id.action_to_selectAddressFormatFragment;
-                break;
             case COBO:
             case WASABI:
             case BLUE:

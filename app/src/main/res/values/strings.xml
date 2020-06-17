@@ -101,7 +101,7 @@
         <item>Native SegWit（P2WPKH）</item>
     </string-array>
 
-    <string-array name="address_format_subtitle" translatable="false">
+    <string-array name="address_format_subtitle">
         <item><![CDATA[eg. <font color="#00cdc3">3<font/>7VucYSaXLCAsxYyAPfbSi9eh4iEcbShgf]]></item>
         <item><![CDATA[eg. <font color="#00cdc3">bc1<font/>qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu]]></item>
     </string-array>
@@ -490,7 +490,7 @@
     <string name="blue_wallet_broadcast_guide">How to broadcast using BlueWallet</string>
     <string name="blue_wallet_broadcast_guide1">Open the Watch-only wallet in BlueWallet,  enter wallet information, touch "Broadcast transaction" and scan the QR code of Cobo Vault</string>
     <string name="no_signatures">No Signatures</string>
-    <string name="scan_blue_hint">Difficulty scanning with BlueWallet? Try scanning these static QR codes instead of the single dynamic QR code.</string>
+    <string name="scan_blue_hint">Please scan Animated QR Code of BlueWallet.</string>
     <string name="scan_wasabi_hint">Wasabi Wallet does not support exporting transactions by QR code. Please export transactions using microSD.</string>
     <string name="opration_failed">Operation Failed</string>
     <string name="reboot_hint">Please restart or contact us at support@cobo.com\n Status Code:%s</string>

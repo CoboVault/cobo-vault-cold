@@ -440,8 +440,8 @@
         <item>隔离见证原生（P2WPKH）</item>
     </string-array>
     <string-array name="address_format_subtitle">
-        <item><![CDATA[举例：<font color="#00cdc3">3<font/>kgdahdkhghahdgkhaldshg]]></item>
-        <item><![CDATA[举例：<font color="#00cdc3">bc1<font/>akjhdfhkashdhdhsaghlh]]></item>
+        <item><![CDATA[举例：<font color="#00cdc3">3<font/>7VucYSaXLCAsxYyAPfbSi9eh4iEcbShgf]]></item>
+        <item><![CDATA[举例：<font color="#00cdc3">bc1<font/>qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu]]></item>
     </string-array>
 
     <string name="abnormal_tx">异常交易</string>
@@ -451,7 +451,7 @@
     <string name="blue_wallet_broadcast_guide">BlueWallet 广播交易引导</string>
     <string name="blue_wallet_broadcast_guide1">在BlueWallet侧打开该观察钱包，进入钱包详情，点击广播交易后，扫描 Cobo 金库的二维码</string>
     <string name="no_signatures">暂无签名记录</string>
-    <string name="scan_blue_hint">若扫描 BlueWallet 动态二维码困难，您可扫描分页二维码</string>
+    <string name="scan_blue_hint">请扫描 BlueWallet 待签交易的动态二维码（Animated QR Code）</string>
     <string name="scan_wasabi_hint">Wasabi Wallet 暂不支持将交易导成二维码，您可将待签交易导出成文件</string>
     <string name="opration_failed">操作失败</string>
     <string name="reboot_hint">请重新启动机器，多次重试未果请联系客服：support@cobo.com\n 状态码:%s</string>
