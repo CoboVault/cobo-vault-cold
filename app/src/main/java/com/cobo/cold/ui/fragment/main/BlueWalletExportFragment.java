@@ -67,7 +67,7 @@ public class BlueWalletExportFragment extends BaseFragment<BlueExportBinding> {
                 LayoutInflater.from(mActivity), R.layout.common_modal,
                 null, false);
         binding.title.setText(R.string.export_xpub_guide_text1_blue);
-        binding.subTitle.setText(R.string.export_xpub_guide_text2_blue);
+        binding.subTitle.setText(R.string.export_xpub_guide_text2_blue_info);
         binding.subTitle.setGravity(Gravity.START);
         binding.close.setVisibility(View.GONE);
         binding.confirm.setText(R.string.know);

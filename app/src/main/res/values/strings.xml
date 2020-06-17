@@ -363,7 +363,7 @@
     <string name="master_xpub">Master Public Key (%s)</string>
     <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning? Tap the QR code to enlarge<br>or <u>touch here to export the file with microSD</u>.]]></string>
     <string name="generic_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>No scanning?  <u>Touch here to export the file with microSD</u>.]]></string>
-    <string name="scan_electrum_hint">Difficulty scanning? You can import pending transactions from Electrum using a microSD card (Menu > MicroSD Card).</string>
+    <string name="scan_electrum_hint">Difficulty scanning? You can import pending transactions from Electrum using a microSD card.</string>
     <string name="sign_txn_in_sdcard">Unsigned Transaction Files</string>
     <string name="master_pubkey_not_match">Transaction not recognized. Your Cobo Vault has not been successfully paired with the watch-only wallet.</string>
     <string name="change">Change</string>
@@ -431,6 +431,30 @@
         3. Touch <font color="#00cdc3">“Display QR Code”<font/> below, then touch "Scan or import file" in BlueWallet to scan the QR code that displays on Cobo Vault.<br><br>
         <font color="#808080">BlueWallet requires the zPub, wallet type, hardware wallet fingerprint, and firmware version to be used as a watch-only wallet. This information will be exported if you touch “Display QR Code” below.<font/>
     ]]></string>
+
+    <string name="export_xpub_guide_text2_blue_info"><![CDATA[
+     1. Open BlueWallet and add a new wallet.<br>
+     2. Choose <font color="#00cdc3">“Import Wallet”<font/>.<br>
+     3. Touch <font color="#00cdc3">“Scan or import file”<font/> in BlueWallet to scan the QR code that displays on Cobo Vault.
+    ]]></string>
+
+
+    <string name="export_xpub_guide_text2_cobo_info"><![CDATA[
+        1. Open the Cobo Vault mobile app and add a new wallet.<br>
+        2. Choose <font color="#00cdc3">“Hardware Wallet”<font/>, then touch <font color="#00cdc3">“Bind”<font/>.<br>
+        3. Scan the QR code that displays on Cobo Vault with the Cobo Vault mobile app.
+
+    ]]></string>
+
+    <string name="export_xpub_guide_text2_electrum_info"><![CDATA[
+        1. Open Electrum and create a new wallet.<br>
+        2. Choose <font color="#00cdc3">“Standard wallet”<font/>.<br>
+        3. Choose <font color="#00cdc3">“Use a master key”<font/>.<br>
+        4. Click the camera icon in Electrum to scan the QR code that displays on Cobo Vault.<br>
+        5. Set a password.<br>
+        6. Enter the watch-only wallet.
+    ]]></string>
+
     <string name="show_master_public_key_qrcode">Display Master Public Key QR Code</string>
     <string name="show_qrcode">Display QR Code</string>
     <string name="export_wallet">Export Wallet</string>

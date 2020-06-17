@@ -68,13 +68,13 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
         Bundle data = new Bundle();
         WatchWallet selectWatchOnlyWallet = getWatchWallet(mActivity);
         switch (selectWatchOnlyWallet) {
-            case ELECTRUM:
             case GENERIC:
                 data.putInt(KEY_TITLE, R.string.select_address_format);
                 navId = R.id.action_to_selectAddressFormatFragment;
                 break;
             case COBO:
             case WASABI:
+            case ELECTRUM:
             case BLUE:
                 navId = R.id.action_to_export_xpub_guide;
                 break;
@@ -115,7 +115,8 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
 
     private void setWatchWallet() {
         prefs.edit().putString(SETTING_CHOOSE_WATCH_WALLET, value).apply();
-        if (value.equals(WatchWallet.COBO.getWalletId())) {
+        if (value.equals(WatchWallet.COBO.getWalletId())
+                || value.equals(WatchWallet.ELECTRUM.getWalletId())) {
             prefs.edit().putString(SETTING_ADDRESS_FORMAT, Coins.Account.P2SH.getType()).apply();
         } else if (value.equals(WatchWallet.WASABI.getWalletId())
                 || value.equals(WatchWallet.BLUE.getWalletId())) {

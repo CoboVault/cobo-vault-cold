@@ -109,7 +109,7 @@ public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> 
                 LayoutInflater.from(mActivity), R.layout.common_modal,
                 null, false);
         binding.title.setText(R.string.electrum_import_xpub_guide_title);
-        binding.subTitle.setText(R.string.electrum_import_xpub_action_guide);
+        binding.subTitle.setText(R.string.export_xpub_guide_text2_electrum_info);
         binding.subTitle.setGravity(Gravity.START);
         binding.close.setVisibility(View.GONE);
         binding.confirm.setText(R.string.know);
