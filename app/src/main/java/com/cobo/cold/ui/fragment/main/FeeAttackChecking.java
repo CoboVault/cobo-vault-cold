@@ -41,6 +41,7 @@ public class FeeAttackChecking {
                 null, false);
         modalDialog.setBinding(binding);
         binding.title.setText(R.string.abnormal_tx);
+        binding.close.setVisibility(View.GONE);
         binding.subTitle.setText(R.string.fee_attack_warning);
         binding.confirm.setText(R.string.know);
         binding.confirm.setOnClickListener(v -> modalDialog.dismiss());

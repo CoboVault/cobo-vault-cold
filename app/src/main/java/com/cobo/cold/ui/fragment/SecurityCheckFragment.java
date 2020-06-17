@@ -48,6 +48,7 @@ public class SecurityCheckFragment extends BaseFragment {
             SecurityCheck.CheckResult checkResult = new SecurityCheck().doSelfCheck(mActivity);
             handler.postDelayed(() -> {
                 if (checkResult.result == RESULT_OK) {
+                    Utilities.setAttackDetected(mActivity, false);
                     boolean vaultCreated = Utilities.hasVaultCreated(mActivity);
                     Log.d(TAG, "vaultCreated = " + vaultCreated);
                     Intent intent;
@@ -60,7 +61,7 @@ public class SecurityCheckFragment extends BaseFragment {
                     startActivity(intent);
                     mActivity.finish();
                 } else {
-                    Utilities.setAttackDetected(mActivity);
+                    Utilities.setAttackDetected(mActivity, true);
                     Bundle data = new Bundle();
                     data.putInt("firmware", checkResult.firmwareStatusCode);
                     data.putInt("system", checkResult.systemStatusCode);

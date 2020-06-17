@@ -41,7 +41,7 @@ public class AttackCheckingService extends Service {
         public void run() {
             SecurityCheck.CheckResult result = securityCheck.attackChecking(AttackCheckingService.this);
             if (result.result == RESULT_UNDER_ATTACK) {
-                Utilities.setAttackDetected(AttackCheckingService.this);
+                Utilities.setAttackDetected(AttackCheckingService.this,true);
                 Bundle data = new Bundle();
                 data.putInt("firmware", result.firmwareStatusCode);
                 data.putInt("system", result.systemStatusCode);
@@ -52,6 +52,7 @@ public class AttackCheckingService extends Service {
                 intent.putExtras(data);
                 startActivity(intent);
             } else {
+                Utilities.setAttackDetected(AttackCheckingService.this,false);
                 handler.postDelayed(this, checkingInterval);
             }
         }

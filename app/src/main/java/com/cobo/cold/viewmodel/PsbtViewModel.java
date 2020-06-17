@@ -24,17 +24,16 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.cobo.coinlib.Util;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.MainApplication;
-import com.cobo.cold.Utilities;
 import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.update.utils.Storage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -87,7 +86,9 @@ public class PsbtViewModel extends AndroidViewModel {
             for (int j = 0; j < bip32Derivation.length(); j++) {
                 JSONObject item = bip32Derivation.getJSONObject(j);
                 String hdPath = item.getString("path");
-                if (item.getString("masterFingerprint").equals(masterKeyFingerprint)
+                String fingerprint = item.getString("masterFingerprint");
+                if ((fingerprint.equals(masterKeyFingerprint)
+                        || reverseHex(fingerprint).equals(masterKeyFingerprint))
                     && hdPath.toUpperCase().startsWith(account.getPath())) {
                     utxo.put("publicKey", item.getString("pubkey"));
                     utxo.put("value", psbtInput.optInt("value"));
@@ -101,6 +102,16 @@ public class PsbtViewModel extends AndroidViewModel {
 
         }
 
+    }
+
+    private static String reverseHex(String hex) {
+        byte[] data = Hex.decode(hex);
+        for(int i = 0; i < data.length / 2; i++) {
+            byte temp = data[i];
+            data[i] = data[data.length - i - 1];
+            data[data.length - i - 1] = temp;
+        }
+        return Hex.toHexString(data);
     }
 
     private static void adaptOutputs(JSONArray psbtOutputs, JSONArray outputs) throws JSONException {

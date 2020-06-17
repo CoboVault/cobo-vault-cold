@@ -206,9 +206,9 @@ public class Utilities {
         return Settings.System.putString(context.getContentResolver(), FINGERPRINT_PASSWORD, pwd);
     }
 
-    public static void setAttackDetected(Context context) {
+    public static void setAttackDetected(Context context, boolean attacked) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
-        sp.edit().putBoolean(ATTACK_DETECTED,true).apply();
+        sp.edit().putBoolean(ATTACK_DETECTED,attacked).apply();
     }
 
     public static boolean isAttackDetected(Context context) {
