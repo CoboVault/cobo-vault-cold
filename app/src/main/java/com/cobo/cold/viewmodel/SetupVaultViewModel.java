@@ -191,7 +191,12 @@ public class SetupVaultViewModel extends AndroidViewModel {
     }
 
     public void generateMnemonicFromDiceRolls(byte[] diceRolls) {
-        String entropy = Hex.toHexString(Objects.requireNonNull(HashUtil.sha256(diceRolls)));
+        //Use the same algorithm as https://iancoleman.io/bip39/
+        StringBuilder rolls = new StringBuilder();
+        for (byte b: diceRolls) {
+            rolls.append(b % 6);
+        }
+        String entropy = Hex.toHexString(Objects.requireNonNull(HashUtil.sha256(rolls.toString())));
         String mnemonic = Bip39.generateMnemonic(entropy);
         this.mnemonic.postValue(mnemonic);
     }
