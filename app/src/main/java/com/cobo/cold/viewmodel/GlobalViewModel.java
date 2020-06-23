@@ -128,7 +128,7 @@ public class GlobalViewModel extends AndroidViewModel {
         try {
             xpubInfo.put("ExtPubKey", xpub);
             xpubInfo.put("MasterFingerprint", masterKeyFingerprint);
-            xpubInfo.put("DerivationPath", getAccount(activity).getPath());
+            xpubInfo.put("AccountKeyPath", getAccount(activity).getPath().substring(2));
             xpubInfo.put("CoboVaultFirmwareVersion", BuildConfig.VERSION_NAME);
         } catch (JSONException e) {
             e.printStackTrace();
