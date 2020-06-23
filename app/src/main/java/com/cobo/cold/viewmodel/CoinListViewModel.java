@@ -99,6 +99,7 @@ public class CoinListViewModel extends AndroidViewModel {
                         coin.addAccount(account);
                     }
                 }
+                if (coin.accounts.isEmpty()) continue;
                 syncBuilder.addCoin(coin);
             }
             sync.postValue(syncBuilder.build());
