@@ -29,7 +29,14 @@ public enum WatchWallet {
     ELECTRUM("1"),
     WASABI("2"),
     BLUE("3"),
-    GENERIC("4");
+    BTCPAY("4"),
+    GENERIC("100");
+
+    public static final String ELECTRUM_SIGN_ID = "electrum_sign_id";
+    public static final String WASABI_SIGN_ID = "wasabi_sign_id";
+    public static final String BLUE_WALLET_SIGN_ID = "blue_wallet_sign_id";
+    public static final String BTCPAY_SIGN_ID = "blue_wallet_sign_id";
+    public static final String GENERIC_WALLET_SIGN_ID = "generic_wallet_sign_id";
 
     private String walletId;
     WatchWallet(String walletId) {
@@ -41,8 +48,12 @@ public enum WatchWallet {
     }
 
     public String getWalletName(Context context) {
-        return context.getResources()
-                .getStringArray(R.array.watch_wallet_list)[Integer.parseInt(walletId)];
+        String[] wallets = context.getResources().getStringArray(R.array.watch_wallet_list);
+        if (walletId.equals(GENERIC.getWalletId())) {
+            return wallets[wallets.length - 1];
+        } else {
+            return wallets[Integer.parseInt(walletId)];
+        }
     }
 
     public static WatchWallet getWatchWallet(Context context) {
@@ -62,6 +73,7 @@ public enum WatchWallet {
         switch (this) {
             case GENERIC:
             case BLUE:
+            case BTCPAY:
             case WASABI:
                 return true;
                 default:return false;
@@ -92,9 +104,51 @@ public enum WatchWallet {
         switch (this) {
             case ELECTRUM:
             case GENERIC:
+            case BTCPAY:
             case WASABI:
                 return true;
             default:return false;
         }
+    }
+
+    public String getSignId() {
+        switch (this) {
+            case BLUE:
+                return BLUE_WALLET_SIGN_ID;
+            case WASABI:
+                return WASABI_SIGN_ID;
+            case GENERIC:
+                return GENERIC_WALLET_SIGN_ID;
+            case ELECTRUM:
+                return ELECTRUM_SIGN_ID;
+            case BTCPAY:
+                return BTCPAY_SIGN_ID;
+        }
+        return "";
+    }
+
+    public boolean supportSwitchAccount() {
+        return this == WatchWallet.GENERIC;
+    }
+
+    public boolean supportNativeSegwit() {
+        switch (this) {
+            case GENERIC:
+            case BTCPAY:
+            case BLUE:
+            case WASABI:
+                return true;
+        }
+        return false;
+    }
+
+    public boolean supportNestedSegwit() {
+        switch (this) {
+            case COBO:
+            case ELECTRUM:
+            case GENERIC:
+                return true;
+        }
+        return false;
     }
 }

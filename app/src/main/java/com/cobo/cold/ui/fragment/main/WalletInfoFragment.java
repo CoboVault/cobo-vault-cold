@@ -34,6 +34,7 @@ import com.cobo.cold.viewmodel.WalletInfoViewModel;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
 import static com.cobo.cold.ui.fragment.setup.SelectAddressFormatFragment.KEY_NEED_CONFIRM;
+import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
 
 public class WalletInfoFragment extends BaseFragment<WalletInfoBinding> {
     private Coins.Account account;
@@ -48,8 +49,8 @@ public class WalletInfoFragment extends BaseFragment<WalletInfoBinding> {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.switchAddress.setOnClickListener(v -> switchAddressFormat());
         account = GlobalViewModel.getAccount(mActivity);
-        WatchWallet watchOnly = WatchWallet.getWatchWallet(mActivity);
-        if (watchOnly != WatchWallet.GENERIC) {
+        WatchWallet watchWallet = getWatchWallet(mActivity);
+        if (!watchWallet.supportSwitchAccount()) {
             mBinding.switchAddress.setVisibility(View.GONE);
         }
         mBinding.addressFormat.setText(getAddressFormat());
@@ -67,9 +68,9 @@ public class WalletInfoFragment extends BaseFragment<WalletInfoBinding> {
 
         viewModel.getXpub(account).observe(this, xpub -> {
             if (!TextUtils.isEmpty(xpub)) {
-                if (watchOnly == WatchWallet.BLUE) {
+                if (watchWallet == WatchWallet.BLUE) {
                     xpub = Util.convertXpubToZpub(xpub);
-                } else if(watchOnly == WatchWallet.ELECTRUM) {
+                } else if(watchWallet == WatchWallet.ELECTRUM) {
                     xpub = Util.convertXpubToYpub(xpub);
                 }
                 mBinding.xpub.setText(xpub);

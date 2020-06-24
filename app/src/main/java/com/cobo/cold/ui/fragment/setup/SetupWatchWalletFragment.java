@@ -17,15 +17,10 @@
 
 package com.cobo.cold.ui.fragment.setup;
 
-import android.os.Bundle;
 import android.view.View;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.SetupWatchWalletBinding;
-import com.cobo.cold.viewmodel.WatchWallet;
-
-import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
-import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
 
 public class SetupWatchWalletFragment extends SetupVaultBaseFragment<SetupWatchWalletBinding> {
 
@@ -37,21 +32,6 @@ public class SetupWatchWalletFragment extends SetupVaultBaseFragment<SetupWatchW
     @Override
     protected void init(View view) {
         super.init(view);
-        mBinding.complete.setOnClickListener(v -> complete());
-    }
-
-    private void complete() {
-        int navId = 0;
-        Bundle data = new Bundle();
-        WatchWallet selectWatchOnlyWallet = getWatchWallet(mActivity);
-        switch (selectWatchOnlyWallet) {
-            case ELECTRUM:
-            case COBO:
-            case WASABI:
-            case BLUE:
-                navId = R.id.action_to_export_xpub_guide;
-                break;
-        }
-        navigate(navId, data);
+        mBinding.complete.setOnClickListener(v -> navigate(R.id.action_to_export_xpub_guide));
     }
 }

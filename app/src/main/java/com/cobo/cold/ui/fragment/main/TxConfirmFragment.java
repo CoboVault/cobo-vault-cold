@@ -60,7 +60,7 @@ import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
 
-public class TxConfirmFragment<T> extends BaseFragment<TxConfirmFragmentBinding> {
+public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
 
     public static final String KEY_TX_DATA = "tx_data";
     private final Runnable forgetPassword = () -> {

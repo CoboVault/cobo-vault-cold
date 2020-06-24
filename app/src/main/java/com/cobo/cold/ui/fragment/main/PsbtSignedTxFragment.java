@@ -39,9 +39,10 @@ import static com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment.showExportPsb
 public class PsbtSignedTxFragment extends SignedTxFragment {
     @Override
     protected void displaySignResult(TxEntity txEntity) {
-        if (watchWallet == WatchWallet.WASABI) {
+        if (watchWallet == WatchWallet.WASABI || watchWallet == WatchWallet.BTCPAY) {
             mBinding.txDetail.qr.setVisibility(View.GONE);
-            mBinding.txDetail.broadcastGuide.setVisibility(View.GONE);
+            mBinding.txDetail.broadcastGuide.setGravity(Gravity.START);
+            mBinding.txDetail.broadcastGuide.setText(getBroadcastGuideText());
         } else if (watchWallet == WatchWallet.BLUE || watchWallet == WatchWallet.GENERIC) {
             if (watchWallet == WatchWallet.BLUE) {
                 mBinding.txDetail.info.setOnClickListener(v -> showBlueWalletInfo());
@@ -73,6 +74,15 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
             }
 
         }
+    }
+
+    private int getBroadcastGuideText() {
+        if (watchWallet == WatchWallet.WASABI) {
+            return R.string.wasabi_broadcast_guide;
+        } else if (watchWallet == WatchWallet.BTCPAY) {
+            return R.string.btcpay_broadcast_guide;
+        }
+        return 0;
     }
 
     private void showBlueWalletInfo() {

@@ -84,6 +84,7 @@
         <item>Electrum</item>
         <item>Wasabi Wallet</item>
         <item>BlueWallet</item>
+        <item>BTCPay Server</item>
         <item>Generic Wallet</item>
     </string-array>
 
@@ -93,6 +94,7 @@
         <item>2</item>
         <item>3</item>
         <item>4</item>
+        <item>100</item>
     </string-array>
 
 
@@ -324,8 +326,11 @@
     </string-array>
     <string name="export_to_electrum">Create Watch-Only Wallet in Electrum</string>
     <string name="export_to_electrum_guide"><![CDATA[
-1. Open Electrum and create a new wallet. <br>2. Choose “Standard wallet”. <br>3. Choose “Use a master key”. <br>4. Touch “Show Master Public Key” below then click the camera icon in the “Create keystore from a master key” window in Electrum to scan the QR code that displays on Cobo Vault.
- <br>5. Set a password. <br>6. Enter the watch-only wallet.
+        1. Open Electrum and create a new wallet. <br>
+        2. Choose “Standard wallet”. <br>
+        3. Choose “Use a master key”. <br>
+        4. Touch “Show Master Public Key” below then click the camera icon in the “Create keystore from a master key” window in Electrum to scan the QR code that displays on Cobo Vault.<br>
+        5. Set a password. <br>6. Enter the watch-only wallet.
     ]]></string>
     <string name="export_xpub">Show Master Public Key</string>
     <string name="export_to_electrum_guide_hint">How to create a watch-only wallet with Electrum:</string>
@@ -389,11 +394,13 @@
     <string name="change_address">Change Address</string>
     <string name="export_xpub_guide_title_electrum">Export to Electrum Watch-Only</string>
     <string name="export_xpub_guide_title_wasabi">Export to Wasabi Watch-Only</string>
+    <string name="export_xpub_guide_title_btcpay">Export to BTCPay Watch-Only</string>
     <string name="export_xpub_guide_title_cobo">Export to Cobo Vault Watch-Only</string>
     <string name="export_xpub_guide_title_blue">Export to BlueWallet Watch-Only</string>
     <string name="export_xpub_guide_text1_electrum">How to create a watch-only wallet with Electrum:</string>
     <string name="export_xpub_guide_text1_cobo">How to create a watch-only wallet with the Cobo Vault mobile app:</string>
     <string name="export_xpub_guide_text1_wasabi">How to create a watch-only wallet with Wasabi Wallet:</string>
+    <string name="export_xpub_guide_text1_btcpay">How to create a watch-only wallet with BTCPay Server:</string>
     <string name="export_xpub_guide_text1_blue">How to create a watch-only wallet with BlueWallet:</string>
     <string name="export_xpub_guide_text2_electrum"><![CDATA[
         1. Open Electrum and create a new wallet. <br>
@@ -421,6 +428,15 @@
         5. Migrate the wallet file to your computer using the microSD card. <br>
         6. Click <font color="#00cdc3">“Load Wallet”<font/> and open the file in Wasabi.<br>
         7. Enter the watch-only wallet.<br><br>
+        <font color="#808080">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting.<br>
+        Wasabi requires the xPub, hardware wallet fingerprint, and firmware version to be used as a watch-only wallet. This information will be exported if you touch “Export with MicroSD” below.<font/>
+    ]]></string>
+    <string name="export_xpub_guide_text2_btcpay"><![CDATA[
+        1. In BTCPay Server, Store Settings > General > Derivation Scheme > Import from… <br>
+        2. Choose "…a wallet file (Electrum, wasabi, Cobo Vault, ColdCard)"<br>
+        3. Touch <font color="#00cdc3">"Export Wallet"<font/> below then open the file in BTCPay<br>
+        4. Click <font color="#00cdc3">"Submit"<font/><br>
+        5. Click <font color="#00cdc3">"Confirm"<font/>.<br>
         <font color="#808080">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting.<br>
         Wasabi requires the xPub, hardware wallet fingerprint, and firmware version to be used as a watch-only wallet. This information will be exported if you touch “Export with MicroSD” below.<font/>
     ]]></string>
@@ -455,6 +471,18 @@
         6. Enter the watch-only wallet.
     ]]></string>
 
+    <string name="wasabi_broadcast_guide"><![CDATA[
+       Broadcast with Wasabi<br>
+       go to [wasabi--Tools--Transactions Broadcaster--Import transaction] open this file to broadcast
+    ]]></string>
+
+    <string name="btcpay_broadcast_guide"><![CDATA[
+        导出后，用 BTCPay Server 进行广播<br>
+        1. In BTCPay, go to PSBT tab of the wallet and upload the signed PSBT file<br>
+        2. Click "Decode"<br>
+        3. Click "Other Actions" and select "Review"<br>
+        4. Review your transactions and click "Broadcast" to broadcast it on the network
+    ]]></string>
     <string name="show_master_public_key_qrcode">Display Master Public Key QR Code</string>
     <string name="show_qrcode">Display QR Code</string>
     <string name="export_wallet">Export Wallet</string>
@@ -474,8 +502,7 @@
     <string name="script_type">Script Type:</string>
     <string name="address_path">Account Key Path:</string>
     <string name="xpub">Account Extended Public Key:</string>
-    <string name="wallet_info_hint">* Do not share this public key with anyone. Account extended public keys can be used to identify your addresses and cryptocurrency amounts.
-</string>
+    <string name="wallet_info_hint">* Do not share this public key with anyone. Account extended public keys can be used to identify your addresses and cryptocurrency amounts.</string>
     <string name="confirm_add_address">Confirm</string>
     <string name="watch_wallet_not_match">Please use %s generate unsigned transaction</string>
     <string name="scan_qrcode_with_generic_wallet">Please scan the QR code with the wallet you wish to use as a watch-only wallet.</string>
@@ -496,5 +523,6 @@
     <string name="reboot_hint">Please restart or contact us at support@cobo.com\n Status Code:%s</string>
     <string name="reboot">Restart</string>
     <string name="clear_and_power_off">Erase all Information and Power off</string>
+    <string name="btcpay_scan_hint">BTCPay Server does not support exporting transactions by QR code. Please export transactions using microSD.</string>
 
 </resources>

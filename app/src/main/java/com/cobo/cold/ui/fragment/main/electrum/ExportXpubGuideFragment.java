@@ -43,8 +43,9 @@ import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
 public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding> {
 
     private WatchWallet watchWallet;
-    private JSONObject wasabiXpubJson;
+    private JSONObject xpubJson;
     private static final String WASABI_XPUB_FILENAME = "CoboVault-Wasabi.json";
+    private static final String BTCPAY_XPUB_FILENAME = "CoboVault-BTCPay.json";
     @Override
     protected int setView() {
         return R.layout.export_xpub_guide;
@@ -66,7 +67,7 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
         mBinding.text1.setText(getText1());
         mBinding.text2.setText(getText2());
         mBinding.export.setText(getButtonText());
-        wasabiXpubJson = GlobalViewModel.getXpubInfo(mActivity);
+        xpubJson = GlobalViewModel.getXpubInfo(mActivity);
     }
 
     private void export() {
@@ -77,19 +78,17 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
             case COBO:
                 navigate(R.id.export_xpub_cobo);
                 break;
+            case BTCPAY:
             case WASABI:
-                exportXpub();
+                exportXpub(watchWallet);
                 break;
             case BLUE:
                 navigate(R.id.action_to_export_xpub_blue);
                 break;
-            case GENERIC:
-                //navigate(R.id.export_electrum_ypub);
-                break;
         }
     }
 
-    public void exportXpub() {
+    private void exportXpub(WatchWallet watchWallet) {
         Storage storage = Storage.createByEnvironment(mActivity);
         if (storage == null || storage.getExternalDir() == null) {
             showNoSdcardModal(mActivity);
@@ -97,14 +96,16 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
             ModalDialog modalDialog = ModalDialog.newInstance();
             ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                     R.layout.export_sdcard_modal, null, false);
+
+            String fileName = getExportFileName(watchWallet);
             binding.title.setText(R.string.export_xpub_text_file);
-            binding.fileName.setText(WASABI_XPUB_FILENAME);
+            binding.fileName.setText(fileName);
             binding.actionHint.setVisibility(View.GONE);
             binding.cancel.setOnClickListener(vv -> modalDialog.dismiss());
             binding.confirm.setOnClickListener(vv -> {
                 modalDialog.dismiss();
-                if (writeToSdcard(storage, wasabiXpubJson.toString(), WASABI_XPUB_FILENAME)) {
-                    Runnable runnable = null;
+                if (writeToSdcard(storage, xpubJson.toString(), fileName)) {
+                    Runnable runnable;
                     if (mActivity instanceof SetupVaultActivity) {
                         runnable = () -> navigate(R.id.action_to_setupCompleteFragment);
                     } else {
@@ -118,10 +119,20 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
         }
     }
 
+    private String getExportFileName(WatchWallet watchWallet) {
+        if (watchWallet == WatchWallet.WASABI) {
+            return WASABI_XPUB_FILENAME;
+        } else if(watchWallet == WatchWallet.BTCPAY) {
+            return BTCPAY_XPUB_FILENAME;
+        }
+        return "";
+    }
+
     private int getButtonText() {
         switch (watchWallet) {
             case ELECTRUM:
                 return R.string.show_master_public_key_qrcode;
+            case BTCPAY:
             case WASABI:
                 return R.string.export_wallet;
             case COBO:
@@ -137,6 +148,8 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
                 return R.string.export_xpub_guide_title_electrum;
             case WASABI:
                 return R.string.export_xpub_guide_title_wasabi;
+            case BTCPAY:
+                return R.string.export_xpub_guide_title_btcpay;
             case COBO:
                 return R.string.export_xpub_guide_title_cobo;
             case BLUE:
@@ -149,6 +162,8 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
         switch (watchWallet) {
             case ELECTRUM:
                 return R.string.export_xpub_guide_text1_electrum;
+            case BTCPAY:
+                return R.string.export_xpub_guide_text1_btcpay;
             case WASABI:
                 return R.string.export_xpub_guide_text1_wasabi;
             case COBO:
@@ -165,6 +180,8 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
                 return R.string.export_xpub_guide_text2_electrum;
             case WASABI:
                 return R.string.export_xpub_guide_text2_wasabi;
+            case BTCPAY:
+                return R.string.export_xpub_guide_text2_btcpay;
             case COBO:
                 return R.string.export_xpub_guide_text2_cobo;
             case BLUE:

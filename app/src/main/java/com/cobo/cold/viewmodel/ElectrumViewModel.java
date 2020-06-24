@@ -28,8 +28,6 @@ import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.coins.BTC.Electrum.TransactionInput;
 import com.cobo.coinlib.coins.BTC.Electrum.TransactionOutput;
 import com.cobo.cold.AppExecutors;
-import com.cobo.cold.DataRepository;
-import com.cobo.cold.MainApplication;
 import com.cobo.cold.update.utils.FileUtils;
 import com.cobo.cold.update.utils.Storage;
 
@@ -46,20 +44,15 @@ import java.util.regex.Pattern;
 
 public class ElectrumViewModel extends AndroidViewModel {
 
-    public static final String ELECTRUM_SIGN_ID = "electrum_sign_id";
-
     private static Pattern signedTxnPattern = Pattern.compile("^signed_[0-9a-fA-F]{8}.txn$");
-    private final DataRepository mRepo;
-    private MutableLiveData<String> exPub = new MutableLiveData<>();
     private Storage storage;
 
     public ElectrumViewModel(@NonNull Application application) {
         super(application);
-        mRepo = MainApplication.getApplication().getRepository();
         storage = Storage.createByEnvironment(application);
     }
 
-    public static JSONObject adapt(ElectrumTx tx) throws JSONException {
+    static JSONObject adapt(ElectrumTx tx) throws JSONException {
         JSONObject object = new JSONObject();
         JSONArray inputs = new JSONArray();
         JSONArray outputs = new JSONArray();
