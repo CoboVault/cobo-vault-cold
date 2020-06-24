@@ -60,6 +60,7 @@ import java.util.stream.IntStream;
 import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
 import static com.cobo.cold.viewmodel.GlobalViewModel.getAddressType;
+import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
 
 public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         implements NumberPickerCallback {
@@ -78,7 +79,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     @Override
     protected void init(View view) {
         coinId = Coins.BTC.coinId();
-        watchWallet = WatchWallet.getWatchWallet(mActivity);
+        watchWallet = getWatchWallet(mActivity);
         mActivity.setSupportActionBar(mBinding.toolbar);
         mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
         String walletName = watchWallet.getWalletName(mActivity);
@@ -195,6 +196,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 navigate(R.id.action_to_txnListFragment);
                 break;
             case WASABI:
+            case BTCPAY:
             case GENERIC:
                 navigate(R.id.action_to_psbtListFragment);
                 break;
@@ -226,6 +228,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 case COBO:
                     navigate(R.id.export_xpub_cobo);
                     break;
+                case BTCPAY:
                 case WASABI:
                     navigate(R.id.action_to_export_xpub_guide);
                     break;

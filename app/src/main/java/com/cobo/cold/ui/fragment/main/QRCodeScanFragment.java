@@ -104,7 +104,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         }
     }
 
-    public String getScanhint() {
+    private String getScanhint() {
         switch (watchWallet){
             case ELECTRUM:
                 return getString(R.string.scan_electrum_hint);
@@ -112,6 +112,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
                 return getString(R.string.scan_blue_hint);
             case WASABI:
                 return getString(R.string.scan_wasabi_hint);
+            case BTCPAY:
+                return getString(R.string.btcpay_scan_hint);
 
         }
         return "";

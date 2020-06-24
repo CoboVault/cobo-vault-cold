@@ -82,12 +82,9 @@ import static com.cobo.cold.viewmodel.AddAddressViewModel.AddAddressTask.getAddr
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.DUPLICATE_TX;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
-import static com.cobo.cold.viewmodel.ElectrumViewModel.ELECTRUM_SIGN_ID;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.adapt;
 import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
-import static com.cobo.cold.viewmodel.PsbtViewModel.BLUE_WALLET_SIGN_ID;
-import static com.cobo.cold.viewmodel.PsbtViewModel.GENERIC_WALLET_SIGN_ID;
-import static com.cobo.cold.viewmodel.PsbtViewModel.WASABI_SIGN_ID;
+import static com.cobo.cold.viewmodel.WatchWallet.ELECTRUM_SIGN_ID;
 
 public class TxConfirmViewModel extends AndroidViewModel {
 
@@ -105,8 +102,6 @@ public class TxConfirmViewModel extends AndroidViewModel {
     private String coinCode;
     private final MutableLiveData<String> signState = new MutableLiveData<>();
     private AuthenticateModal.OnVerify.VerifyToken token;
-    private TxEntity previousSignedTx;
-
 
     public TxConfirmViewModel(@NonNull Application application) {
         super(application);
@@ -151,10 +146,6 @@ public class TxConfirmViewModel extends AndroidViewModel {
         });
     }
 
-    public TxEntity getPreviousSignTx() {
-        return previousSignedTx;
-    }
-
     private void feeAttackChecking(TxEntity txEntity) {
         AppExecutors.getInstance().diskIO().execute(() -> {
             String inputs = txEntity.getFrom();
@@ -162,7 +153,6 @@ public class TxConfirmViewModel extends AndroidViewModel {
             List<TxEntity> txs = mRepository.loadAllTxSync(Coins.BTC.coinId());
             for (TxEntity tx : txs) {
                 if (inputs.equals(tx.getFrom()) && outputs.equals(tx.getTo())) {
-                    previousSignedTx = tx;
                     feeAttachCheckingResult.postValue(DUPLICATE_TX);
                     break;
                 } else if (outputs.equals(tx.getTo())) {
@@ -270,27 +260,13 @@ public class TxConfirmViewModel extends AndroidViewModel {
     private JSONObject parsePsbtTx(JSONObject adaptTx) throws JSONException {
         TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
         builder.setCoinCode(Coins.BTC.coinCode())
-                .setSignId(getSignId())
+                .setSignId(WatchWallet.getWatchWallet(getApplication()).getSignId())
                 .setTimestamp(generateAutoIncreaseId())
                 .setDecimal(8);
         String signTransaction = new JsonFormat().printToString(builder.build());
         JSONObject signTx = new JSONObject(signTransaction);
         signTx.put("btcTx", adaptTx);
         return signTx;
-    }
-
-    private String getSignId() {
-        switch (WatchWallet.getWatchWallet(getApplication())) {
-            case BLUE:
-                return BLUE_WALLET_SIGN_ID;
-            case WASABI:
-                return WASABI_SIGN_ID;
-            case GENERIC:
-                return GENERIC_WALLET_SIGN_ID;
-            case ELECTRUM:
-                return ELECTRUM_SIGN_ID;
-        }
-        return null;
     }
 
     private long generateAutoIncreaseId() {

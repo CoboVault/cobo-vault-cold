@@ -64,21 +64,14 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
     }
 
     private void next() {
-        int navId = 0;
+        int navId;
         Bundle data = new Bundle();
         WatchWallet selectWatchOnlyWallet = getWatchWallet(mActivity);
-        switch (selectWatchOnlyWallet) {
-            case GENERIC:
-                data.putInt(KEY_TITLE, R.string.select_address_format);
-                navId = R.id.action_to_selectAddressFormatFragment;
-                break;
-            case COBO:
-            case WASABI:
-            case ELECTRUM:
-            case BLUE:
-                navId = R.id.action_to_export_xpub_guide;
-                break;
-
+        if (selectWatchOnlyWallet.supportSwitchAccount()) {
+            data.putInt(KEY_TITLE, R.string.select_address_format);
+            navId = R.id.action_to_selectAddressFormatFragment;
+        } else {
+            navId = R.id.action_to_export_xpub_guide;
         }
         navigate(navId, data);
     }
@@ -114,13 +107,13 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
     }
 
     private void setWatchWallet() {
-        prefs.edit().putString(SETTING_CHOOSE_WATCH_WALLET, value).apply();
-        if (value.equals(WatchWallet.COBO.getWalletId())
-                || value.equals(WatchWallet.ELECTRUM.getWalletId())) {
-            prefs.edit().putString(SETTING_ADDRESS_FORMAT, Coins.Account.P2SH.getType()).apply();
-        } else if (value.equals(WatchWallet.WASABI.getWalletId())
-                || value.equals(WatchWallet.BLUE.getWalletId())) {
-            prefs.edit().putString(SETTING_ADDRESS_FORMAT, Coins.Account.SegWit.getType()).apply();
+        if (prefs.edit().putString(SETTING_CHOOSE_WATCH_WALLET, value).commit()) {
+            WatchWallet wallet = getWatchWallet(mActivity);
+            if (wallet.supportNativeSegwit()) {
+                prefs.edit().putString(SETTING_ADDRESS_FORMAT, Coins.Account.SegWit.getType()).apply();
+            } else if (wallet.supportNestedSegwit()) {
+                prefs.edit().putString(SETTING_ADDRESS_FORMAT, Coins.Account.P2SH.getType()).apply();
+            }
         }
     }
 }

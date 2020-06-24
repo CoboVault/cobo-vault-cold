@@ -269,12 +269,12 @@
     </string-array>
     <string name="export_to_electrum">在 Electrum 创建观察钱包</string>
     <string name="export_to_electrum_guide"><![CDATA[
-1. 打开 Electrum，新建钱包 <br>
-2. 选择“标准钱包” <br>
-3. 选择“使用主公钥” <br>
-4. 在输入主公钥页面点击照相机按钮，扫描主公钥二维码（点击下方按钮查看二维码）<br>
-5. 设置钱包密码 <br>
-6. 进入观察钱包
+        1. 打开 Electrum，新建钱包 <br>
+        2. 选择“标准钱包” <br>
+        3. 选择“使用主公钥” <br>
+        4. 在输入主公钥页面点击照相机按钮，扫描主公钥二维码（点击下方按钮查看二维码）<br>
+        5. 设置钱包密码 <br>
+        6. 进入观察钱包
     ]]></string>
     <string name="export_xpub">查看主公钥二维码</string>
     <string name="export_to_electrum_guide_hint">Electrum 创建指引</string>
@@ -338,11 +338,13 @@
     <string name="change_address">找零地址</string>
     <string name="export_xpub_guide_title_electrum">导出到Electrum</string>
     <string name="export_xpub_guide_title_wasabi">导出到Wasabi Wallet</string>
+    <string name="export_xpub_guide_title_btcpay">导出到BTCPay</string>
     <string name="export_xpub_guide_title_cobo">导出到Cobo金库移动端</string>
     <string name="export_xpub_guide_title_blue">导出到BlueWallet</string>
     <string name="export_xpub_guide_text1_electrum">Electrum 导入指引:</string>
     <string name="export_xpub_guide_text1_cobo">Cobo 金库移动端导入指引:</string>
     <string name="export_xpub_guide_text1_wasabi">Wasabi Wallet 导入指引:</string>
+    <string name="export_xpub_guide_text1_btcpay">BTCPay Server 导入指引:</string>
     <string name="export_xpub_guide_text1_blue">BlueWallet 导入指引:</string>
     <string name="export_xpub_guide_text2_electrum"><![CDATA[
         1. 打开 Electrum，新建钱包 <br>
@@ -368,6 +370,15 @@
         4. 打开 Cobo 金库导出的钱包文件（点击下方按钮导出）<br>
         5. 点击<font color="#00cdc3">“Load Wallet”<font/> <br>
         6. 加载完成后即可进入观察钱包<br><br>
+        <font color="#808080">请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）<font/>
+    ]]></string>
+
+    <string name="export_xpub_guide_text2_btcpay"><![CDATA[
+        1. 打开 BTCPay Server，前往【Store 设置--General--Derivation Scheme--Import from…】<br>
+        2. 选择“…a wallet file (Electrum, wasabi, Cobo Vault, ColdCard)”<br>
+        3. 打开 Cobo 金库导出的钱包文件（点击下方按钮导出）<br>
+        4. 点击<font color="#00cdc3">“Submit”<font/><br>
+        5. 点击<font color="#00cdc3">“Confirm”<font/><br><br>
         <font color="#808080">请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）<font/>
     ]]></string>
 
@@ -398,6 +409,19 @@
         1. 打开 BlueWallet，添加新钱包<br>
         2. 选择<font color="#00cdc3">“导入钱包”<font/><br>
         3. 扫描 Cobo 金库二维码<br>
+    ]]></string>
+
+    <string name="wasabi_broadcast_guide"><![CDATA[
+        导出后，用Wasabi进行广播<br>
+        前往【wasabi--Tools--Transactions Broadcaster--Import transaction】，打开该文件
+    ]]></string>
+
+    <string name="btcpay_broadcast_guide"><![CDATA[
+        导出后，用 BTCPay Server 进行广播<br>
+        1. 前往【BTCPay--PSBT】，打开该文件<br>
+        2. 点击“Decode”<br>
+        3. 点击“Other Actions” 选择“Review”<br>
+        4. 检查交易无误后点击“Broadcast”<br>
     ]]></string>
 
     <string name="show_master_public_key_qrcode">查看主公钥二维码</string>
@@ -432,6 +456,7 @@
         <item>Electrum</item>
         <item>Wasabi Wallet</item>
         <item>BlueWallet</item>
+        <item>BTCPay Server</item>
         <item>通用钱包</item>
     </string-array>
 
@@ -457,5 +482,6 @@
     <string name="reboot_hint">请重新启动机器，多次重试未果请联系客服：support@cobo.com\n 状态码:%s</string>
     <string name="reboot">重新启动</string>
     <string name="clear_and_power_off">删除所有信息并关机</string>
+    <string name="btcpay_scan_hint">BTCPay Server 暂不支持将交易导成二维码，您可将待签交易导出成文件</string>
 
 </resources>

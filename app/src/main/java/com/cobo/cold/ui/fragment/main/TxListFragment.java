@@ -41,10 +41,8 @@ import java.util.stream.Collectors;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
 import static com.cobo.cold.ui.fragment.main.TxFragment.KEY_TX_ID;
-import static com.cobo.cold.viewmodel.ElectrumViewModel.ELECTRUM_SIGN_ID;
-import static com.cobo.cold.viewmodel.PsbtViewModel.BLUE_WALLET_SIGN_ID;
-import static com.cobo.cold.viewmodel.PsbtViewModel.GENERIC_WALLET_SIGN_ID;
-import static com.cobo.cold.viewmodel.PsbtViewModel.WASABI_SIGN_ID;
+import static com.cobo.cold.viewmodel.WatchWallet.ELECTRUM_SIGN_ID;
+import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
 
 public class TxListFragment extends BaseFragment<TxListBinding> {
 
@@ -69,9 +67,7 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         txCallback = tx -> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_TX_ID, tx.getTxId());
-            if (WASABI_SIGN_ID.equals(tx.getSignId())
-                    || BLUE_WALLET_SIGN_ID.equals(tx.getSignId())
-                    || GENERIC_WALLET_SIGN_ID.equals(tx.getSignId())) {
+            if (getWatchWallet(mActivity).supportPsbt()) {
                 navigate(R.id.action_to_psbtSignedTxFragment, bundle);
             } else if(ELECTRUM_SIGN_ID.equals(tx.getSignId())){
                 navigate(R.id.action_to_electrumTxFragment, bundle);
@@ -132,20 +128,12 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
     }
 
     private boolean filterByMode(TxEntity txEntity) {
-        WatchWallet watchWallet = WatchWallet.getWatchWallet(mActivity);
-        switch (watchWallet) {
-            case COBO:
-                return !txEntity.getSignId().endsWith("_sign_id");
-            case ELECTRUM:
-                return ELECTRUM_SIGN_ID.equals(txEntity.getSignId());
-            case WASABI:
-                return WASABI_SIGN_ID.equals(txEntity.getSignId());
-            case BLUE:
-                return BLUE_WALLET_SIGN_ID.equals(txEntity.getSignId());
-            case GENERIC:
-                return GENERIC_WALLET_SIGN_ID.equals(txEntity.getSignId());
+        WatchWallet watchWallet = getWatchWallet(mActivity);
+        if (watchWallet == WatchWallet.COBO) {
+            return !txEntity.getSignId().endsWith("_sign_id");
+        } else {
+            return watchWallet.getSignId().equals(txEntity.getSignId());
         }
-        return false;
     }
 
     private boolean shouldShow(TxEntity tx) {
