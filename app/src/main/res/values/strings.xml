@@ -261,7 +261,7 @@
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
     <string name="fingerprint_unlock">Fingerprint Unlock</string>
-    <string name="verify_fingerprint_hint">Verity Fingerprint</string>
+    <string name="verify_fingerprint_hint">Verify Fingerprint</string>
     <string name="add_fingerprint">+Add Fingerprint</string>
     <string name="search_coin_no_result_hint">No Results</string>
     <string name="verify_fingerprint_to_sign">Verify fingerprint to sign transaction.</string>
