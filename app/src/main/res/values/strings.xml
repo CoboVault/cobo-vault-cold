@@ -296,7 +296,7 @@
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
     <string name="fingerprint_unlock">Fingerprint Unlock</string>
-    <string name="verify_fingerprint_hint">Verity Fingerprint</string>
+    <string name="verify_fingerprint_hint">Verify Fingerprint</string>
     <string name="add_fingerprint">+Add Fingerprint</string>
     <string name="search_coin_no_result_hint">No Results</string>
     <string name="verify_fingerprint_to_sign">Verify fingerprint to sign transaction.</string>
@@ -437,8 +437,7 @@
         3. Touch <font color="#00cdc3">"Export Wallet"<font/> below then open the file in BTCPay<br>
         4. Click <font color="#00cdc3">"Submit"<font/><br>
         5. Click <font color="#00cdc3">"Confirm"<font/>.<br>
-        <font color="#808080">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting.<br>
-        Wasabi requires the xPub, hardware wallet fingerprint, and firmware version to be used as a watch-only wallet. This information will be exported if you touch “Export with MicroSD” below.<font/>
+        <font color="#808080">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting<font/>
     ]]></string>
 
     <string name="export_xpub_guide_text2_blue"><![CDATA[
@@ -477,7 +476,7 @@
     ]]></string>
 
     <string name="btcpay_broadcast_guide"><![CDATA[
-        导出后，用 BTCPay Server 进行广播<br>
+        Broadcast with BTCPay Server<br>
         1. In BTCPay, go to PSBT tab of the wallet and upload the signed PSBT file<br>
         2. Click "Decode"<br>
         3. Click "Other Actions" and select "Review"<br>
