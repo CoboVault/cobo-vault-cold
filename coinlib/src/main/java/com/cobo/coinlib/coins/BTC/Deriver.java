@@ -17,6 +17,8 @@
 
 package com.cobo.coinlib.coins.BTC;
 
+import com.cobo.coinlib.Util;
+
 import org.bitcoinj.core.LegacyAddress;
 import org.bitcoinj.core.SegwitAddress;
 import org.bitcoinj.crypto.DeterministicKey;
@@ -24,10 +26,15 @@ import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
+import org.spongycastle.util.encoders.Hex;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.cobo.coinlib.coins.BTC.Btc.AddressType.P2PKH;
 import static com.cobo.coinlib.coins.BTC.Btc.AddressType.P2SH;
 import static com.cobo.coinlib.coins.BTC.Btc.AddressType.SegWit;
+import static org.bitcoinj.script.ScriptOpCodes.OP_CHECKMULTISIG;
 
 public class Deriver {
 
@@ -49,7 +56,7 @@ public class Deriver {
                     .toBase58();
         } else if(type == SegWit) {
             return SegwitAddress.fromHash(MainNetParams.get(), address.getPubKeyHash()).toBech32();
-        } else if (type == P2SH){
+        } else if (type == P2SH) {
             return LegacyAddress.fromScriptHash(MainNetParams.get(),
                     segWitOutputScript(address.getPubKeyHash()).getPubKeyHash()).toBase58();
         } else {
@@ -57,12 +64,67 @@ public class Deriver {
         }
     }
 
-    protected Script segWitOutputScript(byte[] pubKeyHash) {
+    private Script segWitOutputScript(byte[] pubKeyHash) {
         return ScriptBuilder.createP2SHOutputScript(segWitRedeemScript(pubKeyHash));
     }
 
     private Script segWitRedeemScript(byte[] pubKeyHash) {
         return new ScriptBuilder().smallNum(0).data(pubKeyHash).build();
+    }
+
+    public static String deriveMultiSigAddress(int threshold, List<String> xPubs,
+                                               int[] path, Btc.AddressType type) {
+        checkArgument(path.length == 2);
+        checkArgument(path[0] == 0 || path[0] == 1);
+        checkArgument(path[1] >= 0);
+
+        List<byte[]> orderedPubKeys = xPubs.stream()
+                .map(Util::convertToXpub)
+                .map(xpub -> derivePublicKey(xpub,path[0],path[1]))
+                .sorted()
+                .map(Hex::decode)
+                .collect(Collectors.toList());
+
+        return createMultiSigAddress(threshold, orderedPubKeys, type);
+    }
+
+    private static String derivePublicKey(String xpub, int change, int index) {
+        DeterministicKey key = DeterministicKey.deserializeB58(xpub, MainNetParams.get());
+        DeterministicKey changeKey = HDKeyDerivation.deriveChildKey(key, change);
+        return HDKeyDerivation.deriveChildKey(changeKey, index).getPublicKeyAsHex();
+    }
+
+
+    public static String createMultiSigAddress(int threshold,
+                                               List<byte[]> pubKeys,
+                                               Btc.AddressType type) {
+        Script p2ms = createMultiSigOutputScript(threshold, pubKeys);
+        Script p2wsh = ScriptBuilder.createP2WSHOutputScript(p2ms);
+
+        if (type == SegWit) {
+            return SegwitAddress.fromHash(MainNetParams.get(), p2wsh.getPubKeyHash()).toBech32();
+        } else {
+            Script p2sh = ScriptBuilder.createP2SHOutputScript(p2wsh);
+            return LegacyAddress.fromScriptHash(MainNetParams.get(),p2sh.getPubKeyHash()).toBase58();
+        }
+    }
+
+    private static Script createMultiSigOutputScript(int threshold, List<byte[]> pubKeys) {
+        checkArgument(threshold > 0);
+        checkArgument(threshold <= pubKeys.size());
+        checkArgument(pubKeys.size() <= 15);
+        ScriptBuilder builder = new ScriptBuilder();
+        builder.smallNum(threshold);
+        for (byte[] key : pubKeys) {
+            builder.data(key);
+        }
+        builder.smallNum(pubKeys.size());
+        builder.op(OP_CHECKMULTISIG);
+        return builder.build();
+    }
+
+    private static void checkArgument(boolean b) {
+        if (!b) throw new IllegalArgumentException();
     }
 
 }
