@@ -53,7 +53,13 @@ public abstract class AbsTx {
     public AbsTx(JSONObject object, String coinCode) throws JSONException, InvalidTransactionException {
         this.coinCode = coinCode;
         this.decimal = object.getInt("decimal");
-        this.metaData = extractMetaData(object, coinCode);
+
+        if (coinCode.equals(Coins.XTN.coinCode())) {
+           this.metaData =  extractMetaData(object, Coins.BTC.coinCode());
+        } else {
+            this.metaData = extractMetaData(object, coinCode);
+        }
+
         this.hdPath = object.optString("hdPath");
         checkHdPath();
         this.txType = coinCode;

@@ -37,6 +37,7 @@ public class Coins {
     public static final Coin XRP = new Coin("ripple", "XRP", "Ripple", 144);
     public static final Coin IOST = new Coin("iost", "IOST", "IOST", 291, CURVE.ED25519);
     public static final Coin EOS = new Coin("eos", "EOS", "EOS", 194);
+    public static final Coin XTN = new Coin("xtn", "XTN", "XTN", 1);
 
     public static final List<Coin> SUPPORTED_COINS = Arrays.asList(
             BTC,
@@ -50,7 +51,8 @@ public class Coins {
             XZC,
             XRP,
             IOST,
-            EOS
+            EOS,
+            XTN
     );
 
     public static boolean isCoinSupported(@NonNull String coinCode) {
@@ -60,6 +62,7 @@ public class Coins {
     public static boolean supportMultiSigner(@NonNull String coinCode) {
         switch (coinCode) {
             case "BTC":
+            case "XTN":
             case "BCH":
             case "LTC":
             case "DASH":
