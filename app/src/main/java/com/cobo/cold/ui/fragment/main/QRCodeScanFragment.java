@@ -30,6 +30,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
+import com.cobo.coinlib.coins.BTC.Electrum.TxUtils;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Base43;
@@ -233,7 +234,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         try {
             byte[] data = Base43.decode(res);
             ElectrumTx tx = ElectrumTx.parse(data);
-            if (!checkElectrumExpub(tx)) {
+            String exPub = ViewModelProviders.of(mActivity).get(GlobalViewModel.class).getXpub();
+            if (!TxUtils.isMasterPublicKeyMatch(exPub,tx)) {
                 throw new XpubNotMatchException("xpub not match");
             }
             return tx;
@@ -241,13 +243,6 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             e.printStackTrace();
         }
         return null;
-    }
-
-    private boolean checkElectrumExpub(ElectrumTx tx) {
-        String xpub = ViewModelProviders.of(mActivity).get(GlobalViewModel.class).getXpub();
-        return tx.getInputs()
-                .stream()
-                .allMatch(input -> xpub.equals(input.pubKey.xpub));
     }
 
     @Override

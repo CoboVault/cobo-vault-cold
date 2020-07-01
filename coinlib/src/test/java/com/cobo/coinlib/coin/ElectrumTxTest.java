@@ -20,6 +20,7 @@ package com.cobo.coinlib.coin;
 import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.coins.BTC.Electrum.TxUtils;
 
+import org.bitcoinj.core.Base58;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
@@ -67,7 +68,7 @@ public class ElectrumTxTest {
     public void testTxUtils() throws ElectrumTx.SerializationException {
         String rawHex = "ff049d7cb203bddc6f0d80000000cd01dd05ef6eae22b5c2156fc38da40b925c62e5677352e6a9f9c2212b6dd45f0239c284493a8bf05e0723f001634fac452f6289e20c496f9bfcbf83917972f3b800000100";
         TxUtils.PubKeyInfo pubKeyInfo = TxUtils.getPubKeyInfo(rawHex);
-        assertEquals("xpub6D3i46Y43SFfjEBYheBK3btYMRm9Cfb8Tt4M5Bv16tArNBw5ATNyJWjdcMyLxoCdHWTvm3ak7j2BWacq5Lw478aYUeARoYm4dvaQgJBAGsb", pubKeyInfo.xpub);
+        assertEquals("ypub6XsyMmCyC7o9aXNfXzxwFgz3XPub9HadNzaZraotUtYjRHkJR7YXvaPmdZvvxhrYh9ajWXBJaPNjPsEPo3M4uNG9LyrrPTaYuee44qgWJW3", pubKeyInfo.xpub);
         assertEquals("M/49'/0'/0'/0/1", pubKeyInfo.hdPath);
     }
 
@@ -94,5 +95,10 @@ public class ElectrumTxTest {
         String hex = "45505446ff00020000000001019c27c79ffc9ea5773030e2f31c7f4852fdec0a9d5d56bfd96bd5635faa9da1050000000017160014926abdcbe75e28d62ba442d0f2033eded710bd91fdffffff02b30b00000000000017a914f2c0b14d07c5ac95185487ba27d4256d8e83e76887102700000000000017a914460effb9083c27112687e637a29f0893e110615d87feffffffff4d3700000000000000000201ff53ff049d7cb203e0a197408000000043e91b2cfe457819db8a86101dbf60f9310cd3d95dafb7f4dc9fc3d816bb6c8a0276f4cca4bd18335cc482cf0c6dce442ecdb9eeda4ef8909e0c8beec6a35d416c00000900a09a0900";
         ElectrumTx electrumTx = ElectrumTx.parse(Hex.decode(hex));
         assertTrue(TxUtils.isMasterPublicKeyMatch("xpub6DJXnFtECztcYS2Gm5pyPpbbxuqMJ7BvqBtrTH1ZBjXraQJAgnHsgzBn9Q6HvXieoT7TNb1ynkyWmQDF64GCaybUYnXhof7McNZhfmFRgp3",electrumTx));
+    }
+
+    @Test
+    public void test() {
+        System.out.println(Base58.decode("vpub5Z3SXQwuvQWt5vBQiRYrqhbou6BB7u1TFcA4DTQxPirU4oqMwnWW5DcSmM31h7SzofmUM3xHHn8rEht38jyuX8tfXS2D1desPVRsvnD5Dtr").length);
     }
 }

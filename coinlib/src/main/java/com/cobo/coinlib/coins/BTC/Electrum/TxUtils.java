@@ -17,6 +17,7 @@
 
 package com.cobo.coinlib.coins.BTC.Electrum;
 
+import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.Util;
 
 import org.bitcoinj.core.Base58;
@@ -31,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
+import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
 
 public class TxUtils {
 
@@ -59,15 +62,10 @@ public class TxUtils {
     public static PubKeyInfo parseXpubKey(String pubkey) throws ElectrumTx.SerializationException {
         byte[] pubKeyRaw = Hex.decode(pubkey);
         byte[] pubKeyByte = Arrays.copyOfRange(pubKeyRaw, 0, 78);
-
         byte[] addressBytes = new byte[pubKeyByte.length + 4];
-        int p2pkhPub = MAINNET.getBip32HeaderP2PKHpub();
-        byte[] p2pkhPubBytes = int2bytes(p2pkhPub);
-
-        System.arraycopy(p2pkhPubBytes, 0, addressBytes, 0, 4);
-        System.arraycopy(pubKeyByte, 4, addressBytes, 4, pubKeyByte.length - 4);
+        System.arraycopy(pubKeyByte, 0, addressBytes, 0, 78);
         byte[] checksum = Sha256Hash.hashTwice(addressBytes, 0, pubKeyByte.length);
-        System.arraycopy(checksum, 0, addressBytes, pubKeyByte.length, 4);
+        System.arraycopy(checksum, 0, addressBytes, 78, 4);
         String xPubKey = Base58.encode(addressBytes);
 
 
@@ -91,9 +89,11 @@ public class TxUtils {
     }
 
     public static boolean isMasterPublicKeyMatch(String xpub, ElectrumTx tx) {
+        String exPub = convertExtendPubkey(xpub, ExtendPubkeyFormat.xpub);
         return tx.getInputs()
                 .stream()
-                .allMatch(input -> xpub.equals(input.pubKey.xpub));
+                .allMatch(input -> exPub.equals(
+                        convertExtendPubkey(input.pubKey.xpub, ExtendPubkeyFormat.xpub)));
     }
 
     public static class PubKeyInfo {
@@ -105,17 +105,22 @@ public class TxUtils {
         public PubKeyInfo(String xpub, List<Long> levels) throws ElectrumTx.SerializationException {
             this.xpub = xpub;
             this.levels = levels;
-            // since bitcoinj current version not support ypub,
-            // current we only support p2sh-p2wpkh address type,
-            // we use 49 index now
-            if(xpub.startsWith("ypub") || xpub.startsWith("xpub")) {
+            if(xpub.startsWith("xpub")) {
+                this.hdPath = String.format(Locale.US,"M/44'/0'/0'/%d/%d", this.levels.get(0), this.levels.get(1));
+            }  else if (xpub.startsWith("ypub")) {
                 this.hdPath = String.format(Locale.US,"M/49'/0'/0'/%d/%d", this.levels.get(0), this.levels.get(1));
-            }  else if(xpub.startsWith("zpub")) {
+            }  else if (xpub.startsWith("zpub")) {
                 this.hdPath = String.format(Locale.US,"M/84'/0'/0'/%d/%d", this.levels.get(0), this.levels.get(1));
+            }else if(xpub.startsWith("tpub")) {
+                this.hdPath = String.format(Locale.US,"M/44'/1'/0'/%d/%d", this.levels.get(0), this.levels.get(1));
+            }  else if (xpub.startsWith("upub")) {
+                this.hdPath = String.format(Locale.US,"M/49'/1'/0'/%d/%d", this.levels.get(0), this.levels.get(1));
+            }  else if (xpub.startsWith("vpub")) {
+                this.hdPath = String.format(Locale.US,"M/84'/1'/0'/%d/%d", this.levels.get(0), this.levels.get(1));
             } else {
                 throw new ElectrumTx.SerializationException("extended key type is not supported");
             }
-            this.pubkey = Util.getPublicKeyHex(this.xpub, this.hdPath);
+            this.pubkey = Util.getPublicKeyHex(convertExtendPubkey(xpub, ExtendPubkeyFormat.xpub), this.hdPath);
         }
     }
 }
