@@ -23,6 +23,7 @@ import android.view.View;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.WalletInfoBinding;
@@ -31,8 +32,7 @@ import com.cobo.cold.viewmodel.GlobalViewModel;
 import com.cobo.cold.viewmodel.WalletInfoViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
-import static com.cobo.coinlib.ExtendPubkeyFormat.XPUB;
-import static com.cobo.coinlib.ExtendPubkeyFormat.ZPUB;
+import static com.cobo.coinlib.ExtendPubkeyFormat.zpub;
 import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
 import static com.cobo.cold.ui.fragment.setup.SelectAddressFormatFragment.KEY_NEED_CONFIRM;
@@ -71,9 +71,9 @@ public class WalletInfoFragment extends BaseFragment<WalletInfoBinding> {
         viewModel.getXpub(account).observe(this, xpub -> {
             if (!TextUtils.isEmpty(xpub)) {
                 if (watchWallet == WatchWallet.BLUE) {
-                    xpub = convertExtendPubkey(xpub, ZPUB);
+                    xpub = convertExtendPubkey(xpub, zpub);
                 } else if(watchWallet == WatchWallet.ELECTRUM) {
-                    xpub = convertExtendPubkey(xpub, XPUB);
+                    xpub = convertExtendPubkey(xpub, ExtendPubkeyFormat.xpub);
                 }
                 mBinding.xpub.setText(xpub);
             }
