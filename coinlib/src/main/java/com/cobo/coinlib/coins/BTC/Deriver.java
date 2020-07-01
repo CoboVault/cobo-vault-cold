@@ -17,8 +17,6 @@
 
 package com.cobo.coinlib.coins.BTC;
 
-import com.cobo.coinlib.Util;
-
 import org.bitcoinj.core.LegacyAddress;
 import org.bitcoinj.core.SegwitAddress;
 import org.bitcoinj.crypto.DeterministicKey;
@@ -31,6 +29,8 @@ import org.spongycastle.util.encoders.Hex;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.cobo.coinlib.ExtendPubkeyFormat.XPUB;
+import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
 import static com.cobo.coinlib.coins.BTC.Btc.AddressType.P2PKH;
 import static com.cobo.coinlib.coins.BTC.Btc.AddressType.P2SH;
 import static com.cobo.coinlib.coins.BTC.Btc.AddressType.SegWit;
@@ -79,7 +79,7 @@ public class Deriver {
         checkArgument(path[1] >= 0);
 
         List<byte[]> orderedPubKeys = xPubs.stream()
-                .map(Util::convertToXpub)
+                .map(xpub -> convertExtendPubkey(xpub, XPUB))
                 .map(xpub -> derivePublicKey(xpub,path[0],path[1]))
                 .sorted()
                 .map(Hex::decode)

@@ -7,7 +7,6 @@ import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
 
-import com.cobo.coinlib.Util;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.BlueExportBinding;
 import com.cobo.cold.databinding.CommonModalBinding;
@@ -19,6 +18,9 @@ import com.cobo.cold.viewmodel.GlobalViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static com.cobo.coinlib.ExtendPubkeyFormat.ZPUB;
+import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
 
 public class BlueWalletExportFragment extends BaseFragment<BlueExportBinding> {
     @Override
@@ -46,7 +48,7 @@ public class BlueWalletExportFragment extends BaseFragment<BlueExportBinding> {
             JSONObject xpubInfo = GlobalViewModel.getXpubInfo(mActivity);
             String xpub = xpubInfo.getString("ExtPubKey");
             if (xpub.startsWith("xpub")) {
-                xpub = Util.convertXpubToZpub(xpub);
+                xpub = convertExtendPubkey(xpub, ZPUB);
                 xpubInfo.put("ExtPubKey",xpub);
             }
             mBinding.qrcode.setData(xpubInfo.toString());
