@@ -23,7 +23,6 @@ import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
 
-import com.cobo.coinlib.Util;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
@@ -37,6 +36,9 @@ import com.cobo.cold.viewmodel.GlobalViewModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.cobo.coinlib.ExtendPubkeyFormat.YPUB;
+import static com.cobo.coinlib.ExtendPubkeyFormat.ZPUB;
+import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
 import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
 import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
 import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
@@ -118,9 +120,9 @@ public class ExportGenericXpubFragment extends BaseFragment<ExportXpubGenericBin
 
     private String convertExtpub(String xpub, Coins.Account account) {
         if (account == Coins.Account.SegWit) {
-            return Util.convertXpubToZpub(xpub);
+            return convertExtendPubkey(xpub, ZPUB);
         } else if (account == Coins.Account.P2SH) {
-            return Util.convertXpubToYpub(xpub);
+            return convertExtendPubkey(xpub, YPUB);
         } else {
             return xpub;
         }
