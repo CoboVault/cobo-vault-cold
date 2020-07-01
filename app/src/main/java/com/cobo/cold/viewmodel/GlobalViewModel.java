@@ -59,8 +59,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cobo.coinlib.ExtendPubkeyFormat.YPUB;
-import static com.cobo.coinlib.ExtendPubkeyFormat.ZPUB;
+import static com.cobo.coinlib.ExtendPubkeyFormat.ypub;
+import static com.cobo.coinlib.ExtendPubkeyFormat.zpub;
 import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_ADDRESS_FORMAT;
 
@@ -170,12 +170,12 @@ public class GlobalViewModel extends AndroidViewModel {
                 Account account = Account.parseAccount(hdPath);
                 if (account.getParent().getParent().getValue() == 49
                         && extPub.startsWith("xpub")) {
-                    exPub.postValue(convertExtendPubkey(extPub, YPUB));
+                    exPub.postValue(convertExtendPubkey(extPub, ypub));
                 } else if (extPub.startsWith("ypub")) {
                     exPub.postValue(extPub);
                 } else if (account.getParent().getParent().getValue() == 84
                         && extPub.startsWith("xpub")) {
-                    exPub.postValue(convertExtendPubkey(extPub, ZPUB));
+                    exPub.postValue(convertExtendPubkey(extPub, zpub));
                 }
             } catch (InvalidPathException e) {
                 e.printStackTrace();

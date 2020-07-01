@@ -36,8 +36,8 @@ import com.cobo.cold.viewmodel.GlobalViewModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.cobo.coinlib.ExtendPubkeyFormat.YPUB;
-import static com.cobo.coinlib.ExtendPubkeyFormat.ZPUB;
+import static com.cobo.coinlib.ExtendPubkeyFormat.ypub;
+import static com.cobo.coinlib.ExtendPubkeyFormat.zpub;
 import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
 import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
 import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
@@ -120,9 +120,9 @@ public class ExportGenericXpubFragment extends BaseFragment<ExportXpubGenericBin
 
     private String convertExtpub(String xpub, Coins.Account account) {
         if (account == Coins.Account.SegWit) {
-            return convertExtendPubkey(xpub, ZPUB);
+            return convertExtendPubkey(xpub, zpub);
         } else if (account == Coins.Account.P2SH) {
-            return convertExtendPubkey(xpub, YPUB);
+            return convertExtendPubkey(xpub, ypub);
         } else {
             return xpub;
         }

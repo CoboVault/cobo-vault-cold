@@ -19,7 +19,7 @@ import com.cobo.cold.viewmodel.GlobalViewModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.cobo.coinlib.ExtendPubkeyFormat.ZPUB;
+import static com.cobo.coinlib.ExtendPubkeyFormat.zpub;
 import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
 
 public class BlueWalletExportFragment extends BaseFragment<BlueExportBinding> {
@@ -48,7 +48,7 @@ public class BlueWalletExportFragment extends BaseFragment<BlueExportBinding> {
             JSONObject xpubInfo = GlobalViewModel.getXpubInfo(mActivity);
             String xpub = xpubInfo.getString("ExtPubKey");
             if (xpub.startsWith("xpub")) {
-                xpub = convertExtendPubkey(xpub, ZPUB);
+                xpub = convertExtendPubkey(xpub, zpub);
                 xpubInfo.put("ExtPubKey",xpub);
             }
             mBinding.qrcode.setData(xpubInfo.toString());
