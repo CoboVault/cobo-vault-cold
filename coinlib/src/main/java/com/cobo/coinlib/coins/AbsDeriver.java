@@ -23,6 +23,7 @@ import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.params.RegTestParams;
 
 public abstract class AbsDeriver {
     public static AbsDeriver newInstance(@NonNull String coinCode) {
@@ -36,6 +37,8 @@ public abstract class AbsDeriver {
     }
 
     protected static final NetworkParameters MAINNET = MainNetParams.get();
+
+    protected static final NetworkParameters TESTNET = RegTestParams.get();
 
     protected DeterministicKey getAddrDeterministicKey(String accountXpub, int changeIndex, int addressIndex) {
         DeterministicKey account = DeterministicKey.deserializeB58(accountXpub, MAINNET);

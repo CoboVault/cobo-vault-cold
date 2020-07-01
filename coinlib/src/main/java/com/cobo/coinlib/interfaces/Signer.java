@@ -38,6 +38,7 @@ public abstract class Signer {
     public static boolean shouldProvidePublicKey(@NonNull String coinCode) {
         switch (coinCode) {
             case "BTC":
+            case "XTN":
             case "XRP":
             case "BCH":
             case "LTC":

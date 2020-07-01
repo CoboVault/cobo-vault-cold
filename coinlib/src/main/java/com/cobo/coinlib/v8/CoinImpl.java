@@ -52,8 +52,15 @@ public class CoinImpl implements Coin {
     public CoinImpl(String coinCode) {
         super();
         this.coinCode = coinCode;
-        this.v8 = ScriptLoader.sInstance.loadByCoinCode(coinCode);
-        this.coin = v8.executeObjectScript("new " + coinCode + "()");
+
+        if (coinCode.equals(Coins.XTN.coinCode())) {
+            this.v8 = ScriptLoader.sInstance.loadByCoinCode(Coins.BTC.coinCode());
+            this.coin = v8.executeObjectScript("new " + Coins.BTC.coinCode() + "(\"testNet\")");
+        } else {
+            this.v8 = ScriptLoader.sInstance.loadByCoinCode(coinCode);
+            this.coin = v8.executeObjectScript("new " + coinCode + "()");
+        }
+
         v8.registerResource(coin);
     }
 
