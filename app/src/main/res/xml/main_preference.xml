@@ -71,4 +71,9 @@
         android:key="setting_version"
         android:title="@string/version" />
 
+    <com.cobo.cold.ui.preference.SwitchPreference
+        android:key="setting_testnet"
+        android:persistent="true"
+        android:title="@string/testnet" />
+
 </androidx.preference.PreferenceScreen>

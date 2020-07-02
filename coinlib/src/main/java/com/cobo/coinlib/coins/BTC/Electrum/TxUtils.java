@@ -21,10 +21,8 @@ import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.Util;
 
 import org.bitcoinj.core.Base58;
-import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Utils;
-import org.bitcoinj.params.MainNetParams;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayInputStream;
@@ -36,8 +34,6 @@ import java.util.Locale;
 import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
 
 public class TxUtils {
-
-    private static final NetworkParameters MAINNET = MainNetParams.get();
 
     public static byte[] int2bytes(int i) {
         return new byte[]{

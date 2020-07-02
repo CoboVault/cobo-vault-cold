@@ -19,9 +19,11 @@ package com.cobo.coinlib.coins.BTC.Electrum;
 
 import androidx.annotation.NonNull;
 
+import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.params.TestNet3Params;
 import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +38,7 @@ public class ElectrumTx {
     private boolean partial;
     private boolean isSegwit;
     private long lockTime;
+    private NetworkParameters network;
 
     private ArrayList<TransactionInput> inputs;
     private ArrayList<TransactionOutput> outputs;
@@ -43,13 +46,14 @@ public class ElectrumTx {
     private static final String PARTIAL_TXN_HEADER_MAGIC = "45505446ff";
     private static final int PARTIAL_FORMAT_VERSION = 0;
 
-    public ElectrumTx(long version, boolean partial, boolean isSegwit){
+    public ElectrumTx(long version, boolean partial, boolean isSegwit, boolean isMainNet){
         this.version = version;
         this.partial = partial;
         this.isSegwit = isSegwit;
+        this.network = isMainNet ? MainNetParams.get() : TestNet3Params.get();
     }
 
-    public static ElectrumTx parse(byte[] rawElectrumTx) throws SerializationException {
+    public static ElectrumTx parse(byte[] rawElectrumTx, boolean isMainNet) throws SerializationException {
         int offset = 0;
         int length = rawElectrumTx.length;
         ByteArrayInputStream rawTxStream = new ByteArrayInputStream(rawElectrumTx);
@@ -77,7 +81,7 @@ public class ElectrumTx {
         if (useSegwit) {
             txMessage.readBytes(2);
         }
-        ElectrumTx tx = new ElectrumTx(version, partial, useSegwit);
+        ElectrumTx tx = new ElectrumTx(version, partial, useSegwit, isMainNet);
         tx.parseInput(txMessage);
         tx.parseOutput(txMessage);
 
@@ -126,7 +130,7 @@ public class ElectrumTx {
         long numOutputs = txMessage.readVarInt();
         outputs = new ArrayList<>(Math.min((int) numOutputs, Utils.MAX_INITIAL_ARRAY_LENGTH));
         for (long i = 0; i < numOutputs; i++) {
-            TransactionOutput output = new TransactionOutput(txMessage);
+            TransactionOutput output = new TransactionOutput(txMessage, network);
             outputs.add(output);
         }
     }

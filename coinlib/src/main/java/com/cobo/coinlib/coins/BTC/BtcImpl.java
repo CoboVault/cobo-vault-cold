@@ -38,8 +38,8 @@ public class BtcImpl extends CoinImpl {
 
     private V8Function parsePsbt;
     private V8Function signPsbt;
-    public BtcImpl() {
-        super("BTC");
+    public BtcImpl(boolean isMainNet) {
+        super(isMainNet ? "BTC" : "XTN");
     }
 
     SignTxResult generateOmniTx(@NonNull AbsTx tx, Signer... signers) {

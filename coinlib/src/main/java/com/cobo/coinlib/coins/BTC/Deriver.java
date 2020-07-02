@@ -20,10 +20,12 @@ package com.cobo.coinlib.coins.BTC;
 import com.cobo.coinlib.ExtendPubkeyFormat;
 
 import org.bitcoinj.core.LegacyAddress;
+import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.SegwitAddress;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
 import org.spongycastle.util.encoders.Hex;
@@ -38,8 +40,12 @@ import static com.cobo.coinlib.coins.BTC.Btc.AddressType.SegWit;
 import static org.bitcoinj.script.ScriptOpCodes.OP_CHECKMULTISIG;
 
 public class Deriver {
+    private NetworkParameters network;
+    public Deriver(boolean isMainNet) {
+        this.network = isMainNet ? MainNetParams.get() : TestNet3Params.get();
+    }
 
-    protected DeterministicKey getAddrDeterministicKey(String accountXpub, int changeIndex, int addressIndex) {
+    private DeterministicKey getAddrDeterministicKey(String accountXpub, int changeIndex, int addressIndex) {
         DeterministicKey account = DeterministicKey.deserializeB58(accountXpub, MainNetParams.get());
         DeterministicKey change = HDKeyDerivation.deriveChildKey(account, changeIndex);
         return HDKeyDerivation.deriveChildKey(change, addressIndex);
@@ -53,12 +59,11 @@ public class Deriver {
         DeterministicKey address = getAddrDeterministicKey(accountXpub, changeIndex, addressIndex);
 
         if (type == P2PKH) {
-            return LegacyAddress.fromPubKeyHash(MainNetParams.get(),address.getPubKeyHash())
-                    .toBase58();
+            return LegacyAddress.fromPubKeyHash(network, address.getPubKeyHash()).toBase58();
         } else if(type == SegWit) {
-            return SegwitAddress.fromHash(MainNetParams.get(), address.getPubKeyHash()).toBech32();
+            return SegwitAddress.fromHash(network, address.getPubKeyHash()).toBech32();
         } else if (type == P2SH) {
-            return LegacyAddress.fromScriptHash(MainNetParams.get(),
+            return LegacyAddress.fromScriptHash(network,
                     segWitOutputScript(address.getPubKeyHash()).getPubKeyHash()).toBase58();
         } else {
             throw new IllegalArgumentException();
@@ -73,7 +78,7 @@ public class Deriver {
         return new ScriptBuilder().smallNum(0).data(pubKeyHash).build();
     }
 
-    public static String deriveMultiSigAddress(int threshold, List<String> xPubs,
+    public String deriveMultiSigAddress(int threshold, List<String> xPubs,
                                                int[] path, Btc.AddressType type) {
         checkArgument(path.length == 2);
         checkArgument(path[0] == 0 || path[0] == 1);
@@ -89,24 +94,24 @@ public class Deriver {
         return createMultiSigAddress(threshold, orderedPubKeys, type);
     }
 
-    private static String derivePublicKey(String xpub, int change, int index) {
-        DeterministicKey key = DeterministicKey.deserializeB58(xpub, MainNetParams.get());
+    private String derivePublicKey(String xpub, int change, int index) {
+        DeterministicKey key = DeterministicKey.deserializeB58(xpub, network);
         DeterministicKey changeKey = HDKeyDerivation.deriveChildKey(key, change);
         return HDKeyDerivation.deriveChildKey(changeKey, index).getPublicKeyAsHex();
     }
 
 
-    public static String createMultiSigAddress(int threshold,
+    public String createMultiSigAddress(int threshold,
                                                List<byte[]> pubKeys,
                                                Btc.AddressType type) {
         Script p2ms = createMultiSigOutputScript(threshold, pubKeys);
         Script p2wsh = ScriptBuilder.createP2WSHOutputScript(p2ms);
 
         if (type == SegWit) {
-            return SegwitAddress.fromHash(MainNetParams.get(), p2wsh.getPubKeyHash()).toBech32();
+            return SegwitAddress.fromHash(network, p2wsh.getPubKeyHash()).toBech32();
         } else {
             Script p2sh = ScriptBuilder.createP2SHOutputScript(p2wsh);
-            return LegacyAddress.fromScriptHash(MainNetParams.get(),p2sh.getPubKeyHash()).toBase58();
+            return LegacyAddress.fromScriptHash(network, p2sh.getPubKeyHash()).toBase58();
         }
     }
 

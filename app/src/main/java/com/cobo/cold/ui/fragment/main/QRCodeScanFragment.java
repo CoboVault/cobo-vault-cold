@@ -35,6 +35,7 @@ import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.QrcodeScanFragmentBinding;
 import com.cobo.cold.scan.CaptureHandler;
@@ -233,7 +234,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     private ElectrumTx tryParseElectrumTx(String res) throws XpubNotMatchException {
         try {
             byte[] data = Base43.decode(res);
-            ElectrumTx tx = ElectrumTx.parse(data);
+            ElectrumTx tx = ElectrumTx.parse(data, Utilities.isMainNet(mActivity));
             String exPub = ViewModelProviders.of(mActivity).get(GlobalViewModel.class).getXpub();
             if (!TxUtils.isMasterPublicKeyMatch(exPub,tx)) {
                 throw new XpubNotMatchException("xpub not match");

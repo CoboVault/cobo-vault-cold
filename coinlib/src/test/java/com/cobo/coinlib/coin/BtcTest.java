@@ -47,7 +47,7 @@ public class BtcTest {
                 };
         String pubKey = "xpub6D3i46Y43SFfjEBYheBK3btYMRm9Cfb8Tt4M5Bv16tArNBw5ATNyJWjdcMyLxoCdHWTvm3ak7j2BWacq5Lw478aYUeARoYm4dvaQgJBAGsb";
         for (int i = 0 ; i < addr.length; i++) {
-            String address = new Deriver().derive(pubKey,0,i, Btc.AddressType.P2SH);
+            String address = new Deriver(true).derive(pubKey,0,i, Btc.AddressType.P2SH);
             assertEquals(address,addr[i]);
         }
 
@@ -65,7 +65,7 @@ public class BtcTest {
         };
         pubKey = "xpub6CHASsYUXq4Z1vSdcayG7v7mjUoABEcRBEKWjoEGBKmjKsEZ765J9ivEpYqcznQbnCmMFnJSkKp5f58sAgDUyfCfab5qq9eQjBBjpsb6tju";
         for (int i = 0 ; i < addr.length; i++) {
-            String address = new Deriver().derive(pubKey,0,i, Btc.AddressType.P2PKH);
+            String address = new Deriver(true).derive(pubKey,0,i, Btc.AddressType.P2PKH);
             assertEquals(address,addr[i]);
         }
         addr = new String[] {
@@ -82,7 +82,7 @@ public class BtcTest {
         };
         pubKey = "zpub6rcabYFcdr41zyUNRWRyHYs2Sm86E5XV8RjjRzTFYsiCngteeZnkwaF2xuhjmM6kpHjuNpFW42BMhzPmFwXt48e1FhddMB7xidZzN4SF24K";
         for (int i = 0 ; i < addr.length; i++) {
-            String address = new Deriver().derive(pubKey,0,i, Btc.AddressType.SegWit);
+            String address = new Deriver(true).derive(pubKey,0,i, Btc.AddressType.SegWit);
             assertEquals(address,addr[i]);
         }
     }
@@ -95,10 +95,10 @@ public class BtcTest {
 
         List<byte[]> pubkeys = Lists.newArrayList(Hex.decode(pubkey1), Hex.decode(pubkey2), Hex.decode(pubkey3));
 
-        String address = Deriver.createMultiSigAddress(2, pubkeys, Btc.AddressType.P2SH);
+        String address = new Deriver(true).createMultiSigAddress(2, pubkeys, Btc.AddressType.P2SH);
         assertEquals("3PA7HYj6x6xmk9WPGfrwqeKckYcQyNPdS7", address);
 
-        address = Deriver.createMultiSigAddress(2, pubkeys, Btc.AddressType.SegWit);
+        address = new Deriver(true).createMultiSigAddress(2, pubkeys, Btc.AddressType.SegWit);
         assertEquals("bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej", address);
     }
 
@@ -122,7 +122,7 @@ public class BtcTest {
         };
         List<String> xpubs = Lists.newArrayList(xpub1,xpub2,xpub3);
         for (int i = 0; i < expect.length; i++) {
-            String s = Deriver.deriveMultiSigAddress(2, xpubs, new int[]{0, i}, Btc.AddressType.SegWit);
+            String s = new Deriver(true).deriveMultiSigAddress(2, xpubs, new int[]{0, i}, Btc.AddressType.SegWit);
             assertEquals(expect[i],s);
         }
 

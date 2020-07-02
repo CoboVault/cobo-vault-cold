@@ -27,6 +27,7 @@ import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.db.entity.AccountEntity;
 import com.cobo.cold.db.entity.CoinEntity;
@@ -50,7 +51,8 @@ public class WalletInfoViewModel extends AndroidViewModel {
     public MutableLiveData<String> getXpub(Coins.Account account) {
         AppExecutors.getInstance().diskIO().execute(() -> {
             DataRepository repo = ((MainApplication)getApplication()).getRepository();
-            CoinEntity coinEntity = repo.loadCoinEntityByCoinCode(Coins.BTC.coinCode());
+            boolean isMainNet = Utilities.isMainNet(getApplication());
+            CoinEntity coinEntity = repo.loadCoinEntityByCoinCode(isMainNet ? Coins.BTC.coinCode() : Coins.XTN.coinCode());
             AccountEntity accountEntity = repo.loadAccountsByPath(coinEntity.getId(), account.getPath());
             xpub.postValue(accountEntity.getExPub());
         });

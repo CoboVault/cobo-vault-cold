@@ -87,10 +87,11 @@ public class GlobalViewModel extends AndroidViewModel {
     }
 
     public static Coins.Account getAccount(Context context) {
+        boolean isMainNet = Utilities.isMainNet(context);
         SharedPreferences pref = Utilities.getPrefs(context);
         String type = pref.getString(SETTING_ADDRESS_FORMAT, Coins.Account.P2SH.getType());
         for (Coins.Account account: Coins.Account.values()) {
-            if (type.equals(account.getType())) {
+            if (type.equals(account.getType()) && isMainNet == account.isMainNet()) {
                 return account;
             }
         }
@@ -100,10 +101,13 @@ public class GlobalViewModel extends AndroidViewModel {
     public static Btc.AddressType getAddressType(Context context) {
         switch (getAccount(context)) {
             case P2SH:
+            case P2SH_TESTNET:
                 return Btc.AddressType.P2SH;
             case P2PKH:
+            case P2PKH_TESTNET:
                 return Btc.AddressType.P2PKH;
             case SegWit:
+            case SegWit_TESTNET:
                 return Btc.AddressType.SegWit;
         }
         return Btc.AddressType.SegWit;
@@ -113,10 +117,13 @@ public class GlobalViewModel extends AndroidViewModel {
     public static String getAddressFormat(Context context) {
         switch (getAccount(context)) {
             case SegWit:
+            case SegWit_TESTNET:
                 return context.getString(R.string.native_segwit);
             case P2PKH:
+            case P2PKH_TESTNET:
                 return context.getString(R.string.p2pkh);
             case P2SH:
+            case P2SH_TESTNET:
                 return context.getString(R.string.nested_segwit);
         }
         return context.getString(R.string.nested_segwit);
@@ -130,7 +137,7 @@ public class GlobalViewModel extends AndroidViewModel {
         try {
             xpubInfo.put("ExtPubKey", xpub);
             xpubInfo.put("MasterFingerprint", masterKeyFingerprint);
-            xpubInfo.put("AccountKeyPath", getAccount(activity).getPath().substring(2));
+            xpubInfo.put("AccountKeyPath", account.getPath().substring(2));
             xpubInfo.put("CoboVaultFirmwareVersion", BuildConfig.VERSION_NAME);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -145,15 +152,17 @@ public class GlobalViewModel extends AndroidViewModel {
             String path = expubInfo.hdPath;
             List<String> changes = new ArrayList<>();
             Btc.AddressType type;
-            if (Coins.Account.P2SH.getPath().equals(path)) {
+            if (Coins.Account.P2SH.getPath().equals(path)
+                    || Coins.Account.P2SH_TESTNET.getPath().equals(path)) {
                 type = Btc.AddressType.P2SH;
-            } else if (Coins.Account.SegWit.getPath().equals(path)) {
+            } else if (Coins.Account.SegWit.getPath().equals(path)
+                    || Coins.Account.SegWit_TESTNET.getPath().equals(path)) {
                 type = Btc.AddressType.SegWit;
             } else {
                 type = Btc.AddressType.P2PKH;
             }
 
-            Deriver btcDeriver = new Deriver();
+            Deriver btcDeriver = new Deriver(Utilities.isMainNet(getApplication()));
             for (int i = 0; i < DEFAULT_CHANGE_ADDRESS_NUM; i++) {
                 changes.add(btcDeriver.derive(xpub,1, i, type));
             }
@@ -247,18 +256,19 @@ public class GlobalViewModel extends AndroidViewModel {
         }
 
         public ExpubInfo getExPubInfo() {
-            CoinEntity btc = mRepo.loadCoinSync(Coins.BTC.coinId());
+            CoinEntity coinEntity = mRepo.loadCoinSync(Utilities.currentCoin(getApplication()).coinId());
             SharedPreferences sp = Utilities.getPrefs(getApplication());
-            List<AccountEntity> accounts = mRepo.loadAccountsForCoin(btc);
+            List<AccountEntity> accounts = mRepo.loadAccountsForCoin(coinEntity);
             String format = sp.getString(SETTING_ADDRESS_FORMAT, Coins.Account.P2SH.getType());
 
             Coins.Account account;
+            boolean isMainNet = Utilities.isMainNet(getApplication());
             if (Coins.Account.P2SH.getType().equals(format)) {
-                account = Coins.Account.P2SH;
+                account = isMainNet ? Coins.Account.P2SH : Coins.Account.P2SH_TESTNET;
             } else if(Coins.Account.SegWit.getType().equals(format)) {
-                account = Coins.Account.SegWit;
+                account = isMainNet ? Coins.Account.SegWit : Coins.Account.SegWit_TESTNET;
             } else {
-                account = Coins.Account.P2PKH;
+                account = isMainNet ? Coins.Account.P2PKH : Coins.Account.P2PKH_TESTNET;
             }
             for (AccountEntity entity : accounts) {
                 if (entity.getHdPath().equals(account.getPath())) {

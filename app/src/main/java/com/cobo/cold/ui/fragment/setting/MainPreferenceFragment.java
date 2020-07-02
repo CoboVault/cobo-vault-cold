@@ -19,6 +19,7 @@ package com.cobo.cold.ui.fragment.setting;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -40,6 +41,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.allenliu.badgeview.BadgeFactory;
 import com.allenliu.badgeview.BadgeView;
 import com.android.internal.app.LocalePicker;
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.callables.ResetCallable;
@@ -57,8 +59,8 @@ import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.ui.views.UpdatingHelper;
 import com.cobo.cold.update.data.UpdateManifest;
 import com.cobo.cold.util.DataCleaner;
-import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.UpdatingViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.List;
 import java.util.Locale;
@@ -89,6 +91,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     private static final String SETTING_PASSPHRASE = "setting_passphrase";
     public static final String SETTING_CHOOSE_WATCH_WALLET = "setting_choose_watch_only_wallet";
     public static final String SETTING_ADDRESS_FORMAT = "setting_address_format";
+    public static final String SETTING_TESTNET = "setting_testnet";
 
     private SwitchPreference switchPreference;
     private SimplePreference versionPreference;
@@ -151,6 +154,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                     .getWalletName(mActivity));
         }
 
+        updateMenu();
         Looper.getMainLooper().getQueue().addIdleHandler(() -> {
 
             if (!Utilities.hasUserClickPatternLock(mActivity)) {
@@ -187,6 +191,35 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     private void update() {
         new UpdatingHelper(mActivity,true);
     }
+
+    void updateMenu() {
+        SimplePreference chooseWalletPreference = findPreference(SETTING_CHOOSE_WATCH_WALLET);
+        SwitchPreference testNetPreference = findPreference(SETTING_TESTNET);
+        if (chooseWalletPreference != null) {
+            chooseWalletPreference.setRemindText(WatchWallet.getWatchWallet(mActivity)
+                    .getWalletName(mActivity));
+        }
+        if (!Utilities.isMainNet(mActivity)) {
+            testNetPreference.setChecked(true);
+        } else {
+            testNetPreference.setChecked(false);
+        }
+    }
+
+    private void handleSwitchNetWork() {
+        SharedPreferences pref = Utilities.getPrefs(mActivity);
+        boolean isMainNet = Utilities.isMainNet(mActivity);
+        if (isMainNet) {
+            Utilities.setIsMainNet(mActivity, false);
+            //only electrum support testnet
+            pref.edit().putString(SETTING_CHOOSE_WATCH_WALLET, WatchWallet.ELECTRUM.getWalletId()).commit();
+            pref.edit().putString(SETTING_ADDRESS_FORMAT, Coins.Account.P2SH.getType()).commit();
+        } else {
+            Utilities.setIsMainNet(mActivity, true);
+        }
+        startActivity(new Intent(mActivity, MainActivity.class));
+    }
+
 
     private static void restartApplication(AppCompatActivity activity) {
         final Intent intent = ((Context) activity).getPackageManager().getLaunchIntentForPackage(((Context) activity).getPackageName());
@@ -273,11 +306,19 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                 }
                 break;
             case SETTING_CHOOSE_WATCH_WALLET:
-                Bundle data = new Bundle();
-                data.putInt(Constants.KEY_TITLE, R.string.choose_watch_only_wallet);
-                Navigation.findNavController(Objects.requireNonNull(getView()))
-                        .navigate(R.id.action_to_chooseWatchOnly, data);
+                if (!Utilities.isMainNet(mActivity)) {
+                    ModalDialog.showCommonModal(mActivity,getString(R.string.hint),
+                            getString(R.string.testnet_hint),
+                            getString(R.string.confirm), null);
+                } else {
+                    Bundle data = new Bundle();
+                    data.putInt(Constants.KEY_TITLE, R.string.choose_watch_only_wallet);
+                    Navigation.findNavController(Objects.requireNonNull(getView()))
+                            .navigate(R.id.action_to_chooseWatchOnly, data);
+                }
                 break;
+            case SETTING_TESTNET:
+                handleSwitchNetWork();
             default:
                 break;
         }
