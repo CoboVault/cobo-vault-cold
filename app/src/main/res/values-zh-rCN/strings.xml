@@ -483,5 +483,7 @@
     <string name="reboot">重新启动</string>
     <string name="clear_and_power_off">删除所有信息并关机</string>
     <string name="btcpay_scan_hint">BTCPay Server 暂不支持将交易导成二维码，您可将待签交易导出成文件</string>
+    <string name="testnet">测试网</string>
+    <string name="testnet_hint">测试网暂时只支持Electrum</string>
 
 </resources>

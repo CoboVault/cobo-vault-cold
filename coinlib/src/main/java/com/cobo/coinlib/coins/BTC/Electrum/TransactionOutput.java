@@ -20,7 +20,7 @@ package com.cobo.coinlib.coins.BTC.Electrum;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.LegacyAddress;
 import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.core.SegwitAddress;
 import org.bitcoinj.script.Script;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -29,11 +29,10 @@ public class TransactionOutput {
     public long value;
     public String scriptPubKey;
     public String address;
+    public NetworkParameters network;
 
-    protected static final NetworkParameters MAINNET = MainNetParams.get();
-
-
-    public TransactionOutput(Message txMessage){
+    public TransactionOutput(Message txMessage, NetworkParameters network){
+        this.network = network;
         this.txMessage = txMessage;
         this.value = parseValue();
         this.scriptPubKey = parseScriptPubKey();
@@ -41,7 +40,7 @@ public class TransactionOutput {
 
     }
 
-    private long parseValue(){
+    private long parseValue() {
         return this.txMessage.readInt64();
     }
 
@@ -51,11 +50,11 @@ public class TransactionOutput {
 
     private String parseAddress(){
         Script script = new Script(Hex.decode(this.scriptPubKey));
-        Address address = script.getToAddress(MAINNET);
+        Address address = script.getToAddress(network);
         if (address instanceof LegacyAddress) {
             return ((LegacyAddress) address).toBase58();
         } else {
-            return address.toString();
+            return ((SegwitAddress) address).toBech32();
         }
     }
 

@@ -31,10 +31,21 @@ public class Coins {
                     Account.SegWit.getPath(),
             });
 
+    public static final Coin XTN = new Coin("bitcoin_testnet", "XTN", "Bitcoin TestNet", 1,
+            new String[] {
+                    Account.P2PKH_TESTNET.getPath(),
+                    Account.P2SH_TESTNET.getPath(),
+                    Account.SegWit_TESTNET.getPath(),
+            });
+
     public enum Account{
         P2PKH("M/44'/0'/0'","P2PKH"),
         P2SH("M/49'/0'/0'","P2WPKH-P2SH"),
-        SegWit("M/84'/0'/0'","P2WPKH");
+        SegWit("M/84'/0'/0'","P2WPKH"),
+
+        P2PKH_TESTNET("M/44'/1'/0'","P2PKH"),
+        P2SH_TESTNET("M/49'/1'/0'","P2WPKH-P2SH"),
+        SegWit_TESTNET("M/84'/1'/0'","P2WPKH");
 
         private String path;
         private String type;
@@ -51,10 +62,15 @@ public class Coins {
         public String getType() {
             return type;
         }
+
+        public boolean isMainNet() {
+            return this == P2PKH || this == P2SH || this == SegWit;
+        }
     }
 
     public static final List<Coin> SUPPORTED_COINS = Arrays.asList(
-            BTC
+            BTC,
+            XTN
     );
 
     public static boolean isCoinSupported(@NonNull String coinCode) {
@@ -132,8 +148,7 @@ public class Coins {
             this.accountPaths = accountPaths;
         }
 
-        public String
-        coinId() {
+        public String coinId() {
             return coinId;
         }
 

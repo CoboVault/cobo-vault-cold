@@ -18,17 +18,36 @@
 package com.cobo.cold.ui.views;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.graphics.Color;
 import android.os.PowerManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.cobo.cold.Utilities.IS_MAINNET_MDOE;
+import static com.cobo.cold.Utilities.PREFERENCE_SECRET;
+
 public class StatusBarView extends LinearLayout {
 
     private static final String TAG = "Vault.StatusBarView";
+
+    private final SharedPreferences sp;
+
+    private final OnSharedPreferenceChangeListener listener = (sp, key) -> {
+        if (IS_MAINNET_MDOE.equals(key)) {
+            updateBg();
+        }
+    };
 
     public StatusBarView(Context context) {
         this(context, null);
@@ -44,8 +63,38 @@ public class StatusBarView extends LinearLayout {
 
     public StatusBarView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        sp = getContext().getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        updateBg();
+    }
+
+    private void updateBg() {
+        boolean isMainNet = Utilities.isMainNet(getContext());
+        if (!isMainNet) {
+            setBackgroundColor(Color.parseColor("#FF0000"));
+            findViewById(R.id.text).setVisibility(VISIBLE);
+            ((TextView)findViewById(R.id.text)).setText(R.string.testnet);
+        } else {
+            setBackgroundColor(Color.TRANSPARENT);
+            findViewById(R.id.text).setVisibility(GONE);
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        sp.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        sp.unregisterOnSharedPreferenceChangeListener(listener);
+    }
 
     private boolean isDryCell() {
         boolean isDryCell = false;

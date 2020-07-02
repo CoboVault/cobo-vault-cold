@@ -33,6 +33,7 @@ import com.cobo.coinlib.path.CoinPath;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.db.entity.AccountEntity;
 import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
@@ -55,15 +56,16 @@ public class AddAddressViewModel extends AndroidViewModel {
 
     public void addAddress(int count, Btc.AddressType type, int changeIndex) {
         String hdPath;
+        boolean isMainNet = Utilities.isMainNet(getApplication());
         switch (type) {
             case P2SH:
-                hdPath = Coins.Account.P2SH.getPath();
+                hdPath = isMainNet ? Coins.Account.P2SH.getPath() : Coins.Account.P2SH_TESTNET.getPath();
                 break;
             case SegWit:
-                hdPath = Coins.Account.SegWit.getPath();
+                hdPath = isMainNet ? Coins.Account.SegWit.getPath() : Coins.Account.SegWit_TESTNET.getPath();
                 break;
            default:
-                hdPath = Coins.Account.P2PKH.getPath();
+                hdPath = isMainNet ? Coins.Account.P2PKH.getPath() : Coins.Account.P2PKH_TESTNET.getPath();
                 break;
         }
         List<AccountEntity> accounts = mRepo.loadAccountsForCoin(coin);
@@ -127,15 +129,16 @@ public class AddAddressViewModel extends AndroidViewModel {
             int addressCount = index + 1;
             Btc.AddressType addressType = getAddressType(accountEntity);
             List<AddressEntity> entities = new ArrayList<>();
+            boolean isMainNet = Coins.BTC.coinCode().equals(coinEntity.getCoinCode());
+            Deriver deriver = new Deriver(isMainNet);
             for (int i = 0; i < count[0]; i++) {
                 AddressEntity addressEntity = new AddressEntity();
                 addressEntity.setPath(accountEntity.getHdPath()+"/" + changeIndex+"/" + (addressCount + i));
-                String addr = new Deriver()
-                        .derive(xpub, changeIndex, i + addressCount, addressType);
+                String addr = deriver.derive(xpub, changeIndex, i + addressCount, addressType);
                 addressEntity.setAddressString(addr);
                 addressEntity.setCoinId(coinEntity.getCoinId());
                 addressEntity.setIndex(i + addressCount);
-                addressEntity.setName("BTC-" + (i + addressCount));
+                addressEntity.setName(coinEntity.getCoinCode() + "-" + (i + addressCount));
                 addressEntity.setBelongTo(coinEntity.getBelongTo());
                 entities.add(addressEntity);
             }
@@ -150,9 +153,11 @@ public class AddAddressViewModel extends AndroidViewModel {
 
         static Btc.AddressType getAddressType(AccountEntity accountEntity) {
             String hdPath = accountEntity.getHdPath();
-            if (Coins.Account.P2SH.getPath().equals(hdPath)) {
+            if (Coins.Account.P2SH.getPath().equals(hdPath)
+                    || Coins.Account.P2SH_TESTNET.getPath().equals(hdPath)) {
                 return Btc.AddressType.P2SH;
-            } else if(Coins.Account.SegWit.getPath().equals(hdPath)) {
+            } else if(Coins.Account.SegWit.getPath().equals(hdPath)
+                    || Coins.Account.SegWit_TESTNET.getPath().equals(hdPath) ) {
                 return Btc.AddressType.SegWit;
             } else {
                 return Btc.AddressType.P2PKH;

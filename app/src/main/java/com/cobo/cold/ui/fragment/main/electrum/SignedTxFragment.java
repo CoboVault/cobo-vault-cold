@@ -109,7 +109,7 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
                 JSONObject out = outputs.getJSONObject(i);
                 items.add(new TransactionItem(i,
                         out.getLong("value"), out.getString("address"),
-                        Coins.BTC.coinCode()));
+                        txEntity.getCoinCode()));
             }
         } catch (JSONException e) {
             return;
@@ -137,7 +137,7 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
                 items.add(new TransactionItem(i,
                         outputs.getJSONObject(i).getLong("value"),
                         outputs.getJSONObject(i).getString("address"),
-                        Coins.BTC.coinCode()
+                        txEntity.getCoinCode()
                 ));
             }
         } catch (JSONException e) {

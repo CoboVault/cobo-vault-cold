@@ -35,6 +35,7 @@ import com.cobo.cold.BuildConfig;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.callables.GetUuidCallable;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
 import com.cobo.cold.protocol.ZipUtil;
@@ -182,8 +183,10 @@ public class QrScanViewModel extends AndroidViewModel {
             String coinCode = object.getJSONObject("signTx")
                     .getString("coinCode");
 
+            boolean isMainNet = Utilities.isMainNet(getApplication());
             if (!Coins.isCoinSupported(coinCode)
-                    || object.getJSONObject("signTx").has("omniTx")) {
+                    || object.getJSONObject("signTx").has("omniTx")
+                    || !isMainNet) {
                 throw new CoinNotFindException("not support " + coinCode);
             }
             Bundle bundle = new Bundle();

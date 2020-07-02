@@ -290,7 +290,7 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
                 items.add(new TransactionItem(i,
                         outputs.getJSONObject(i).getLong("value"),
                         outputs.getJSONObject(i).getString("address"),
-                        Coins.BTC.coinCode()
+                        txEntity.getCoinCode()
                 ));
             }
         } catch (JSONException e) {
@@ -315,7 +315,7 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
                 items.add(new TransactionItem(i,
                         out.getLong("value"),
                         out.getString("address"),
-                        Coins.BTC.coinCode()));
+                        txEntity.getCoinCode()));
             }
         } catch (JSONException e) {
             return;

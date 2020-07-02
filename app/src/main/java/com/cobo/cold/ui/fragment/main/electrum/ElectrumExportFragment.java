@@ -122,10 +122,13 @@ public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> 
         Coins.Account account = GlobalViewModel.getAccount(mActivity);
         switch (account) {
             case SegWit:
+            case SegWit_TESTNET:
                 return "p2wpkh-pubkey.txt";
             case P2SH:
+            case P2SH_TESTNET:
                 return "p2wpkh-p2sh-pubkey.txt";
             case P2PKH:
+            case P2PKH_TESTNET:
                 return "p2pkh-pubkey.txt";
         }
         return "p2wpkh-p2sh-pubkey.txt";

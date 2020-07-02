@@ -38,6 +38,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.AddAddressBottomSheetBinding;
 import com.cobo.cold.databinding.AssetFragmentBinding;
 import com.cobo.cold.databinding.DialogBottomSheetBinding;
@@ -78,7 +79,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
 
     @Override
     protected void init(View view) {
-        coinId = Coins.BTC.coinId();
+        coinId = Utilities.isMainNet(mActivity) ? Coins.BTC.coinId() : Coins.XTN.coinId();
         watchWallet = getWatchWallet(mActivity);
         mActivity.setSupportActionBar(mBinding.toolbar);
         mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);

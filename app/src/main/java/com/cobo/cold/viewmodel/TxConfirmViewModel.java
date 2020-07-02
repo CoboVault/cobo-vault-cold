@@ -45,6 +45,7 @@ import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.callables.ClearTokenCallable;
 import com.cobo.cold.callables.GetMessageCallable;
 import com.cobo.cold.callables.GetPasswordTokenCallable;
@@ -137,7 +138,8 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 }
                 TxEntity tx = generateTxEntity(object);
                 observableTx.postValue(tx);
-                if (Coins.BTC.coinCode().equals(transaction.getCoinCode())) {
+                if (Coins.BTC.coinCode().equals(transaction.getCoinCode())
+                    || Coins.XTN.coinCode().equals(transaction.getCoinCode())) {
                     feeAttackChecking(tx);
                 }
             } catch (JSONException e) {
@@ -150,7 +152,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         AppExecutors.getInstance().diskIO().execute(() -> {
             String inputs = txEntity.getFrom();
             String outputs = txEntity.getTo();
-            List<TxEntity> txs = mRepository.loadAllTxSync(Coins.BTC.coinId());
+            List<TxEntity> txs = mRepository.loadAllTxSync(Utilities.currentCoin(getApplication()).coinId());
             for (TxEntity tx : txs) {
                 if (inputs.equals(tx.getFrom()) && outputs.equals(tx.getTo())) {
                     feeAttachCheckingResult.postValue(DUPLICATE_TX);
@@ -190,13 +192,13 @@ public class TxConfirmViewModel extends AndroidViewModel {
     public void parseTxnData(String txnData) {
         AppExecutors.getInstance().networkIO().execute(() -> {
             try {
-                CoinEntity coinEntity = mRepository.loadCoinSync(Coins.BTC.coinId());
+                CoinEntity coinEntity = mRepository.loadCoinSync(Utilities.currentCoin(getApplication()).coinId());
                 AccountEntity accountEntity =
                         mRepository.loadAccountsByPath(coinEntity.getId(), getAccount(getApplication()).getPath());
 
                 if (accountEntity != null) {
                     String xpub = accountEntity.getExPub();
-                    ElectrumTx tx = ElectrumTx.parse(Hex.decode(txnData));
+                    ElectrumTx tx = ElectrumTx.parse(Hex.decode(txnData), Utilities.isMainNet(getApplication()));
 
                     if (!isMasterPublicKeyMatch(xpub, tx)) {
                         throw new XpubNotMatchException("xpub not match");
@@ -216,22 +218,23 @@ public class TxConfirmViewModel extends AndroidViewModel {
     }
 
     private JSONObject parseElectrumTxHex(ElectrumTx tx) throws JSONException {
-        JSONObject btcTx = adapt(tx);
+        JSONObject adaptTx = adapt(tx);
+        boolean isMainNet = Utilities.isMainNet(getApplication());
         TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
-        builder.setCoinCode(Coins.BTC.coinCode())
+        builder.setCoinCode(Utilities.currentCoin(getApplication()).coinCode())
                 .setSignId(ELECTRUM_SIGN_ID)
                 .setTimestamp(generateAutoIncreaseId())
                 .setDecimal(8);
         String signTransaction = new JsonFormat().printToString(builder.build());
         JSONObject signTx = new JSONObject(signTransaction);
-        signTx.put("btcTx", btcTx);
+        signTx.put(isMainNet ? "btcTx" : "xtnTx", adaptTx);
         return signTx;
     }
 
 
     public void parsePsbtBase64(String psbtBase64) {
         AppExecutors.getInstance().networkIO().execute(() -> {
-            Btc btc = new Btc(new BtcImpl());
+            Btc btc = new Btc(new BtcImpl(Utilities.isMainNet(getApplication())));
             JSONObject psbtTx = btc.parsePsbt(psbtBase64);
             if (psbtTx == null) {
                 parseTxException.postValue(new InvalidTransactionException("parse failed,invalid psbt data"));
@@ -259,18 +262,19 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
     private JSONObject parsePsbtTx(JSONObject adaptTx) throws JSONException {
         TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
-        builder.setCoinCode(Coins.BTC.coinCode())
+        boolean isMainNet = Utilities.isMainNet(getApplication());
+        builder.setCoinCode(Utilities.currentCoin(getApplication()).coinCode())
                 .setSignId(WatchWallet.getWatchWallet(getApplication()).getSignId())
                 .setTimestamp(generateAutoIncreaseId())
                 .setDecimal(8);
         String signTransaction = new JsonFormat().printToString(builder.build());
         JSONObject signTx = new JSONObject(signTransaction);
-        signTx.put("btcTx", adaptTx);
+        signTx.put(isMainNet ? "btcTx" : "xtnTx", adaptTx);
         return signTx;
     }
 
     private long generateAutoIncreaseId() {
-        List<TxEntity> txEntityList = mRepository.loadElectrumTxsSync(Coins.BTC.coinId());
+        List<TxEntity> txEntityList = mRepository.loadElectrumTxsSync(Utilities.currentCoin(getApplication()).coinId());
         if (txEntityList == null || txEntityList.isEmpty()) {
             return 0;
         }
@@ -296,7 +300,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
             return false;
         }
         String exPub = accountEntity.getExPub();
-        Deriver deriver = new Deriver();
+        Deriver deriver = new Deriver(Utilities.isMainNet(getApplication()));
 
         try {
             AddressIndex addressIndex = CoinPath.parsePath(hdPath);
@@ -351,7 +355,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
                     int index = addressIndex.getValue();
                     int change = addressIndex.getParent().getValue();
 
-                    String from = new Deriver().derive(accountEntity.getExPub()
+                    String from = new Deriver(Utilities.isMainNet(getApplication())).derive(accountEntity.getExPub()
                             ,change,index, getAddressType(accountEntity));
                     inputsClone.put(new JSONObject().put("value", value)
                                                     .put("address",from));
@@ -530,7 +534,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 }
             };
             callback.startSign();
-            Btc btc = new Btc(new BtcImpl());
+            Btc btc = new Btc(new BtcImpl(Utilities.isMainNet(getApplication())));
             btc.signPsbt(psbt, callback, signer);
         });
     }
@@ -575,7 +579,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         switch (transaction.getTxType()) {
             case "OMNI":
             case "OMNI_USDT":
-                Btc btc = new Btc(new BtcImpl());
+                Btc btc = new Btc(new BtcImpl(Utilities.isMainNet(getApplication())));
                 btc.generateOmniTx(transaction, callback, signer);
                 break;
             default:

@@ -523,5 +523,7 @@
     <string name="reboot">Restart</string>
     <string name="clear_and_power_off">Erase all Information and Power off</string>
     <string name="btcpay_scan_hint">BTCPay Server does not support exporting transactions by QR code. Please export transactions using microSD.</string>
+    <string name="testnet">TestNet</string>
+    <string name="testnet_hint">The testnet currently only supports Electrum</string>
 
 </resources>

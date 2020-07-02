@@ -25,7 +25,7 @@
     tools:showIn="@layout/activity_main">
 
     <TextView
-        android:id="@+id/passphrase"
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
