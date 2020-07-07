@@ -33,6 +33,8 @@ import com.cobo.cold.update.utils.FileUtils;
 import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.viewmodel.WatchWallet;
 
+import org.spongycastle.util.encoders.Base64;
+
 import java.io.File;
 import java.util.Objects;
 
@@ -64,7 +66,7 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
             if (hasSdcard(activity)) {
                 Storage storage = Storage.createByEnvironment(activity);
                 File file = new File(Objects.requireNonNull(storage).getExternalDir(), fileName);
-                boolean result = FileUtils.writeString(file, psbt);
+                boolean result = FileUtils.writeBytes(file, Base64.decode(psbt));
                 if (result) {
                     exportSuccess(activity, onExportSuccess);
                 }
