@@ -62,6 +62,19 @@ public class FileUtils {
         return false;
     }
 
+    public static boolean writeBytes(@NonNull File file, byte[] content) {
+        try(FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(content);
+            fos.getFD().sync();
+            fos.flush();
+            fos.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     @Nullable
     public static byte[] bufferlize(@NonNull File file) {
         try (InputStream inputStream = new FileInputStream(file)) {
