@@ -32,16 +32,22 @@ import com.cobo.cold.AppExecutors;
 import com.cobo.cold.db.dao.AccountDao;
 import com.cobo.cold.db.dao.AddressDao;
 import com.cobo.cold.db.dao.CoinDao;
+import com.cobo.cold.db.dao.MultiSigAddressDao;
+import com.cobo.cold.db.dao.MultiSigWalletDao;
 import com.cobo.cold.db.dao.TxDao;
 import com.cobo.cold.db.dao.WhiteListDao;
 import com.cobo.cold.db.entity.AccountEntity;
 import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
+import com.cobo.cold.db.entity.MultiSigAddressEntity;
+import com.cobo.cold.db.entity.MultiSigWalletEntity;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.db.entity.WhiteListEntity;
 
 @Database(entities = {CoinEntity.class, AddressEntity.class,
-        TxEntity.class, WhiteListEntity.class, AccountEntity.class}, version = 3)
+        TxEntity.class, WhiteListEntity.class,
+        AccountEntity.class, MultiSigWalletEntity.class,
+        MultiSigAddressEntity.class}, version = 4)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "cobo-vault-db";
     private static AppDatabase sInstance;
@@ -55,6 +61,10 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract WhiteListDao whiteListDao();
 
     public abstract AccountDao accountDao();
+
+    public abstract MultiSigAddressDao multiSigAddressDao();
+
+    public abstract MultiSigWalletDao multiSigWalletDao();
 
     private final MutableLiveData<Boolean> mIsDatabaseCreated = new MutableLiveData<>();
 
@@ -86,16 +96,48 @@ public abstract class AppDatabase extends RoomDatabase {
                         });
                     }
                 })
-                .addMigrations(MIGRATION_2_3)
+                .addMigrations(MIGRATION_2_3,MIGRATION_3_4)
                 .fallbackToDestructiveMigration()
                 .build();
     }
 
-    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+    private static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             //migrate delete all altcoins
             database.execSQL("DELETE FROM coins WHERE coinCode != 'BTC'");
+        }
+    };
+
+    private static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.beginTransaction();
+            try {
+                database.execSQL("CREATE TABLE IF NOT EXISTS `multi_sig_wallet` " +
+                        "(`walletId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "`walletName` TEXT, " +
+                        "`threshold` INTEGER NOT NULL, " +
+                        "`total` INTEGER NOT NULL, " +
+                        "`exPubPath` TEXT, " +
+                        "`exPubs` TEXT, " +
+                        "`belongTo` TEXT, " +
+                        "`network` TEXT)");
+                database.execSQL("CREATE INDEX index_multi_sig_wallet_walletId ON multi_sig_wallet (walletId)");
+                database.execSQL("CREATE TABLE IF NOT EXISTS `multi_sig_address` " +
+                        "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "`address` TEXT, " +
+                        "`index` TEXT, " +
+                        "`walletId` TEXT, " +
+                        "`path` TEXT, " +
+                        "`changeIndex` INTEGER, " +
+                        "FOREIGN KEY(`walletId`) REFERENCES `multi_sig_wallet`(`walletId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+                database.execSQL("CREATE UNIQUE INDEX index_multi_sig_address_id ON multi_sig_address (id)");
+                database.execSQL("CREATE INDEX index_multi_sig_address_walletId ON multi_sig_address (walletId)");
+                database.setTransactionSuccessful();
+            } finally {
+                database.endTransaction();
+            }
         }
     };
 

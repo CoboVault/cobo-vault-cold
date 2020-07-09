@@ -55,7 +55,7 @@ public class Utilities {
     public static final String FINGERPRINT_PASSWORD = "fingerprint_password";
     public static final String ATTACK_DETECTED = "attack_detected";
     public static final String INPUT_SETTINGS_CLEARED = "input_settings_cleared";
-    public static final String IS_MAINNET_MDOE = "is_mainnet_mode";;
+    public static final String IS_MAINNET_MDOE = "is_mainnet_mode";
 
     public static void alert(AppCompatActivity activity,
                              @Nullable String title, @NonNull String message,
@@ -235,7 +235,7 @@ public class Utilities {
 
     public static boolean isMainNet(Context context) {
         return context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE)
-                .getBoolean(IS_MAINNET_MDOE, false);
+                .getBoolean(IS_MAINNET_MDOE, true);
     }
 
     public static Coins.Coin currentCoin(Context context) {
