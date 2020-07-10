@@ -19,7 +19,6 @@ package com.cobo.cold.ui.fragment.setting;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -41,7 +40,6 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.allenliu.badgeview.BadgeFactory;
 import com.allenliu.badgeview.BadgeView;
 import com.android.internal.app.LocalePicker;
-import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.callables.ResetCallable;
@@ -192,32 +190,16 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
         new UpdatingHelper(mActivity,true);
     }
 
-    void updateMenu() {
-        SimplePreference chooseWalletPreference = findPreference(SETTING_CHOOSE_WATCH_WALLET);
-        SwitchPreference testNetPreference = findPreference(SETTING_TESTNET);
-        if (chooseWalletPreference != null) {
-            chooseWalletPreference.setRemindText(WatchWallet.getWatchWallet(mActivity)
-                    .getWalletName(mActivity));
+    private void updateMenu() {
+        SimplePreference testNetPreference = findPreference(SETTING_TESTNET);
+        if (testNetPreference != null) {
+            WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
+            if (wallet != WatchWallet.GENERIC && wallet != WatchWallet.ELECTRUM) {
+                getPreferenceScreen().removePreference(testNetPreference);
+            } else {
+                testNetPreference.setRemindText(Utilities.isMainNet(mActivity) ? "主网" : "测试网");
+            }
         }
-        if (!Utilities.isMainNet(mActivity)) {
-            testNetPreference.setChecked(true);
-        } else {
-            testNetPreference.setChecked(false);
-        }
-    }
-
-    private void handleSwitchNetWork() {
-        SharedPreferences pref = Utilities.getPrefs(mActivity);
-        boolean isMainNet = Utilities.isMainNet(mActivity);
-        if (isMainNet) {
-            Utilities.setIsMainNet(mActivity, false);
-            //only electrum support testnet
-            pref.edit().putString(SETTING_CHOOSE_WATCH_WALLET, WatchWallet.ELECTRUM.getWalletId()).commit();
-            pref.edit().putString(SETTING_ADDRESS_FORMAT, Coins.Account.P2SH.getType()).commit();
-        } else {
-            Utilities.setIsMainNet(mActivity, true);
-        }
-        startActivity(new Intent(mActivity, MainActivity.class));
     }
 
 
@@ -306,19 +288,17 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                 }
                 break;
             case SETTING_CHOOSE_WATCH_WALLET:
-                if (!Utilities.isMainNet(mActivity)) {
-                    ModalDialog.showCommonModal(mActivity,getString(R.string.hint),
-                            getString(R.string.testnet_hint),
-                            getString(R.string.confirm), null);
-                } else {
-                    Bundle data = new Bundle();
-                    data.putInt(Constants.KEY_TITLE, R.string.choose_watch_only_wallet);
-                    Navigation.findNavController(Objects.requireNonNull(getView()))
-                            .navigate(R.id.action_to_chooseWatchOnly, data);
-                }
+                Bundle data = new Bundle();
+                data.putInt(Constants.KEY_TITLE, R.string.choose_watch_only_wallet);
+                Navigation.findNavController(Objects.requireNonNull(getView()))
+                        .navigate(R.id.action_to_chooseWatchOnly, data);
+
                 break;
             case SETTING_TESTNET:
-                handleSwitchNetWork();
+                Bundle bundle = new Bundle();
+                bundle.putInt(Constants.KEY_TITLE, R.string.select_network);
+                Navigation.findNavController(Objects.requireNonNull(getView()))
+                        .navigate(R.id.action_to_switchNetwork, bundle);
             default:
                 break;
         }

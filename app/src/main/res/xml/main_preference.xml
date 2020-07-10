@@ -19,6 +19,10 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.cobo.cold.ui.preference.SimplePreference
+        android:key="setting_passphrase"
+        android:title="@string/set_passphrase" />
+
+    <com.cobo.cold.ui.preference.SimplePreference
         android:key="setting_choose_watch_only_wallet"
         android:title="@string/watch_only_wallet" />
     <com.cobo.cold.ui.preference.SimplePreference
@@ -38,8 +42,9 @@
         android:title="@string/create_import_vault" />
 
     <com.cobo.cold.ui.preference.SimplePreference
-        android:key="setting_passphrase"
-        android:title="@string/set_passphrase" />
+        android:key="setting_testnet"
+        android:persistent="true"
+        android:title="@string/network" />
 
     <com.cobo.cold.ui.preference.SimplePreference
         android:key="setting_system"
@@ -70,10 +75,5 @@
     <com.cobo.cold.ui.preference.SimplePreference
         android:key="setting_version"
         android:title="@string/version" />
-
-    <com.cobo.cold.ui.preference.SwitchPreference
-        android:key="setting_testnet"
-        android:persistent="true"
-        android:title="@string/testnet" />
 
 </androidx.preference.PreferenceScreen>
