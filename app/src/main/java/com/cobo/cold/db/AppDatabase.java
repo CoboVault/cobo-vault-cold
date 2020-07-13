@@ -127,10 +127,11 @@ public abstract class AppDatabase extends RoomDatabase {
                 database.execSQL("CREATE TABLE IF NOT EXISTS `multi_sig_address` " +
                         "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                         "`address` TEXT, " +
-                        "`index` TEXT, " +
-                        "`walletId` TEXT, " +
+                        "`index` INTEGER, " +
+                        "`walletId` INTEGER, " +
                         "`path` TEXT, " +
                         "`changeIndex` INTEGER, " +
+                        "`name` TEXT, " +
                         "FOREIGN KEY(`walletId`) REFERENCES `multi_sig_wallet`(`walletId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
                 database.execSQL("CREATE UNIQUE INDEX index_multi_sig_address_id ON multi_sig_address (id)");
                 database.execSQL("CREATE INDEX index_multi_sig_address_walletId ON multi_sig_address (walletId)");

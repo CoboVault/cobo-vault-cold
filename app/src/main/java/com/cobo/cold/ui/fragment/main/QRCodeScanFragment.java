@@ -34,6 +34,7 @@ import com.cobo.coinlib.coins.BTC.Electrum.TxUtils;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Base43;
+import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.CommonModalBinding;
@@ -48,15 +49,18 @@ import com.cobo.cold.scan.view.PreviewFrame;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.GlobalViewModel;
+import com.cobo.cold.viewmodel.MultiSigViewModel;
 import com.cobo.cold.viewmodel.QrScanViewModel;
 import com.cobo.cold.viewmodel.SharedDataViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.UnknowQrCodeException;
 import com.cobo.cold.viewmodel.UuidNotMatchException;
 import com.cobo.cold.viewmodel.WatchWalletNotMatchException;
+import com.cobo.cold.viewmodel.XfpNotMatchException;
 import com.cobo.cold.viewmodel.XpubNotMatchException;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -230,6 +234,29 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         bundle.putString("txn", data);
         navigate(R.id.action_to_ElectrumTxConfirmFragment, bundle);
     }
+
+    public void handleImportMultisigWallet(String hex) {
+        try {
+            JSONObject object = new JSONObject(new String(Hex.decode(hex)));
+            int threshold = Integer.parseInt(object.getString("policy").split("of")[0]);
+            MultiSig.Account account = MultiSig.Account.P2WSH;
+            String path = object.getString("path");
+            for (MultiSig.Account value : MultiSig.Account.values()) {
+                if (path.equals(value.getPath())) {
+                    account = value;
+                    break;
+                }
+            }
+            MultiSigViewModel viewModel = ViewModelProviders.of(mActivity).get(MultiSigViewModel.class);
+            viewModel.createMultisigWallet(threshold, account, object.getJSONArray("xpubs"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (XfpNotMatchException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     private ElectrumTx tryParseElectrumTx(String res) throws XpubNotMatchException {
         try {

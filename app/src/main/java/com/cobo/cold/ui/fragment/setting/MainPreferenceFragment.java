@@ -131,6 +131,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
         if (!FingerprintKit.isHardwareDetected(mActivity)) {
             getPreferenceScreen().removePreference(fingerprintPreference);
         }
+        updateMenu();
     }
 
     @Override
@@ -151,7 +152,6 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
             chooseWalletPreference.setRemindText(WatchWallet.getWatchWallet(mActivity)
                     .getWalletName(mActivity));
         }
-
         updateMenu();
         Looper.getMainLooper().getQueue().addIdleHandler(() -> {
 

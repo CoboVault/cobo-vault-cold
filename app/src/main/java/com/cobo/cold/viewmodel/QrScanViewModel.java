@@ -31,6 +31,7 @@ import com.cobo.bcUniformResource.UniformResource;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Coins;
+import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.BuildConfig;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
@@ -44,6 +45,7 @@ import com.cobo.cold.scan.ScannedData;
 import com.cobo.cold.ui.fragment.main.QRCodeScanFragment;
 import com.cobo.cold.update.utils.Digest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Base64;
@@ -51,6 +53,9 @@ import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.KEY_TX_DATA;
@@ -113,8 +118,62 @@ public class QrScanViewModel extends AndroidViewModel {
                 handleSignPsbt(hex);
                 return;
             }
+        } else if (isMultiSig(hex)) {
+            fragment.handleImportMultisigWallet(hex);
+            return;
         }
         throw new UnknowQrCodeException("unknow bc32 qrcode");
+    }
+
+    private boolean isMultiSig(String hex) {
+        try {
+            JSONObject object = new JSONObject(new String(Hex.decode(hex)));
+            String name = object.getString("name");
+            String policy = object.optString("policy");
+
+            int[] data = Stream.of(policy.split("of")).mapToInt(Integer::valueOf).toArray();
+            int threshold;
+            int total;
+            if (data == null || data.length != 2) return false;
+            threshold = data[0];
+            total = data[1];
+            if (threshold < 1 || threshold > total) return false;
+            if (total < 2 || total > 15) return false;
+            String path = object.getString("path");
+            String format = object.getString("format");
+
+            MultiSig.Account account = null;
+            for (MultiSig.Account value : MultiSig.Account.values()) {
+                if (value.getPath().equals(path) && value.getFormat().equals(format.toLowerCase())) {
+                    account = value;
+                }
+            }
+
+            if (account == null) return false;
+
+            String xfp = object.getString("xfp");
+
+            Matcher matcher = Pattern.compile("[0-9a-fA-F]{8}").matcher(xfp);
+            if (!matcher.matches()) return false;
+
+            JSONArray array = object.getJSONArray("xpubs");
+            if (array.length() != total) return false;
+
+            for (int i = 0; i < total; i++) {
+                JSONObject object1 = array.getJSONObject(0);
+                String xfp1 = object1.getString("xfp");
+                String xpub = object1.getString("xpub");
+            }
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (DecoderException e) {
+            e.printStackTrace();
+        }
+
+        return true;
     }
 
     private void handleSignPsbt(String hex) {

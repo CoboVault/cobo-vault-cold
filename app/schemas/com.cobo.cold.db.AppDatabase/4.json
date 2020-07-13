@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "7e35243730b59195d1da1493c196532c",
+    "identityHash": "3c130afccfeda61ad5fc9048f15fc47a",
     "entities": [
       {
         "tableName": "coins",
@@ -423,7 +423,7 @@
       },
       {
         "tableName": "multi_sig_address",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT, `index` TEXT, `walletId` TEXT, `path` TEXT, `changeIndex` INTEGER NOT NULL, FOREIGN KEY(`walletId`) REFERENCES `multi_sig_wallet`(`walletId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT, `index` INTEGER NOT NULL, `walletId` INTEGER NOT NULL, `path` TEXT, `changeIndex` INTEGER NOT NULL, `name` TEXT, FOREIGN KEY(`walletId`) REFERENCES `multi_sig_wallet`(`walletId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -440,14 +440,14 @@
           {
             "fieldPath": "index",
             "columnName": "index",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "walletId",
             "columnName": "walletId",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "path",
@@ -460,6 +460,12 @@
             "columnName": "changeIndex",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -504,7 +510,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7e35243730b59195d1da1493c196532c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3c130afccfeda61ad5fc9048f15fc47a')"
     ]
   }
 }

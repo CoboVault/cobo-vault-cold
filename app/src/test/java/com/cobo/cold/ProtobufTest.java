@@ -25,6 +25,8 @@ import com.cobo.cold.protobuf.SyncProtoc;
 import org.junit.Test;
 import org.spongycastle.util.encoders.Base64;
 
+import java.util.stream.Stream;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -99,6 +101,13 @@ public class ProtobufTest {
         assertEquals("CAESGmNvYm8gdmFsdXQgcXJjb2RlIHByb3RvY29sGsQBCAMSoAE0NjRjZTdkZWMxOWIwNTU3OTZmNWE2ODY2MzBkNDc3YjA2ZWQxZWIxYWQ1NzlkMjM3NzQxMjcxYTU3MjllMjQxZDFiZDdlMGY2MTM1NzlkY2JiZDI5ODI0MTU1MWFlYjMxOTZjMjZmMDg1ZjMzZDE5MWE1NWRhMmVmNmZjNjVkMGU3Y2JlN2VlYzIxNzVhZGQyMjFlNzU4Y2ZhOTMxZWI2Kh0KA0JUQxIPTS80OScvMC8nMCcvMC8wGgVoZWxsbyjyTw==",
                 Base64.toBase64String(base.build().toByteArray()));
 
+    }
+
+    @Test
+    public void aaa() {
+        int[] aaa = Stream.of("2of3".split("of")).mapToInt(Integer::valueOf).toArray();
+
+        System.out.println(aaa[1]);
     }
 
 }

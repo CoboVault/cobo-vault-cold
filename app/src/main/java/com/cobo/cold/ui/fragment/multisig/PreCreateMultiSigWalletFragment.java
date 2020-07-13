@@ -1,0 +1,130 @@
+package com.cobo.cold.ui.fragment.multisig;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.cobo.coinlib.utils.MultiSig;
+import com.cobo.cold.R;
+import com.cobo.cold.databinding.AddAddressBottomSheetBinding;
+import com.cobo.cold.databinding.PreCreateMultisigWalletBinding;
+import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.fragment.main.NumberPickerCallback;
+import com.cobo.cold.viewmodel.MultiSigViewModel;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import java.util.stream.IntStream;
+
+public class PreCreateMultiSigWalletFragment extends BaseFragment<PreCreateMultisigWalletBinding>
+        implements NumberPickerCallback {
+
+    private int total = 3;
+    private int threshold = 2;
+    private MultiSig.Account account = MultiSig.Account.P2WSH;
+    private State state = State.STATE_NONE;
+    private MultiSigViewModel viewModel;
+
+    enum State {
+        STATE1,
+        STATE2,
+        STATE3,
+        STATE_NONE
+    }
+    @Override
+    protected int setView() {
+        return R.layout.pre_create_multisig_wallet;
+    }
+
+    @Override
+    protected void init(View view) {
+        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+        mBinding.total.setOnClickListener(v -> selectKeyNumber());
+        mBinding.threshold.setOnClickListener(v -> selectCosignerNumber());
+        mBinding.addressType.setOnClickListener(v -> selectAddressType());
+        viewModel = ViewModelProviders.of(mActivity).get(MultiSigViewModel.class);
+        mBinding.confirm.setOnClickListener(v -> onConfirm());
+        updateUI();
+    }
+
+    private void onConfirm() {
+        Bundle data = new Bundle();
+        data.putInt("total", total);
+        data.putInt("threshold", threshold);
+        data.putString("type", account.getFormat());
+        navigate(R.id.action_to_collect_expubs, data);
+    }
+
+    private void updateUI() {
+        mBinding.total.setRemindText(String.valueOf(total));
+        mBinding.threshold.setRemindText(String.valueOf(threshold));
+        mBinding.addressType.setRemindText(viewModel.getAddressTypeString(account));
+    }
+
+
+
+    private void selectKeyNumber() {
+        state = State.STATE1;
+        String[] displayValue = IntStream.range(0, 15)
+                .mapToObj(i -> String.valueOf(i + 1))
+                .toArray(String[]::new);
+        showSelector(displayValue, getString(R.string.select_key_number));
+    }
+
+    private void selectCosignerNumber() {
+        state = State.STATE2;
+        String[] displayValue = IntStream.range(0, total)
+                .mapToObj(i -> String.valueOf(i + 1))
+                .toArray(String[]::new);
+        showSelector(displayValue, getString(R.string.select_threshold));
+    }
+
+    private void selectAddressType() {
+        state = State.STATE3;
+        String[] displayValue = new String[]{getString(R.string.multi_sig_account_legacy),
+                getString(R.string.multi_sig_account_p2sh),
+                getString(R.string.multi_sig_account_segwit)};
+        showSelector(displayValue, getString(R.string.select_address_type));
+    }
+
+    @Override
+    protected void initData(Bundle savedInstanceState) {
+
+    }
+
+    private void showSelector(String[] displayValue, String title) {
+        BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
+        AddAddressBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                R.layout.add_address_bottom_sheet,null,false);
+        binding.setValue(0);
+        binding.title.setText(title);
+        binding.close.setOnClickListener(v -> dialog.dismiss());
+        binding.picker.setValue(0);
+        binding.picker.setDisplayedValues(displayValue);
+        binding.picker.setMinValue(0);
+        binding.picker.setMaxValue(displayValue.length - 1);
+        binding.picker.setOnValueChangedListener((picker, oldVal, newVal) -> binding.setValue(newVal + 1));
+        binding.confirm.setOnClickListener(v-> {
+            onValueSet(binding.picker.getValue() + 1);
+            dialog.dismiss();
+
+        });
+        dialog.setContentView(binding.getRoot());
+        dialog.show();
+    }
+
+    @Override
+    public void onValueSet(int value) {
+        if (state == State.STATE1) {
+            total = value;
+        } else if(state == State.STATE2) {
+            threshold = value;
+        } else if(state == State.STATE3) {
+            account = MultiSig.Account.values()[value - 1];
+        }
+        state = State.STATE_NONE;
+        updateUI();
+    }
+}

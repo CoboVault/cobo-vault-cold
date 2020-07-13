@@ -46,6 +46,7 @@ import com.cobo.cold.fingerprint.FingerprintKit;
 import com.cobo.cold.ui.common.FullScreenActivity;
 import com.cobo.cold.ui.fragment.AboutFragment;
 import com.cobo.cold.ui.fragment.main.AssetFragment;
+import com.cobo.cold.ui.fragment.multisig.MultisigMainFragment;
 import com.cobo.cold.ui.fragment.setting.SettingFragment;
 import com.cobo.cold.ui.views.DrawerAdapter;
 import com.cobo.cold.ui.views.FullScreenDrawer;
@@ -174,6 +175,10 @@ public class MainActivity extends FullScreenActivity {
                 case R.id.drawer_wallet:
                     mNavController.navigateUp();
                     break;
+                case R.id.drawer_multisig:
+                    mNavController.navigateUp();
+                    mNavController.navigate(R.id.action_to_multisigFragment);
+                    break;
                 case R.id.drawer_settings:
                     mNavController.navigateUp();
                     mNavController.navigate(R.id.action_to_settingFragment);
@@ -277,6 +282,7 @@ public class MainActivity extends FullScreenActivity {
 
     static {
         mMainFragments.put(R.id.drawer_wallet, AssetFragment.TAG);
+        mMainFragments.put(R.id.drawer_multisig, MultisigMainFragment.TAG);
         mMainFragments.put(R.id.drawer_settings, SettingFragment.TAG);
         mMainFragments.put(R.id.drawer_about, AboutFragment.TAG);
     }

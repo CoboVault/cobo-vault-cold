@@ -28,6 +28,8 @@ import com.cobo.cold.db.AppDatabase;
 import com.cobo.cold.db.entity.AccountEntity;
 import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
+import com.cobo.cold.db.entity.MultiSigAddressEntity;
+import com.cobo.cold.db.entity.MultiSigWalletEntity;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.db.entity.WhiteListEntity;
 import com.cobo.cold.model.Coin;
@@ -224,5 +226,21 @@ public class DataRepository {
         mDb.txDao().deleteHidden();
         mDb.addressDao().deleteHidden();
         mDb.whiteListDao().deleteHidden();
+    }
+
+    public long addMultisigWallet(MultiSigWalletEntity entity) {
+        return mDb.multiSigWalletDao().add(entity);
+    }
+
+    public MultiSigWalletEntity loadMultisigWallet(long walletId) {
+        return mDb.multiSigWalletDao().loadWallet(walletId);
+    }
+
+    public List<MultiSigAddressEntity> loadAddressForWallet(long walletId) {
+        return mDb.multiSigAddressDao().loadAllMultiSigAddress(walletId);
+    }
+
+    public void insertMultisigAddress(List<MultiSigAddressEntity> entities) {
+        mDb.multiSigAddressDao().insert(entities);
     }
 }

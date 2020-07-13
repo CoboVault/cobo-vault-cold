@@ -225,5 +225,4 @@ public class Btc extends AbsCoin {
         SegWit
     }
 
-
 }

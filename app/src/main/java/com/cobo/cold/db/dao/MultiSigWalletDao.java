@@ -23,6 +23,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.cobo.cold.db.entity.MultiSigWalletEntity;
 
@@ -34,5 +35,14 @@ public interface MultiSigWalletDao {
     long add(MultiSigWalletEntity wallet);
 
     @Query("SELECT * FROM multi_sig_wallet")
-    LiveData<List<MultiSigWalletEntity>> loadAllMultiSigWallet();
+    LiveData<List<MultiSigWalletEntity>> loadAll();
+
+    @Update
+    int update(MultiSigWalletEntity walletEntity);
+
+    @Query("DELETE FROM multi_sig_wallet WHERE walletId=:id")
+    int delete(long id);
+
+    @Query("SELECT * FROM multi_sig_wallet WHERE walletId=:id")
+    MultiSigWalletEntity loadWallet(long id);
 }

@@ -285,6 +285,9 @@
             android:id="@+id/action_to_settingFragment"
             app:destination="@id/settingFragment" />
         <action
+            android:id="@+id/action_to_multisigFragment"
+            app:destination="@id/multisigFragment" />
+        <action
             android:id="@+id/action_to_txnListFragment"
             app:destination="@id/txnListFragment"
             app:enterAnim="@anim/slide_in_right"
@@ -331,6 +334,51 @@
         android:id="@+id/exportGenericXpubFragment"
         android:name="com.cobo.cold.ui.fragment.main.ExportGenericXpubFragment"
         android:label="PsbtListFragment"/>
+
+    <fragment
+        android:id="@+id/multisigFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.MultisigMainFragment"
+        android:label="MultisigMainFragment">
+        <action android:id="@+id/export_export_multisig_expub"
+            app:destination="@id/exportMultisigExpubFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@+id/export_create_multisig_wallet"
+            app:destination="@id/PreCreateMultiSigWalletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/exportMultisigExpubFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.ExportMultisigExpubFragment"
+        android:label="ExportMultisigExpubFragment"/>
+
+
+    <fragment
+        android:id="@+id/PreCreateMultiSigWalletFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.PreCreateMultiSigWalletFragment"
+        android:label="PreCreateMultiSigWalletFragment">
+        <action android:id="@+id/action_to_collect_expubs"
+            app:destination="@id/collcetExpubFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/collcetExpubFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.CollcetExpubFragment"
+        android:label="CollcetExpubFragment">
+
+    </fragment>
     <fragment
         android:id="@+id/psbtListFragment"
         android:name="com.cobo.cold.ui.fragment.main.PsbtListFragment"

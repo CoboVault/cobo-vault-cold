@@ -25,6 +25,7 @@
     <string name="title_activity_splash">SplashActivity</string>
 
     <string name="drawer_menu_my_vault">我的 Cobo 金库</string>
+    <string name="drawer_menu_multisig">多签钱包</string>
     <string name="drawer_menu_add_remove">添加 / 隐藏币种</string>
     <string name="drawer_menu_sync">同步移动端</string>
     <string name="drawer_menu_setting">设置</string>
@@ -487,5 +488,14 @@
     <string name="testnet_hint">测试网暂时只支持Electrum</string>
     <string name="select_network">选择区块链网络</string>
     <string name="test_net">测试网</string>
+    <string name="no_multisig_wallet">暂无多签钱包</string>
+    <string name="create_multisig_wallet_hint">您需先创建或导入多签钱包，才能对该钱包交易签名。\n\n 多签钱包创建指引：\n 1. 您需先收集参与者的扩展公钥，导出扩展公钥点击右上方【更多—查看/导出扩展公钥】，扩展公钥可展示为二维码，或保存为文件；若为文件格式，您需将收集到的所有扩展公钥文件保存到一张TF卡内。\n 2. 点击下方“创建多签钱包”按钮，确定参与者和签名的数量及地址格式后，填入收集到的扩展公钥信息，填入时支持扫码和读文件 \n\n创建和导入多签钱包完整图文教程，请访问：https://XXX</string>
+    <string name="export_all">导出全部</string>
+    <string name="multi_sig_account_legacy">传统</string>
+    <string name="multi_sig_account_p2sh">隔离见证兼容</string>
+    <string name="multi_sig_account_segwit">隔离见证原生</string>
+    <string name="select_key_number">选择参与数量</string>
+    <string name="select_threshold">选择签名数量</string>
+    <string name="select_address_type">选择地址类型</string>
 
 </resources>

@@ -18,6 +18,7 @@
 package com.cobo.coinlib.coins.BTC;
 
 import com.cobo.coinlib.ExtendPubkeyFormat;
+import com.cobo.coinlib.utils.MultiSig;
 
 import org.bitcoinj.core.LegacyAddress;
 import org.bitcoinj.core.NetworkParameters;
@@ -79,7 +80,7 @@ public class Deriver {
     }
 
     public String deriveMultiSigAddress(int threshold, List<String> xPubs,
-                                               int[] path, Btc.AddressType type) {
+                                               int[] path, MultiSig.Account account) {
         checkArgument(path.length == 2);
         checkArgument(path[0] == 0 || path[0] == 1);
         checkArgument(path[1] >= 0);
@@ -91,7 +92,7 @@ public class Deriver {
                 .map(Hex::decode)
                 .collect(Collectors.toList());
 
-        return createMultiSigAddress(threshold, orderedPubKeys, type);
+        return createMultiSigAddress(threshold, orderedPubKeys, account);
     }
 
     private String derivePublicKey(String xpub, int change, int index) {
@@ -103,14 +104,17 @@ public class Deriver {
 
     public String createMultiSigAddress(int threshold,
                                                List<byte[]> pubKeys,
-                                               Btc.AddressType type) {
+                                        MultiSig.Account type) {
         Script p2ms = createMultiSigOutputScript(threshold, pubKeys);
         Script p2wsh = ScriptBuilder.createP2WSHOutputScript(p2ms);
 
-        if (type == SegWit) {
+        if (type == MultiSig.Account.P2WSH) {
             return SegwitAddress.fromHash(network, p2wsh.getPubKeyHash()).toBech32();
-        } else {
+        } else if(type == MultiSig.Account.P2SH_P2WSH){
             Script p2sh = ScriptBuilder.createP2SHOutputScript(p2wsh);
+            return LegacyAddress.fromScriptHash(network, p2sh.getPubKeyHash()).toBase58();
+        } else {
+            Script p2sh = ScriptBuilder.createP2SHOutputScript(p2ms);
             return LegacyAddress.fromScriptHash(network, p2sh.getPubKeyHash()).toBase58();
         }
     }

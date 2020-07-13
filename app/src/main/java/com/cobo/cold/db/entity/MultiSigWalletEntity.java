@@ -17,8 +17,7 @@ public class MultiSigWalletEntity {
     private String belongTo;
     private String network;
 
-    public MultiSigWalletEntity(long walletId, String walletName, int threshold, int total, String exPubPath, String exPubs, String belongTo, String network) {
-        this.walletId = walletId;
+    public MultiSigWalletEntity(String walletName, int threshold, int total, String exPubPath, String exPubs, String belongTo, String network) {
         this.walletName = walletName;
         this.threshold = threshold;
         this.total = total;

@@ -17,19 +17,11 @@ public class MultiSigAddressEntity {
     @PrimaryKey(autoGenerate = true)
     public long id;
     private String address; // address
-    private String index; // address index
-    private String walletId; // belong to which multisig wallet
+    private int index; // address index
+    private long walletId; // belong to which multisig wallet
     private String path; // address path
     private int changeIndex;
-
-    public MultiSigAddressEntity(long id, String address, String index, String walletId, String path, int changeIndex) {
-        this.id = id;
-        this.address = address;
-        this.index = index;
-        this.walletId = walletId;
-        this.path = path;
-        this.changeIndex = changeIndex;
-    }
+    private String name;
 
     public long getId() {
         return id;
@@ -47,19 +39,19 @@ public class MultiSigAddressEntity {
         this.address = address;
     }
 
-    public String getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(String index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 
-    public String getWalletId() {
+    public long getWalletId() {
         return walletId;
     }
 
-    public void setWalletId(String walletId) {
+    public void setWalletId(long walletId) {
         this.walletId = walletId;
     }
 
@@ -77,5 +69,13 @@ public class MultiSigAddressEntity {
 
     public void setChangeIndex(int changeIndex) {
         this.changeIndex = changeIndex;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

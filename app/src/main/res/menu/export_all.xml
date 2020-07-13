@@ -16,14 +16,12 @@
   ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_export_all"
+        android:orderInCategory="100"
+        android:title="@string/export_all"
+        app:showAsAction="always" />
 
-    <item android:id="@+id/drawer_wallet" android:title=""/>
-    <item android:id="@+id/drawer_manage" android:title=""/>
-    <item android:id="@+id/drawer_sync" android:title=""/>
-    <item android:id="@+id/drawer_sdcard" android:title=""/>
-    <item android:id="@+id/drawer_settings" android:title=""/>
-    <item android:id="@+id/drawer_about" android:title=""/>
-    <item android:id="@+id/drawer_id" android:title=""/>
-    <item android:id="@+id/drawer_multisig" android:title=""/>
 </menu>
