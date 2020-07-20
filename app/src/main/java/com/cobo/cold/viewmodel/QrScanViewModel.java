@@ -52,6 +52,7 @@ import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,7 +79,7 @@ public class QrScanViewModel extends AndroidViewModel {
 
     public void handleDecode(QRCodeScanFragment owner, ScannedData[] data)
             throws InvalidTransactionException, JSONException, CoinNotFindException,
-            UuidNotMatchException, UnknowQrCodeException, WatchWalletNotMatchException {
+            UuidNotMatchException, UnknowQrCodeException, WatchWalletNotMatchException, InvalidMultisigWalletException {
         this.fragment = owner;
         String valueType = data[0].valueType;
 
@@ -95,7 +96,9 @@ public class QrScanViewModel extends AndroidViewModel {
             }
             if (!TextUtils.isEmpty(hex)) {
                 WatchWallet wallet = WatchWallet.getWatchWallet(getApplication());
-                if (wallet.supportBc32QrCode()) {
+                if (MultiSigViewModel.decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8)) != null){
+                    fragment.handleImportMultisigWallet(hex);
+                } else if (wallet.supportBc32QrCode()) {
                     handleBc32Qrcode(hex);
                 } else {
                     throw new UnknowQrCodeException("not support bc32 qrcode in current wallet mode");
@@ -111,69 +114,15 @@ public class QrScanViewModel extends AndroidViewModel {
         }
     }
 
-    private void handleBc32Qrcode(String hex) throws UnknowQrCodeException {
+    private void handleBc32Qrcode(String hex) throws UnknowQrCodeException, InvalidMultisigWalletException {
         if (hex.startsWith(Hex.toHexString("psbt".getBytes()))) {
             WatchWallet watchWallet = WatchWallet.getWatchWallet(getApplication());
             if (watchWallet.supportPsbt()) {
                 handleSignPsbt(hex);
                 return;
             }
-        } else if (isMultiSig(hex)) {
-            fragment.handleImportMultisigWallet(hex);
-            return;
         }
         throw new UnknowQrCodeException("unknow bc32 qrcode");
-    }
-
-    private boolean isMultiSig(String hex) {
-        try {
-            JSONObject object = new JSONObject(new String(Hex.decode(hex)));
-            String name = object.getString("name");
-            String policy = object.optString("policy");
-
-            int[] data = Stream.of(policy.split("of")).mapToInt(Integer::valueOf).toArray();
-            int threshold;
-            int total;
-            if (data == null || data.length != 2) return false;
-            threshold = data[0];
-            total = data[1];
-            if (threshold < 1 || threshold > total) return false;
-            if (total < 2 || total > 15) return false;
-            String path = object.getString("path");
-            String format = object.getString("format");
-
-            MultiSig.Account account = null;
-            for (MultiSig.Account value : MultiSig.Account.values()) {
-                if (value.getPath().equals(path) && value.getFormat().equals(format.toLowerCase())) {
-                    account = value;
-                }
-            }
-
-            if (account == null) return false;
-
-            String xfp = object.getString("xfp");
-
-            Matcher matcher = Pattern.compile("[0-9a-fA-F]{8}").matcher(xfp);
-            if (!matcher.matches()) return false;
-
-            JSONArray array = object.getJSONArray("xpubs");
-            if (array.length() != total) return false;
-
-            for (int i = 0; i < total; i++) {
-                JSONObject object1 = array.getJSONObject(0);
-                String xfp1 = object1.getString("xfp");
-                String xpub = object1.getString("xpub");
-            }
-
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (DecoderException e) {
-            e.printStackTrace();
-        }
-
-        return true;
     }
 
     private void handleSignPsbt(String hex) {

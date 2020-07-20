@@ -144,7 +144,7 @@ public class MainApplication extends Application {
                 Activity activity = topActivity.get();
                 if (!(activity instanceof UnlockActivity)
                         && Utilities.hasVaultCreated(activity)
-                        && !Utilities.isAttackDetected(activity)) {
+                        && !Utilities.isAttackDetected(activity) && false) {
                     startActivity(new Intent(activity, UnlockActivity.class));
                 }
             }

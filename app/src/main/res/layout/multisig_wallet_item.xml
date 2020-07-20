@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="walletItem"
+            type="com.cobo.cold.db.entity.MultiSigWalletEntity" />
+    </data>
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{walletItem.walletName}"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="16dp"
+            tools:text="wallet 1/2"
+            android:textSize="16sp"
+            android:gravity="center"/>
+        <include layout="@layout/divider"
+            android:layout_alignParentBottom="true"
+            android:layout_height="1dp"
+            android:layout_width="match_parent" />
+    </RelativeLayout>
+</layout>

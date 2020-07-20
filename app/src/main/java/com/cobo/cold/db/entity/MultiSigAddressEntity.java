@@ -1,6 +1,7 @@
 package com.cobo.cold.db.entity;
 
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
@@ -10,15 +11,16 @@ import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "multi_sig_address",
         foreignKeys = @ForeignKey(entity = MultiSigWalletEntity.class,
-                parentColumns = "walletId",
-                childColumns = "walletId", onDelete = CASCADE),
-        indices = {@Index(value = "id",unique = true),@Index(value = "walletId")})
+                parentColumns = "walletFingerPrint",
+                childColumns = "walletFingerPrint", onDelete = CASCADE),
+        indices = {@Index(value = "id",unique = true), @Index(value = "walletFingerPrint")})
 public class MultiSigAddressEntity {
     @PrimaryKey(autoGenerate = true)
     public long id;
     private String address; // address
     private int index; // address index
-    private long walletId; // belong to which multisig wallet
+    @NonNull
+    private String walletFingerPrint; // belong to which multisig wallet
     private String path; // address path
     private int changeIndex;
     private String name;
@@ -47,12 +49,12 @@ public class MultiSigAddressEntity {
         this.index = index;
     }
 
-    public long getWalletId() {
-        return walletId;
+    public String getWalletFingerPrint() {
+        return walletFingerPrint;
     }
 
-    public void setWalletId(long walletId) {
-        this.walletId = walletId;
+    public void setWalletFingerPrint(String walletFingerPrint) {
+        this.walletFingerPrint = walletFingerPrint;
     }
 
     public String getPath() {
@@ -77,5 +79,18 @@ public class MultiSigAddressEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "MultiSigAddressEntity{" +
+                "id=" + id +
+                ", address='" + address + '\'' +
+                ", index=" + index +
+                ", walletFingerPrint=" + walletFingerPrint +
+                ", path='" + path + '\'' +
+                ", changeIndex=" + changeIndex +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

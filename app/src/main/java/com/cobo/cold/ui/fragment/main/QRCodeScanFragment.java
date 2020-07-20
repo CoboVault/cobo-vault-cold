@@ -49,6 +49,7 @@ import com.cobo.cold.scan.view.PreviewFrame;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.GlobalViewModel;
+import com.cobo.cold.viewmodel.InvalidMultisigWalletException;
 import com.cobo.cold.viewmodel.MultiSigViewModel;
 import com.cobo.cold.viewmodel.QrScanViewModel;
 import com.cobo.cold.viewmodel.SharedDataViewModel;
@@ -59,13 +60,16 @@ import com.cobo.cold.viewmodel.WatchWalletNotMatchException;
 import com.cobo.cold.viewmodel.XfpNotMatchException;
 import com.cobo.cold.viewmodel.XpubNotMatchException;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
+import static com.cobo.cold.viewmodel.MultiSigViewModel.decodeColdCardWalletFile;
 import static com.cobo.cold.viewmodel.WatchWallet.ELECTRUM;
 import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
 
@@ -206,6 +210,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             alert(getString(R.string.invalid_webauth_qrcode_hint));
         } else if ("address".equals(purpose)) {
             navigateUp();
+        } else if("collect_xpub".equals(purpose)){
+            navigateUp();
         } else {
             try {
                 if (tryParseElectrumTx(res) != null) {
@@ -237,22 +243,36 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
 
     public void handleImportMultisigWallet(String hex) {
         try {
-            JSONObject object = new JSONObject(new String(Hex.decode(hex)));
-            int threshold = Integer.parseInt(object.getString("policy").split("of")[0]);
-            MultiSig.Account account = MultiSig.Account.P2WSH;
-            String path = object.getString("path");
-            for (MultiSig.Account value : MultiSig.Account.values()) {
-                if (path.equals(value.getPath())) {
-                    account = value;
+            MultiSigViewModel viewModel = ViewModelProviders.of(mActivity).get(MultiSigViewModel.class);
+            String xfp = viewModel.getXfp();
+            JSONObject obj = decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8));
+            Bundle bundle = new Bundle();
+            bundle.putString("wallet_info",obj.toString());
+            JSONArray array = obj.getJSONArray("Xpubs");
+            boolean matchXfp = false;
+            for (int i = 0 ; i < array.length(); i++) {
+                JSONObject xpubInfo = array.getJSONObject(i);
+                if (xpubInfo.getString("xfp").equalsIgnoreCase(xfp)) {
+                    matchXfp = true;
                     break;
                 }
             }
-            MultiSigViewModel viewModel = ViewModelProviders.of(mActivity).get(MultiSigViewModel.class);
-            viewModel.createMultisigWallet(threshold, account, object.getJSONArray("xpubs"));
-        } catch (JSONException e) {
-            e.printStackTrace();
+            if (!matchXfp) {
+               throw new XfpNotMatchException("xfp not match");
+            } else if (!"importMultiSigWallet".equals(purpose)){
+                alert("请在XXXX扫码");
+            } else {
+                navigate(R.id.import_multisig_wallet, bundle);
+            }
         } catch (XfpNotMatchException e) {
             e.printStackTrace();
+            alert("导入失败","该多签钱包不包含当前金库。");
+        } catch (InvalidMultisigWalletException e) {
+            e.printStackTrace();
+            alert("非多签钱包","该文件/二维码不是多签钱包，无法导入。");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            alert(getString(R.string.incorrect_qrcode));
         }
 
     }
@@ -293,6 +313,12 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             e.printStackTrace();
             alert(getString(R.string.unsupported_qrcode));
         } catch (WatchWalletNotMatchException e) {
+            e.printStackTrace();
+            alert(getString(R.string.identification_failed),
+                    getString(R.string.master_pubkey_not_match)
+                            + getString(R.string.watch_wallet_not_match,
+                            WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
+        } catch (InvalidMultisigWalletException e) {
             e.printStackTrace();
             alert(getString(R.string.identification_failed),
                     getString(R.string.master_pubkey_not_match)

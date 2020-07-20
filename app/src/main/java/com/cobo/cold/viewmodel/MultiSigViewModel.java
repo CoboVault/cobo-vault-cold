@@ -22,13 +22,13 @@ import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.coins.BTC.Deriver;
-import com.cobo.coinlib.exception.InvalidPathException;
-import com.cobo.coinlib.path.AddressIndex;
-import com.cobo.coinlib.path.CoinPath;
 import com.cobo.coinlib.utils.MultiSig;
+import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
 import com.cobo.cold.R;
@@ -37,26 +37,63 @@ import com.cobo.cold.callables.GetExtendedPublicKeyCallable;
 import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.db.entity.MultiSigAddressEntity;
 import com.cobo.cold.db.entity.MultiSigWalletEntity;
+import com.cobo.cold.update.utils.Storage;
+import com.cobo.cold.util.HashUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.Hex;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static com.cobo.cold.viewmodel.PsbtViewModel.reverseHex;
 
 public class MultiSigViewModel extends AndroidViewModel {
 
+    private final Storage storage;
     private Map<MultiSig.Account, String> xpubsMap = new HashMap<>();
     private String xfp;
     private DataRepository repo;
+    private final LiveData<List<MultiSigWalletEntity>> mObservableWallets;
+    private final LiveData<List<MultiSigAddressEntity>> mObservableAddress;
     public MultiSigViewModel(@NonNull Application application) {
         super(application);
         xfp = new GetMasterFingerprintCallable().call();
         repo = ((MainApplication)application).getRepository();
+        storage = Storage.createByEnvironment(application);
+        mObservableWallets = repo.loadAllMultiSigWallet();
+        mObservableAddress = repo.loadAllMultiSigAddress();
+    }
+
+    public LiveData<List<MultiSigWalletEntity>> getAllMultiSigWallet() {
+        return mObservableWallets;
+    }
+
+    public LiveData<List<MultiSigAddressEntity>> getAllMultiSigAddress() {
+        return mObservableAddress;
+    }
+
+    public LiveData<List<MultiSigAddressEntity>> getMultiSigAddress(String walletFingerprint) {
+        return repo.loadAddressForWallet(walletFingerprint);
+    }
+
+    public LiveData<MultiSigWalletEntity> getCurrentWallet() {
+        return getWalletEntity("d4637859");
     }
 
     public String getXpub(MultiSig.Account account) {
@@ -64,12 +101,97 @@ public class MultiSigViewModel extends AndroidViewModel {
             String expub = new GetExtendedPublicKeyCallable(account.getPath()).call();
             if (account == MultiSig.Account.P2WSH) {
                 expub = ExtendPubkeyFormat.convertExtendPubkey(expub, ExtendPubkeyFormat.Zpub);
-            } else if (account == MultiSig.Account.P2SH_P2WSH) {
+            } else if (account == MultiSig.Account.P2WSH_P2SH) {
                 expub = ExtendPubkeyFormat.convertExtendPubkey(expub, ExtendPubkeyFormat.Ypub);
             }
             xpubsMap.put(account, expub);
         }
         return xpubsMap.get(account);
+    }
+
+    public LiveData<JSONObject> exportWalletToElectrum(String walletFingerprint) {
+        MutableLiveData<JSONObject> result = new MutableLiveData<>();
+        AppExecutors.getInstance().diskIO().execute(()->{
+            MultiSigWalletEntity wallet = repo.loadMultisigWallet(walletFingerprint);
+            if (wallet != null) {
+                try {
+                    String path = wallet.getExPubPath();
+                    int threshold = wallet.getThreshold();
+                    int total = wallet.getTotal();
+                    JSONObject object = new JSONObject();
+                    object.put("wallet_type",threshold+"of"+total);
+                    object.put("use_encryption",false);
+                    object.put("seed_version",17);
+                    JSONArray xpubs = new JSONArray(wallet.getExPubs());
+                    for (int i = 0; i < xpubs.length(); i++) {
+                        JSONObject xpub = xpubs.getJSONObject(i);
+                        JSONObject xpubOut = new JSONObject();
+                        String xfp = xpub.getString("xfp");
+                        xpubOut.put("xpub", xpub.getString("xpub"));
+                        xpubOut.put("hw_type", "coldcard");
+                        xpubOut.put("ckcc_xfp", convertCkccXfp(xfp));
+                        xpubOut.put("label", "CoboVault " + xfp);
+                        xpubOut.put("derivation", path);
+                        xpubOut.put("type", "hardware");
+                        object.put("x"+(i+1)+"/",xpubOut);
+                    }
+
+                    result.postValue(object);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        return result;
+    }
+
+    public LiveData<String> exportWalletToCosigner(String walletFingerprint) {
+        MutableLiveData<String> result = new MutableLiveData<>();
+        AppExecutors.getInstance().diskIO().execute(()->{
+            MultiSigWalletEntity wallet = repo.loadMultisigWallet(walletFingerprint);
+            if (wallet != null) {
+                try {
+                    StringBuilder builder = new StringBuilder();
+                    String path = wallet.getExPubPath();
+                    int threshold = wallet.getThreshold();
+                    int total = wallet.getTotal();
+
+                    builder.append(String.format("# CoboVault Multisig setup file (created on %s)", xfp)).append("\n")
+                            .append("#").append("\n")
+                            .append("Name: ").append(wallet.getWalletName()).append("\n")
+                            .append(String.format("Policy: %d of %d", threshold, total)).append("\n")
+                            .append("Derivation: ").append(path).append("\n")
+                            .append("Format: ").append(MultiSig.Account.ofPath(path).getFormat()).append("\n\n");
+                    JSONArray xpubs = new JSONArray(wallet.getExPubs());
+                    for (int i = 0; i < xpubs.length(); i++) {
+                        JSONObject xpub = xpubs.getJSONObject(i);
+                        builder.append(xpub.getString("xfp")).append(": ").append(xpub.getString("xpub")).append("\n");
+                    }
+                    result.postValue(builder.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        return result;
+    }
+
+    public LiveData<MultiSigWalletEntity> getWalletEntity(String walletFingerprint) {
+        MutableLiveData<MultiSigWalletEntity> result = new MutableLiveData<>();
+        AppExecutors.getInstance().diskIO().execute(()->{
+            MultiSigWalletEntity wallet = repo.loadMultisigWallet(walletFingerprint);
+            if (wallet != null) {
+                result.postValue(wallet);
+            }
+        });
+
+        return result;
+    }
+
+    private long convertCkccXfp(String hex) {
+        return new BigInteger(reverseHex(hex), 16).longValue();
     }
 
     public Map<MultiSig.Account, String> getAllXpubs() {
@@ -96,14 +218,34 @@ public class MultiSigViewModel extends AndroidViewModel {
         return object.toString();
     }
 
+
+    public String getExportAllXpubInfo() {
+        JSONObject object = new JSONObject();
+        try {
+            for (MultiSig.Account value : MultiSig.Account.values()) {
+                String format = value.getFormat().toLowerCase().replace("-", "_");
+                object.put(format + "_deriv", value.getPath());
+                object.put(format, getXpub(value));
+            }
+            object.put("xfp", xfp.toUpperCase());
+            return object.toString(2).replace("\\","");
+        } catch (JSONException e) {
+            return "";
+        }
+    }
+
     public String getExportXpubFileName(MultiSig.Account account) {
         return xfp + "-"+ account.getFormat() +".json";
+    }
+
+    public String getExportAllXpubFileName() {
+        return xfp + "-ALL-XPUB.json";
     }
 
     public String getAddressTypeString(MultiSig.Account account) {
         int id = R.string.multi_sig_account_segwit;
 
-        if (account == MultiSig.Account.P2SH_P2WSH) {
+        if (account == MultiSig.Account.P2WSH_P2SH) {
             id = R.string.multi_sig_account_p2sh;
         } else if (account == MultiSig.Account.P2SH) {
             id = R.string.multi_sig_account_legacy;
@@ -112,52 +254,110 @@ public class MultiSigViewModel extends AndroidViewModel {
         return getApplication().getString(id);
     }
 
-    public void createMultisigWallet(int threshold,
+    public LiveData<MultiSigWalletEntity> createMultisigWallet(int threshold,
                                      MultiSig.Account account,
                                      JSONArray xpubsInfo) throws XfpNotMatchException {
+        MutableLiveData<MultiSigWalletEntity> result = new MutableLiveData<>();
         int total = xpubsInfo.length();
         boolean xfpMatch = false;
+        List<String> xpubs = new ArrayList<>();
         for (int i = 0; i < xpubsInfo.length(); i++) {
-            JSONObject obj = null;
+            JSONObject obj;
             try {
                 obj = xpubsInfo.getJSONObject(i);
                 String xfp = obj.getString("xfp");
-                String xpub = obj.getString("xpub");
-                if (xfp.equals(this.xfp) && getXpub(account).equals(xpub)) {
+                String xpub = convertXpub(obj.getString("xpub"),account);
+                if (xfp.equalsIgnoreCase(this.xfp)
+                        && ExtendPubkeyFormat.isEqualIgnorePrefix(getXpub(account), xpub)) {
                     xfpMatch = true;
-                    break;
                 }
+                xpubs.add(xpub);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
         }
 
         if (!xfpMatch) {
             throw new XfpNotMatchException("xfp not match");
         }
+        String walletFingerprint = calculateWalletFingerptint(threshold, xpubs, account.getPath());
         MultiSigWalletEntity wallet = new MultiSigWalletEntity(
-                " " + threshold + "/" + total,
-                threshold, total, account.getPath(), xpubsInfo.toString(),
-                xfp, "main");
-        long walletId = repo.addMultisigWallet(wallet);
+                "Multisig_"+ walletFingerprint +"_" + threshold + "-" + total,
+                threshold,
+                total,
+                account.getPath(),
+                xpubsInfo.toString(),
+                xfp,
+                Utilities.isMainNet(getApplication()) ? "main" : "testnet");
+        wallet.setWalletFingerPrint(walletFingerprint);
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            boolean exist = repo.loadMultisigWallet(walletFingerprint) != null;
+            if (!exist) {
+                repo.addMultisigWallet(wallet);
+                new AddAddressTask(walletFingerprint, repo, null, 0).execute(1);
+                new AddAddressTask(walletFingerprint, repo, () -> result.postValue(wallet), 1).execute(1);
+            } else {
+                result.postValue(wallet);
+            }
+        });
+        return result;
+    }
 
-        new AddAddressTask(walletId,repo,null,0).execute(1);
-        new AddAddressTask(walletId,repo,null,1).execute(1);
+    public static String convertXpub(String xpub, MultiSig.Account account) {
+        switch (account) {
+            case P2SH:
+                return ExtendPubkeyFormat.convertExtendPubkey(xpub,ExtendPubkeyFormat.xpub);
+            case P2WSH:
+                return ExtendPubkeyFormat.convertExtendPubkey(xpub,ExtendPubkeyFormat.Zpub);
+            case P2WSH_P2SH:
+                return ExtendPubkeyFormat.convertExtendPubkey(xpub,ExtendPubkeyFormat.Ypub);
+        }
+        return xpub;
+    }
+
+    public void addAddress(String walletFingerprint, int number, int changeIndex) {
+        addComplete.postValue(Boolean.FALSE);
+        new AddAddressTask(walletFingerprint, repo, () -> addComplete.setValue(Boolean.TRUE) ,changeIndex).execute(number);
+    }
+
+    public String calculateWalletFingerptint(int threshold, List<String> xpubs, String path) {
+        String info = xpubs.stream()
+                .map(s->ExtendPubkeyFormat.convertExtendPubkey(s, ExtendPubkeyFormat.xpub))
+                .sorted()
+                .reduce((s1,s2)->s1 + " " + s2)
+                .orElse("") + threshold + "of" + xpubs.size() + path;
+        return Hex.toHexString(HashUtil.sha256(info)).substring(0,8);
+    }
+
+    public List<MultiSigAddressEntity> filterChangeAddress(List<MultiSigAddressEntity> entities) {
+        return entities.stream()
+                .filter(entity -> entity.getChangeIndex()==1)
+                .collect(Collectors.toList());
+    }
+
+    public List<MultiSigAddressEntity> filterReceiveAddress(List<MultiSigAddressEntity> entities) {
+        return entities.stream()
+                .filter(entity -> entity.getChangeIndex()==0)
+                .collect(Collectors.toList());
+    }
+
+    private final MutableLiveData<Boolean> addComplete = new MutableLiveData<>();
+
+    public LiveData<Boolean> getObservableAddState() {
+        return addComplete;
     }
 
     public static class AddAddressTask extends AsyncTask<Integer, Void, Void> {
-        private final long walletId;
+        private final String walletFingerprint;
         private final DataRepository repo;
         private final Runnable onComplete;
         private int changeIndex;
 
-        AddAddressTask(long walletId,
+        AddAddressTask(String walletFingerprint,
                        DataRepository repo,
                        Runnable onComplete,
                        int changeIndex) {
-            this.walletId = walletId;
+            this.walletFingerprint = walletFingerprint;
             this.repo = repo;
             this.onComplete = onComplete;
             this.changeIndex = changeIndex;
@@ -166,36 +366,41 @@ public class MultiSigViewModel extends AndroidViewModel {
         @Override
         protected Void doInBackground(Integer... count) {
             boolean isMainNet = Utilities.isMainNet(MainApplication.getApplication());
-            MultiSigWalletEntity wallet = repo.loadMultisigWallet(walletId);
-            List<MultiSigAddressEntity> address = repo.loadAddressForWallet(walletId);
+            MultiSigWalletEntity wallet = repo.loadMultisigWallet(walletFingerprint);
+            List<MultiSigAddressEntity> address = repo.loadAddressForWalletSync(walletFingerprint);
             Optional<MultiSigAddressEntity> optional = address.stream()
                     .filter(addressEntity -> addressEntity.getPath()
                             .startsWith(wallet.getExPubPath()+"/" + changeIndex))
                     .max((o1, o2) -> o1.getIndex() - o2.getIndex());
             int index = -1;
             if (optional.isPresent()) {
-                try {
-                    AddressIndex addressIndex = CoinPath.parsePath(optional.get().getPath());
-                    index = addressIndex.getValue();
-                } catch (InvalidPathException e) {
-                    e.printStackTrace();
-                }
+                index = optional.get().getIndex();
             }
             List<MultiSigAddressEntity> entities = new ArrayList<>();
             int addressCount = index + 1;
+            List<String> xpubList = new ArrayList<>();
+            try {
+                JSONArray jsonArray = new JSONArray(wallet.getExPubs());
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    xpubList.add(jsonArray.getJSONObject(i).getString("xpub"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             Deriver deriver = new Deriver(isMainNet);
             for (int i = 0; i < count[0]; i++) {
-                MultiSigAddressEntity addressEntity = new MultiSigAddressEntity();
+                MultiSigAddressEntity multisigAddress = new MultiSigAddressEntity();
                 String addr = deriver.deriveMultiSigAddress(wallet.getThreshold(),
-                        new ArrayList<>(), new int[] {changeIndex, addressCount + i},
+                        xpubList, new int[] {changeIndex, addressCount + i},
                         MultiSig.Account.ofPath(wallet.getExPubPath()));
-                addressEntity.setPath(wallet.getExPubPath()+"/"+changeIndex+"/"+(addressCount + i));
-                addressEntity.setAddress(addr);
-                addressEntity.setIndex(i + addressCount);
-                addressEntity.setName(isMainNet? "BTC" : "XTN"+ "-" + (i + addressCount));
-                addressEntity.setWalletId(walletId);
-                addressEntity.setChangeIndex(changeIndex);
-                entities.add(addressEntity);
+                multisigAddress.setPath(wallet.getExPubPath()+"/"+changeIndex+"/"+(addressCount + i));
+                multisigAddress.setAddress(addr);
+                multisigAddress.setIndex(i + addressCount);
+                multisigAddress.setName((isMainNet? "BTC" : "XTN")+ "-" + (i + addressCount));
+                multisigAddress.setWalletFingerPrint(walletFingerprint);
+                multisigAddress.setChangeIndex(changeIndex);
+                entities.add(multisigAddress);
             }
             repo.insertMultisigAddress(entities);
             return null;
@@ -208,9 +413,108 @@ public class MultiSigViewModel extends AndroidViewModel {
                 onComplete.run();
             }
         }
-
     }
 
+    public LiveData<List<String>> loadWalletFile() {
+        MutableLiveData<List<String>> result = new MutableLiveData<>();
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            List<String> fileList = new ArrayList<>();
+            if (storage != null) {
+                File[] files = storage.getExternalDir().listFiles();
+                if (files != null) {
+                    for (File f : files) {
+                        if (f.getName().endsWith(".txt")) {
+                            fileList.add(f.getName());
+                        }
+                    }
+                }
+            }
+            result.postValue(fileList);
+        });
+        return result;
+    }
+
+    public void updateWallet(MultiSigWalletEntity entity) {
+        AppExecutors.getInstance().diskIO().execute(()-> {
+            repo.updateWallet(entity);
+        });
+    }
+
+    public static JSONObject decodeColdCardWalletFile(String content)
+            throws InvalidMultisigWalletException {
+        /*
+        # Coldcard Multisig setup file (created on 5271C071)
+        #
+        Name: CC-2-of-3
+        Policy: 2 of 3
+        Derivation: m/48'/0'/0'/2'
+        Format: P2WSH
+
+        748CC6AA: xpub6F6iZVTmc3KMgAUkV9JRNaouxYYwChRswPN1ut7nTfecn6VPRYLXFgXar1gvPUX27QH1zaVECqVEUoA2qMULZu5TjyKrjcWcLTQ6LkhrZAj
+        C2202A77: xpub6EiTGcKqBQy2uTat1QQPhYQWt8LGmZStNqKDoikedkB72sUqgF9fXLUYEyPthqLSb6VP4akUAsy19MV5LL8SvqdzvcABYUpKw45jA1KZMhm
+        5271C071: xpub6EWksRHwPbDmXWkjQeA6wbCmXZeDPXieMob9hhbtJjmrmk647bWkh7om5rk2eoeDKcKG6NmD8nT7UZAFxXQMjTnhENTwTEovQw3MDQ8jJ16
+         */
+
+        JSONObject object = new JSONObject();
+        JSONArray xpubs = new JSONArray();
+        Pattern pattern = Pattern.compile("[0-9a-fA-F]{8}");
+        int total = 0;
+        int threshold = 0;
+        String path = null;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(content.getBytes(Charset.forName("utf8"))), Charset.forName("utf8")))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("#")) {
+                    if (line.contains("Coldcard")) {
+                        object.put("Creator","Coldcard");
+                    } else if(line.contains("CoboVault")) {
+                        object.put("Creator","CoboVault");
+                    }
+                }
+                String[] splits = line.split(": ");
+                if (splits.length != 2) continue;
+                String label = splits[0];
+                String value = splits[1];
+                if (label.equals("Name")) {
+                    object.put(label, value);
+                } else if (label.equals("Policy")) {
+                    String[] policy = value.split(" of ");
+                    if (policy.length == 2) {
+                        threshold = Integer.parseInt(policy[0]);
+                        total = Integer.parseInt(policy[1]);
+                    }
+                    object.put(label, value);
+                } else if (label.equals("Derivation")) {
+                    object.put(label, value);
+                    path = value;
+                } else if(label.equals("Format")) {
+                    object.put(label, value);
+                } else if (pattern.matcher(label).matches()) {
+                    JSONObject xpub = new JSONObject();
+                    if (ExtendPubkeyFormat.isValidXpub(value)) {
+                        xpub.put("xfp", label);
+                        xpub.put("xpub", convertXpub(value, MultiSig.Account.ofPath(path)));
+                        xpubs.put(xpub);
+                    }
+                }
+            }
+
+            if (!isValidMultisigPolicy(total,threshold) || xpubs.length() != total) {
+                throw new InvalidMultisigWalletException("invalid wallet file ");
+            }
+            object.put("Xpubs",xpubs);
+
+        } catch (IOException | JSONException | NumberFormatException e) {
+            e.printStackTrace();
+            throw new InvalidMultisigWalletException("invalid wallet file ");
+        }
+
+        return object;
+    }
+
+    private static boolean isValidMultisigPolicy(int total, int threshold) {
+        return total <= 15 && total >= 2 && threshold <= total || threshold >= 1;
+    }
 }
 
 

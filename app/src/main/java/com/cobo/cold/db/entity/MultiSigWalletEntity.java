@@ -1,14 +1,16 @@
 package com.cobo.cold.db.entity;
 
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "multi_sig_wallet", indices = {@Index("walletId")})
+@Entity(tableName = "multi_sig_wallet", indices = {@Index("walletFingerPrint")})
 public class MultiSigWalletEntity {
-    @PrimaryKey(autoGenerate = true)
-    private long walletId;
+    @PrimaryKey
+    @NonNull
+    private String walletFingerPrint;
     private String walletName;
     private int threshold;
     private int total;
@@ -27,12 +29,12 @@ public class MultiSigWalletEntity {
         this.network = network;
     }
 
-    public long getWalletId() {
-        return walletId;
+    public String getWalletFingerPrint() {
+        return walletFingerPrint;
     }
 
-    public void setWalletId(long walletId) {
-        this.walletId = walletId;
+    public void setWalletFingerPrint(String fingerPrint) {
+        this.walletFingerPrint = fingerPrint;
     }
 
     public String getWalletName() {
@@ -89,5 +91,19 @@ public class MultiSigWalletEntity {
 
     public void setNetwork(String network) {
         this.network = network;
+    }
+
+    @Override
+    public String toString() {
+        return "MultiSigWalletEntity{" +
+                "WalletFingerPrint=" + walletFingerPrint +
+                ", walletName='" + walletName + '\'' +
+                ", threshold=" + threshold +
+                ", total=" + total +
+                ", exPubPath='" + exPubPath + '\'' +
+                ", exPubs='" + exPubs + '\'' +
+                ", belongTo='" + belongTo + '\'' +
+                ", network='" + network + '\'' +
+                '}';
     }
 }

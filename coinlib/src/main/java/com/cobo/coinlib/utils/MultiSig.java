@@ -2,9 +2,9 @@ package com.cobo.coinlib.utils;
 
 public class MultiSig {
     public enum Account {
-        P2SH("m/45'","p2sh"),
-        P2SH_P2WSH("m/48'/0'/0'/1'","p2wsh-p2sh"),
-        P2WSH("m/48'/0'/0'/2'","p2wsh");
+        P2SH("m/45'","P2SH"),
+        P2WSH_P2SH("m/48'/0'/0'/1'","P2WSH-P2SH"),
+        P2WSH("m/48'/0'/0'/2'","P2WSH");
 
         private final String format;
         private String path;
@@ -27,7 +27,16 @@ public class MultiSig {
                     return value;
                 }
             }
-            return null;
+            return P2WSH;
+        }
+
+        public static Account ofFormat(String format) {
+            for (Account value : Account.values()) {
+                if (value.format.equalsIgnoreCase(format)) {
+                    return value;
+                }
+            }
+            return P2WSH;
         }
     }
 }

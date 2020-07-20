@@ -78,7 +78,7 @@ public class FingerprintSettingFragment extends BaseFragment<FingerprintSettingB
         protected void onBindItem(SettingItemWithArrowBinding binding, Fingerprint item) {
             binding.title.setText(item.getName());
             Bundle data = new Bundle();
-            data.putParcelable("fingerprint", item);
+            data.putParcelable("xfp", item);
 
             binding.getRoot().setOnClickListener(v -> navigate(R.id.action_to_fingerprintManage, data));
         }

@@ -20,9 +20,11 @@ package com.cobo.cold.ui.modal;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,8 +36,13 @@ import com.cobo.cold.R;
 
 public class ExportToSdcardDialog extends DialogFragment {
 
-    public static ExportToSdcardDialog newInstance() {
-        return new ExportToSdcardDialog();
+    public static ExportToSdcardDialog newInstance(String fileName) {
+        Bundle bundle = new Bundle();
+        bundle.putString("fileName",fileName);
+
+        ExportToSdcardDialog dialog = new ExportToSdcardDialog();
+        dialog.setArguments(bundle);
+        return dialog;
     }
 
     @Nullable
@@ -50,6 +57,11 @@ public class ExportToSdcardDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View v = DataBindingUtil.inflate(LayoutInflater.from(getActivity()),
                 R.layout.export_success,null,false).getRoot();
+        TextView fileName = v.findViewById(R.id.file_name);
+        if (getArguments()!= null && !TextUtils.isEmpty(getArguments().getString("fileName"))) {
+            fileName.setVisibility(View.VISIBLE);
+            fileName.setText(getString(R.string.file_name,getArguments().getString("fileName")));
+        }
         Dialog dialog = new AlertDialog.Builder(getActivity(), R.style.dialog)
                 .setView(v)
                 .create();

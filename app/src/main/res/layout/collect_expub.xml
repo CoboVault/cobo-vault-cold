@@ -16,12 +16,13 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
+        android:gravity="start"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
@@ -37,18 +38,65 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="创建多签钱包"
+                android:text="@string/create_multisig_wallet"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
+        <include layout="@layout/divider" />
+
+        <com.donkingliang.consecutivescroller.ConsecutiveScrollerLayout
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp">
+
+            <TextView
+                android:id="@+id/wallet_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/wallet_type"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/address_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/address_type"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/cosigners"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:text="请在下列文本框中填入钱包参与者的扩展公钥，填入时请检查扩展公钥，确保填入的信息和参与者导出时的信息一致。\n您的扩展公钥已自动填入1号，多签钱包的创建结果与填入扩展公钥的顺序无关"
+                android:textColor="@color/white" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/xpub_input" />
+        </com.donkingliang.consecutivescroller.ConsecutiveScrollerLayout>
+
+        <Button
+            android:id="@+id/create"
+            style="@style/AcceptButton"
+            android:layout_width="match_parent"
             android:layout_margin="16dp"
-            android:text="请在下列文本框中填入钱包参与者的扩展公钥，填入时请检查扩展公钥，确保填入的信息和参与者导出时的信息一致。\n您的扩展公钥已自动填入1号，多签钱包的创建结果与填入扩展公钥的顺序无关"/>
-
-
+            android:text="创建" />
     </LinearLayout>
 </layout>

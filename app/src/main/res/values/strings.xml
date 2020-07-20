@@ -336,12 +336,16 @@
         <item>"Writing Secure Element…"</item>
     </string-array>
     <string name="export_to_electrum">Create Watch-Only Wallet in Electrum</string>
-    <string name="export_to_electrum_guide"><![CDATA[
-        1. Open Electrum and create a new wallet. <br>
-        2. Choose “Standard wallet”. <br>
-        3. Choose “Use a master key”. <br>
-        4. Touch “Show Master Public Key” below then click the camera icon in the “Create keystore from a master key” window in Electrum to scan the QR code that displays on Cobo Vault.<br>
-        5. Set a password. <br>6. Enter the watch-only wallet.
+    <string name="export_multisig_wallet_to_electrum_guide"><![CDATA[
+        1. Open Electrum and create a new wallet.<br>
+        2. Choose “Multi-signature wallet”.<br>
+        3. Choose the number of signatures needed to unlock funds in your wallet.<br>
+        <font color="#00cdc3">This Wallet: From %d cosigners, Require %d signatures<font/><br>
+        4. Choose "Use a master key"<br>
+        5. Touch “Display Public Key QRCode” below then click the camera icon in Electrum to scan the QR code that displays on Cobo Vault, when adding a cosigner, choose "Enter cosigner key"<br>
+        6. Set a password.<br>
+        7. Enter the watch-only wallet.<br>
+        <font color="#808080">请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）<font/>
     ]]></string>
     <string name="export_xpub">Show Master Public Key</string>
     <string name="export_to_electrum_guide_hint">How to create a watch-only wallet with Electrum:</string>
@@ -547,5 +551,34 @@
     <string name="select_key_number">选择参与数量</string>
     <string name="select_threshold">选择签名数量</string>
     <string name="select_address_type">选择地址类型</string>
+    <string name="import_multisig_wallet">导入多签钱包</string>
+    <string name="extend_pubkey">扩展公钥</string>
+    <string name="file_name">File Name:%s</string>
+    <string name="wallet_verification_code"><![CDATA[钱包验证码：<font color="#00cdc3">%s<font>]]></string>
+    <string name="wallet_type">钱包类型：%s</string>
+    <string name="address_type">地址类型：%s</string>
+    <string name="cosigners">参与者:</string>
+    <string name="create_multisig_wallet">创建多签钱包</string>
+    <string name="create_success"><![CDATA[<font color="#fefefe">钱包名称<font/>：<br>
+    %s <br>
+    钱包验证码：<br>
+    <font color="#00cdc3">%s<font/> <br>
+    1. 您可将该多签钱包导出给参与方（参与方需创建/导入该钱包，否则无法对该钱包的交易签名）。<br> <br>
+    2. 参与方导入时，需检查要导入钱包的验证码是否和上方钱包验证码一致，确保一致后再进行导入。<br>
+    ]]>
+    </string>
+    <string name="export_now">立即导出</string>
+    <string name="next_one">查看下一个</string>
+    <string name="prev_one">查看上一个</string>
+
+    <string name="verify_wallet_hint"><![CDATA[
+    钱包验证码：<br>
+    <font color="#00cdc3">%s<font/> <br>
+    检查上方钱包验证码和导出的钱包验证码是否一致，确保一致后继续导入；若不一致，请检查钱包信息。<br>
+    ]]>
+    </string>
+    <string name="import_success">Import Successful</string>
+    <string name="view_xpub_qrcode">Display Public Key QR Code</string>
+    <string name="multisig_wallet_info_xpub_warning">*These Public Keys are only used to generate multisig wallet and will not expose any of your personal wallet information.\n*Do not share Public Key with others who are not cosigners, Public Keys can get your addresses and find out how may coins you have</string>
 
 </resources>

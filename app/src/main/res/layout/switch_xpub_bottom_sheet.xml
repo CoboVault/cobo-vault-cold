@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/checked"
                 android:tint="@color/colorAccent"
-                android:tag="p2wsh"
+                android:tag="P2WSH"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="16dp" />
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/checked"
                 android:tint="@color/colorAccent"
-                android:tag="p2wsh-p2sh"
+                android:tag="P2WSH-P2SH"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="16dp" />
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/checked"
                 android:tint="@color/colorAccent"
-                android:tag="p2sh"
+                android:tag="P2SH"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="16dp" />

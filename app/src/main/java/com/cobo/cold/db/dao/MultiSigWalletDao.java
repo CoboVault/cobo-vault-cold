@@ -40,9 +40,9 @@ public interface MultiSigWalletDao {
     @Update
     int update(MultiSigWalletEntity walletEntity);
 
-    @Query("DELETE FROM multi_sig_wallet WHERE walletId=:id")
-    int delete(long id);
+    @Query("DELETE FROM multi_sig_wallet WHERE walletFingerPrint=:walletFingerPrint")
+    int delete(String walletFingerPrint);
 
-    @Query("SELECT * FROM multi_sig_wallet WHERE walletId=:id")
-    MultiSigWalletEntity loadWallet(long id);
+    @Query("SELECT * FROM multi_sig_wallet WHERE walletFingerPrint=:walletFingerPrint")
+    MultiSigWalletEntity loadWallet(String walletFingerPrint);
 }

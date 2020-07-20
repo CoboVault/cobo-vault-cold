@@ -232,15 +232,31 @@ public class DataRepository {
         return mDb.multiSigWalletDao().add(entity);
     }
 
-    public MultiSigWalletEntity loadMultisigWallet(long walletId) {
-        return mDb.multiSigWalletDao().loadWallet(walletId);
+    public LiveData<List<MultiSigWalletEntity>> loadAllMultiSigWallet() {
+        return mDb.multiSigWalletDao().loadAll();
     }
 
-    public List<MultiSigAddressEntity> loadAddressForWallet(long walletId) {
+    public LiveData<List<MultiSigAddressEntity>> loadAllMultiSigAddress() {
+        return mDb.multiSigAddressDao().loadAll();
+    }
+
+    public MultiSigWalletEntity loadMultisigWallet(String fingerprint) {
+        return mDb.multiSigWalletDao().loadWallet(fingerprint);
+    }
+
+    public List<MultiSigAddressEntity> loadAddressForWalletSync(String walletId) {
+        return mDb.multiSigAddressDao().loadAllMultiSigAddressSync(walletId);
+    }
+    public LiveData<List<MultiSigAddressEntity>> loadAddressForWallet(String walletId) {
         return mDb.multiSigAddressDao().loadAllMultiSigAddress(walletId);
     }
 
+
     public void insertMultisigAddress(List<MultiSigAddressEntity> entities) {
         mDb.multiSigAddressDao().insert(entities);
+    }
+
+    public void updateWallet(MultiSigWalletEntity entity) {
+        mDb.multiSigWalletDao().update(entity);
     }
 }

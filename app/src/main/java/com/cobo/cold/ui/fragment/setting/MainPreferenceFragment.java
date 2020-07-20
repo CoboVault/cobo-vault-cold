@@ -26,6 +26,7 @@ import android.hardware.fingerprint.Fingerprint;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 
@@ -93,6 +94,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
 
     private SwitchPreference switchPreference;
     private SimplePreference versionPreference;
+    private SimplePreference testNetPreference;
 
     private BadgeView patternBadgeView;
     private BadgeView fingerprintBadgeView;
@@ -131,6 +133,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
         if (!FingerprintKit.isHardwareDetected(mActivity)) {
             getPreferenceScreen().removePreference(fingerprintPreference);
         }
+        testNetPreference = findPreference(SETTING_TESTNET);
         updateMenu();
     }
 
@@ -191,12 +194,14 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     }
 
     private void updateMenu() {
-        SimplePreference testNetPreference = findPreference(SETTING_TESTNET);
-        if (testNetPreference != null) {
-            WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
-            if (wallet != WatchWallet.GENERIC && wallet != WatchWallet.ELECTRUM) {
+        WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
+        if (wallet != WatchWallet.GENERIC && wallet != WatchWallet.ELECTRUM) {
+            if (testNetPreference != null) {
                 getPreferenceScreen().removePreference(testNetPreference);
-            } else {
+            }
+        } else {
+            if (testNetPreference != null) {
+                getPreferenceScreen().addPreference(testNetPreference);
                 testNetPreference.setRemindText(Utilities.isMainNet(mActivity) ? "主网" : "测试网");
             }
         }

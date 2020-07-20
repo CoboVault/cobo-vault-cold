@@ -33,7 +33,7 @@ public class GetMasterFingerprintCallable implements Callable<String> {
             final Payload payload = result.getPayload(CONSTANTS.TAGS.MASTER_FINGERPRINT);
 
             if (payload != null) {
-                return payload.toHex();
+                return payload.toHex().toUpperCase();
             }
         } catch (Exception e) {
             e.printStackTrace();

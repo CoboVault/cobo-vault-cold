@@ -269,13 +269,16 @@
         <item>"写入安全芯片…"</item>
     </string-array>
     <string name="export_to_electrum">在 Electrum 创建观察钱包</string>
-    <string name="export_to_electrum_guide"><![CDATA[
-        1. 打开 Electrum，新建钱包 <br>
-        2. 选择“标准钱包” <br>
-        3. 选择“使用主公钥” <br>
-        4. 在输入主公钥页面点击照相机按钮，扫描主公钥二维码（点击下方按钮查看二维码）<br>
-        5. 设置钱包密码 <br>
-        6. 进入观察钱包
+    <string name="export_multisig_wallet_to_electrum_guide"><![CDATA[
+        1. 打开 Electrum，添加新钱包 <br>
+        2. 选择“多重签名钱包” <br>
+        3. 选择“联署人数量”和“需要签名数量” <br><br>
+        <font color="#00cdc3">本钱包为：一共%d位联署人，需要%d签名<font/><br>
+        4. 选择“使用主密钥”<br>
+        5. 在输入主公钥页面点击照相机按钮，扫描各个公钥的二维码（点击下发按钮查看二维码）；添加联署人时，选择“输入联署人的密钥”<br>
+        6. 设置钱包密码<br>
+        7. 进入观察钱包<br>
+        <font color="#808080">请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）<font/>
     ]]></string>
     <string name="export_xpub">查看主公钥二维码</string>
     <string name="export_to_electrum_guide_hint">Electrum 创建指引</string>
@@ -497,5 +500,34 @@
     <string name="select_key_number">选择参与数量</string>
     <string name="select_threshold">选择签名数量</string>
     <string name="select_address_type">选择地址类型</string>
+    <string name="import_multisig_wallet">导入多签钱包</string>
+    <string name="extend_pubkey">扩展公钥</string>
+    <string name="file_name">文件名称:%s</string>
+    <string name="wallet_verification_code"><![CDATA[钱包验证码：<font color="#00cdc3">%s<font>]]></string>
+    <string name="wallet_type">钱包类型：%s</string>
+    <string name="address_type">地址类型：%s</string>
+    <string name="cosigners">参与者:</string>
+    <string name="create_multisig_wallet">创建多签钱包</string>
+    <string name="create_success"><![CDATA[
+    %s <br><br>
+    钱包名称：<br>
+    钱包验证码：<br>
+    <font color="#00cdc3">%s<font/> <br>
+    1. 您可将该多签钱包导出给参与方（参与方需创建/导入该钱包，否则无法对该钱包的交易签名）。<br> <br>
+    2. 参与方导入时，需检查要导入钱包的验证码是否和上方钱包验证码一致，确保一致后再进行导入。<br>
+    ]]>
+    </string>
+    <string name="export_now">立即导出</string>
+    <string name="next_one">查看下一个</string>
+    <string name="prev_one">查看上一个</string>
+    <string name="verify_wallet_hint"><![CDATA[
+    钱包验证码：<br>
+    <font color="#00cdc3">%s<font/> <br>
+    检查上方钱包验证码和导出的钱包验证码是否一致，确保一致后继续导入；若不一致，请检查钱包信息。<br>
+    ]]>
+    </string>
+    <string name="import_success">导入成功</string>
+    <string name="view_xpub_qrcode">查看公钥二维码</string>
+    <string name="multisig_wallet_info_xpub_warning">*以上公钥仅用于生成多签钱包，不会暴露您个人钱包的任何信息\n*请不要将以上公钥信息泄露给非钱包成员（可通过公钥获取钱包地址及指导地址上存有的资产）</string>
 
 </resources>

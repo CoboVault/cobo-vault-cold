@@ -11,21 +11,20 @@ import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.AddAddressBottomSheetBinding;
 import com.cobo.cold.databinding.PreCreateMultisigWalletBinding;
-import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.fragment.main.NumberPickerCallback;
-import com.cobo.cold.viewmodel.MultiSigViewModel;
+import com.cobo.cold.viewmodel.CollectXpubViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
-public class PreCreateMultiSigWalletFragment extends BaseFragment<PreCreateMultisigWalletBinding>
+public class PreCreateMultiSigWalletFragment extends MultiSigBaseFragment<PreCreateMultisigWalletBinding>
         implements NumberPickerCallback {
 
-    private int total = 3;
-    private int threshold = 2;
+    private int total = 2;
+    private int threshold = 1;
     private MultiSig.Account account = MultiSig.Account.P2WSH;
     private State state = State.STATE_NONE;
-    private MultiSigViewModel viewModel;
 
     enum State {
         STATE1,
@@ -40,20 +39,30 @@ public class PreCreateMultiSigWalletFragment extends BaseFragment<PreCreateMulti
 
     @Override
     protected void init(View view) {
+        super.init(view);
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.total.setOnClickListener(v -> selectKeyNumber());
         mBinding.threshold.setOnClickListener(v -> selectCosignerNumber());
         mBinding.addressType.setOnClickListener(v -> selectAddressType());
-        viewModel = ViewModelProviders.of(mActivity).get(MultiSigViewModel.class);
         mBinding.confirm.setOnClickListener(v -> onConfirm());
         updateUI();
     }
 
     private void onConfirm() {
+        CollectXpubViewModel vm = ViewModelProviders.of(mActivity).get(CollectXpubViewModel.class);
+        vm.initXpubInfo(total);
+        List<CollectXpubViewModel.XpubInfo> info = vm.getXpubInfo();
+        for (int i = 1; i <= total; i++) {
+            if (i == 1) {
+                info.add(new CollectXpubViewModel.XpubInfo(1, viewModel.getXfp(), viewModel.getXpub(account)));
+            } else {
+                info.add(new CollectXpubViewModel.XpubInfo(i,null,null));
+            }
+        }
         Bundle data = new Bundle();
         data.putInt("total", total);
         data.putInt("threshold", threshold);
-        data.putString("type", account.getFormat());
+        data.putString("path", account.getPath());
         navigate(R.id.action_to_collect_expubs, data);
     }
 
@@ -67,7 +76,7 @@ public class PreCreateMultiSigWalletFragment extends BaseFragment<PreCreateMulti
 
     private void selectKeyNumber() {
         state = State.STATE1;
-        String[] displayValue = IntStream.range(0, 15)
+        String[] displayValue = IntStream.range(1, 15)
                 .mapToObj(i -> String.valueOf(i + 1))
                 .toArray(String[]::new);
         showSelector(displayValue, getString(R.string.select_key_number));
@@ -89,11 +98,6 @@ public class PreCreateMultiSigWalletFragment extends BaseFragment<PreCreateMulti
         showSelector(displayValue, getString(R.string.select_address_type));
     }
 
-    @Override
-    protected void initData(Bundle savedInstanceState) {
-
-    }
-
     private void showSelector(String[] displayValue, String title) {
         BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
         AddAddressBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
@@ -106,6 +110,7 @@ public class PreCreateMultiSigWalletFragment extends BaseFragment<PreCreateMulti
         binding.picker.setMinValue(0);
         binding.picker.setMaxValue(displayValue.length - 1);
         binding.picker.setOnValueChangedListener((picker, oldVal, newVal) -> binding.setValue(newVal + 1));
+        binding.confirm.setText(R.string.confirm);
         binding.confirm.setOnClickListener(v-> {
             onValueSet(binding.picker.getValue() + 1);
             dialog.dismiss();
@@ -118,7 +123,7 @@ public class PreCreateMultiSigWalletFragment extends BaseFragment<PreCreateMulti
     @Override
     public void onValueSet(int value) {
         if (state == State.STATE1) {
-            total = value;
+            total = value + 1;
         } else if(state == State.STATE2) {
             threshold = value;
         } else if(state == State.STATE3) {

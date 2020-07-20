@@ -163,7 +163,7 @@ public class CoinImpl implements Coin {
     }
 
     private void addOption(V8Array params) {
-        params.push("P2SH_P2WSH");
+        params.push("P2WSH_P2SH");
     }
 
     class SignProviderCallback implements JavaCallback {

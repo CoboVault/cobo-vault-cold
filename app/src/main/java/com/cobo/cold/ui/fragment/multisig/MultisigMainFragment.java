@@ -1,6 +1,7 @@
 package com.cobo.cold.ui.fragment.multisig;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -9,16 +10,35 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.cobo.coinlib.utils.Coins;
+import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
+import com.cobo.cold.databinding.AddAddressBottomSheetBinding;
 import com.cobo.cold.databinding.MultisigBottomSheetBinding;
 import com.cobo.cold.databinding.MultisigMainBinding;
+import com.cobo.cold.db.entity.MultiSigWalletEntity;
 import com.cobo.cold.ui.MainActivity;
-import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.fragment.main.NumberPickerCallback;
+import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-public class MultisigMainFragment extends BaseFragment<MultisigMainBinding> {
+import java.util.Objects;
+import java.util.stream.IntStream;
+
+import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
+
+public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBinding>
+        implements NumberPickerCallback {
     public static final String TAG = "MultisigMainFragment";
+
+    private Fragment[] fragments;
+    private String[] title;
+    private String coinId;
+    private MultiSigWalletEntity wallet;
 
     @Override
     protected int setView() {
@@ -27,13 +47,67 @@ public class MultisigMainFragment extends BaseFragment<MultisigMainBinding> {
 
     @Override
     protected void init(View view) {
+        super.init(view);
+        coinId = Utilities.isMainNet(mActivity) ? Coins.BTC.coinId() : Coins.XTN.coinId();
         mActivity.setSupportActionBar(mBinding.toolbar);
         mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
+        mBinding.createMultisig.setOnClickListener( v ->navigate(R.id.create_multisig_wallet));
+        mBinding.importMultisig.setOnClickListener( v ->navigate(R.id.import_multisig_file_list));
+        mBinding.fab.setOnClickListener(v -> addAddress());
+        viewModel.getCurrentWallet().observe(this, walletEntity -> {
+            wallet = walletEntity;
+            mBinding.walletLabel.setText(walletEntity.getWalletName() + " >");
+            mBinding.walletLabel.setOnClickListener(v -> navigateToManageWallet());
+            title = new String[]{ getString(R.string.tab_my_address), getString(R.string.tab_my_change_address)};
+            initViewPager();
+        });
+    }
+
+    private void navigateToManageWallet() {
+        Bundle data = new Bundle();
+        data.putString("wallet_fingerprint",wallet.getWalletFingerPrint());
+        navigate(R.id.action_to_multisig_wallet, data);
+    }
+
+    private void addAddress() {
+        BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
+        AddAddressBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                R.layout.add_address_bottom_sheet,null,false);
+        String[] displayValue = IntStream.range(0, 9)
+                .mapToObj(i -> String.valueOf(i + 1))
+                .toArray(String[]::new);
+        binding.setValue(1);
+        binding.title.setText(getString(R.string.select_address_num, title[mBinding.tab.getSelectedTabPosition()]));
+        binding.close.setOnClickListener(v -> dialog.dismiss());
+        binding.picker.setValue(0);
+        binding.picker.setDisplayedValues(displayValue);
+        binding.picker.setMinValue(0);
+        binding.picker.setMaxValue(8);
+        binding.picker.setOnValueChangedListener((picker, oldVal, newVal) -> binding.setValue(newVal + 1));
+        binding.confirm.setOnClickListener(v-> {
+            onValueSet(binding.picker.getValue() + 1);
+            dialog.dismiss();
+
+        });
+        dialog.setContentView(binding.getRoot());
+        dialog.show();
     }
 
     @Override
-    protected void initData(Bundle savedInstanceState) {
+    public void onValueSet(int value) {
+        ProgressModalDialog dialog = ProgressModalDialog.newInstance();
+        dialog.show(Objects.requireNonNull(mActivity.getSupportFragmentManager()), "");
+        Handler handler = new Handler();
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            int tabPosition = mBinding.tab.getSelectedTabPosition();
+            viewModel.addAddress(wallet.getWalletFingerPrint(), value, tabPosition);
+            handler.post(() -> viewModel.getObservableAddState().observe(this, complete -> {
+                if (complete) {
+                    handler.postDelayed(dialog::dismiss, 500);
+                }
+            }));
 
+        });
     }
 
     @Override
@@ -47,8 +121,8 @@ public class MultisigMainFragment extends BaseFragment<MultisigMainBinding> {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_scan:
-                //scanQrCode();
-                //break;
+                // scanQrCode();
+                break;
             case R.id.action_sdcard:
                 //showFileList();
             case R.id.action_more:
@@ -60,6 +134,38 @@ public class MultisigMainFragment extends BaseFragment<MultisigMainBinding> {
         return super.onOptionsItemSelected(item);
     }
 
+    private void scanQrCode() {
+
+    }
+
+
+    private void initViewPager() {
+        if (fragments == null) {
+            fragments = new Fragment[title.length];
+            fragments[0] = MultiSigAddressFragment.newInstance(coinId, false, wallet.getWalletFingerPrint());
+            fragments[1] = MultiSigAddressFragment.newInstance(coinId, true, wallet.getWalletFingerPrint());
+        }
+        mBinding.viewpager.setAdapter(new FragmentStatePagerAdapter(getChildFragmentManager(),
+                BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+            @NonNull
+            @Override
+            public Fragment getItem(int position) {
+                return fragments[position];
+            }
+
+            @Override
+            public int getCount() {
+                return title.length;
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return title[position];
+            }
+        });
+        mBinding.tab.setupWithViewPager(mBinding.viewpager);
+    }
+
     private void showBottomSheetMenu() {
         BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
         MultisigBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
@@ -69,15 +175,17 @@ public class MultisigMainFragment extends BaseFragment<MultisigMainBinding> {
             navigate(R.id.export_export_multisig_expub);
         });
         binding.createMultisig.setOnClickListener(v-> {
-            navigate(R.id.export_create_multisig_wallet);
+            navigate(R.id.create_multisig_wallet);
             dialog.dismiss();
         });
 
         binding.importMultisig.setOnClickListener(v-> {
+            navigate(R.id.import_multisig_file_list);
             dialog.dismiss();
         });
 
         binding.manageMultisig.setOnClickListener(v-> {
+            navigate(R.id.manage_multisig_wallet);
             dialog.dismiss();
         });
 

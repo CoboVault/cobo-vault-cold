@@ -40,11 +40,11 @@ public class Coins {
 
     public enum Account{
         P2PKH("M/44'/0'/0'","P2PKH"),
-        P2SH("M/49'/0'/0'","P2WPKH-P2SH_P2WSH"),
+        P2SH("M/49'/0'/0'","P2WPKH-P2WSH_P2SH"),
         SegWit("M/84'/0'/0'","P2WPKH"),
 
         P2PKH_TESTNET("M/44'/1'/0'","P2PKH"),
-        P2SH_TESTNET("M/49'/1'/0'","P2WPKH-P2SH_P2WSH"),
+        P2SH_TESTNET("M/49'/1'/0'","P2WPKH-P2WSH_P2SH"),
         SegWit_TESTNET("M/84'/1'/0'","P2WPKH");
 
         private String path;

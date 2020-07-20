@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "3c130afccfeda61ad5fc9048f15fc47a",
+    "identityHash": "bc6ef4d38cdacbbfdcaee257cb4091aa",
     "entities": [
       {
         "tableName": "coins",
@@ -352,12 +352,12 @@
       },
       {
         "tableName": "multi_sig_wallet",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`walletId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `walletName` TEXT, `threshold` INTEGER NOT NULL, `total` INTEGER NOT NULL, `exPubPath` TEXT, `exPubs` TEXT, `belongTo` TEXT, `network` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`walletFingerPrint` TEXT NOT NULL, `walletName` TEXT, `threshold` INTEGER NOT NULL, `total` INTEGER NOT NULL, `exPubPath` TEXT, `exPubs` TEXT, `belongTo` TEXT, `network` TEXT, PRIMARY KEY(`walletFingerPrint`))",
         "fields": [
           {
-            "fieldPath": "walletId",
-            "columnName": "walletId",
-            "affinity": "INTEGER",
+            "fieldPath": "walletFingerPrint",
+            "columnName": "walletFingerPrint",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -405,25 +405,25 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "walletId"
+            "walletFingerPrint"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [
           {
-            "name": "index_multi_sig_wallet_walletId",
+            "name": "index_multi_sig_wallet_walletFingerPrint",
             "unique": false,
             "columnNames": [
-              "walletId"
+              "walletFingerPrint"
             ],
-            "createSql": "CREATE  INDEX `index_multi_sig_wallet_walletId` ON `${TABLE_NAME}` (`walletId`)"
+            "createSql": "CREATE  INDEX `index_multi_sig_wallet_walletFingerPrint` ON `${TABLE_NAME}` (`walletFingerPrint`)"
           }
         ],
         "foreignKeys": []
       },
       {
         "tableName": "multi_sig_address",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT, `index` INTEGER NOT NULL, `walletId` INTEGER NOT NULL, `path` TEXT, `changeIndex` INTEGER NOT NULL, `name` TEXT, FOREIGN KEY(`walletId`) REFERENCES `multi_sig_wallet`(`walletId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT, `index` INTEGER NOT NULL, `walletFingerPrint` TEXT NOT NULL, `path` TEXT, `changeIndex` INTEGER NOT NULL, `name` TEXT, FOREIGN KEY(`walletFingerPrint`) REFERENCES `multi_sig_wallet`(`walletFingerPrint`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -444,9 +444,9 @@
             "notNull": true
           },
           {
-            "fieldPath": "walletId",
-            "columnName": "walletId",
-            "affinity": "INTEGER",
+            "fieldPath": "walletFingerPrint",
+            "columnName": "walletFingerPrint",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -484,12 +484,12 @@
             "createSql": "CREATE UNIQUE INDEX `index_multi_sig_address_id` ON `${TABLE_NAME}` (`id`)"
           },
           {
-            "name": "index_multi_sig_address_walletId",
+            "name": "index_multi_sig_address_walletFingerPrint",
             "unique": false,
             "columnNames": [
-              "walletId"
+              "walletFingerPrint"
             ],
-            "createSql": "CREATE  INDEX `index_multi_sig_address_walletId` ON `${TABLE_NAME}` (`walletId`)"
+            "createSql": "CREATE  INDEX `index_multi_sig_address_walletFingerPrint` ON `${TABLE_NAME}` (`walletFingerPrint`)"
           }
         ],
         "foreignKeys": [
@@ -498,10 +498,10 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "walletId"
+              "walletFingerPrint"
             ],
             "referencedColumns": [
-              "walletId"
+              "walletFingerPrint"
             ]
           }
         ]
@@ -510,7 +510,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3c130afccfeda61ad5fc9048f15fc47a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bc6ef4d38cdacbbfdcaee257cb4091aa')"
     ]
   }
 }

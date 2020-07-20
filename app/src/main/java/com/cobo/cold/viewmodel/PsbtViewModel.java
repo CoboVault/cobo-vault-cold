@@ -83,8 +83,8 @@ public class PsbtViewModel extends AndroidViewModel {
                 JSONObject item = bip32Derivation.getJSONObject(j);
                 String hdPath = item.getString("path");
                 String fingerprint = item.getString("masterFingerprint");
-                if ((fingerprint.equals(masterKeyFingerprint)
-                        || reverseHex(fingerprint).equals(masterKeyFingerprint))
+                if ((fingerprint.equalsIgnoreCase(masterKeyFingerprint)
+                        || reverseHex(fingerprint).equalsIgnoreCase(masterKeyFingerprint))
                     && hdPath.toUpperCase().startsWith(account.getPath())) {
                     utxo.put("publicKey", item.getString("pubkey"));
                     utxo.put("value", psbtInput.optInt("value"));
@@ -100,7 +100,7 @@ public class PsbtViewModel extends AndroidViewModel {
 
     }
 
-    private static String reverseHex(String hex) {
+    static String reverseHex(String hex) {
         byte[] data = Hex.decode(hex);
         for(int i = 0; i < data.length / 2; i++) {
             byte temp = data[i];

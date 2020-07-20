@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2020 Cobo
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -16,8 +15,8 @@
   ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -26,7 +25,7 @@
             type="com.cobo.cold.viewmodel.AboutViewModel" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -44,50 +43,110 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textSize="15sp"
+                android:text=""
                 android:textColor="@android:color/white"
-                android:text="" />
+                android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
 
-        <include layout="@layout/divider" />
+        <include
+            android:id="@+id/divider"
+            layout="@layout/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/toolbar" />
+
+        <TextView
+            android:id="@+id/wallet_label"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/divider"
+            android:layout_marginHorizontal="16dp"
+            android:background="?selectableItemBackground"
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:textColor="@color/colorAccent" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/wallet_label"
+            app:tabIndicatorColor="@color/colorAccent"
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorHeight="2dp"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextAppearance="@style/TabTextAppearance"
+            app:tabTextColor="@color/white40" />
+
+        <include
+            layout="@layout/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/tab" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tab" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/plus" />
 
         <LinearLayout
             android:id="@+id/empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:padding="16dp">
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:textColor="@color/white40"
-                android:text="@string/no_multisig_wallet"/>
+                android:text="@string/no_multisig_wallet"
+                android:textColor="@color/white40" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/create_multisig_wallet_hint"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
+
             <Button
-                android:layout_width="match_parent"
+                android:id="@+id/create_multisig"
                 style="@style/AcceptButton"
-                android:text="创建多签钱包"/>
+                android:layout_width="match_parent"
+                android:text="创建多签钱包" />
+
             <TextView
+                android:id="@+id/import_multisig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
                 android:padding="10dp"
                 android:text="导入多签钱包"
-                android:background="?selectableItemBackground"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="@color/colorAccent" />
 
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </layout>

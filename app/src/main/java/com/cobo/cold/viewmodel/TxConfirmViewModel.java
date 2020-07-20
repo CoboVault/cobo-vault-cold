@@ -245,7 +245,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 JSONObject adaptTx = PsbtViewModel.adapt(psbtTx);
                 if (adaptTx.getJSONArray("inputs").length() == 0) {
                     parseTxException.postValue(
-                            new InvalidTransactionException("master fingerprint not match, or nothing can be sign"));
+                            new InvalidTransactionException("master xfp not match, or nothing can be sign"));
                 }
                 JSONObject signTx = parsePsbtTx(adaptTx);
                 parseTxData(signTx.toString());

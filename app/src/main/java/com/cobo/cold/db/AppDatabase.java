@@ -115,7 +115,7 @@ public abstract class AppDatabase extends RoomDatabase {
             database.beginTransaction();
             try {
                 database.execSQL("CREATE TABLE IF NOT EXISTS `multi_sig_wallet` " +
-                        "(`walletId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "(`walletFingerPrint` TEXT PRIMARY KEY NOT NULL, " +
                         "`walletName` TEXT, " +
                         "`threshold` INTEGER NOT NULL, " +
                         "`total` INTEGER NOT NULL, " +
@@ -123,18 +123,18 @@ public abstract class AppDatabase extends RoomDatabase {
                         "`exPubs` TEXT, " +
                         "`belongTo` TEXT, " +
                         "`network` TEXT)");
-                database.execSQL("CREATE INDEX index_multi_sig_wallet_walletId ON multi_sig_wallet (walletId)");
+                database.execSQL("CREATE INDEX index_multi_sig_wallet_walletFingerPrint ON multi_sig_wallet (walletFingerPrint)");
                 database.execSQL("CREATE TABLE IF NOT EXISTS `multi_sig_address` " +
                         "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                         "`address` TEXT, " +
                         "`index` INTEGER, " +
-                        "`walletId` INTEGER, " +
+                        "`walletFingerPrint` TEXT NOT NULL, " +
                         "`path` TEXT, " +
                         "`changeIndex` INTEGER, " +
                         "`name` TEXT, " +
-                        "FOREIGN KEY(`walletId`) REFERENCES `multi_sig_wallet`(`walletId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+                        "FOREIGN KEY(`walletFingerPrint`) REFERENCES `multi_sig_wallet`(`walletFingerPrint`) ON UPDATE NO ACTION ON DELETE CASCADE )");
                 database.execSQL("CREATE UNIQUE INDEX index_multi_sig_address_id ON multi_sig_address (id)");
-                database.execSQL("CREATE INDEX index_multi_sig_address_walletId ON multi_sig_address (walletId)");
+                database.execSQL("CREATE INDEX index_multi_sig_address_walletFingerPrint ON multi_sig_address (walletFingerPrint)");
                 database.setTransactionSuccessful();
             } finally {
                 database.endTransaction();

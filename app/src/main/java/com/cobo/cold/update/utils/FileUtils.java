@@ -40,7 +40,7 @@ public class FileUtils {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                builder.append(line);
+                builder.append(line).append("\n");
             }
         } catch (IOException e) {
             e.printStackTrace();

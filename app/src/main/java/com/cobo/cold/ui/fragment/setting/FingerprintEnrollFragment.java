@@ -163,7 +163,7 @@ public class FingerprintEnrollFragment extends BaseFragment<FingerprintEnrollBin
             keyStore.load(null);
             PrivateKey key = (PrivateKey) keyStore.getKey(SECP256R1,null);
 
-            //we use single key for multi fingerprint, every time enroll new fingerprint,
+            //we use single key for multi xfp, every time enroll new xfp,
             // check if the key is valid
             if (key == null) {
                 KeyStoreUtil.generateSecp256r1InKeyStore(SECP256R1,true);

@@ -59,6 +59,13 @@
         <action
             android:id="@+id/action_QRCodeScan_to_result"
             app:destination="@id/webAuthResultFragment" />
+
+        <action android:id="@id/import_multisig_wallet"
+            app:destination="@id/importWalletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/patternLockFragment"
@@ -345,8 +352,37 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
-        <action android:id="@+id/export_create_multisig_wallet"
+        <action android:id="@+id/create_multisig_wallet"
             app:destination="@id/PreCreateMultiSigWalletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@+id/import_multisig_file_list"
+            app:destination="@id/importMultisigFileList"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action android:id="@+id/manage_multisig_wallet"
+            app:destination="@id/manageWalletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@id/action_to_receiveCoinFragment"
+            app:destination="@id/receiveCoinFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_to_multisig_wallet"
+            app:destination="@id/walletFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -359,13 +395,50 @@
         android:name="com.cobo.cold.ui.fragment.multisig.ExportMultisigExpubFragment"
         android:label="ExportMultisigExpubFragment"/>
 
+    <fragment
+        android:id="@+id/walletFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.WalletFragment"
+        android:label="WalletFragment">
+        <action
+            android:id="@id/action_to_txList"
+            app:destination="@id/txListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_export_wallet_to_cosigner"
+            app:destination="@id/exportWalletToCosignerFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_export_wallet_to_electrum"
+            app:destination="@id/exportWalletToElectrum"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_to_multisig_wallet_info"
+            app:destination="@id/multisigWalletInfoFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
 
     <fragment
-        android:id="@+id/PreCreateMultiSigWalletFragment"
-        android:name="com.cobo.cold.ui.fragment.multisig.PreCreateMultiSigWalletFragment"
-        android:label="PreCreateMultiSigWalletFragment">
-        <action android:id="@+id/action_to_collect_expubs"
-            app:destination="@id/collcetExpubFragment"
+        android:id="@+id/exportWalletToElectrum"
+        android:name="com.cobo.cold.ui.fragment.multisig.ExportWalletToElectrum"
+        android:label="ExportWalletToElectrum">
+        <action
+            android:id="@+id/action_to_export_multisig_xpub_to_el"
+            app:destination="@id/exportXpubToElectrumFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -374,9 +447,87 @@
     </fragment>
 
     <fragment
-        android:id="@+id/collcetExpubFragment"
-        android:name="com.cobo.cold.ui.fragment.multisig.CollcetExpubFragment"
-        android:label="CollcetExpubFragment">
+        android:id="@+id/exportXpubToElectrumFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.ExportXpubToElectrumFragment"
+        android:label="ExportXpubToElectrumFragment"/>
+
+    <fragment
+        android:id="@+id/multisigWalletInfoFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.MultisigWalletInfoFragment"
+        android:label="MultisigWalletInfoFragment"/>
+
+    <fragment
+        android:id="@+id/exportWalletToCosignerFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.ExportWalletToCosignerFragment"
+        android:label="ExportWalletToCosignerFragment"/>
+
+    <fragment
+        android:id="@+id/manageWalletFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.ManageWalletFragment"
+        android:label="ManageWalletFragment"/>
+
+    <fragment
+        android:id="@+id/importMultisigFileList"
+        android:name="com.cobo.cold.ui.fragment.multisig.ImportMultisigFileList"
+        android:label="ImportMultisigFileList">
+        <action android:id="@+id/import_multisig_wallet"
+            app:destination="@id/importWalletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action android:id="@+id/action_scan_multisig_wallet"
+            app:destination="@id/QRCodeScanFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/importWalletFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.ImportWalletFragment"
+        android:label="ImportWalletFragment">
+        <action android:id="@id/action_export_wallet_to_electrum"
+            app:destination="@id/exportWalletToElectrum"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/PreCreateMultiSigWalletFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.PreCreateMultiSigWalletFragment"
+        android:label="PreCreateMultiSigWalletFragment">
+        <action android:id="@+id/action_to_collect_expubs"
+            app:destination="@id/collectExpubFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/collectExpubFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.CollectExpubFragment"
+        android:label="CollectExpubFragment">
+        <action
+            android:id="@+id/scan_xpub_info"
+            app:destination="@id/QRCodeScanFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_export_wallet_to_cosigner"
+            app:destination="@id/exportWalletToCosignerFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
 
     </fragment>
     <fragment
