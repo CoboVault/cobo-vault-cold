@@ -110,22 +110,31 @@
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:layout_below="@id/toolbar"
             android:padding="16dp"
             android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
                 android:text="@string/no_multisig_wallet"
-                android:textColor="@color/white40" />
+                android:textColor="@color/white"
+                android:layout_gravity="start"
+                android:textStyle="bold"/>
 
-            <TextView
+            <com.cobo.cold.ui.views.SpanedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/create_multisig_wallet_hint"
                 android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）"
+                android:textColor="@color/white40"
+                android:layout_gravity="start"/>
 
             <Space
                 android:layout_width="match_parent"

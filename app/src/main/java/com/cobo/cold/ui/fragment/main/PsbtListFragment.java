@@ -53,6 +53,7 @@ public class PsbtListFragment extends BaseFragment<FileListBinding>
     private PsbtViewModel viewModel;
     private TxnAdapter adapter;
     private AtomicBoolean showEmpty;
+    private boolean multisig;
 
     @Override
     protected int setView() {
@@ -61,6 +62,10 @@ public class PsbtListFragment extends BaseFragment<FileListBinding>
 
     @Override
     protected void init(View view) {
+
+        if (getArguments() != null) {
+            multisig = getArguments().getBoolean("multisig");
+        }
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         viewModel = ViewModelProviders.of(mActivity).get(PsbtViewModel.class);
         adapter = new TxnAdapter(mActivity, this);
@@ -119,6 +124,7 @@ public class PsbtListFragment extends BaseFragment<FileListBinding>
             if (psbtBase64 != null) {
                 Bundle bundle = new Bundle();
                 bundle.putString("psbt_base64", psbtBase64);
+                bundle.putBoolean("multisig",multisig);
                 navigate(R.id.action_to_psbtTxConfirmFragment, bundle);
                 return;
             }

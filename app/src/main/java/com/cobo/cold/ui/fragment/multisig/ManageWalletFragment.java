@@ -1,13 +1,11 @@
 package com.cobo.cold.ui.fragment.multisig;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ManageWalletBinding;
 import com.cobo.cold.databinding.MultisigWalletItemBinding;
-import com.cobo.cold.db.entity.MultiSigAddressEntity;
 import com.cobo.cold.db.entity.MultiSigWalletEntity;
 import com.cobo.cold.ui.common.BaseBindingAdapter;
 

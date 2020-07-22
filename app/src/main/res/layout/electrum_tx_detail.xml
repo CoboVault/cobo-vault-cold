@@ -180,6 +180,41 @@
                 android:layout_alignParentBottom="true" />
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/tx_sign_status"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/sign_status"
+                android:layout_centerVertical="true"
+                android:textColor="@color/white40"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/sign_status"
+                android:layout_width="184dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:text="已部分签名(1/2)" />
+
+            <include
+                layout="@layout/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true" />
+        </RelativeLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/from_list"
             android:layout_width="match_parent"

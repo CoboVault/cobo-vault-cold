@@ -19,8 +19,10 @@ package com.cobo.coinlib.coins.BTC;
 
 import org.json.JSONArray;
 
+import java.util.List;
+
 public interface UtxoTx {
-    ChangeAddressInfo getChangeAddressInfo();
+    List<ChangeAddressInfo> getChangeAddressInfo();
 
     JSONArray getInputs();
     JSONArray getOutputs();

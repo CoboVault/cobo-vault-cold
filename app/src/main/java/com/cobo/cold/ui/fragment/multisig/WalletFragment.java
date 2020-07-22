@@ -26,6 +26,7 @@ public class WalletFragment extends MultiSigBaseFragment<MultisigWalletBinding>
     public void onClick(int id) {
         Bundle data = getArguments();
         Objects.requireNonNull(data).putBoolean("setup",false);
+        data.putBoolean("multisig",true);
         navigate(id, data);
     }
 

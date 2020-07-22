@@ -46,9 +46,7 @@ public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportW
             mBinding.exportToElectrum.setVisibility(View.GONE);
         }
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
-        mBinding.verifyCode.setText(getString(R.string.wallet_verification_code, walletFingerprint));
         mBinding.qrcodeLayout.hint.setVisibility(View.GONE);
-
         viewModel.exportWalletToCosigner(walletFingerprint).observe(this, s -> {
             walletFileContent = s;
             mBinding.qrcodeLayout.qrcode.setEncodingScheme(DynamicQrCodeView.EncodingScheme.Bc32);
@@ -56,13 +54,16 @@ public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportW
         });
 
         viewModel.getWalletEntity(walletFingerprint).observe(this,
-                w -> walletEntity = w);
+                w -> {
+                    walletEntity = w;
+                    mBinding.verifyCode.setText(getString(R.string.wallet_verification_code, w.getVerifyCode()));
+                });
         mBinding.exportToSdcard.setOnClickListener(v -> handleExportWallet());
 
     }
 
     private void handleExportWallet() {
-        String fileName = String.format("export-CoboVault-%dof%d.txt", walletEntity.getThreshold(),walletEntity.getTotal());
+        String fileName = String.format("export-CoboVault-%dof%d.txt", walletEntity.getThreshold(), walletEntity.getTotal());
         ModalDialog dialog = new ModalDialog();
         ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.modal_with_two_button,

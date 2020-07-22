@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,15 +34,18 @@ import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.ui.common.FilterableBaseBindingAdapter;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.viewmodel.CoinListViewModel;
+import com.cobo.cold.viewmodel.MultiSigViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
 import static com.cobo.cold.ui.fragment.main.TxFragment.KEY_TX_ID;
 import static com.cobo.cold.viewmodel.WatchWallet.ELECTRUM_SIGN_ID;
+import static com.cobo.cold.viewmodel.WatchWallet.PSBT_MULTISIG_SIGN_ID;
 import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
 
 public class TxListFragment extends BaseFragment<TxListBinding> {
@@ -50,6 +54,8 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
     private TxCallback txCallback;
     private String query;
     private Comparator<TxEntity> txEntityComparator;
+    private boolean multisig;
+    private String walletFingerprint;
 
     @Override
     protected int setView() {
@@ -59,47 +65,59 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
     @Override
     protected void init(View view) {
         Bundle data = Objects.requireNonNull(getArguments());
+        multisig = data.getBoolean("multisig");
+        if (multisig) {
+            walletFingerprint = data.getString("wallet_fingerprint");
+        }
         CoinListViewModel viewModel = ViewModelProviders.of(mActivity)
                 .get(CoinListViewModel.class);
         adapter = new TxAdapter(mActivity);
         mBinding.list.setAdapter(adapter);
-        mBinding.toolbar.setNavigationOnClickListener(v->navigateUp());
+        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         txCallback = tx -> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_TX_ID, tx.getTxId());
             if (getWatchWallet(mActivity).supportPsbt()) {
                 navigate(R.id.action_to_psbtSignedTxFragment, bundle);
-            } else if(ELECTRUM_SIGN_ID.equals(tx.getSignId())){
+            } else if (ELECTRUM_SIGN_ID.equals(tx.getSignId()) || PSBT_MULTISIG_SIGN_ID.equals(tx.getSignId())) {
                 navigate(R.id.action_to_electrumTxFragment, bundle);
-            }else {
+            } else {
                 navigate(R.id.action_to_txFragment, bundle);
             }
         };
 
-        viewModel.loadTxs(data.getString(KEY_COIN_ID))
-                .observe(this, txEntities -> {
-                    txEntityComparator = (o1, o2) -> {
-                        if (o1.getSignId().equals(o2.getSignId())) {
-                            return (int) (o2.getTimeStamp() - o1.getTimeStamp());
-                        } else if (ELECTRUM_SIGN_ID.equals(o1.getSignId())) {
-                            return -1;
-                        } else {
-                            return 1;
-                        }
-                    };
-                    txEntities = txEntities.stream()
-                            .filter(this::shouldShow)
-                            .filter(this::filterByMode)
-                            .sorted(txEntityComparator)
-                            .collect(Collectors.toList());
-
-                    if (txEntities.isEmpty()) {
-                        showEmpty(true);
+        LiveData<List<TxEntity>> txs;
+        if (multisig) {
+            MultiSigViewModel vm = ViewModelProviders.of(this).get(MultiSigViewModel.class);
+            txs = vm.loadTxs(walletFingerprint);
+        } else {
+            txs = viewModel.loadTxs(data.getString(KEY_COIN_ID));
+        }
+        txs.observe(this, txEntities -> {
+            if (!multisig) {
+                txEntityComparator = (o1, o2) -> {
+                    if (o1.getSignId().equals(o2.getSignId())) {
+                        return (int) (o2.getTimeStamp() - o1.getTimeStamp());
+                    } else if (ELECTRUM_SIGN_ID.equals(o1.getSignId())) {
+                        return -1;
                     } else {
-                        showEmpty(false);
-                        adapter.setItems(txEntities);
+                        return 1;
                     }
-                });
+                };
+                txEntities = txEntities.stream()
+                        .filter(this::shouldShow)
+                        .filter(this::filterByMode)
+                        .sorted(txEntityComparator)
+                        .collect(Collectors.toList());
+            }
+
+            if (txEntities.isEmpty()) {
+                showEmpty(true);
+            } else {
+                showEmpty(false);
+                adapter.setItems(txEntities);
+            }
+        });
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {

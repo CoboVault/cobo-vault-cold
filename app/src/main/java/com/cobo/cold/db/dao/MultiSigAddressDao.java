@@ -18,6 +18,9 @@ public interface MultiSigAddressDao {
     @Query("SELECT * FROM multi_sig_address where walletFingerPrint=:walletFingerPrint")
     LiveData<List<MultiSigAddressEntity>> loadAllMultiSigAddress(String walletFingerPrint);
 
+    @Query("SELECT * FROM multi_sig_address where walletFingerPrint=:walletFingerPrint AND path=:path")
+    MultiSigAddressEntity loadAddressByPath(String walletFingerPrint, String path);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<MultiSigAddressEntity> addressEntities);
 

@@ -39,6 +39,8 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
     private String[] title;
     private String coinId;
     private MultiSigWalletEntity wallet;
+    private boolean isEmpty;
+    private Menu mMenu;
 
     @Override
     protected int setView() {
@@ -51,15 +53,27 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
         coinId = Utilities.isMainNet(mActivity) ? Coins.BTC.coinId() : Coins.XTN.coinId();
         mActivity.setSupportActionBar(mBinding.toolbar);
         mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
-        mBinding.createMultisig.setOnClickListener( v ->navigate(R.id.create_multisig_wallet));
-        mBinding.importMultisig.setOnClickListener( v ->navigate(R.id.import_multisig_file_list));
         mBinding.fab.setOnClickListener(v -> addAddress());
-        viewModel.getCurrentWallet().observe(this, walletEntity -> {
-            wallet = walletEntity;
-            mBinding.walletLabel.setText(walletEntity.getWalletName() + " >");
-            mBinding.walletLabel.setOnClickListener(v -> navigateToManageWallet());
-            title = new String[]{ getString(R.string.tab_my_address), getString(R.string.tab_my_change_address)};
-            initViewPager();
+        viewModel.getAllMultiSigWallet().observe(this, walletEntities -> {
+            if (!walletEntities.isEmpty()) {
+                wallet = walletEntities.get(0);
+                mBinding.walletLabel.setText(wallet.getWalletName() + " >");
+                mBinding.walletLabel.setOnClickListener(v -> navigateToManageWallet());
+                title = new String[]{getString(R.string.tab_my_address), getString(R.string.tab_my_change_address)};
+                initViewPager();
+            } else {
+                isEmpty = true;
+                mBinding.empty.setVisibility(View.VISIBLE);
+                mBinding.fab.hide();
+                mBinding.createMultisig.setOnClickListener( v ->navigate(R.id.create_multisig_wallet));
+                mBinding.importMultisig.setOnClickListener( v ->navigate(R.id.import_multisig_file_list));
+                if (mMenu != null) {
+                    MenuItem sdcard = mMenu.findItem(R.id.action_sdcard);
+                    if (sdcard != null) sdcard.setVisible(false);
+                    MenuItem scan = mMenu.findItem(R.id.action_scan);
+                    if (scan != null) scan.setVisible(false);
+                }
+            }
         });
     }
 
@@ -112,7 +126,12 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        mMenu = menu;
         inflater.inflate(R.menu.asset_hasmore, menu);
+        if (isEmpty) {
+            menu.findItem(R.id.action_sdcard).setVisible(false);
+            menu.findItem(R.id.action_scan).setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -121,13 +140,16 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
         int id = item.getItemId();
         switch (id) {
             case R.id.action_scan:
-                // scanQrCode();
+                scanQrCode();
                 break;
             case R.id.action_sdcard:
-                //showFileList();
+                Bundle data = new Bundle();
+                data.putBoolean("multisig",true);
+                navigate(R.id.action_to_psbtListFragment, data);
+                break;
             case R.id.action_more:
                 showBottomSheetMenu();
-                //break;
+                break;
             default:
                 break;
         }

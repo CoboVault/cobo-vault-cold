@@ -272,7 +272,7 @@
     <string name="export_multisig_wallet_to_electrum_guide"><![CDATA[
         1. 打开 Electrum，添加新钱包 <br>
         2. 选择“多重签名钱包” <br>
-        3. 选择“联署人数量”和“需要签名数量” <br><br>
+        3. 选择“联署人数量”和“需要签名数量” <br>
         <font color="#00cdc3">本钱包为：一共%d位联署人，需要%d签名<font/><br>
         4. 选择“使用主密钥”<br>
         5. 在输入主公钥页面点击照相机按钮，扫描各个公钥的二维码（点击下发按钮查看二维码）；添加联署人时，选择“输入联署人的密钥”<br>
@@ -492,7 +492,13 @@
     <string name="select_network">选择区块链网络</string>
     <string name="test_net">测试网</string>
     <string name="no_multisig_wallet">暂无多签钱包</string>
-    <string name="create_multisig_wallet_hint">您需先创建或导入多签钱包，才能对该钱包交易签名。\n\n 多签钱包创建指引：\n 1. 您需先收集参与者的扩展公钥，导出扩展公钥点击右上方【更多—查看/导出扩展公钥】，扩展公钥可展示为二维码，或保存为文件；若为文件格式，您需将收集到的所有扩展公钥文件保存到一张TF卡内。\n 2. 点击下方“创建多签钱包”按钮，确定参与者和签名的数量及地址格式后，填入收集到的扩展公钥信息，填入时支持扫码和读文件 \n\n创建和导入多签钱包完整图文教程，请访问：https://XXX</string>
+    <string name="create_multisig_wallet_hint"><![CDATA[
+    您需先创建或导入多签钱包，才能对该钱包交易签名。<br><br>
+     多签钱包创建指引：<br>
+     1. 您需先收集参与者的扩展公钥，导出扩展公钥点击右上方【更多—查看/导出扩展公钥】<br>
+     2. 扩展公钥可展示为二维码或保存为文件；若为文件格式，您需<font color="#00cdc3">将收集到的所有扩展公钥文件保存到一张TF卡内<font/>。<br>
+     3. 点击下方“创建多签钱包”按钮，确定参与者和签名的数量及地址格式后，填入收集到的扩展公钥，填入时支持扫码和读文件。<br>
+    ]]></string>
     <string name="export_all">导出全部</string>
     <string name="multi_sig_account_legacy">传统</string>
     <string name="multi_sig_account_p2sh">隔离见证兼容</string>
@@ -529,5 +535,27 @@
     <string name="import_success">导入成功</string>
     <string name="view_xpub_qrcode">查看公钥二维码</string>
     <string name="multisig_wallet_info_xpub_warning">*以上公钥仅用于生成多签钱包，不会暴露您个人钱包的任何信息\n*请不要将以上公钥信息泄露给非钱包成员（可通过公钥获取钱包地址及指导地址上存有的资产）</string>
+    <string name="sign_status">交易状态</string>
+    <string name="unsigned">未签名</string>
+    <string name="partial_signed">已被部分签名</string>
+    <string name="signed">已签名</string>
+    <string name="collect_xpub_hint"><![CDATA[
+    请在下列文本框中填入钱包参与者的扩展公钥，<font color="#00cdc3">填入时请检查扩展公钥<font/>，确保填入的信息和参与者导出时的信息一致。<img src="info"><br> 您的扩展公钥已自动填入1号，多签钱包的创建结果与填入扩展公钥的顺序无关
+    ]]>
+    </string>
+    <string name="check_input_pub_key">请检查填入的扩展公钥</string>
+    <string name="check_pub_key_hint"><![CDATA[接下来您需要填入参与者的扩展公钥，<font color="#00cdc3">填入时请检查扩展公钥<font/>，确保填入的信息和参与者导出时的信息一致。]]></string>
+    <string name="no_pub_file_found">未检测到扩展公钥文件</string>
+    <string name="wrong_xpub_format_hint">多签钱包的地址类型为“%s”，您填入的扩展公钥为“%s”，请切换扩展公钥类型。</string>
+    <string name="wrong_xpub_format">扩展公钥格式错误</string>
+    <string name="invalid_xpub_file">非法数据</string>
+    <string name="invalid_xpub_file_hint"><![CDATA[
+        请填入参与者的扩展公钥；<br><br>
+        导出扩展公钥指引：<br>
+        参与者若为 <font color="#00cdc3">Cobo 金库<font/>，请前往【Cobo 金库—菜单--多签钱包--更多--查看/导出扩展公钥】，可扫描、或导出扩展公钥为文件。<br>
+        参与者若为 <font color="#00cdc3">Coldcard<font/>，请前往【ColdCard—Setting—Multisig Wallets— Export XPUB】，导出扩展公钥为文件。
+    ]]></string>
+    <string name="duplicate_xpub_title">重复的扩展公钥</string>
+    <string name="duplicate_xpub_hint">该扩展公钥您已填入，请填入其他参与者的扩展公钥</string>
 
 </resources>

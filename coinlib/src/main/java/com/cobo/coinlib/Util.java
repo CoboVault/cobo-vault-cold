@@ -63,6 +63,12 @@ public class Util {
         return HDKeyDerivation.deriveChildKey(change, addressIndex.getValue()).getPublicKeyAsHex();
     }
 
+    public static String getPublicKeyHex(String accountXpub, int changeIndex, int index) {
+        DeterministicKey account = DeterministicKey.deserializeB58(accountXpub, MainNetParams.get());
+        DeterministicKey change = HDKeyDerivation.deriveChildKey(account, changeIndex);
+        return HDKeyDerivation.deriveChildKey(change, index).getPublicKeyAsHex();
+    }
+
     public static String getPublicKeyHex(String exPub) {
         DeterministicKey key = DeterministicKey.deserializeB58(exPub, MainNetParams.get());
         return key.getPublicKeyAsHex();
@@ -191,4 +197,20 @@ public class Util {
         }
     }
 
+    public static String getExpubFingerprint(String expub) {
+        DeterministicKey key = DeterministicKey.deserializeB58(
+                ExtendPubkeyFormat.convertExtendPubkey(expub, ExtendPubkeyFormat.xpub),
+                MainNetParams.get());
+        return Hex.toHexString(Arrays.copyOfRange(key.getIdentifier(), 0, 4));
+    }
+
+    public static String reverseHex(String hex) {
+        byte[] data = org.spongycastle.util.encoders.Hex.decode(hex);
+        for(int i = 0; i < data.length / 2; i++) {
+            byte temp = data[i];
+            data[i] = data[data.length - i - 1];
+            data[data.length - i - 1] = temp;
+        }
+        return org.spongycastle.util.encoders.Hex.toHexString(data);
+    }
 }

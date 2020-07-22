@@ -39,6 +39,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
+import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
 import static com.cobo.cold.viewmodel.MultiSigViewModel.convertXpub;
 
 public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBinding>
@@ -65,9 +67,16 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
         initializeData();
         mBinding.walletType.setText(getString(R.string.wallet_type, threshold + "-" + total));
         mBinding.addressType.setText(getString(R.string.address_type, getAddressTypeString(account)));
+        mBinding.hint.setOnClickListener( v -> showHint());
         adapter = new Adapter();
         mBinding.list.setAdapter(adapter);
         mBinding.create.setOnClickListener(v -> createWallet());
+    }
+
+    private void showHint() {
+        ModalDialog.showCommonModal(mActivity,getString(R.string.check_input_pub_key),
+                getString(R.string.check_pub_key_hint),
+                getString(R.string.know),null);
     }
 
     private void createWallet() {
@@ -125,6 +134,8 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
         info.xpub = null;
         info.xfp = null;
         adapter.notifyItemChanged(info.index - 1);
+        mBinding.create.setEnabled(data.stream()
+                .allMatch(i -> !TextUtils.isEmpty(i.xpub) && !TextUtils.isEmpty(i.xfp)));
     }
 
     @Override
@@ -146,6 +157,9 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    ModalDialog.showCommonModal(mActivity, "",
+                            getString(R.string.unsupported_qrcode),
+                            getString(R.string.know),null);
                 }
             }
         });
@@ -157,8 +171,8 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
     private void updateXpubInfo(CollectXpubViewModel.XpubInfo info, String xfp, String xpub) {
         for (CollectXpubViewModel.XpubInfo xpubInfo : data) {
             if (xpub.equals(xpubInfo.xpub)) {
-                ModalDialog.showCommonModal(mActivity, "重复的扩展公钥",
-                        "该扩展公钥您已填入，请填入其他参与者的扩展公钥",
+                ModalDialog.showCommonModal(mActivity, getString(R.string.duplicate_xpub_title),
+                        getString(R.string.duplicate_xpub_hint),
                         getString(R.string.know), null);
                 return;
             }
@@ -167,11 +181,24 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
         info.xfp = xfp;
         data.set(info.index - 1, info);
         adapter.notifyItemChanged(info.index - 1);
+        mBinding.create.setEnabled(data.stream()
+                .allMatch(i -> !TextUtils.isEmpty(i.xpub) && !TextUtils.isEmpty(i.xfp)));
     }
 
     @Override
     public void onClickSdcard(CollectXpubViewModel.XpubInfo info) {
-        collectXpubViewModel.loadXpubFile().observe(this, files -> showXpubList(files, info));
+        if (!hasSdcard(mActivity)) {
+            showNoSdcardModal(mActivity);
+        } else {
+            collectXpubViewModel.loadXpubFile().observe(this, files -> {
+                if (files.size() == 0) {
+                    ModalDialog.showCommonModal(mActivity, getString(R.string.no_pub_file_found),
+                            getString(R.string.no_pub_file_found),
+                            getString(R.string.know), null);
+                }
+                showXpubList(files, info);
+            });
+        }
     }
 
     private void showXpubList(List<File> files, CollectXpubViewModel.XpubInfo info) {
@@ -202,9 +229,19 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
             } else {
                 xpub = obj.getString(account.getFormat().toLowerCase().replace("-", "_"));
             }
+            if (!xpub.startsWith(account.getXpubPrefix())) {
+                ModalDialog.showCommonModal(mActivity,getString(R.string.wrong_xpub_format),
+                        getString(R.string.wrong_xpub_format_hint,getAddressTypeString(account),
+                                getAddressTypeString(MultiSig.Account.ofPrefix(xpub.substring(0,4)))),
+                        getString(R.string.know),null);
+                return;
+            }
             updateXpubInfo(info, obj.getString("xfp"), xpub);
         } catch (JSONException e) {
             e.printStackTrace();
+            ModalDialog.showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
+                    getString(R.string.invalid_xpub_file_hint),
+                    getString(R.string.know),null);
         }
     }
 

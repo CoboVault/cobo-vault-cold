@@ -114,23 +114,25 @@ public abstract class AppDatabase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             database.beginTransaction();
             try {
+                database.execSQL("ALTER TABLE txs ADD COLUMN signStatus TEXT");
                 database.execSQL("CREATE TABLE IF NOT EXISTS `multi_sig_wallet` " +
                         "(`walletFingerPrint` TEXT PRIMARY KEY NOT NULL, " +
                         "`walletName` TEXT, " +
                         "`threshold` INTEGER NOT NULL, " +
                         "`total` INTEGER NOT NULL, " +
-                        "`exPubPath` TEXT, " +
-                        "`exPubs` TEXT, " +
-                        "`belongTo` TEXT, " +
-                        "`network` TEXT)");
+                        "`exPubPath` TEXT NOT NULL, " +
+                        "`exPubs` TEXT NOT NULL , " +
+                        "`belongTo` TEXT NOT NULL , " +
+                        "`verifyCode` TEXT NOT NULL , " +
+                        "`network` TEXT NOT NULL)");
                 database.execSQL("CREATE INDEX index_multi_sig_wallet_walletFingerPrint ON multi_sig_wallet (walletFingerPrint)");
                 database.execSQL("CREATE TABLE IF NOT EXISTS `multi_sig_address` " +
                         "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-                        "`address` TEXT, " +
-                        "`index` INTEGER, " +
+                        "`address` TEXT NOT NULL, " +
+                        "`index` INTEGER NOT NULL, " +
                         "`walletFingerPrint` TEXT NOT NULL, " +
-                        "`path` TEXT, " +
-                        "`changeIndex` INTEGER, " +
+                        "`path` TEXT NOT NULL, " +
+                        "`changeIndex` INTEGER NOT NULL, " +
                         "`name` TEXT, " +
                         "FOREIGN KEY(`walletFingerPrint`) REFERENCES `multi_sig_wallet`(`walletFingerPrint`) ON UPDATE NO ACTION ON DELETE CASCADE )");
                 database.execSQL("CREATE UNIQUE INDEX index_multi_sig_address_id ON multi_sig_address (id)");

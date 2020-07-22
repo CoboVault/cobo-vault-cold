@@ -37,6 +37,7 @@ public enum WatchWallet {
     public static final String BLUE_WALLET_SIGN_ID = "blue_wallet_sign_id";
     public static final String BTCPAY_SIGN_ID = "blue_wallet_sign_id";
     public static final String GENERIC_WALLET_SIGN_ID = "generic_wallet_sign_id";
+    public static final String PSBT_MULTISIG_SIGN_ID = "PSBT_MULTISIG";
 
     private String walletId;
     WatchWallet(String walletId) {

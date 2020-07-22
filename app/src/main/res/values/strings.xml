@@ -543,7 +543,13 @@
     <string name="select_network">选择区块链网络</string>
     <string name="test_net">测试网</string>
     <string name="no_multisig_wallet">暂无多签钱包</string>
-    <string name="create_multisig_wallet_hint">您需先创建或导入多签钱包，才能对该钱包交易签名。\n\n 多签钱包创建指引：\n 1. 您需先收集参与者的扩展公钥，导出扩展公钥点击右上方【更多—查看/导出扩展公钥】，扩展公钥可展示为二维码，或保存为文件；若为文件格式，您需将收集到的所有扩展公钥文件保存到一张TF卡内。\n 2. 点击下方“创建多签钱包”按钮，确定参与者和签名的数量及地址格式后，填入收集到的扩展公钥信息，填入时支持扫码和读文件 \n\n创建和导入多签钱包完整图文教程，请访问：https://XXX</string>
+    <string name="create_multisig_wallet_hint"><![CDATA[
+    您需先创建或导入多签钱包，才能对该钱包交易签名。<br><br>
+     多签钱包创建指引：<br>
+     1. 您需先收集参与者的扩展公钥，导出扩展公钥点击右上方【更多—查看/导出扩展公钥】<br>
+     2. 扩展公钥可展示为二维码或保存为文件；若为文件格式，您需<font color="#00cdc3">将收集到的所有扩展公钥文件保存到一张TF卡内<font/>。<br>
+     3. 点击下方“创建多签钱包”按钮，确定参与者和签名的数量及地址格式后，填入收集到的扩展公钥，填入时支持扫码和读文件。<br>
+    ]]></string>
     <string name="export_all">Export All</string>
     <string name="multi_sig_account_legacy">Legacy</string>
     <string name="multi_sig_account_p2sh">隔离见证兼容</string>
@@ -580,5 +586,28 @@
     <string name="import_success">Import Successful</string>
     <string name="view_xpub_qrcode">Display Public Key QR Code</string>
     <string name="multisig_wallet_info_xpub_warning">*These Public Keys are only used to generate multisig wallet and will not expose any of your personal wallet information.\n*Do not share Public Key with others who are not cosigners, Public Keys can get your addresses and find out how may coins you have</string>
+    <string name="sign_status">Status</string>
+    <string name="unsigned">Unsigned</string>
+    <string name="partial_signed">Partially signed</string>
+    <string name="signed">Signed</string>
+    <string name="collect_xpub_hint"><![CDATA[
+    Please fill in XPUB of co-signers. <font color="#00cdc3">Check the XPUB<font/> to make sure that the XPUB filled in is consistent with the XPUB exported.<img src="info"><br>
+    Your XPUB has been filled in NO.1, the multisig wallet is independent of the order in which the XPUBs is filled
+    ]]>
+    </string>
+    <string name="check_input_pub_key">请检查填入的扩展公钥</string>
+    <string name="check_pub_key_hint"><![CDATA[Next you need fill in XPUB of co-signers,，<font color="#00cdc3"> please check the XPUB<font/>，to make sure that the XPUB filled in is consistent with the XPUB exported by the cosigners.]]></string>
+    <string name="no_pub_file_found">未检测到扩展公钥文件</string>
+    <string name="wrong_xpub_format_hint">Change to %s. Given XPUB is %s, please switch XPUB’s type.</string>
+    <string name="wrong_xpub_format">Wrong XPUB Type</string>
+    <string name="invalid_xpub_file">Wrong Data</string>
+    <string name="invalid_xpub_file_hint"><![CDATA[
+        Please fill in cosigners’ XPUB. <br><br>
+        How to export XPUB：<br>
+        Co-signer use <font color="#00cdc3">Cobo Vault<font/>, go to Cobo Vault-> Menu->Multisig Wallet->More->Show/Export Vault’s XPUB, you can scan or export file.<br>
+        Co-signer use <font color="#00cdc3">Coldcard<font/>, go to ColdCard-> Setting->Multisig Wallets->Export XPUB
+    ]]></string>
+    <string name="duplicate_xpub_title">Repeat XPUB</string>
+    <string name="duplicate_xpub_hint">You have filled in the XPUB.  Please fill in the XPUBs of other cosigners.</string>
 
 </resources>

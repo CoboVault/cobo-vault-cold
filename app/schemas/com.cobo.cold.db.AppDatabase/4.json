@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "bc6ef4d38cdacbbfdcaee257cb4091aa",
+    "identityHash": "b61aa75d1a5244e8d9c81efab86f084c",
     "entities": [
       {
         "tableName": "coins",
@@ -145,7 +145,7 @@
       },
       {
         "tableName": "txs",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`txId` TEXT NOT NULL, `coinId` TEXT, `coinCode` TEXT, `amount` TEXT, `from` TEXT, `to` TEXT, `fee` TEXT, `signedHex` TEXT, `timeStamp` INTEGER NOT NULL, `memo` TEXT, `signId` TEXT, `belongTo` TEXT, PRIMARY KEY(`txId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`txId` TEXT NOT NULL, `coinId` TEXT, `coinCode` TEXT, `amount` TEXT, `from` TEXT, `to` TEXT, `fee` TEXT, `signedHex` TEXT, `timeStamp` INTEGER NOT NULL, `memo` TEXT, `signId` TEXT, `belongTo` TEXT, `signStatus` TEXT, PRIMARY KEY(`txId`))",
         "fields": [
           {
             "fieldPath": "txId",
@@ -216,6 +216,12 @@
           {
             "fieldPath": "belongTo",
             "columnName": "belongTo",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "signStatus",
+            "columnName": "signStatus",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -352,7 +358,7 @@
       },
       {
         "tableName": "multi_sig_wallet",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`walletFingerPrint` TEXT NOT NULL, `walletName` TEXT, `threshold` INTEGER NOT NULL, `total` INTEGER NOT NULL, `exPubPath` TEXT, `exPubs` TEXT, `belongTo` TEXT, `network` TEXT, PRIMARY KEY(`walletFingerPrint`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`walletFingerPrint` TEXT NOT NULL, `walletName` TEXT, `threshold` INTEGER NOT NULL, `total` INTEGER NOT NULL, `exPubPath` TEXT NOT NULL, `exPubs` TEXT NOT NULL, `belongTo` TEXT NOT NULL, `verifyCode` TEXT NOT NULL, `network` TEXT NOT NULL, PRIMARY KEY(`walletFingerPrint`))",
         "fields": [
           {
             "fieldPath": "walletFingerPrint",
@@ -382,25 +388,31 @@
             "fieldPath": "exPubPath",
             "columnName": "exPubPath",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "exPubs",
             "columnName": "exPubs",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "belongTo",
             "columnName": "belongTo",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
+          },
+          {
+            "fieldPath": "verifyCode",
+            "columnName": "verifyCode",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "network",
             "columnName": "network",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -423,7 +435,7 @@
       },
       {
         "tableName": "multi_sig_address",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT, `index` INTEGER NOT NULL, `walletFingerPrint` TEXT NOT NULL, `path` TEXT, `changeIndex` INTEGER NOT NULL, `name` TEXT, FOREIGN KEY(`walletFingerPrint`) REFERENCES `multi_sig_wallet`(`walletFingerPrint`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT NOT NULL, `index` INTEGER NOT NULL, `walletFingerPrint` TEXT NOT NULL, `path` TEXT NOT NULL, `changeIndex` INTEGER NOT NULL, `name` TEXT, FOREIGN KEY(`walletFingerPrint`) REFERENCES `multi_sig_wallet`(`walletFingerPrint`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -435,7 +447,7 @@
             "fieldPath": "address",
             "columnName": "address",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "index",
@@ -453,7 +465,7 @@
             "fieldPath": "path",
             "columnName": "path",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "changeIndex",
@@ -510,7 +522,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bc6ef4d38cdacbbfdcaee257cb4091aa')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b61aa75d1a5244e8d9c81efab86f084c')"
     ]
   }
 }

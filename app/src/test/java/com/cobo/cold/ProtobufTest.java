@@ -25,10 +25,6 @@ import com.cobo.cold.protobuf.SyncProtoc;
 import org.junit.Test;
 import org.spongycastle.util.encoders.Base64;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-
 import static org.junit.Assert.assertEquals;
 
 /**

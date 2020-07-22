@@ -18,6 +18,7 @@
 package com.cobo.cold.ui.fragment.main;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.cobo.cold.R;
@@ -51,12 +52,18 @@ public class TransactionItemAdapter extends BaseBindingAdapter<TransactionItem, 
 
     @Override
     protected void onBindItem(TxDetailItemBinding binding, TransactionItem item) {
-        boolean isChange = changeAddress.contains(item.address);
+        boolean isChange = changeAddress.contains(item.address) || !TextUtils.isEmpty(item.changePath);
         if (getItemCount() == 1 && type == TransactionItem.ItemType.TO) {
             binding.info.setText(item.address);
             binding.label.setText(context.getString(R.string.tx_to));
         } else {
-            binding.info.setText(item.amount + "\n" + item.address);
+            String info;
+            if (!TextUtils.isEmpty(item.changePath)) {
+                info = item.amount + "\n" + item.address + "\n(" + item.changePath + ")";
+            } else {
+                info = item.amount + "\n" + item.address;
+            }
+            binding.info.setText(info);
             binding.label.setText(getLabel(item.id));
         }
         if (isChange && (type == TransactionItem.ItemType.TO

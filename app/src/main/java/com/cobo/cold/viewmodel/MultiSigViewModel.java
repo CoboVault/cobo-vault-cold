@@ -37,6 +37,7 @@ import com.cobo.cold.callables.GetExtendedPublicKeyCallable;
 import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.db.entity.MultiSigAddressEntity;
 import com.cobo.cold.db.entity.MultiSigWalletEntity;
+import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.util.HashUtil;
 
@@ -48,7 +49,6 @@ import org.spongycastle.util.encoders.Hex;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
@@ -61,7 +61,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.cobo.cold.viewmodel.PsbtViewModel.reverseHex;
+import static com.cobo.coinlib.Util.reverseHex;
 
 public class MultiSigViewModel extends AndroidViewModel {
 
@@ -92,6 +92,10 @@ public class MultiSigViewModel extends AndroidViewModel {
         return repo.loadAddressForWallet(walletFingerprint);
     }
 
+    public LiveData<List<TxEntity>> loadTxs(String walletFingerprint) {
+        return repo.loadMultisigTxs(walletFingerprint);
+    }
+
     public LiveData<MultiSigWalletEntity> getCurrentWallet() {
         return getWalletEntity("d4637859");
     }
@@ -109,6 +113,7 @@ public class MultiSigViewModel extends AndroidViewModel {
         return xpubsMap.get(account);
     }
 
+    //
     public LiveData<JSONObject> exportWalletToElectrum(String walletFingerprint) {
         MutableLiveData<JSONObject> result = new MutableLiveData<>();
         AppExecutors.getInstance().diskIO().execute(()->{
@@ -280,15 +285,16 @@ public class MultiSigViewModel extends AndroidViewModel {
         if (!xfpMatch) {
             throw new XfpNotMatchException("xfp not match");
         }
-        String walletFingerprint = calculateWalletFingerptint(threshold, xpubs, account.getPath());
+        String verifyCode = calculateWalletVerifyCode(threshold, xpubs, account.getPath());
+        String walletFingerprint = verifyCode + xfp;
         MultiSigWalletEntity wallet = new MultiSigWalletEntity(
-                "Multisig_"+ walletFingerprint +"_" + threshold + "-" + total,
+                "Multisig_"+ verifyCode +"_" + threshold + "-" + total,
                 threshold,
                 total,
                 account.getPath(),
                 xpubsInfo.toString(),
                 xfp,
-                Utilities.isMainNet(getApplication()) ? "main" : "testnet");
+                Utilities.isMainNet(getApplication()) ? "main" : "testnet",verifyCode);
         wallet.setWalletFingerPrint(walletFingerprint);
         AppExecutors.getInstance().diskIO().execute(() -> {
             boolean exist = repo.loadMultisigWallet(walletFingerprint) != null;
@@ -320,13 +326,13 @@ public class MultiSigViewModel extends AndroidViewModel {
         new AddAddressTask(walletFingerprint, repo, () -> addComplete.setValue(Boolean.TRUE) ,changeIndex).execute(number);
     }
 
-    public String calculateWalletFingerptint(int threshold, List<String> xpubs, String path) {
+    public String calculateWalletVerifyCode(int threshold, List<String> xpubs, String path) {
         String info = xpubs.stream()
                 .map(s->ExtendPubkeyFormat.convertExtendPubkey(s, ExtendPubkeyFormat.xpub))
                 .sorted()
                 .reduce((s1,s2)->s1 + " " + s2)
                 .orElse("") + threshold + "of" + xpubs.size() + path;
-        return Hex.toHexString(HashUtil.sha256(info)).substring(0,8);
+        return Hex.toHexString(HashUtil.sha256(info)).substring(0,8).toUpperCase();
     }
 
     public List<MultiSigAddressEntity> filterChangeAddress(List<MultiSigAddressEntity> entities) {

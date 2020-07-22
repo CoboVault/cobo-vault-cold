@@ -74,7 +74,7 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
                         R.layout.common_modal, null, false);
                 binding.title.setText("钱包校验");
                 binding.subTitle.setText(getString(R.string.verify_wallet_hint,
-                        viewModel.calculateWalletFingerptint(threshold, xpubs, account.getPath())));
+                        viewModel.calculateWalletVerifyCode(threshold, xpubs, account.getPath())));
                 binding.close.setVisibility(View.GONE);
                 binding.confirm.setText("验证码一致，继续导入");
                 binding.confirm.setOnClickListener(v -> {
@@ -102,7 +102,7 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
             creator = walletInfo.optString("Creator");
 
             return new MultiSigWalletEntity(walletInfo.getString("Name"),
-                    threshold, total,account.getPath(),walletInfo.getJSONArray("Xpubs").toString(),"","");
+                    threshold, total,account.getPath(),walletInfo.getJSONArray("Xpubs").toString(),"","","");
         } catch (JSONException e) {
             e.printStackTrace();
         }

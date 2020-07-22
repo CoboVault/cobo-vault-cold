@@ -21,8 +21,8 @@ import java.util.stream.IntStream;
 public class PreCreateMultiSigWalletFragment extends MultiSigBaseFragment<PreCreateMultisigWalletBinding>
         implements NumberPickerCallback {
 
-    private int total = 2;
-    private int threshold = 1;
+    private int total = 3;
+    private int threshold = 2;
     private MultiSig.Account account = MultiSig.Account.P2WSH;
     private State state = State.STATE_NONE;
 

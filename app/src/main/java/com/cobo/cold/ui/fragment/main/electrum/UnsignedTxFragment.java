@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +33,6 @@ import androidx.navigation.Navigation;
 
 import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.utils.Base43;
-import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.config.FeatureFlags;
@@ -52,8 +52,8 @@ import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.util.KeyStoreUtil;
 import com.cobo.cold.viewmodel.GlobalViewModel;
-import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.TxConfirmViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.WatchWalletNotMatchException;
 import com.cobo.cold.viewmodel.XpubNotMatchException;
 
@@ -69,14 +69,12 @@ import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
-
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
+import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
 import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
 import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
 import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
 import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
-
-import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
-import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
 import static com.cobo.cold.viewmodel.TxConfirmViewModel.STATE_NONE;
 
 public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBinding> {
@@ -227,6 +225,30 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
         refreshAmount();
         refreshFromList();
         refreshReceiveList();
+        refreshSignStatus();
+    }
+
+    private void refreshSignStatus() {
+        if (!TextUtils.isEmpty(txEntity.getSignStatus())) {
+            mBinding.txDetail.txSignStatus.setVisibility(View.VISIBLE);
+            String signStatus = txEntity.getSignStatus();
+
+            String[] splits = signStatus.split("-");
+            int sigNumber = Integer.parseInt(splits[0]);
+            int reqSigNumber = Integer.parseInt(splits[1]);
+
+            String text;
+            if (sigNumber == 0) {
+                text = getString(R.string.unsigned);
+            } else if(sigNumber < reqSigNumber) {
+                text = getString(R.string.partial_signed);
+            } else {
+                text = getString(R.string.signed);
+            }
+
+            mBinding.txDetail.signStatus.setText(text);
+            mBinding.txDetail.txSource.setVisibility(View.GONE);
+        }
     }
 
     private void observeParseTx(ProgressModalDialog dialog) {
@@ -287,11 +309,17 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
         try {
             JSONArray outputs = new JSONArray(to);
             for (int i = 0; i < outputs.length(); i++) {
+                JSONObject output = outputs.getJSONObject(i);
+                boolean isChange = output.optBoolean("isChange");
+                String changePath = null;
+                if (isChange) {
+                    changePath = output.getString("changeAddressPath");
+                }
+
                 items.add(new TransactionItem(i,
-                        outputs.getJSONObject(i).getLong("value"),
-                        outputs.getJSONObject(i).getString("address"),
-                        txEntity.getCoinCode()
-                ));
+                        output.getLong("value"),
+                        output.getString("address"),
+                        txEntity.getCoinCode(),changePath));
             }
         } catch (JSONException e) {
             return;

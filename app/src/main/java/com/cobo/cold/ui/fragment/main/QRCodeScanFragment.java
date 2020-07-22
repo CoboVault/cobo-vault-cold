@@ -212,6 +212,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             navigateUp();
         } else if("collect_xpub".equals(purpose)){
             navigateUp();
+        } else if("importMultiSigWallet".equals(purpose)){
+            alert(getString(R.string.unsupported_qrcode));
         } else {
             try {
                 if (tryParseElectrumTx(res) != null) {
@@ -232,6 +234,10 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
                         getString(R.string.master_pubkey_not_match));
             }
         }
+    }
+
+    public String getPurpose() {
+        return purpose;
     }
 
     private void handleElectrumTx(String res) {
@@ -296,7 +302,11 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     @Override
     public void handleDecode(ScannedData[] res) {
         try {
-            viewModel.handleDecode(this, res);
+            if("collect_xpub".equals(purpose)){
+                alert(getString(R.string.unsupported_qrcode));
+            } else {
+                viewModel.handleDecode(this, res);
+            }
         } catch (InvalidTransactionException e) {
             e.printStackTrace();
             alert(getString(R.string.incorrect_tx_data));

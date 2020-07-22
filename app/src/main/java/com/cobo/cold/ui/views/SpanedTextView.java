@@ -19,6 +19,7 @@ package com.cobo.cold.ui.views;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -34,7 +35,7 @@ import android.view.View.OnClickListener;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import static android.text.Html.FROM_HTML_MODE_LEGACY;
+import com.cobo.cold.R;
 
 public class SpanedTextView extends AppCompatTextView {
 
@@ -63,7 +64,19 @@ public class SpanedTextView extends AppCompatTextView {
         if (origin == null && !TextUtils.isEmpty(text)) {
             origin = text;
         }
-        SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(text.toString(), FROM_HTML_MODE_LEGACY);
+        SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(text.toString(), new Html.ImageGetter() {
+            @Override
+            public Drawable getDrawable(String s) {
+                if ("info".equals(s)) {
+                    Drawable d = SpanedTextView.this.getContext().getDrawable(R.drawable.info);
+                    d.setBounds(0, 0,
+                            d.getIntrinsicWidth(),
+                            d.getIntrinsicHeight());
+                    return d;
+                }
+                return null;
+            }
+        },null);
         UnderlineSpan[] spans = spanned.getSpans(0, text.length(), UnderlineSpan.class);
 
         int index = 0;

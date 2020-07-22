@@ -24,6 +24,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 import com.cobo.coinlib.utils.Coins;
+import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.db.AppDatabase;
 import com.cobo.cold.db.entity.AccountEntity;
 import com.cobo.cold.db.entity.AddressEntity;
@@ -233,11 +234,25 @@ public class DataRepository {
     }
 
     public LiveData<List<MultiSigWalletEntity>> loadAllMultiSigWallet() {
-        return mDb.multiSigWalletDao().loadAll();
+        String xfp = new GetMasterFingerprintCallable().call();
+        return mDb.multiSigWalletDao().loadAll(xfp);
+    }
+
+    public List<MultiSigWalletEntity> loadAllMultiSigWalletSync() {
+        String xfp = new GetMasterFingerprintCallable().call();
+        return mDb.multiSigWalletDao().loadAllSync(xfp);
     }
 
     public LiveData<List<MultiSigAddressEntity>> loadAllMultiSigAddress() {
         return mDb.multiSigAddressDao().loadAll();
+    }
+
+    public MultiSigAddressEntity loadAllMultiSigAddress(String walletfp, String path) {
+        return mDb.multiSigAddressDao().loadAddressByPath(walletfp, path);
+    }
+
+    public List<MultiSigAddressEntity> loadAllMultiSigAddressSync(String xfp) {
+        return mDb.multiSigAddressDao().loadAllMultiSigAddressSync(xfp);
     }
 
     public MultiSigWalletEntity loadMultisigWallet(String fingerprint) {
@@ -254,6 +269,10 @@ public class DataRepository {
 
     public void insertMultisigAddress(List<MultiSigAddressEntity> entities) {
         mDb.multiSigAddressDao().insert(entities);
+    }
+
+    public LiveData<List<TxEntity>> loadMultisigTxs(String walletFingerprint) {
+        return mDb.txDao().loadMultisigTxs(walletFingerprint);
     }
 
     public void updateWallet(MultiSigWalletEntity entity) {

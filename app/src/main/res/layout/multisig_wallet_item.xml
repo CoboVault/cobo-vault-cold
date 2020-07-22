@@ -8,25 +8,36 @@
             name="walletItem"
             type="com.cobo.cold.db.entity.MultiSigWalletEntity" />
     </data>
-
     <RelativeLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="60dp"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{walletItem.walletName}"
             android:layout_centerVertical="true"
-            android:textColor="@color/white"
             android:layout_marginHorizontal="16dp"
-            tools:text="wallet 1/2"
+            android:gravity="center"
+            android:text="@{walletItem.walletName}"
+            android:textColor="@color/white"
             android:textSize="16sp"
-            android:gravity="center"/>
-        <include layout="@layout/divider"
-            android:layout_alignParentBottom="true"
+            tools:text="wallet 1/2" />
+
+        <ImageView
+            android:id="@+id/checked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/checked"
+            android:tint="@color/colorAccent" />
+
+        <include
+            layout="@layout/divider"
+            android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_width="match_parent" />
+            android:layout_alignParentBottom="true" />
     </RelativeLayout>
 </layout>

@@ -6,20 +6,39 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import com.cobo.coinlib.coins.BTC.Deriver;
+import com.cobo.coinlib.utils.MultiSig;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(tableName = "multi_sig_wallet", indices = {@Index("walletFingerPrint")})
 public class MultiSigWalletEntity {
     @PrimaryKey
     @NonNull
     private String walletFingerPrint;
     private String walletName;
+    @NonNull
     private int threshold;
+    @NonNull
     private int total;
+    @NonNull
     private String exPubPath;
+    @NonNull
     private String exPubs;
+    @NonNull
     private String belongTo;
+    @NonNull
+    private String verifyCode;
+    @NonNull
     private String network;
 
-    public MultiSigWalletEntity(String walletName, int threshold, int total, String exPubPath, String exPubs, String belongTo, String network) {
+    public MultiSigWalletEntity(String walletName, int threshold, int total,
+                                String exPubPath, String exPubs, String belongTo,
+                                String network, String verifyCode) {
         this.walletName = walletName;
         this.threshold = threshold;
         this.total = total;
@@ -27,6 +46,16 @@ public class MultiSigWalletEntity {
         this.exPubs = exPubs;
         this.belongTo = belongTo;
         this.network = network;
+        this.verifyCode = verifyCode;
+    }
+
+    @NonNull
+    public String getVerifyCode() {
+        return verifyCode;
+    }
+
+    public void setVerifyCode(@NonNull String verifyCode) {
+        this.verifyCode = verifyCode;
     }
 
     public String getWalletFingerPrint() {
@@ -91,6 +120,23 @@ public class MultiSigWalletEntity {
 
     public void setNetwork(String network) {
         this.network = network;
+    }
+
+    public String deriveAddress(int[] index) {
+        Deriver deriver = new Deriver(true);
+        List<String> xpubList = new ArrayList<>();
+        try {
+            JSONArray jsonArray = new JSONArray(getExPubs());
+            for (int i = 0; i < jsonArray.length(); i++) {
+                xpubList.add(jsonArray.getJSONObject(i).getString("xpub"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String address = deriver.deriveMultiSigAddress(getThreshold(),
+                xpubList, new int[] {index[0], index[1]},
+                MultiSig.Account.ofPath(getExPubPath()));
+        return address;
     }
 
     @Override

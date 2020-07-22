@@ -24,12 +24,18 @@ public class TransactionItem {
     final String amount;
     final String address;
     private final String coinCode;
+    final String changePath;
 
     public TransactionItem(int id, long amount, String address, String coinCode) {
+        this(id,amount,address,coinCode,null);
+    }
+
+    public TransactionItem(int id, long amount, String address, String coinCode, String changePath) {
         this.id = id;
-        this.coinCode = coinCode;
-        this.amount = formatSatoshi(amount);
         this.address = address;
+        this.coinCode = coinCode;
+        this.changePath = changePath;
+        this.amount = formatSatoshi(amount);
     }
 
     private String formatSatoshi(long satoshi) {

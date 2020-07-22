@@ -96,16 +96,25 @@ public class QrScanViewModel extends AndroidViewModel {
             }
             if (!TextUtils.isEmpty(hex)) {
                 WatchWallet wallet = WatchWallet.getWatchWallet(getApplication());
-                if (MultiSigViewModel.decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8)) != null){
-                    fragment.handleImportMultisigWallet(hex);
-                } else if (wallet.supportBc32QrCode()) {
-                    handleBc32Qrcode(hex);
+                if ("importMultiSigWallet".equals(fragment.getPurpose())) {
+                    if (MultiSigViewModel.decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8)) != null){
+                        fragment.handleImportMultisigWallet(hex);
+                    } else {
+                        throw new UnknowQrCodeException("invalid multisig wallet qrcode");
+                    }
                 } else {
-                    throw new UnknowQrCodeException("not support bc32 qrcode in current wallet mode");
+                    if (wallet.supportBc32QrCode()) {
+                        handleBc32Qrcode(hex);
+                    } else {
+                        throw new UnknowQrCodeException("not support bc32 qrcode in current wallet mode");
+                    }
                 }
             }
 
         } else {
+            if ("importMultiSigWallet".equals(fragment.getPurpose())) {
+                throw new UnknowQrCodeException("invalid multisig wallet qrcode");
+            }
             JSONObject object = parseToJson(data, valueType);
             if (object == null) {
                 throw new JSONException("object null");

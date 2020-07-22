@@ -69,4 +69,12 @@ public class UtilTest {
         assertFalse(ExtendPubkeyFormat.isValidXpub("xpub6D3i46Y43SFfjEBYheBK3btYMRm9Cfb8Tt4M5Bv16tArNBw5ATNyJWjdcMyLxoCdHWTvm3ak7j2BWacq5Lw478aYUeARoYm4dvaQgJBAGs"));
         assertFalse(ExtendPubkeyFormat.isValidXpub("xpub6D3i46Y43SFfjEBYheBK3btYMRm9Cfb8Tt4M5Bv16tArNBw5ATNyJWjdcMyLxoCdHWTvm3ak7j2BWacq5Lw478aYUeARoYm4dvaQgJBAGsB"));
     }
+
+    @Test
+
+    public void decodexpub() {
+        String s = "Zpub755NbzNDFus6egJM22CLBqjabHyNV8PEWJHGBkfCSXN2W8HRPKEA2MyxvycgD4AxNMcrTuxSwKYiNJ19h9PLURGZoWyC2Tutr7SWaU1swYK";
+        assertTrue(Util.getExpubFingerprint(s).equalsIgnoreCase("b064c0bd"));
+    }
+
 }

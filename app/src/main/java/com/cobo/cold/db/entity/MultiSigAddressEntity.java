@@ -16,12 +16,17 @@ import static androidx.room.ForeignKey.CASCADE;
         indices = {@Index(value = "id",unique = true), @Index(value = "walletFingerPrint")})
 public class MultiSigAddressEntity {
     @PrimaryKey(autoGenerate = true)
+    @NonNull
     public long id;
+    @NonNull
     private String address; // address
+    @NonNull
     private int index; // address index
     @NonNull
     private String walletFingerPrint; // belong to which multisig wallet
+    @NonNull
     private String path; // address path
+    @NonNull
     private int changeIndex;
     private String name;
 

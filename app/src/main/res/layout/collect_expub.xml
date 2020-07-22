@@ -76,11 +76,12 @@
                 android:text="@string/cosigners"
                 android:textColor="@color/white" />
 
-            <TextView
+            <com.cobo.cold.ui.views.SpanedTextView
+                android:id="@+id/hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                android:text="请在下列文本框中填入钱包参与者的扩展公钥，填入时请检查扩展公钥，确保填入的信息和参与者导出时的信息一致。\n您的扩展公钥已自动填入1号，多签钱包的创建结果与填入扩展公钥的顺序无关"
+                android:text="@string/collect_xpub_hint"
                 android:textColor="@color/white" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -97,6 +98,7 @@
             style="@style/AcceptButton"
             android:layout_width="match_parent"
             android:layout_margin="16dp"
+            android:enabled="false"
             android:text="创建" />
     </LinearLayout>
 </layout>
