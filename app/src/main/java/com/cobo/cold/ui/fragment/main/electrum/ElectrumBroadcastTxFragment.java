@@ -36,12 +36,10 @@ import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.CoinListViewModel;
 
 import org.spongycastle.util.encoders.Base64;
-import org.spongycastle.util.encoders.Hex;
 
 import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment.showExportPsbtDialog;
-import static com.cobo.cold.ui.fragment.main.electrum.UnsignedTxFragment.showExportTxnDialog;
 import static com.cobo.cold.viewmodel.WatchWallet.PSBT_MULTISIG_SIGN_ID;
 
 public class ElectrumBroadcastTxFragment extends BaseFragment<BroadcastElectrumTxFragmentBinding> {
@@ -89,12 +87,14 @@ public class ElectrumBroadcastTxFragment extends BaseFragment<BroadcastElectrumT
         });
         mBinding.hint.setOnClickListener(v -> {
             if (txEntity != null) {
+                Runnable onSuccess;
                 if (isMultisig) {
-                    showExportPsbtDialog(mActivity, txEntity.getTxId(),
-                            txEntity.getSignedHex(), () -> popBackStack(R.id.multisigFragment, false));
+                    onSuccess = () -> popBackStack(R.id.multisigFragment, false);
                 } else {
-                    showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(), null);
+                    onSuccess = () -> popBackStack(R.id.assetFragment, false);
                 }
+                showExportPsbtDialog(mActivity, txEntity.getTxId(),
+                        txEntity.getSignedHex(), onSuccess);
             }
         });
         mBinding.info.setOnClickListener(v -> showElectrumInfo(mActivity));
@@ -125,10 +125,6 @@ public class ElectrumBroadcastTxFragment extends BaseFragment<BroadcastElectrumT
     }
 
     private String getSignTxString(TxEntity txEntity) {
-        if (isMultisig) {
-            return Base43.encode(Base64.decode(txEntity.getSignedHex()));
-        } else {
-            return Base43.encode(Hex.decode(txEntity.getSignedHex()));
-        }
+        return Base43.encode(Base64.decode(txEntity.getSignedHex()));
     }
 }

@@ -37,6 +37,7 @@ import com.cobo.cold.viewmodel.CoinListViewModel;
 import com.cobo.cold.viewmodel.MultiSigViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -77,10 +78,10 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         txCallback = tx -> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_TX_ID, tx.getTxId());
-            if (getWatchWallet(mActivity).supportPsbt()) {
-                navigate(R.id.action_to_psbtSignedTxFragment, bundle);
-            } else if (ELECTRUM_SIGN_ID.equals(tx.getSignId()) || PSBT_MULTISIG_SIGN_ID.equals(tx.getSignId())) {
+            if (ELECTRUM_SIGN_ID.equals(tx.getSignId()) || PSBT_MULTISIG_SIGN_ID.equals(tx.getSignId())) {
                 navigate(R.id.action_to_electrumTxFragment, bundle);
+            } else if (getWatchWallet(mActivity).supportPsbt()) {
+                navigate(R.id.action_to_psbtSignedTxFragment, bundle);
             } else {
                 navigate(R.id.action_to_txFragment, bundle);
             }
@@ -95,21 +96,15 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         }
         txs.observe(this, txEntities -> {
             if (!multisig) {
-                txEntityComparator = (o1, o2) -> {
-                    if (o1.getSignId().equals(o2.getSignId())) {
-                        return (int) (o2.getTimeStamp() - o1.getTimeStamp());
-                    } else if (ELECTRUM_SIGN_ID.equals(o1.getSignId())) {
-                        return -1;
-                    } else {
-                        return 1;
-                    }
-                };
+                Collections.reverse(txEntities);
                 txEntities = txEntities.stream()
                         .filter(this::shouldShow)
                         .filter(this::filterByMode)
-                        .sorted(txEntityComparator)
                         .collect(Collectors.toList());
+            } else {
+                Collections.reverse(txEntities);
             }
+
 
             if (txEntities.isEmpty()) {
                 showEmpty(true);

@@ -61,17 +61,21 @@ public class Btc extends AbsCoin {
         return ((BtcImpl)impl).parsePsbt(psbt);
     }
 
-    public void signPsbt(@NonNull String psbt, SignPsbtCallback callback, Signer... signers) {
+    public void signPsbt(@NonNull String psbt, SignPsbtCallback callback, boolean finalize, Signer... signers) {
         if (signers == null) {
             callback.onFail();
             return;
         }
-        SignPsbtResult result = ((BtcImpl)impl).signPsbt(psbt, signers);
+        SignPsbtResult result = ((BtcImpl)impl).signPsbt(psbt, finalize, signers);
         if (result != null && result.isValid()) {
             callback.onSuccess(result.txId, result.psbtB64);
         } else {
             callback.onFail();
         }
+    }
+
+    public void signPsbt(@NonNull String psbt, SignPsbtCallback callback, Signer... signers) {
+        signPsbt(psbt,callback,true, signers);
     }
 
     public static class Tx extends AbsTx implements UtxoTx {

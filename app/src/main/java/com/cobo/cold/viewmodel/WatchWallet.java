@@ -129,7 +129,7 @@ public enum WatchWallet {
     }
 
     public boolean supportSwitchAccount() {
-        return this == WatchWallet.GENERIC;
+        return this == WatchWallet.GENERIC || this == WatchWallet.ELECTRUM;
     }
 
     public boolean supportNativeSegwit() {
@@ -137,6 +137,7 @@ public enum WatchWallet {
             case GENERIC:
             case BTCPAY:
             case BLUE:
+            case ELECTRUM:
             case WASABI:
                 return true;
         }

@@ -43,6 +43,7 @@ import com.cobo.cold.protocol.ZipUtil;
 import com.cobo.cold.protocol.parser.ProtoParser;
 import com.cobo.cold.scan.ScannedData;
 import com.cobo.cold.ui.fragment.main.QRCodeScanFragment;
+import com.cobo.cold.ui.fragment.main.QrScanPurpose;
 import com.cobo.cold.update.utils.Digest;
 
 import org.json.JSONArray;
@@ -96,7 +97,7 @@ public class QrScanViewModel extends AndroidViewModel {
             }
             if (!TextUtils.isEmpty(hex)) {
                 WatchWallet wallet = WatchWallet.getWatchWallet(getApplication());
-                if ("importMultiSigWallet".equals(fragment.getPurpose())) {
+                if (QrScanPurpose.IMPORT_MULTISIG_WALLET == fragment.getPurpose()) {
                     if (MultiSigViewModel.decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8)) != null){
                         fragment.handleImportMultisigWallet(hex);
                     } else {
@@ -112,7 +113,7 @@ public class QrScanViewModel extends AndroidViewModel {
             }
 
         } else {
-            if ("importMultiSigWallet".equals(fragment.getPurpose())) {
+            if (QrScanPurpose.IMPORT_MULTISIG_WALLET == fragment.getPurpose()) {
                 throw new UnknowQrCodeException("invalid multisig wallet qrcode");
             }
             JSONObject object = parseToJson(data, valueType);
@@ -123,7 +124,7 @@ public class QrScanViewModel extends AndroidViewModel {
         }
     }
 
-    private void handleBc32Qrcode(String hex) throws UnknowQrCodeException, InvalidMultisigWalletException {
+    private void handleBc32Qrcode(String hex) throws UnknowQrCodeException {
         if (hex.startsWith(Hex.toHexString("psbt".getBytes()))) {
             WatchWallet watchWallet = WatchWallet.getWatchWallet(getApplication());
             if (watchWallet.supportPsbt()) {

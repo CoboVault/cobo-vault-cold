@@ -26,8 +26,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cobo.cold.R;
-import com.cobo.cold.databinding.ElectrumTxnBinding;
 import com.cobo.cold.databinding.FileListBinding;
+import com.cobo.cold.databinding.FileListItemBinding;
 import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.fragment.main.electrum.Callback;
@@ -48,10 +48,10 @@ import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
 public class PsbtListFragment extends BaseFragment<FileListBinding>
         implements Callback {
 
-    public static final String TAG = "ElectrumTxnListFragment";
+    public static final String TAG = "PsbtListFragment";
     public static final String PSBT_MAGIC_PREFIX = Hex.toHexString("psbt".getBytes(StandardCharsets.UTF_8));
     private PsbtViewModel viewModel;
-    private TxnAdapter adapter;
+    private FileListAdapter adapter;
     private AtomicBoolean showEmpty;
     private boolean multisig;
 
@@ -68,7 +68,7 @@ public class PsbtListFragment extends BaseFragment<FileListBinding>
         }
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         viewModel = ViewModelProviders.of(mActivity).get(PsbtViewModel.class);
-        adapter = new TxnAdapter(mActivity, this);
+        adapter = new FileListAdapter(mActivity, this);
         initViews();
     }
 
@@ -148,21 +148,21 @@ public class PsbtListFragment extends BaseFragment<FileListBinding>
     }
 
 
-    public static class TxnAdapter extends BaseBindingAdapter<String, ElectrumTxnBinding> {
+    public static class FileListAdapter extends BaseBindingAdapter<String, FileListItemBinding> {
         private Callback callback;
 
-        TxnAdapter(Context context, Callback callback) {
+        FileListAdapter(Context context, Callback callback) {
             super(context);
             this.callback = callback;
         }
 
         @Override
         protected int getLayoutResId(int viewType) {
-            return R.layout.electrum_txn;
+            return R.layout.file_list_item;
         }
 
         @Override
-        protected void onBindItem(ElectrumTxnBinding binding, String item) {
+        protected void onBindItem(FileListItemBinding binding, String item) {
             binding.setFile(item);
             binding.setCallback(callback);
         }

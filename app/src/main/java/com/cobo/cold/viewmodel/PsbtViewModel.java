@@ -24,16 +24,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
-import com.cobo.cold.MainApplication;
-import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.update.utils.Storage;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,11 +33,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
-
 
 public class PsbtViewModel extends AndroidViewModel {
-    private static Pattern signedTxnPattern = Pattern.compile("^signed_[0-9a-fA-F]{8}.psbt$");
+    private static Pattern signedPsbtPattern = Pattern.compile("^signed_[0-9a-fA-F]{8}.psbt$");
     private Storage storage;
 
     public PsbtViewModel(@NonNull Application application) {
@@ -54,7 +44,7 @@ public class PsbtViewModel extends AndroidViewModel {
     }
 
     private boolean isSignedPsbt(String fileName) {
-        Matcher matcher = signedTxnPattern.matcher(fileName);
+        Matcher matcher = signedPsbtPattern.matcher(fileName);
         return matcher.matches();
     }
 

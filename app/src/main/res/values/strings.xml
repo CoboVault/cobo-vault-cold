@@ -615,4 +615,12 @@
     <string name="stop_export_xpub_hint">You need to scan %d public key to complete the creation of watch-only wallet</string>
     <string name="keep_create">Keep Creating</string>
     <string name="create_later">Create Later</string>
+    <string name="open_int_siglesig_wallet">Open the transaction in My Cobo Vault</string>
+    <string name="open_int_siglesig_wallet_hint">This transaction is single-sign.  To open a single-sign transaction, go to Menu > My Cobo Vault, and click the Scan or MicroSD card icon</string>
+    <string name="open_int_multisig_wallet">Open the transaction in Multisig Wallet</string>
+    <string name="open_int_multisig_wallet_hint">This transaction is multisig.  To open a multisig transaction, go to Menu > Multisig Wallet, and click the Scan or MicroSD card icon</string>
+    <string name="cannot_sign">Can’t sign it</string>
+    <string name="cannot_sign_hint">The current wallet is not from the co-signer of this multisig transaction, you can\'t sign it.</string>
+    <string name="no_matched_wallet">No Such Multisig Wallet</string>
+    <string name="no_matched_wallet_hint">You need to create or import the multisig wallet of the transaction before signing the transaction</string>
 </resources>

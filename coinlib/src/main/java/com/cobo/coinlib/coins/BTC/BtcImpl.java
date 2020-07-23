@@ -47,7 +47,7 @@ public class BtcImpl extends CoinImpl {
         return signTxImpl(txData, "generateOmniTransactionSync", signers);
     }
 
-    SignPsbtResult signPsbt(@NonNull String psbt, Signer... signers) {
+    SignPsbtResult signPsbt(@NonNull String psbt, boolean finalize, Signer... signers) {
         if (this.signPsbt == null) {
             this.signPsbt = (V8Function) coin.get("signPSBTBase64Sync");
         }
@@ -57,6 +57,7 @@ public class BtcImpl extends CoinImpl {
         v8.registerResource(params);
         params.push(psbt);
 
+
         if (signers.length > 0) {
             V8Array signProviders = new V8Array(v8);
             v8.registerResource(signProviders);
@@ -65,7 +66,7 @@ public class BtcImpl extends CoinImpl {
         } else {
             return null;
         }
-
+        params.push(finalize);
         try {
             V8Object object = (V8Object) signPsbt.call(coin, params);
             return new SignPsbtResult(object.getString("txId"),

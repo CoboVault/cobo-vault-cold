@@ -213,4 +213,13 @@ public class Util {
         }
         return org.spongycastle.util.encoders.Hex.toHexString(data);
     }
+
+    public static byte[] int2bytes(int i) {
+        return new byte[]{
+                (byte) ((i >> 24) & 0xFF),
+                (byte) ((i >> 16) & 0xFF),
+                (byte) ((i >> 8) & 0xFF),
+                (byte) (i & 0xFF)
+        };
+    }
 }

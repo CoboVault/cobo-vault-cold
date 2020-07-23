@@ -563,5 +563,13 @@
     <string name="stop_export_xpub_hint">您还需用Electrum上扫描%d个公钥就可完成观察钱包的创建</string>
     <string name="keep_create">继续创建</string>
     <string name="create_later">稍后创建</string>
+    <string name="open_int_siglesig_wallet">请在单签钱包打开该交易</string>
+    <string name="open_int_siglesig_wallet_hint">该交易为单签交易，打开单签交易请前往【菜单—我的 Cobo 金库】，点击右上方扫码或读文件按钮</string>
+    <string name="open_int_multisig_wallet">请在多签钱包打开该交易</string>
+    <string name="open_int_multisig_wallet_hint">该交易为多签交易，打开多签交易请前往【菜单—多签钱包】，点击右上方扫码或读文件按钮</string>
+    <string name="cannot_sign">不能签名</string>
+    <string name="cannot_sign_hint">当前钱包不是该多签交易的参与方，不能对其签名</string>
+    <string name="no_matched_wallet">暂无该多签钱包</string>
+    <string name="no_matched_wallet_hint">您需先创建或导入该交易的多签钱包，再对该交易签名</string>
 
 </resources>

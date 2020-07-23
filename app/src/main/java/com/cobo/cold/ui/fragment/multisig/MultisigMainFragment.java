@@ -172,7 +172,9 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
     }
 
     private void scanQrCode() {
-
+        Bundle data = new Bundle();
+        data.putString("purpose","multisig_tx");
+        navigate(R.id.action_to_scan,data);
     }
 
 

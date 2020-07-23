@@ -7,27 +7,21 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cobo.cold.R;
-import com.cobo.cold.databinding.ElectrumTxnBinding;
 import com.cobo.cold.databinding.FileListBinding;
+import com.cobo.cold.databinding.FileListItemBinding;
 import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.fragment.main.electrum.Callback;
-import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.FileUtils;
 import com.cobo.cold.update.utils.Storage;
-import com.cobo.cold.util.Keyboard;
 import com.cobo.cold.viewmodel.InvalidMultisigWalletException;
 import com.cobo.cold.viewmodel.MultiSigViewModel;
-import com.cobo.cold.viewmodel.SharedDataViewModel;
 
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
@@ -113,7 +107,7 @@ public class ImportMultisigFileList extends MultiSigBaseFragment<FileListBinding
         return true;
     }
 
-    static class Adapter extends BaseBindingAdapter<String, ElectrumTxnBinding> {
+    static class Adapter extends BaseBindingAdapter<String, FileListItemBinding> {
         private Callback callback;
 
         Adapter(Context context, Callback callback) {
@@ -123,11 +117,11 @@ public class ImportMultisigFileList extends MultiSigBaseFragment<FileListBinding
 
         @Override
         protected int getLayoutResId(int viewType) {
-            return R.layout.electrum_txn;
+            return R.layout.file_list_item;
         }
 
         @Override
-        protected void onBindItem(ElectrumTxnBinding binding, String item) {
+        protected void onBindItem(FileListItemBinding binding, String item) {
             binding.setFile(item);
             binding.setCallback(callback);
         }

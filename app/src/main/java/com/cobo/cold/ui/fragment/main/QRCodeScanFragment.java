@@ -29,12 +29,9 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
-import com.cobo.coinlib.coins.BTC.Electrum.TxUtils;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Base43;
-import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.CommonModalBinding;
@@ -53,9 +50,9 @@ import com.cobo.cold.viewmodel.InvalidMultisigWalletException;
 import com.cobo.cold.viewmodel.MultiSigViewModel;
 import com.cobo.cold.viewmodel.QrScanViewModel;
 import com.cobo.cold.viewmodel.SharedDataViewModel;
-import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.UnknowQrCodeException;
 import com.cobo.cold.viewmodel.UuidNotMatchException;
+import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.WatchWalletNotMatchException;
 import com.cobo.cold.viewmodel.XfpNotMatchException;
 import com.cobo.cold.viewmodel.XpubNotMatchException;
@@ -63,6 +60,8 @@ import com.cobo.cold.viewmodel.XpubNotMatchException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.Base64;
+import org.spongycastle.util.encoders.EncoderException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -82,7 +81,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     private ZxingConfig mConfig;
     private SurfaceHolder mSurfaceHolder;
 
-    private String purpose;
+    private QrScanPurpose qrScanPurpose;
 
     private QrScanViewModel viewModel;
     private ModalDialog dialog;
@@ -98,7 +97,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         watchWallet = getWatchWallet(mActivity);
         mBinding.scanHint.setText(getScanhint());
         boolean isSetupVault = getArguments() != null && getArguments().getBoolean(IS_SETUP_VAULT);
-        purpose = getArguments() != null ? getArguments().getString("purpose") : "";
+        String purpose = getArguments() != null ? getArguments().getString("purpose") : "";
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mConfig = new ZxingConfigBuilder()
                 .setIsFullScreenScan(true)
@@ -112,6 +111,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         if (!TextUtils.isEmpty(purpose)) {
             mBinding.scanHint.setVisibility(View.GONE);
         }
+        qrScanPurpose = QrScanPurpose.ofPurpose(purpose);
     }
 
     private String getScanhint() {
@@ -206,45 +206,28 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         SharedDataViewModel viewModel =
                 ViewModelProviders.of(mActivity).get(SharedDataViewModel.class);
         viewModel.updateScanResult(res);
-        if ("webAuth".equals(purpose)) {
+
+        if (QrScanPurpose.WEB_AUTH == qrScanPurpose) {
             alert(getString(R.string.invalid_webauth_qrcode_hint));
-        } else if ("address".equals(purpose)) {
+        } else if (QrScanPurpose.ADDRESS == qrScanPurpose) {
             navigateUp();
-        } else if("collect_xpub".equals(purpose)){
+        } else if(QrScanPurpose.COLLECT_XPUB == qrScanPurpose){
             navigateUp();
-        } else if("importMultiSigWallet".equals(purpose)){
+        } else if(QrScanPurpose.IMPORT_MULTISIG_WALLET == qrScanPurpose){
             alert(getString(R.string.unsupported_qrcode));
+        } else if(isElectrumPsbtTx(res)){
+            String psbtBase64 = Base64.toBase64String(Base43.decode(res));
+            Bundle bundle = new Bundle();
+            bundle.putString("psbt_base64", psbtBase64);
+            bundle.putBoolean("multisig", qrScanPurpose == QrScanPurpose.MULTISIG_TX);
+            navigate(R.id.action_to_psbtTxConfirmFragment, bundle);
         } else {
-            try {
-                if (tryParseElectrumTx(res) != null) {
-                    if (WatchWallet.getWatchWallet(mActivity) == ELECTRUM) {
-                        handleElectrumTx(res);
-                    } else {
-                        alert(getString(R.string.identification_failed),
-                                getString(R.string.master_pubkey_not_match) +
-                                        getString(R.string.watch_wallet_not_match,
-                                        WatchWallet.getWatchWallet(mActivity)
-                                                .getWalletName(mActivity)));
-                    }
-                } else {
-                    alert(getString(R.string.unsupported_qrcode));
-                }
-            } catch (XpubNotMatchException e) {
-                alert(getString(R.string.identification_failed),
-                        getString(R.string.master_pubkey_not_match));
-            }
+            alert(getString(R.string.unsupported_qrcode));
         }
     }
 
-    public String getPurpose() {
-        return purpose;
-    }
-
-    private void handleElectrumTx(String res) {
-        String data = Hex.toHexString(Base43.decode(res));
-        Bundle bundle = new Bundle();
-        bundle.putString("txn", data);
-        navigate(R.id.action_to_ElectrumTxConfirmFragment, bundle);
+    public QrScanPurpose getPurpose() {
+        return qrScanPurpose;
     }
 
     public void handleImportMultisigWallet(String hex) {
@@ -265,8 +248,6 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             }
             if (!matchXfp) {
                throw new XfpNotMatchException("xfp not match");
-            } else if (!"importMultiSigWallet".equals(purpose)){
-                alert("请在XXXX扫码");
             } else {
                 navigate(R.id.import_multisig_wallet, bundle);
             }
@@ -283,26 +264,20 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
 
     }
 
-
-    private ElectrumTx tryParseElectrumTx(String res) throws XpubNotMatchException {
+    private boolean isElectrumPsbtTx(String res) {
         try {
             byte[] data = Base43.decode(res);
-            ElectrumTx tx = ElectrumTx.parse(data, Utilities.isMainNet(mActivity));
-            String exPub = ViewModelProviders.of(mActivity).get(GlobalViewModel.class).getXpub();
-            if (!TxUtils.isMasterPublicKeyMatch(exPub,tx)) {
-                throw new XpubNotMatchException("xpub not match");
-            }
-            return tx;
-        } catch (ElectrumTx.SerializationException | IllegalArgumentException e) {
+            return new String(data).startsWith("psbt");
+        } catch (EncoderException e) {
             e.printStackTrace();
         }
-        return null;
+        return false;
     }
 
     @Override
     public void handleDecode(ScannedData[] res) {
         try {
-            if("collect_xpub".equals(purpose)){
+            if (!qrScanPurpose.isAnimateQr()) {
                 alert(getString(R.string.unsupported_qrcode));
             } else {
                 viewModel.handleDecode(this, res);

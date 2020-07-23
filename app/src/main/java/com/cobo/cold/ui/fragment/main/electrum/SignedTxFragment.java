@@ -43,7 +43,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Base64;
-import org.spongycastle.util.encoders.Hex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,6 @@ import java.util.Objects;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.KEY_DUPLICATE_TX;
 import static com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment.showExportPsbtDialog;
 import static com.cobo.cold.ui.fragment.main.electrum.ElectrumBroadcastTxFragment.showElectrumInfo;
-import static com.cobo.cold.ui.fragment.main.electrum.UnsignedTxFragment.showExportTxnDialog;
 import static com.cobo.cold.viewmodel.WatchWallet.PSBT_MULTISIG_SIGN_ID;
 
 
@@ -127,11 +125,7 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
     }
 
     protected void showExportDialog() {
-        if (isMultiSig) {
-            showExportPsbtDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(), null);
-        } else {
-            showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(), null);
-        }
+        showExportPsbtDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(), null);
     }
 
     private void refreshFromList() {
@@ -198,12 +192,7 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
     }
 
     protected void displaySignResult(TxEntity txEntity) {
-        String base43;
-        if (isMultiSig) {
-            base43 = Base43.encode(Base64.decode(txEntity.getSignedHex()));
-        } else {
-            base43 = Base43.encode(Hex.decode(txEntity.getSignedHex()));
-        }
+        String base43 = Base43.encode(Base64.decode(txEntity.getSignedHex()));
         if (base43.length() <= 1000) {
             new Handler().postDelayed(() -> mBinding.txDetail.qrcodeLayout.qrcode.setData(base43), 500);
             mBinding.txDetail.export.setVisibility(View.GONE);

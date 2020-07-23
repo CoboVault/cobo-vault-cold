@@ -51,7 +51,7 @@
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/electrum_txn"
+            tools:listitem="@layout/file_list_item"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
         <LinearLayout

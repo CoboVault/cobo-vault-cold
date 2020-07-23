@@ -38,15 +38,6 @@
             app:popUpToInclusive="false" />
 
         <action
-            android:id="@+id/action_to_ElectrumTxConfirmFragment"
-            app:destination="@id/electrumTxConfirmFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right"
-            app:popUpTo="@id/assetFragment"
-            app:popUpToInclusive="false" />
-        <action
             android:id="@id/action_to_psbtTxConfirmFragment"
             app:destination="@id/psbtTxConfirmFragment"
             app:enterAnim="@anim/slide_in_right"
@@ -216,21 +207,6 @@
         android:label="SyncFragment" />
 
     <fragment
-        android:id="@+id/txnListFragment"
-        android:name="com.cobo.cold.ui.fragment.main.electrum.ElectrumTxnListFragment"
-        tools:layout="@layout/file_list"
-        android:label="ElectrumTxnListFragment" >
-        <action
-            android:id="@id/action_to_ElectrumTxConfirmFragment"
-            app:destination="@id/electrumTxConfirmFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right"
-            />
-    </fragment>
-
-    <fragment
         android:id="@+id/mnemonicInputFragment"
         android:name="com.cobo.cold.ui.fragment.setup.MnemonicInputFragment"
         tools:layout="@layout/mnemonic_input_fragment"
@@ -294,13 +270,6 @@
         <action
             android:id="@+id/action_to_multisigFragment"
             app:destination="@id/multisigFragment" />
-        <action
-            android:id="@+id/action_to_txnListFragment"
-            app:destination="@id/txnListFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right"/>
         <action
             android:id="@+id/action_to_psbtListFragment"
             app:destination="@id/psbtListFragment"
@@ -395,6 +364,14 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"/>
+
+        <action
+            android:id="@id/action_to_scan"
+            app:destination="@id/QRCodeScanFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
 

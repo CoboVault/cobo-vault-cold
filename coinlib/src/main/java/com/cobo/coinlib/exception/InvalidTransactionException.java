@@ -18,7 +18,20 @@
 package com.cobo.coinlib.exception;
 
 public class InvalidTransactionException extends Exception {
+
+    public static int IS_MULTISIG_TX = 1;
+    public static int IS_NOTMULTISIG_TX = 2;
+
+    private int errorCode = 0;
     public InvalidTransactionException(String message) {
         super(message);
+    }
+    public InvalidTransactionException(String msg, int code) {
+        this(msg);
+        this.errorCode = code;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
     }
 }

@@ -40,7 +40,7 @@
             android:id="@+id/file_name"
             android:layout_width="260dp"
             android:layout_height="wrap_content"
-            tools:text="unsigned-1.txn"
+            tools:text="unsigned-1.psbt"
             android:layout_centerVertical="true"
             android:textSize="15sp"
             android:text="@{file}"
