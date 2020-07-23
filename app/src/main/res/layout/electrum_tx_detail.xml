@@ -150,7 +150,8 @@
             android:id="@+id/tx_source"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"

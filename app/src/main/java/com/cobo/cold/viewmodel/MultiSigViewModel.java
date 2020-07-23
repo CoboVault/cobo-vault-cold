@@ -38,6 +38,7 @@ import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.db.entity.MultiSigAddressEntity;
 import com.cobo.cold.db.entity.MultiSigWalletEntity;
 import com.cobo.cold.db.entity.TxEntity;
+import com.cobo.cold.update.utils.FileUtils;
 import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.util.HashUtil;
 
@@ -429,8 +430,12 @@ public class MultiSigViewModel extends AndroidViewModel {
                 File[] files = storage.getExternalDir().listFiles();
                 if (files != null) {
                     for (File f : files) {
-                        if (f.getName().endsWith(".txt")) {
-                            fileList.add(f.getName());
+                        try {
+                            if (f.getName().endsWith(".txt") && decodeColdCardWalletFile(FileUtils.readString(f)) != null) {
+                                fileList.add(f.getName());
+                            }
+                        } catch (InvalidMultisigWalletException e) {
+                            e.printStackTrace();
                         }
                     }
                 }

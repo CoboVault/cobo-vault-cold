@@ -557,5 +557,11 @@
     ]]></string>
     <string name="duplicate_xpub_title">重复的扩展公钥</string>
     <string name="duplicate_xpub_hint">该扩展公钥您已填入，请填入其他参与者的扩展公钥</string>
+    <string name="no_multisig_wallet_file">暂无钱包文件</string>
+    <string name="no_multisig_wallet_file_hint">您可点击右上方扫码按钮扫描钱包二维码导入，或将钱包文件保存到TF卡内导入（仅支持FAT格式，容量不超过32G</string>
+    <string name="stop_export_xpub">停止创建观察钱包?</string>
+    <string name="stop_export_xpub_hint">您还需用Electrum上扫描%d个公钥就可完成观察钱包的创建</string>
+    <string name="keep_create">继续创建</string>
+    <string name="create_later">稍后创建</string>
 
 </resources>

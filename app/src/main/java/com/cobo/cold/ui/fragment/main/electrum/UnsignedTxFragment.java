@@ -247,7 +247,8 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
             }
 
             mBinding.txDetail.signStatus.setText(text);
-            mBinding.txDetail.txSource.setVisibility(View.GONE);
+        } else {
+            mBinding.txDetail.txSource.setVisibility(View.VISIBLE);
         }
     }
 

@@ -12,6 +12,7 @@ import com.cobo.cold.R;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
 import com.cobo.cold.databinding.ExportXpubToElectrumBinding;
+import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
 import com.cobo.cold.db.entity.MultiSigWalletEntity;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.Storage;
@@ -42,7 +43,7 @@ public class ExportXpubToElectrumFragment extends MultiSigBaseFragment<ExportXpu
         super.init(view);
         Bundle data = getArguments();
         Objects.requireNonNull(data);
-        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+        mBinding.toolbar.setNavigationOnClickListener(v -> onBackPressed());
         viewModel.getWalletEntity(data.getString("wallet_fingerprint"))
                 .observe(this, walletEntity -> {
                     this.walletEntity = walletEntity;
@@ -80,6 +81,28 @@ public class ExportXpubToElectrumFragment extends MultiSigBaseFragment<ExportXpu
         mBinding.exportToSdcard.setOnClickListener(v -> exportXpub());
 
         mBinding.info.setOnClickListener(v -> showElectrumInfo());
+    }
+
+    private void onBackPressed() {
+        if (index < xpubs.size() - 1) {
+            ModalDialog dialog = new ModalDialog();
+            ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                    R.layout.modal_with_two_button, null, false);
+            binding.title.setText(R.string.stop_export_xpub);
+            binding.subTitle.setText(getString(R.string.stop_export_xpub_hint, xpubs.size() - 1 - index));
+            binding.actionHint.setText("");
+            binding.left.setText(R.string.create_later);
+            binding.left.setOnClickListener(left -> {
+                dialog.dismiss();
+                popBackStack(R.id.multisigFragment, false);
+            });
+            binding.right.setText(R.string.keep_create);
+            binding.right.setOnClickListener(right -> dialog.dismiss());
+            dialog.setBinding(binding);
+            dialog.show(mActivity.getSupportFragmentManager(), "");
+        } else {
+            navigateUp();
+        }
     }
 
     private void showElectrumInfo() {

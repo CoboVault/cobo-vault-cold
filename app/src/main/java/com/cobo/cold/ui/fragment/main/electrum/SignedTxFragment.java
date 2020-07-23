@@ -121,7 +121,8 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
             }
 
             mBinding.txDetail.signStatus.setText(text);
-            mBinding.txDetail.txSource.setVisibility(View.GONE);
+        } else {
+            mBinding.txDetail.txSource.setVisibility(View.VISIBLE);
         }
     }
 

@@ -53,30 +53,45 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
         coinId = Utilities.isMainNet(mActivity) ? Coins.BTC.coinId() : Coins.XTN.coinId();
         mActivity.setSupportActionBar(mBinding.toolbar);
         mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
-        mBinding.fab.setOnClickListener(v -> addAddress());
         viewModel.getAllMultiSigWallet().observe(this, walletEntities -> {
             if (!walletEntities.isEmpty()) {
+                isEmpty = false;
                 wallet = walletEntities.get(0);
-                mBinding.walletLabel.setText(wallet.getWalletName() + " >");
-                mBinding.walletLabel.setOnClickListener(v -> navigateToManageWallet());
-                title = new String[]{getString(R.string.tab_my_address), getString(R.string.tab_my_change_address)};
-                initViewPager();
             } else {
                 isEmpty = true;
-                mBinding.empty.setVisibility(View.VISIBLE);
-                mBinding.fab.hide();
-                mBinding.createMultisig.setOnClickListener( v ->navigate(R.id.create_multisig_wallet));
-                mBinding.importMultisig.setOnClickListener( v ->navigate(R.id.import_multisig_file_list));
-                if (mMenu != null) {
-                    MenuItem sdcard = mMenu.findItem(R.id.action_sdcard);
-                    if (sdcard != null) sdcard.setVisible(false);
-                    MenuItem scan = mMenu.findItem(R.id.action_scan);
-                    if (scan != null) scan.setVisible(false);
-                }
             }
+            refreshUI();
         });
     }
 
+    private void refreshUI() {
+        if (isEmpty) {
+            mBinding.empty.setVisibility(View.VISIBLE);
+            mBinding.fab.hide();
+            mBinding.createMultisig.setOnClickListener( v ->navigate(R.id.create_multisig_wallet));
+            mBinding.importMultisig.setOnClickListener( v ->navigate(R.id.import_multisig_file_list));
+            if (mMenu != null) {
+                MenuItem sdcard = mMenu.findItem(R.id.action_sdcard);
+                if (sdcard != null) sdcard.setVisible(false);
+                MenuItem scan = mMenu.findItem(R.id.action_scan);
+                if (scan != null) scan.setVisible(false);
+            }
+        } else {
+            mBinding.empty.setVisibility(View.GONE);
+            mBinding.fab.show();
+            mBinding.fab.setOnClickListener(v -> addAddress());
+            mBinding.walletLabel.setText(wallet.getWalletName() + " >");
+            mBinding.walletLabel.setOnClickListener(v -> navigateToManageWallet());
+            title = new String[]{getString(R.string.tab_my_address), getString(R.string.tab_my_change_address)};
+            initViewPager();
+            if (mMenu != null) {
+                MenuItem sdcard = mMenu.findItem(R.id.action_sdcard);
+                if (sdcard != null) sdcard.setVisible(true);
+                MenuItem scan = mMenu.findItem(R.id.action_scan);
+                if (scan != null) scan.setVisible(true);
+            }
+        }
+    }
     private void navigateToManageWallet() {
         Bundle data = new Bundle();
         data.putString("wallet_fingerprint",wallet.getWalletFingerPrint());

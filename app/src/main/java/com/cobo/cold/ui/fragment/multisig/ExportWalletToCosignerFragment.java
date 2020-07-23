@@ -44,6 +44,14 @@ public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportW
         if (!isSetup) {
             mBinding.skip.setVisibility(View.GONE);
             mBinding.exportToElectrum.setVisibility(View.GONE);
+        } else {
+            mBinding.skip.setVisibility(View.VISIBLE);
+            mBinding.exportToElectrum.setVisibility(View.VISIBLE);
+            Bundle bundle = getArguments();
+            bundle.putBoolean("isImportMultisig", true);
+            View.OnClickListener onClickListener = v -> navigate(R.id.action_export_wallet_to_electrum, bundle);
+            mBinding.skip.setOnClickListener(onClickListener);
+            mBinding.exportToElectrum.setOnClickListener(onClickListener);
         }
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.qrcodeLayout.hint.setVisibility(View.GONE);

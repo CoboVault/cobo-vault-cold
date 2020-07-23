@@ -467,7 +467,14 @@
     <fragment
         android:id="@+id/exportWalletToCosignerFragment"
         android:name="com.cobo.cold.ui.fragment.multisig.ExportWalletToCosignerFragment"
-        android:label="ExportWalletToCosignerFragment"/>
+        android:label="ExportWalletToCosignerFragment">
+        <action android:id="@id/action_export_wallet_to_electrum"
+            app:destination="@id/exportWalletToElectrum"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/manageWalletFragment"

@@ -420,7 +420,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
     private String getMultiSigFromAddress() {
         String[] paths = transaction.getHdPath().split(AbsTx.SEPARATOR);
         String[] externalPath = Stream.of(paths)
-                .filter(this::isExternalPath)
+                .filter(this::isExternalMulisigPath)
                 .toArray(String[]::new);
         ensureMultisigAddressExist(externalPath);
 
@@ -510,6 +510,11 @@ public class TxConfirmViewModel extends AndroidViewModel {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private boolean isExternalMulisigPath(@NonNull String path) {
+        String[] split = path.replace(wallet.getExPubPath()+"/","").split("/");
+        return split.length == 2 && split[0].equals("0");
     }
 
     private void ensureAddressExist(String[] paths) {

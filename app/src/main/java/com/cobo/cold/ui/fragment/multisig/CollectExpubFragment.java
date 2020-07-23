@@ -71,6 +71,8 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
         adapter = new Adapter();
         mBinding.list.setAdapter(adapter);
         mBinding.create.setOnClickListener(v -> createWallet());
+        mBinding.create.setEnabled(data.stream()
+                .allMatch(i -> !TextUtils.isEmpty(i.xpub) && !TextUtils.isEmpty(i.xfp)));
     }
 
     private void showHint() {
@@ -94,8 +96,9 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                     .observe(this, walletEntity -> {
                         if (walletEntity != null) {
                             Bundle data = new Bundle();
-                            data.putString("wallet_fingerprint",walletEntity.getWalletFingerPrint());
-                            navigate(R.id.action_export_wallet_to_cosigner);
+                            data.putString("wallet_fingerprint", walletEntity.getWalletFingerPrint());
+                            data.putBoolean("setup", true);
+                            navigate(R.id.action_export_wallet_to_cosigner, data);
                         }
                     });
         } catch (JSONException | XfpNotMatchException e) {

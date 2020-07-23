@@ -93,7 +93,7 @@
                     style="@style/AcceptButton"
                     android:layout_width="match_parent"
                     android:layout_marginHorizontal="16dp"
-                    android:text="已导出，导出钱包为观察钱包（Electrum）" />
+                    android:text="@string/complete" />
 
                 <TextView
                     android:id="@+id/skip"
@@ -102,7 +102,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="@string/export_later"
+                    android:text="@string/cancel"
                     android:textColor="@color/colorAccent" />
             </LinearLayout>
         </ScrollView>

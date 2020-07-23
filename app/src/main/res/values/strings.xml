@@ -609,5 +609,10 @@
     ]]></string>
     <string name="duplicate_xpub_title">Repeat XPUB</string>
     <string name="duplicate_xpub_hint">You have filled in the XPUB.  Please fill in the XPUBs of other cosigners.</string>
-
+    <string name="no_multisig_wallet_file">No Multisig Wallet File</string>
+    <string name="no_multisig_wallet_file_hint">You can click the QR code button to scan the QR code of multisig wallet, or import multisig wallet file (Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting.)</string>
+    <string name="stop_export_xpub">Keep Creating</string>
+    <string name="stop_export_xpub_hint">You need to scan %d public key to complete the creation of watch-only wallet</string>
+    <string name="keep_create">Keep Creating</string>
+    <string name="create_later">Create Later</string>
 </resources>

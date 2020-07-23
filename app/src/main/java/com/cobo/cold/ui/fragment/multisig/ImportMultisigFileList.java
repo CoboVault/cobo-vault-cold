@@ -66,8 +66,8 @@ public class ImportMultisigFileList extends MultiSigBaseFragment<FileListBinding
                     adapter.setItems(files);
                 } else {
                     showEmpty.set(true);
-                    mBinding.emptyTitle.setText("");
-                    mBinding.emptyMessage.setText("");
+                    mBinding.emptyTitle.setText(R.string.no_multisig_wallet_file);
+                    mBinding.emptyMessage.setText(R.string.no_multisig_wallet_file_hint);
                 }
                 updateUi();
             });
