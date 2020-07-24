@@ -239,7 +239,7 @@ public class MultiSigViewModel extends AndroidViewModel {
     }
 
     public String getExportAllXpubFileName() {
-        return xfp + "-ALL-XPUB.json";
+        return "ccxp-" + xfp + ".json";
     }
 
     public String getAddressTypeString(MultiSig.Account account) {
