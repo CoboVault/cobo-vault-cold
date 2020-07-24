@@ -59,7 +59,7 @@ public class FingerprintManageFragment extends BaseFragment<FingerprintManageBin
         Bundle data = Objects.requireNonNull(getArguments());
 
         fpKit = new FingerprintKit(mActivity);
-        fingerprint = data.getParcelable("fingerprint");
+        fingerprint = data.getParcelable("xfp");
         fingerprintName = fingerprint.getName().toString();
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.toolbarTitle.setText(fingerprint.getName());

@@ -25,5 +25,5 @@
     <item android:id="@+id/drawer_settings" android:title=""/>
     <item android:id="@+id/drawer_about" android:title=""/>
     <item android:id="@+id/drawer_id" android:title=""/>
-
+    <item android:id="@+id/drawer_multisig" android:title=""/>
 </menu>

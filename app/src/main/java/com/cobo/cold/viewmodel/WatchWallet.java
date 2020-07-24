@@ -37,6 +37,7 @@ public enum WatchWallet {
     public static final String BLUE_WALLET_SIGN_ID = "blue_wallet_sign_id";
     public static final String BTCPAY_SIGN_ID = "blue_wallet_sign_id";
     public static final String GENERIC_WALLET_SIGN_ID = "generic_wallet_sign_id";
+    public static final String PSBT_MULTISIG_SIGN_ID = "PSBT_MULTISIG";
 
     private String walletId;
     WatchWallet(String walletId) {
@@ -128,7 +129,7 @@ public enum WatchWallet {
     }
 
     public boolean supportSwitchAccount() {
-        return this == WatchWallet.GENERIC;
+        return this == WatchWallet.GENERIC || this == WatchWallet.ELECTRUM;
     }
 
     public boolean supportNativeSegwit() {
@@ -136,6 +137,7 @@ public enum WatchWallet {
             case GENERIC:
             case BTCPAY:
             case BLUE:
+            case ELECTRUM:
             case WASABI:
                 return true;
         }

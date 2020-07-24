@@ -44,6 +44,7 @@ public class TxEntity implements Tx, FilterableItem {
     private String memo;
     private String signId;
     private String belongTo;
+    private String signStatus;
 
     @Override
     public String getBelongTo() {
@@ -170,12 +171,12 @@ public class TxEntity implements Tx, FilterableItem {
                 ", memo='" + memo + '\'' +
                 ", signId='" + signId + '\'' +
                 ", belongTo='" + belongTo + '\'' +
+                ", signStatus='" + signStatus + '\'' +
                 '}';
     }
 
     @Override
     public boolean filter(String s) {
-
         if (TextUtils.isEmpty(s)) {
             return true;
         }
@@ -184,5 +185,13 @@ public class TxEntity implements Tx, FilterableItem {
                 || to.toLowerCase().contains(s)
                 || txId.toLowerCase().contains(s)
                 || memo.toLowerCase().contains(s);
+    }
+
+    public String getSignStatus() {
+        return signStatus;
+    }
+
+    public void setSignStatus(String signStatus) {
+        this.signStatus = signStatus;
     }
 }

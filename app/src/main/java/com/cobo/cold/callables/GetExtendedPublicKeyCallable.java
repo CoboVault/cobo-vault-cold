@@ -24,20 +24,15 @@ import com.cobo.cold.encryptioncore.base.Payload;
 
 import java.util.concurrent.Callable;
 
+import static com.cobo.coinlib.utils.Coins.CURVE.SECP256K1;
 import static com.cobo.cold.db.PresetData.getCurveByPath;
 
 public class GetExtendedPublicKeyCallable implements Callable<String> {
     private final String pubKeyPath;
-    private final Coins.CURVE curve;
+    private final Coins.CURVE curve = SECP256K1;
 
     public GetExtendedPublicKeyCallable(String pubKeyPath) {
         this.pubKeyPath = pubKeyPath;
-        this.curve = getCurveByPath(pubKeyPath);
-    }
-
-    public GetExtendedPublicKeyCallable(String pubKeyPath, Coins.CURVE curve) {
-        this.pubKeyPath = pubKeyPath;
-        this.curve = curve;
     }
 
     @Override
@@ -45,7 +40,7 @@ public class GetExtendedPublicKeyCallable implements Callable<String> {
         final Callable<Packet> callable = new BlockingCallable(
                 new Packet.Builder(CONSTANTS.METHODS.GET_EXTENDED_PUBLICKEY)
                         .addBytePayload(CONSTANTS.TAGS.CURVE, getCurveTag())
-                        .addTextPayload(CONSTANTS.TAGS.PATH, pubKeyPath).build());
+                        .addTextPayload(CONSTANTS.TAGS.PATH, pubKeyPath.toUpperCase()).build());
         final Packet result;
         try {
             result = callable.call();

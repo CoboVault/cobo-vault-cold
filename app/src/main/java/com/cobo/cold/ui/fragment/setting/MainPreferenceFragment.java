@@ -19,7 +19,6 @@ package com.cobo.cold.ui.fragment.setting;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -27,6 +26,7 @@ import android.hardware.fingerprint.Fingerprint;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 
@@ -41,7 +41,6 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.allenliu.badgeview.BadgeFactory;
 import com.allenliu.badgeview.BadgeView;
 import com.android.internal.app.LocalePicker;
-import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.callables.ResetCallable;
@@ -95,6 +94,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
 
     private SwitchPreference switchPreference;
     private SimplePreference versionPreference;
+    private SimplePreference testNetPreference;
 
     private BadgeView patternBadgeView;
     private BadgeView fingerprintBadgeView;
@@ -133,6 +133,8 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
         if (!FingerprintKit.isHardwareDetected(mActivity)) {
             getPreferenceScreen().removePreference(fingerprintPreference);
         }
+        testNetPreference = findPreference(SETTING_TESTNET);
+        updateMenu();
     }
 
     @Override
@@ -153,7 +155,6 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
             chooseWalletPreference.setRemindText(WatchWallet.getWatchWallet(mActivity)
                     .getWalletName(mActivity));
         }
-
         updateMenu();
         Looper.getMainLooper().getQueue().addIdleHandler(() -> {
 
@@ -167,7 +168,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                         .bind(switchPreference.getViewHolder().findViewById(android.R.id.title));
             }
 
-            if (fingerprintPreference != null
+            if (fingerprintPreference != null && FingerprintKit.isHardwareDetected(mActivity)
                     && !Utilities.hasUserClickFingerprint(mActivity)) {
                 fingerprintBadgeView = BadgeFactory.create(mActivity)
                         .setWidthAndHeight(10, 10)
@@ -192,32 +193,18 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
         new UpdatingHelper(mActivity,true);
     }
 
-    void updateMenu() {
-        SimplePreference chooseWalletPreference = findPreference(SETTING_CHOOSE_WATCH_WALLET);
-        SwitchPreference testNetPreference = findPreference(SETTING_TESTNET);
-        if (chooseWalletPreference != null) {
-            chooseWalletPreference.setRemindText(WatchWallet.getWatchWallet(mActivity)
-                    .getWalletName(mActivity));
-        }
-        if (!Utilities.isMainNet(mActivity)) {
-            testNetPreference.setChecked(true);
+    private void updateMenu() {
+        WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
+        if (wallet != WatchWallet.GENERIC && wallet != WatchWallet.ELECTRUM) {
+            if (testNetPreference != null) {
+                getPreferenceScreen().removePreference(testNetPreference);
+            }
         } else {
-            testNetPreference.setChecked(false);
+            if (testNetPreference != null) {
+                getPreferenceScreen().addPreference(testNetPreference);
+                testNetPreference.setRemindText(Utilities.isMainNet(mActivity) ? getString(R.string.mainnet) : getString(R.string.testnet));
+            }
         }
-    }
-
-    private void handleSwitchNetWork() {
-        SharedPreferences pref = Utilities.getPrefs(mActivity);
-        boolean isMainNet = Utilities.isMainNet(mActivity);
-        if (isMainNet) {
-            Utilities.setIsMainNet(mActivity, false);
-            //only electrum support testnet
-            pref.edit().putString(SETTING_CHOOSE_WATCH_WALLET, WatchWallet.ELECTRUM.getWalletId()).commit();
-            pref.edit().putString(SETTING_ADDRESS_FORMAT, Coins.Account.P2SH.getType()).commit();
-        } else {
-            Utilities.setIsMainNet(mActivity, true);
-        }
-        startActivity(new Intent(mActivity, MainActivity.class));
     }
 
 
@@ -306,19 +293,17 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                 }
                 break;
             case SETTING_CHOOSE_WATCH_WALLET:
-                if (!Utilities.isMainNet(mActivity)) {
-                    ModalDialog.showCommonModal(mActivity,getString(R.string.hint),
-                            getString(R.string.testnet_hint),
-                            getString(R.string.confirm), null);
-                } else {
-                    Bundle data = new Bundle();
-                    data.putInt(Constants.KEY_TITLE, R.string.choose_watch_only_wallet);
-                    Navigation.findNavController(Objects.requireNonNull(getView()))
-                            .navigate(R.id.action_to_chooseWatchOnly, data);
-                }
+                Bundle data = new Bundle();
+                data.putInt(Constants.KEY_TITLE, R.string.choose_watch_only_wallet);
+                Navigation.findNavController(Objects.requireNonNull(getView()))
+                        .navigate(R.id.action_to_chooseWatchOnly, data);
+
                 break;
             case SETTING_TESTNET:
-                handleSwitchNetWork();
+                Bundle bundle = new Bundle();
+                bundle.putInt(Constants.KEY_TITLE, R.string.select_network);
+                Navigation.findNavController(Objects.requireNonNull(getView()))
+                        .navigate(R.id.action_to_switchNetwork, bundle);
             default:
                 break;
         }

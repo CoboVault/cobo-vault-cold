@@ -47,6 +47,7 @@ public abstract class AbsTx {
     protected String txType;
     protected String tokenName;
     protected boolean isToken;
+    protected boolean isMultisig;
 
     public static final String SEPARATOR = ",";
 
@@ -165,5 +166,9 @@ public abstract class AbsTx {
         } else {
             return coinCode;
         }
+    }
+
+    public boolean isMultisig() {
+        return isMultisig;
     }
 }

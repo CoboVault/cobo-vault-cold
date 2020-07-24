@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.text.TextUtils"/>
+        <variable
+            name="data"
+            type="com.cobo.cold.viewmodel.CollectXpubViewModel.XpubInfo" />
+
+        <variable
+            name="clickHandler"
+            type="com.cobo.cold.ui.fragment.multisig.CollectXpubClickHandler" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="6dp"
+        android:background="@drawable/text_input_bg"
+        android:paddingHorizontal="8dp">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:minHeight="90dp"
+            android:textColor="@color/white"
+            android:textSize="13sp" />
+
+
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="4dp"
+            android:paddingBottom="24dp"
+            android:background="?selectableItemBackground"
+            android:onClick="@{()->clickHandler.onClickDelete(data)}"
+            app:visibleGone="@{!TextUtils.isEmpty(data.xpub) &amp;&amp; data.index != 1 }"
+            android:src="@drawable/close"
+            android:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/sdcard"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="0dp"
+            android:paddingTop="24dp"
+            android:background="?selectableItemBackground"
+            android:onClick="@{()->clickHandler.onClickSdcard(data)}"
+            app:visibleGone="@{data.index!=1}"
+            android:src="@drawable/sdcard" />
+
+        <ImageView
+            android:id="@+id/scan"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="8dp"
+            android:paddingTop="24dp"
+            android:layout_toStartOf="@id/sdcard"
+            android:background="?selectableItemBackground"
+            android:onClick="@{()->clickHandler.onClickScan(data)}"
+            app:visibleGone="@{data.index!=1}"
+            android:src="@drawable/scan_qr_code" />
+    </RelativeLayout>
+
+</layout>

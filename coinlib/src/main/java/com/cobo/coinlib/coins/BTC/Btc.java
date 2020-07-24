@@ -35,6 +35,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Btc extends AbsCoin {
     public Btc(Coin impl) {
@@ -59,17 +61,21 @@ public class Btc extends AbsCoin {
         return ((BtcImpl)impl).parsePsbt(psbt);
     }
 
-    public void signPsbt(@NonNull String psbt, SignPsbtCallback callback, Signer... signers) {
+    public void signPsbt(@NonNull String psbt, SignPsbtCallback callback, boolean finalize, Signer... signers) {
         if (signers == null) {
             callback.onFail();
             return;
         }
-        SignPsbtResult result = ((BtcImpl)impl).signPsbt(psbt, signers);
+        SignPsbtResult result = ((BtcImpl)impl).signPsbt(psbt, finalize, signers);
         if (result != null && result.isValid()) {
             callback.onSuccess(result.txId, result.psbtB64);
         } else {
             callback.onFail();
         }
+    }
+
+    public void signPsbt(@NonNull String psbt, SignPsbtCallback callback, Signer... signers) {
+        signPsbt(psbt,callback,true, signers);
     }
 
     public static class Tx extends AbsTx implements UtxoTx {
@@ -78,7 +84,7 @@ public class Btc extends AbsCoin {
         private long outputAmount;
         private static final int DUST_AMOUNT = 546;
         private static final int OMNI_USDT_PROPERTYID = 31;
-        private ChangeAddressInfo changeAddressInfo;
+        private List<ChangeAddressInfo> changeAddressInfo;
 
         public Tx(JSONObject signTxObject, String coinCode) throws JSONException, InvalidTransactionException {
             super(signTxObject, coinCode);
@@ -89,7 +95,7 @@ public class Btc extends AbsCoin {
         }
 
         @Override
-        public ChangeAddressInfo getChangeAddressInfo() {
+        public List<ChangeAddressInfo> getChangeAddressInfo() {
             return changeAddressInfo;
         }
 
@@ -166,10 +172,14 @@ public class Btc extends AbsCoin {
                 JSONObject output = outputs.getJSONObject(i);
                 outputAmount += output.getLong("value");
                 if (output.optBoolean("isChange") && output.has("changeAddressPath")) {
-                    changeAddressInfo = new ChangeAddressInfo(
+
+                    if (changeAddressInfo == null) {
+                        changeAddressInfo = new ArrayList<>();
+                    }
+                    changeAddressInfo.add(new ChangeAddressInfo(
                             output.getString("address"),
                             output.getString("changeAddressPath"),
-                            output.getLong("value"));
+                            output.getLong("value")));
                 }
 
                 NumberFormat nf = NumberFormat.getInstance();
@@ -186,13 +196,17 @@ public class Btc extends AbsCoin {
         }
 
         protected void parseInput() throws JSONException, InvalidTransactionException {
+            isMultisig = metaData.optBoolean("multisig");
             JSONArray inputs = metaData.getJSONArray("inputs");
             StringBuilder paths = new StringBuilder();
             for (int i = 0; i < inputs.length(); i++) {
                 JSONObject input = inputs.getJSONObject(i);
                 String path = input.getString("ownerKeyPath");
                 input.put("bip32Derivation",new JSONArray());
-                checkHdPath(path, false);
+                if (!isMultisig) {
+                    checkHdPath(path, false);
+                } else {
+                }
                 paths.append(path).append(SEPARATOR);
                 int index = input.optInt("index");
                 if (index == 0) {
@@ -211,7 +225,12 @@ public class Btc extends AbsCoin {
         }
 
         private double calculateDisplayAmount() {
-            long changeAmount = changeAddressInfo != null ? changeAddressInfo.value : 0;
+            long changeAmount = 0;
+            if (changeAddressInfo != null) {
+                for (ChangeAddressInfo info : changeAddressInfo) {
+                    changeAmount += info.value;
+                }
+            }
             return satoshiToBtc(outputAmount - changeAmount);
         }
 
@@ -224,6 +243,5 @@ public class Btc extends AbsCoin {
         P2SH,
         SegWit
     }
-
 
 }

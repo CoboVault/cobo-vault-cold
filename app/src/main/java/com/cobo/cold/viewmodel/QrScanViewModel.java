@@ -31,6 +31,7 @@ import com.cobo.bcUniformResource.UniformResource;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Coins;
+import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.BuildConfig;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
@@ -42,15 +43,21 @@ import com.cobo.cold.protocol.ZipUtil;
 import com.cobo.cold.protocol.parser.ProtoParser;
 import com.cobo.cold.scan.ScannedData;
 import com.cobo.cold.ui.fragment.main.QRCodeScanFragment;
+import com.cobo.cold.ui.fragment.main.QrScanPurpose;
 import com.cobo.cold.update.utils.Digest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.KEY_TX_DATA;
@@ -73,7 +80,7 @@ public class QrScanViewModel extends AndroidViewModel {
 
     public void handleDecode(QRCodeScanFragment owner, ScannedData[] data)
             throws InvalidTransactionException, JSONException, CoinNotFindException,
-            UuidNotMatchException, UnknowQrCodeException, WatchWalletNotMatchException {
+            UuidNotMatchException, UnknowQrCodeException, WatchWalletNotMatchException, InvalidMultisigWalletException {
         this.fragment = owner;
         String valueType = data[0].valueType;
 
@@ -90,14 +97,25 @@ public class QrScanViewModel extends AndroidViewModel {
             }
             if (!TextUtils.isEmpty(hex)) {
                 WatchWallet wallet = WatchWallet.getWatchWallet(getApplication());
-                if (wallet.supportBc32QrCode()) {
-                    handleBc32Qrcode(hex);
+                if (QrScanPurpose.IMPORT_MULTISIG_WALLET == fragment.getPurpose()) {
+                    if (MultiSigViewModel.decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8)) != null){
+                        fragment.handleImportMultisigWallet(hex);
+                    } else {
+                        throw new UnknowQrCodeException("invalid multisig wallet qrcode");
+                    }
                 } else {
-                    throw new UnknowQrCodeException("not support bc32 qrcode in current wallet mode");
+                    if (wallet.supportBc32QrCode()) {
+                        handleBc32Qrcode(hex);
+                    } else {
+                        throw new UnknowQrCodeException("not support bc32 qrcode in current wallet mode");
+                    }
                 }
             }
 
         } else {
+            if (QrScanPurpose.IMPORT_MULTISIG_WALLET == fragment.getPurpose()) {
+                throw new UnknowQrCodeException("invalid multisig wallet qrcode");
+            }
             JSONObject object = parseToJson(data, valueType);
             if (object == null) {
                 throw new JSONException("object null");

@@ -19,6 +19,7 @@ package com.cobo.coinlib.coin;
 
 import com.cobo.coinlib.coins.BTC.Btc;
 import com.cobo.coinlib.coins.BTC.Deriver;
+import com.cobo.coinlib.utils.MultiSig;
 import com.google.common.collect.Lists;
 
 import org.bouncycastle.util.encoders.Hex;
@@ -95,10 +96,10 @@ public class BtcTest {
 
         List<byte[]> pubkeys = Lists.newArrayList(Hex.decode(pubkey1), Hex.decode(pubkey2), Hex.decode(pubkey3));
 
-        String address = new Deriver(true).createMultiSigAddress(2, pubkeys, Btc.AddressType.P2SH);
+        String address = new Deriver(true).createMultiSigAddress(2, pubkeys, MultiSig.Account.P2SH);
         assertEquals("3PA7HYj6x6xmk9WPGfrwqeKckYcQyNPdS7", address);
 
-        address = new Deriver(true).createMultiSigAddress(2, pubkeys, Btc.AddressType.SegWit);
+        address = new Deriver(true).createMultiSigAddress(2, pubkeys, MultiSig.Account.P2WSH);
         assertEquals("bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej", address);
     }
 
@@ -122,10 +123,19 @@ public class BtcTest {
         };
         List<String> xpubs = Lists.newArrayList(xpub1,xpub2,xpub3);
         for (int i = 0; i < expect.length; i++) {
-            String s = new Deriver(true).deriveMultiSigAddress(2, xpubs, new int[]{0, i}, Btc.AddressType.SegWit);
+            String s = new Deriver(true).deriveMultiSigAddress(2, xpubs, new int[]{0, i}, MultiSig.Account.P2WSH);
             assertEquals(expect[i],s);
         }
 
     }
 
+    private static String reverseHex(String hex) {
+        byte[] data = org.spongycastle.util.encoders.Hex.decode(hex);
+        for(int i = 0; i < data.length / 2; i++) {
+            byte temp = data[i];
+            data[i] = data[data.length - i - 1];
+            data[data.length - i - 1] = temp;
+        }
+        return org.spongycastle.util.encoders.Hex.toHexString(data);
+    }
 }

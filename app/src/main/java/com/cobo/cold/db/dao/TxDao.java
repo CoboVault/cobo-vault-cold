@@ -53,4 +53,7 @@ public interface TxDao {
 
     @Query("DELETE FROM txs WHERE belongTo = 'hidden'")
     int deleteHidden();
+
+    @Query("SELECT * FROM txs WHERE belongTo =:walletFingerprint")
+    LiveData<List<TxEntity>> loadMultisigTxs(String walletFingerprint);
 }

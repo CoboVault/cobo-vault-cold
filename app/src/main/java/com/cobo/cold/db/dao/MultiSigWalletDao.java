@@ -23,6 +23,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.cobo.cold.db.entity.MultiSigWalletEntity;
 
@@ -33,6 +34,18 @@ public interface MultiSigWalletDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long add(MultiSigWalletEntity wallet);
 
-    @Query("SELECT * FROM multi_sig_wallet")
-    LiveData<List<MultiSigWalletEntity>> loadAllMultiSigWallet();
+    @Query("SELECT * FROM multi_sig_wallet WHERE belongTo=:xfp")
+    LiveData<List<MultiSigWalletEntity>> loadAll(String xfp);
+
+    @Query("SELECT * FROM multi_sig_wallet WHERE belongTo=:xfp")
+    List<MultiSigWalletEntity> loadAllSync(String xfp);
+
+    @Update
+    int update(MultiSigWalletEntity walletEntity);
+
+    @Query("DELETE FROM multi_sig_wallet WHERE walletFingerPrint=:walletFingerPrint")
+    int delete(String walletFingerPrint);
+
+    @Query("SELECT * FROM multi_sig_wallet WHERE walletFingerPrint=:walletFingerPrint")
+    MultiSigWalletEntity loadWallet(String walletFingerPrint);
 }

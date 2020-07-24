@@ -21,23 +21,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
-import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
+import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Base43;
-import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.config.FeatureFlags;
 import com.cobo.cold.databinding.ElectrumTxConfirmFragmentBinding;
-import com.cobo.cold.databinding.ExportSdcardModalBinding;
 import com.cobo.cold.databinding.ProgressModalBinding;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
@@ -49,11 +47,11 @@ import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
-import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.util.KeyStoreUtil;
 import com.cobo.cold.viewmodel.GlobalViewModel;
-import com.cobo.cold.viewmodel.WatchWallet;
+import com.cobo.cold.viewmodel.NoMatchedMultisigWallet;
 import com.cobo.cold.viewmodel.TxConfirmViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.WatchWalletNotMatchException;
 import com.cobo.cold.viewmodel.XpubNotMatchException;
 
@@ -69,14 +67,9 @@ import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
-
-import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
-import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
-import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
-import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
-
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
+import static com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment.showExportPsbtDialog;
 import static com.cobo.cold.viewmodel.TxConfirmViewModel.STATE_NONE;
 
 public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBinding> {
@@ -94,47 +87,6 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
     private List<String> changeAddress = new ArrayList<>();
     private int feeAttackCheckingState;
     private FeeAttackChecking feeAttackChecking;
-
-    static void showExportTxnDialog(AppCompatActivity activity, String txId, String hex,
-                                    Runnable onExportSuccess) {
-        ModalDialog modalDialog = ModalDialog.newInstance();
-        ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
-                R.layout.export_sdcard_modal, null, false);
-        String fileName = "signed_" + txId.substring(0, 8) + ".txn";
-        binding.title.setText(R.string.export_signed_txn);
-        binding.fileName.setText(fileName);
-        binding.actionHint.setText(R.string.electrum_import_signed_txn);
-        binding.cancel.setOnClickListener(vv -> modalDialog.dismiss());
-        binding.confirm.setOnClickListener(vv -> {
-            modalDialog.dismiss();
-            if (hasSdcard(activity)) {
-                Storage storage = Storage.createByEnvironment(activity);
-                boolean result = writeToSdcard(Objects.requireNonNull(storage),
-                        generateElectrumTxn(hex), fileName);
-                if (result) {
-                    exportSuccess(activity, onExportSuccess);
-                }
-            } else {
-                showNoSdcardModal(activity);
-            }
-        });
-        modalDialog.setBinding(binding);
-        modalDialog.show(activity.getSupportFragmentManager(), "");
-    }
-
-    private static String generateElectrumTxn(String hex) {
-        JSONObject txn = new JSONObject();
-        try {
-            txn.put("hex", hex);
-            txn.put("complete", true);
-            txn.put("final", ElectrumTx.isFinal(hex));
-            return txn.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     @Override
     protected int setView() {
@@ -204,8 +156,6 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
     }
 
     protected void parseTx() {
-        String txnData = Objects.requireNonNull(getArguments()).getString("txn");
-        viewModel.parseTxnData(txnData);
     }
 
     private void subscribeTxEntityState() {
@@ -227,6 +177,31 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
         refreshAmount();
         refreshFromList();
         refreshReceiveList();
+        refreshSignStatus();
+    }
+
+    private void refreshSignStatus() {
+        if (!TextUtils.isEmpty(txEntity.getSignStatus())) {
+            mBinding.txDetail.txSignStatus.setVisibility(View.VISIBLE);
+            String signStatus = txEntity.getSignStatus();
+
+            String[] splits = signStatus.split("-");
+            int sigNumber = Integer.parseInt(splits[0]);
+            int reqSigNumber = Integer.parseInt(splits[1]);
+
+            String text;
+            if (sigNumber == 0) {
+                text = getString(R.string.unsigned);
+            } else if(sigNumber < reqSigNumber) {
+                text = getString(R.string.partial_signed);
+            } else {
+                text = getString(R.string.signed);
+            }
+
+            mBinding.txDetail.signStatus.setText(text);
+        } else {
+            mBinding.txDetail.txSource.setVisibility(View.VISIBLE);
+        }
     }
 
     private void observeParseTx(ProgressModalDialog dialog) {
@@ -234,16 +209,33 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
             if (ex != null) {
                 ex.printStackTrace();
                 dialog.dismiss();
-
+                String title = getString(R.string.electrum_decode_txn_fail);
                 String errorMessage = getString(R.string.incorrect_tx_data);
+                String buttonText = getString(R.string.confirm);
                 if (ex instanceof XpubNotMatchException || ex instanceof WatchWalletNotMatchException) {
                     errorMessage = getString(R.string.master_pubkey_not_match);
                 }
+                if (ex instanceof InvalidTransactionException) {
+                    InvalidTransactionException e = (InvalidTransactionException) ex;
+                    if (e.getErrorCode() == InvalidTransactionException.IS_NOTMULTISIG_TX) {
+                        title = getString(R.string.open_int_siglesig_wallet);
+                        errorMessage = getString(R.string.open_int_siglesig_wallet_hint);
+                    } else if (e.getErrorCode() == InvalidTransactionException.IS_MULTISIG_TX) {
+                        title = getString(R.string.open_int_multisig_wallet);
+                        errorMessage = getString(R.string.open_int_multisig_wallet_hint);
+                    }
+                    buttonText = getString(R.string.know);
+                }
+
+                if (ex instanceof NoMatchedMultisigWallet) {
+                    title = getString(R.string.no_matched_wallet);
+                    errorMessage = getString(R.string.no_matched_wallet_hint);
+                    buttonText = getString(R.string.know);
+                }
                 ModalDialog.showCommonModal(mActivity,
-                        getString(R.string.electrum_decode_txn_fail),
+                        title,
                         errorMessage,
-                        getString(R.string.confirm),
-                        null);
+                        buttonText,null);
                 navigateUp();
             }
         });
@@ -287,11 +279,17 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
         try {
             JSONArray outputs = new JSONArray(to);
             for (int i = 0; i < outputs.length(); i++) {
+                JSONObject output = outputs.getJSONObject(i);
+                boolean isChange = output.optBoolean("isChange");
+                String changePath = null;
+                if (isChange) {
+                    changePath = output.getString("changeAddressPath");
+                }
+
                 items.add(new TransactionItem(i,
-                        outputs.getJSONObject(i).getLong("value"),
-                        outputs.getJSONObject(i).getString("address"),
-                        txEntity.getCoinCode()
-                ));
+                        output.getLong("value"),
+                        output.getString("address"),
+                        txEntity.getCoinCode(),changePath));
             }
         } catch (JSONException e) {
             return;
@@ -364,11 +362,11 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
     }
 
     protected void onSignSuccess() {
-        handleTxnSignSuccess();
+        handleSignSuccess();
         viewModel.getSignState().removeObservers(this);
     }
 
-    private void handleTxnSignSuccess() {
+    private void handleSignSuccess() {
         String hex = viewModel.getTxHex();
         String base43 = Base43.encode(Hex.decode(hex));
         if (base43.length() <= 1000) {
@@ -377,8 +375,7 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
             data.putString(KEY_TXID, txId);
             navigate(R.id.action_to_broadcastElectrumTxFragment, data);
         } else {
-            showExportTxnDialog(mActivity, viewModel.getTxId(),
-                    viewModel.getTxHex(), this::navigateUp);
+            showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), this::navigateUp);
         }
     }
 

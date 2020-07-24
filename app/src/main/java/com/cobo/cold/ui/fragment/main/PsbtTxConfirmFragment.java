@@ -18,14 +18,17 @@
 package com.cobo.cold.ui.fragment.main;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
+import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.ui.fragment.main.electrum.UnsignedTxFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
@@ -46,17 +49,25 @@ import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
 public class PsbtTxConfirmFragment extends UnsignedTxFragment {
 
     private String psbtBase64;
+    private boolean multisig;
     @Override
     protected void init(View view) {
         super.init(view);
     }
 
-    static void showExportPsbtDialog(AppCompatActivity activity, String txId, String psbt,
-                                     Runnable onExportSuccess) {
+    public static void showExportPsbtDialog(AppCompatActivity activity, TxEntity tx,
+                                            Runnable onExportSuccess) {
+        showExportPsbtDialog(activity, !TextUtils.isEmpty(tx.getSignStatus()),
+                tx.getTxId(), tx.getSignedHex(), onExportSuccess);
+    }
+
+    public static void showExportPsbtDialog(AppCompatActivity activity,boolean multisig ,String txId, String psbt,
+                                            Runnable onExportSuccess) {
         ModalDialog modalDialog = ModalDialog.newInstance();
         ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
                 R.layout.export_sdcard_modal, null, false);
-        String fileName = "signed_" + txId.substring(0, 8) + ".psbt";
+        String prefix = multisig ? "partially_signed_":"signed_";
+        String fileName = prefix + txId.substring(0, 8) + ".psbt";
         binding.title.setText(R.string.export_signed_txn);
         binding.fileName.setText(fileName);
         binding.actionHint.setVisibility(View.GONE);
@@ -89,8 +100,11 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
 
     @Override
     protected void parseTx() {
-        psbtBase64 = Objects.requireNonNull(getArguments()).getString("psbt_base64");
-        viewModel.parsePsbtBase64(psbtBase64);
+        Bundle bundle = Objects.requireNonNull(getArguments());
+        multisig = bundle.getBoolean("multisig");
+        psbtBase64 = bundle.getString("psbt_base64");
+        viewModel.setIsMultisig(multisig);
+        viewModel.parsePsbtBase64(psbtBase64,multisig);
     }
 
     protected void onSignSuccess() {
@@ -99,9 +113,18 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
             Bundle data = new Bundle();
             data.putString(KEY_TXID,viewModel.getTxId());
             navigate(R.id.action_to_psbt_broadcast, data);
+        } else if(multisig || wallet == WatchWallet.ELECTRUM) {
+            String base43 = Base43.encode(Base64.decode(viewModel.getTxHex()));
+            if (base43.length() <= 1000) {
+                String txId = viewModel.getTxId();
+                Bundle data = new Bundle();
+                data.putString(BroadcastTxFragment.KEY_TXID, txId);
+                navigate(R.id.action_to_broadcastElectrumTxFragment, data);
+            } else {
+                showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), this::navigateUp);
+            }
         } else {
-            showExportPsbtDialog(mActivity, viewModel.getTxId(),
-                    viewModel.getTxHex(), this::navigateUp);
+            showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), this::navigateUp);
         }
         viewModel.getSignState().removeObservers(this);
     }

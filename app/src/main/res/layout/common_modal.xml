@@ -29,7 +29,8 @@
         <RelativeLayout
             android:layout_width="288dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/modal_bg">
+            android:background="@drawable/modal_bg"
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:id="@+id/close"
@@ -58,12 +59,15 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
                 android:layout_centerHorizontal="true"
-                android:layout_marginHorizontal="16dp"
+                android:paddingHorizontal="16dp"
                 android:layout_marginTop="12dp"
                 android:gravity="center_horizontal"
                 android:textSize="14sp"
                 android:lineSpacingExtra="6dp"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:maxLines="15"
+                android:scrollbars="none"
+                />
 
             <Button
                 android:id="@+id/confirm"
@@ -71,8 +75,20 @@
                 android:layout_width="match_parent"
                 android:layout_below="@id/sub_title"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/btn1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:padding="10dp"
+                android:layout_below="@id/confirm"
+                android:layout_centerHorizontal="true"
+                android:background="?attr/selectableItemBackground"
+                android:textColor="@color/colorAccent"
+                android:visibility="gone"
+                android:textSize="14sp" />
 
 
         </RelativeLayout>

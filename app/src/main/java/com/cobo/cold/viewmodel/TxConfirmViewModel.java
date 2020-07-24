@@ -26,13 +26,13 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.Util;
 import com.cobo.coinlib.coins.AbsCoin;
 import com.cobo.coinlib.coins.AbsTx;
 import com.cobo.coinlib.coins.BTC.Btc;
 import com.cobo.coinlib.coins.BTC.BtcImpl;
 import com.cobo.coinlib.coins.BTC.Deriver;
-import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.coins.BTC.UtxoTx;
 import com.cobo.coinlib.exception.InvalidPathException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
@@ -47,26 +47,31 @@ import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.callables.ClearTokenCallable;
+import com.cobo.cold.callables.GetExtendedPublicKeyCallable;
+import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.callables.GetMessageCallable;
 import com.cobo.cold.callables.GetPasswordTokenCallable;
 import com.cobo.cold.callables.VerifyFingerprintCallable;
 import com.cobo.cold.db.entity.AccountEntity;
 import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
+import com.cobo.cold.db.entity.MultiSigAddressEntity;
+import com.cobo.cold.db.entity.MultiSigWalletEntity;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryption.ChipSigner;
 import com.cobo.cold.protobuf.TransactionProtoc;
 import com.cobo.cold.ui.views.AuthenticateModal;
+import com.cobo.cold.util.HashUtil;
 import com.googlecode.protobuf.format.JsonFormat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.security.SignatureException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -76,16 +81,17 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.cobo.coinlib.coins.BTC.Electrum.TxUtils.isMasterPublicKeyMatch;
-import static com.cobo.cold.viewmodel.AddAddressViewModel.AddAddressTask.getAddressType;
+import static com.cobo.coinlib.Util.getExpubFingerprint;
+import static com.cobo.coinlib.Util.reverseHex;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.DUPLICATE_TX;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
-import static com.cobo.cold.viewmodel.ElectrumViewModel.adapt;
+import static com.cobo.cold.viewmodel.AddAddressViewModel.AddAddressTask.getAddressType;
 import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
-import static com.cobo.cold.viewmodel.WatchWallet.ELECTRUM_SIGN_ID;
+import static com.cobo.cold.viewmodel.WatchWallet.ELECTRUM;
 
 public class TxConfirmViewModel extends AndroidViewModel {
 
@@ -103,6 +109,8 @@ public class TxConfirmViewModel extends AndroidViewModel {
     private String coinCode;
     private final MutableLiveData<String> signState = new MutableLiveData<>();
     private AuthenticateModal.OnVerify.VerifyToken token;
+    private boolean isMultisig;
+    private MultiSigWalletEntity wallet;
 
     public TxConfirmViewModel(@NonNull Application application) {
         super(application);
@@ -129,14 +137,32 @@ public class TxConfirmViewModel extends AndroidViewModel {
                     parseTxException.postValue(new InvalidTransactionException("invalid transaction"));
                     return;
                 }
+
+                boolean isMultisig = transaction.isMultisig();
+                String walletFingerprint = null;
+                if (isMultisig) {
+                    walletFingerprint = object.getJSONObject("btcTx").getString("wallet_fingerprint");
+                }
                 if (transaction instanceof UtxoTx) {
-                    if (!checkChangeAddress(transaction)) {
+                    if (isMultisig) {
+                        if(!checkMultisigChangeAddress(transaction)) {
+                            observableTx.postValue(null);
+                            parseTxException.postValue(new InvalidTransactionException("invalid change address"));
+                            return;
+                        }
+                    } else if (!checkChangeAddress(transaction)) {
                         observableTx.postValue(null);
                         parseTxException.postValue(new InvalidTransactionException("invalid change address"));
                         return;
                     }
                 }
-                TxEntity tx = generateTxEntity(object);
+                TxEntity tx;
+                if (isMultisig) {
+                    tx = generateMultisigTxEntity(object, walletFingerprint);
+                } else {
+                    tx = generateTxEntity(object);
+                }
+
                 observableTx.postValue(tx);
                 if (Coins.BTC.coinCode().equals(transaction.getCoinCode())
                     || Coins.XTN.coinCode().equals(transaction.getCoinCode())) {
@@ -189,50 +215,27 @@ public class TxConfirmViewModel extends AndroidViewModel {
         return tx;
     }
 
-    public void parseTxnData(String txnData) {
-        AppExecutors.getInstance().networkIO().execute(() -> {
-            try {
-                CoinEntity coinEntity = mRepository.loadCoinSync(Utilities.currentCoin(getApplication()).coinId());
-                AccountEntity accountEntity =
-                        mRepository.loadAccountsByPath(coinEntity.getId(), getAccount(getApplication()).getPath());
-
-                if (accountEntity != null) {
-                    String xpub = accountEntity.getExPub();
-                    ElectrumTx tx = ElectrumTx.parse(Hex.decode(txnData), Utilities.isMainNet(getApplication()));
-
-                    if (!isMasterPublicKeyMatch(xpub, tx)) {
-                        throw new XpubNotMatchException("xpub not match");
-                    }
-
-                    JSONObject signTx = parseElectrumTxHex(tx);
-                    parseTxData(signTx.toString());
-                }
-            } catch (ElectrumTx.SerializationException | JSONException | DecoderException e) {
-                e.printStackTrace();
-                parseTxException.postValue(new InvalidTransactionException("invalid transaction"));
-            } catch (XpubNotMatchException e) {
-                e.printStackTrace();
-                parseTxException.postValue(new XpubNotMatchException("invalid transaction"));
-            }
-        });
+    private TxEntity generateMultisigTxEntity(JSONObject object, String walletFingerprint) throws JSONException {
+        wallet = mRepository.loadMultisigWallet(walletFingerprint);
+        TxEntity tx = new TxEntity();
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMaximumFractionDigits(20);
+        coinCode = Objects.requireNonNull(transaction).getCoinCode();
+        tx.setSignId(object.getString("signId"));
+        tx.setTimeStamp(object.optLong("timestamp"));
+        tx.setCoinCode(coinCode);
+        tx.setCoinId(Coins.coinIdFromCoinCode(coinCode));
+        tx.setFrom(getMultiSigFromAddress());
+        tx.setTo(getToAddress());
+        tx.setAmount(nf.format(transaction.getAmount()) + " " + transaction.getUnit());
+        tx.setFee(nf.format(transaction.getFee()) + " " + coinCode);
+        tx.setMemo(transaction.getMemo());
+        tx.setBelongTo(wallet.getWalletFingerPrint());
+        tx.setSignStatus(object.getJSONObject("btcTx").getString("signStatus"));
+        return tx;
     }
 
-    private JSONObject parseElectrumTxHex(ElectrumTx tx) throws JSONException {
-        JSONObject adaptTx = adapt(tx);
-        boolean isMainNet = Utilities.isMainNet(getApplication());
-        TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
-        builder.setCoinCode(Utilities.currentCoin(getApplication()).coinCode())
-                .setSignId(ELECTRUM_SIGN_ID)
-                .setTimestamp(generateAutoIncreaseId())
-                .setDecimal(8);
-        String signTransaction = new JsonFormat().printToString(builder.build());
-        JSONObject signTx = new JSONObject(signTransaction);
-        signTx.put(isMainNet ? "btcTx" : "xtnTx", adaptTx);
-        return signTx;
-    }
-
-
-    public void parsePsbtBase64(String psbtBase64) {
+    public void parsePsbtBase64(String psbtBase64, boolean multisig) {
         AppExecutors.getInstance().networkIO().execute(() -> {
             Btc btc = new Btc(new BtcImpl(Utilities.isMainNet(getApplication())));
             JSONObject psbtTx = btc.parsePsbt(psbtBase64);
@@ -242,17 +245,35 @@ public class TxConfirmViewModel extends AndroidViewModel {
             }
 
             try {
-                JSONObject adaptTx = PsbtViewModel.adapt(psbtTx);
-                if (adaptTx.getJSONArray("inputs").length() == 0) {
-                    parseTxException.postValue(
-                            new InvalidTransactionException("master fingerprint not match, or nothing can be sign"));
+                boolean isMultigisTx = psbtTx.getJSONArray("inputs").getJSONObject(0).getBoolean("isMultiSign");
+                JSONObject adaptTx;
+                if (!multisig) {
+                    if (isMultigisTx) {
+                        parseTxException.postValue(
+                                new InvalidTransactionException("",InvalidTransactionException.IS_MULTISIG_TX));
+                        return;
+                    }
+                    adaptTx = new PsbtTxAdapter().adapt(psbtTx);
+                    if (adaptTx.getJSONArray("inputs").length() == 0) {
+                        parseTxException.postValue(
+                                new InvalidTransactionException("master xfp not match, or nothing can be sign"));
+                        return;
+                    }
+                } else {
+                    if (!isMultigisTx) {
+                        parseTxException.postValue(
+                                new InvalidTransactionException("",InvalidTransactionException.IS_NOTMULTISIG_TX));
+                        return;
+                    }
+                    adaptTx = new PsbtMultiSigTxAdapter().adapt(psbtTx);
                 }
+
                 JSONObject signTx = parsePsbtTx(adaptTx);
                 parseTxData(signTx.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
                 parseTxException.postValue(new InvalidTransactionException("adapt failed,invalid psbt data"));
-            } catch (WatchWalletNotMatchException e) {
+            } catch (WatchWalletNotMatchException | NoMatchedMultisigWallet e) {
                 e.printStackTrace();
                 parseTxException.postValue(e);
             }
@@ -261,10 +282,11 @@ public class TxConfirmViewModel extends AndroidViewModel {
     }
 
     private JSONObject parsePsbtTx(JSONObject adaptTx) throws JSONException {
+        boolean isMultisig = adaptTx.optBoolean("multisig");
         TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
         boolean isMainNet = Utilities.isMainNet(getApplication());
         builder.setCoinCode(Utilities.currentCoin(getApplication()).coinCode())
-                .setSignId(WatchWallet.getWatchWallet(getApplication()).getSignId())
+                .setSignId(isMultisig? "PSBT_MULTISIG" : WatchWallet.getWatchWallet(getApplication()).getSignId())
                 .setTimestamp(generateAutoIncreaseId())
                 .setDecimal(8);
         String signTransaction = new JsonFormat().printToString(builder.build());
@@ -285,34 +307,64 @@ public class TxConfirmViewModel extends AndroidViewModel {
     }
 
     private boolean checkChangeAddress(AbsTx utxoTx) {
-        UtxoTx.ChangeAddressInfo changeAddressInfo = ((UtxoTx) utxoTx).getChangeAddressInfo();
-        if (changeAddressInfo == null) {
+        List<UtxoTx.ChangeAddressInfo>  changeAddressInfoList = ((UtxoTx) utxoTx).getChangeAddressInfo();
+
+        if (changeAddressInfoList == null || changeAddressInfoList.isEmpty()) {
             return true;
         }
-        String hdPath = changeAddressInfo.hdPath;
-        String address = changeAddressInfo.address;
-
-        String accountHdPath = getAccountHdPath(changeAddressInfo.hdPath);
-
-        AccountEntity accountEntity = getAccountEntityByPath(accountHdPath,
-                mRepository.loadCoinEntityByCoinCode(utxoTx.getCoinCode()));
-        if (accountEntity == null) {
-            return false;
-        }
-        String exPub = accountEntity.getExPub();
         Deriver deriver = new Deriver(Utilities.isMainNet(getApplication()));
-
-        try {
-            AddressIndex addressIndex = CoinPath.parsePath(hdPath);
-            int change = addressIndex.getParent().getValue();
-            int index = addressIndex.getValue();
-            String expectAddress = Objects.requireNonNull(deriver).derive(exPub, change,
-                    index, getAddressType(accountEntity));
-            return address.equals(expectAddress);
-        } catch (InvalidPathException e) {
-            e.printStackTrace();
-            return false;
+        for (UtxoTx.ChangeAddressInfo changeAddressInfo : changeAddressInfoList) {
+            String hdPath = changeAddressInfo.hdPath;
+            String address = changeAddressInfo.address;
+            String accountHdPath = getAccountHdPath(changeAddressInfo.hdPath);
+            AccountEntity accountEntity = getAccountEntityByPath(accountHdPath,
+                    mRepository.loadCoinEntityByCoinCode(utxoTx.getCoinCode()));
+            if (accountEntity == null) {
+                return false;
+            }
+            String exPub = accountEntity.getExPub();
+            try {
+                AddressIndex addressIndex = CoinPath.parsePath(hdPath);
+                int change = addressIndex.getParent().getValue();
+                int index = addressIndex.getValue();
+                String expectAddress = Objects.requireNonNull(deriver).derive(exPub, change,
+                        index, getAddressType(accountEntity));
+                if (!address.equals(expectAddress)) {
+                    return false;
+                }
+            } catch (InvalidPathException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
+
+        return true;
+    }
+
+    private boolean checkMultisigChangeAddress(AbsTx utxoTx) {
+        List<UtxoTx.ChangeAddressInfo> changeAddressInfo = ((UtxoTx) utxoTx).getChangeAddressInfo();
+        if (changeAddressInfo == null || changeAddressInfo.isEmpty()) {
+            return true;
+        }
+
+        String exPubPath = wallet.getExPubPath();
+        for (UtxoTx.ChangeAddressInfo info : changeAddressInfo) {
+            String path = info.hdPath;
+            String address = info.address;
+            if (!path.startsWith(exPubPath)) return false;
+            path = path.replace(exPubPath + "/","");
+
+            String[] index = path.split("/");
+
+            if (index.length != 2) return false;
+            String expectedAddress = wallet.deriveAddress(
+                    new int[] {Integer.valueOf(index[0]), Integer.valueOf(index[1])});
+
+            if (!expectedAddress.equals(address)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private String getToAddress() {
@@ -326,6 +378,38 @@ public class TxConfirmViewModel extends AndroidViewModel {
         }
 
         return to;
+    }
+    private String getMultiSigFromAddress() {
+        String[] paths = transaction.getHdPath().split(AbsTx.SEPARATOR);
+        String[] externalPath = Stream.of(paths)
+                .filter(this::isExternalMulisigPath)
+                .toArray(String[]::new);
+        ensureMultisigAddressExist(externalPath);
+
+        try {
+            if (transaction instanceof UtxoTx) {
+                JSONArray inputsClone = new JSONArray();
+                JSONArray inputs = ((UtxoTx) transaction).getInputs();
+
+                for (int i = 0; i < inputs.length(); i++) {
+                    JSONObject input = inputs.getJSONObject(i);
+                    long value = input.getJSONObject("utxo").getLong("value");
+                    String hdpath = input.getString("ownerKeyPath");
+                    hdpath = hdpath.replace(wallet.getExPubPath() + "/","");
+                    String[] index = hdpath.split("/");
+                    String from = wallet.deriveAddress(
+                            new int[] {Integer.valueOf(index[0]), Integer.valueOf(index[1])});
+                    inputsClone.put(new JSONObject().put("value", value)
+                            .put("address",from));
+                }
+
+                return inputsClone.toString();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     private String getFromAddress() {
@@ -390,6 +474,11 @@ public class TxConfirmViewModel extends AndroidViewModel {
         return false;
     }
 
+    private boolean isExternalMulisigPath(@NonNull String path) {
+        String[] split = path.replace(wallet.getExPubPath()+"/","").split("/");
+        return split.length == 2 && split[0].equals("0");
+    }
+
     private void ensureAddressExist(String[] paths) {
         if (paths == null || paths.length == 0) {
             return;
@@ -407,6 +496,45 @@ public class TxConfirmViewModel extends AndroidViewModel {
         AddressEntity address = mRepository.loadAddressBypath(maxIndexHdPath);
         if (address == null) {
             addAddress(maxIndexHdPath);
+        }
+    }
+
+    private void ensureMultisigAddressExist(String[] paths) {
+        if (paths == null || paths.length == 0) {
+            return;
+        }
+        String maxIndexHdPath = paths[0];
+        int max = getAddressIndex(maxIndexHdPath);
+        if (paths.length > 1) {
+             max = getAddressIndex(paths[0]);
+            for (String path : paths) {
+                if (getAddressIndex(path) > max) {
+                    max = getAddressIndex(path);
+                    maxIndexHdPath = path;
+                }
+            }
+        }
+
+        MultiSigAddressEntity entity = mRepository.loadAllMultiSigAddress(wallet.getWalletFingerPrint(), maxIndexHdPath);
+        if (entity == null) {
+            List<MultiSigAddressEntity> address = mRepository.loadAllMultiSigAddressSync(wallet.getWalletFingerPrint());
+            Optional<MultiSigAddressEntity> optional = address.stream()
+                    .filter(addressEntity -> addressEntity.getPath()
+                            .startsWith(wallet.getExPubPath()+"/" + 0))
+                    .max((o1, o2) -> o1.getIndex() - o2.getIndex());
+            int index = optional.map(MultiSigAddressEntity::getIndex).orElse(-1);
+            if (index < max) {
+                final CountDownLatch mLatch = new CountDownLatch(1);
+                addingAddress.postValue(true);
+                new MultiSigViewModel.AddAddressTask(wallet.getWalletFingerPrint(),
+                        mRepository, mLatch::countDown ,0).execute(max - index);
+                try {
+                    mLatch.await();
+                    addingAddress.postValue(false);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -479,11 +607,12 @@ public class TxConfirmViewModel extends AndroidViewModel {
     }
 
     private int getAddressIndex(String hdPath) {
+        String[] splits = hdPath.split("/");
         try {
-            return CoinPath.parsePath(hdPath).getValue();
-        } catch (InvalidPathException e) {
-            e.printStackTrace();
-        }
+            if (splits.length > 1) {
+                return Integer.valueOf(splits[splits.length - 1]);
+            }
+        }catch (NumberFormatException ignore){}
         return 0;
     }
 
@@ -521,7 +650,11 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 @Override
                 public void onSuccess(String txId, String psbtB64) {
                     TxEntity tx = observableTx.getValue();
-                    Objects.requireNonNull(tx).setTxId(txId);
+                    Objects.requireNonNull(tx);
+                    if (isMultisig) {
+                        updateTxSignStatus(tx);
+                    }
+                    tx.setTxId(txId);
                     tx.setSignedHex(psbtB64);
                     mRepository.insertTx(tx);
                     signState.postValue(STATE_SIGN_SUCCESS);
@@ -532,12 +665,27 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 public void postProgress(int progress) {
 
                 }
+
+                private void updateTxSignStatus(TxEntity tx) {
+                    String signStatus = tx.getSignStatus();
+                    String[] splits = signStatus.split("-");
+                    int sigNumber = Integer.parseInt(splits[0]);
+                    int reqSigNumber = Integer.parseInt(splits[1]);
+                    int keyNumber = Integer.parseInt(splits[2]);
+                    tx.setSignStatus((sigNumber+1)+"-"+reqSigNumber+"-"+keyNumber);
+                }
             };
             callback.startSign();
             Btc btc = new Btc(new BtcImpl(Utilities.isMainNet(getApplication())));
-            btc.signPsbt(psbt, callback, signer);
+            if (isMultisig || WatchWallet.getWatchWallet(getApplication()) == ELECTRUM) {
+                btc.signPsbt(psbt, callback, false, signer);
+            } else {
+                btc.signPsbt(psbt, callback, signer);
+            }
         });
     }
+
+
 
 
     private SignCallback initSignCallback() {
@@ -599,18 +747,32 @@ public class TxConfirmViewModel extends AndroidViewModel {
             Log.w(TAG,"authToken null");
             return null;
         }
-        CoinEntity coinEntity = mRepository.loadCoinEntityByCoinCode(coinCode);
-        for (int i = 0; i < distinctPaths.length; i++) {
-            String accountHdPath = getAccountHdPath(distinctPaths[i]);
-            if (accountHdPath == null) {
-                return null;
+
+        if (transaction.isMultisig()) {
+            for (int i = 0; i < distinctPaths.length; i++) {
+                String path = distinctPaths[i].replace(wallet.getExPubPath() + "/","");
+                String[] index = path.split("/");
+                if (index.length != 2) return null;
+                String expub = new GetExtendedPublicKeyCallable(wallet.getExPubPath()).call();
+                String pubKey = Util.getPublicKeyHex(
+                        ExtendPubkeyFormat.convertExtendPubkey(expub,ExtendPubkeyFormat.xpub),
+                        Integer.valueOf(index[0]),Integer.valueOf(index[1]));
+                signer[i] = new ChipSigner(distinctPaths[i].toLowerCase(), authToken, pubKey);
             }
-            AccountEntity accountEntity = getAccountEntityByPath(accountHdPath,coinEntity);
-            if (accountEntity == null) {
-                return null;
+        } else {
+            CoinEntity coinEntity = mRepository.loadCoinEntityByCoinCode(coinCode);
+            for (int i = 0; i < distinctPaths.length; i++) {
+                String accountHdPath = getAccountHdPath(distinctPaths[i]);
+                if (accountHdPath == null) {
+                    return null;
+                }
+                AccountEntity accountEntity = getAccountEntityByPath(accountHdPath, coinEntity);
+                if (accountEntity == null) {
+                    return null;
+                }
+                String pubKey = Util.getPublicKeyHex(accountEntity.getExPub(), distinctPaths[i]);
+                signer[i] = new ChipSigner(distinctPaths[i].toLowerCase(), authToken, pubKey);
             }
-            String pubKey = Util.getPublicKeyHex(accountEntity.getExPub(), distinctPaths[i]);
-            signer[i] = new ChipSigner(distinctPaths[i].toLowerCase(), authToken, pubKey);
         }
         return signer;
     }
@@ -649,6 +811,10 @@ public class TxConfirmViewModel extends AndroidViewModel {
         return authToken;
     }
 
+    public TxEntity getSignedTxEntity() {
+        return observableTx.getValue();
+    }
+
     public String getTxId() {
         return Objects.requireNonNull(observableTx.getValue()).getTxId();
     }
@@ -666,5 +832,266 @@ public class TxConfirmViewModel extends AndroidViewModel {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void setIsMultisig(boolean multisig) {
+        this.isMultisig = multisig;
+    }
+
+    class PsbtTxAdapter {
+        JSONObject adapt(JSONObject psbt) throws JSONException, WatchWalletNotMatchException {
+            JSONObject object = new JSONObject();
+            JSONArray inputs = new JSONArray();
+            JSONArray outputs = new JSONArray();
+            adaptInputs(psbt.getJSONArray("inputs"), inputs);
+            if (inputs.length() < 1) {
+                throw new WatchWalletNotMatchException("no input match masterFingerprint");
+            }
+
+            adaptOutputs(psbt.getJSONArray("outputs"), outputs);
+            object.put("inputs", inputs);
+            object.put("outputs", outputs);
+            return object;
+        }
+
+        private void adaptInputs(JSONArray psbtInputs, JSONArray inputs) throws JSONException {
+            Coins.Account account = getAccount(MainApplication.getApplication());
+            for (int i = 0; i < psbtInputs.length(); i++) {
+                JSONObject psbtInput = psbtInputs.getJSONObject(i);
+                JSONObject in = new JSONObject();
+                JSONObject utxo = new JSONObject();
+                in.put("hash", psbtInput.getString("txId"));
+                in.put("index", psbtInput.getInt("index"));
+                JSONArray bip32Derivation = psbtInput.getJSONArray("hdPath");
+                for (int j = 0; j < bip32Derivation.length(); j++) {
+                    JSONObject item = bip32Derivation.getJSONObject(j);
+                    String hdPath = item.getString("path");
+                    String fingerprint = item.getString("masterFingerprint");
+                    boolean match = false;
+                    if (matchRootXfp(fingerprint, hdPath)) {
+                        match = true;
+                    }
+                    if (!match) {
+                        match = matchKeyXfp(fingerprint);
+                        hdPath = account.getPath() + hdPath.substring(1);
+                    }
+                    if (match) {
+                        utxo.put("publicKey", item.getString("pubkey"));
+                        utxo.put("value", psbtInput.optInt("value"));
+                        in.put("utxo", utxo);
+                        in.put("ownerKeyPath", hdPath);
+                        in.put("masterFingerprint", item.getString("masterFingerprint"));
+                        inputs.put(in);
+                        break;
+                    }
+                }
+
+            }
+
+        }
+
+        boolean matchRootXfp(String fingerprint, String path) {
+            String rootXfp = new GetMasterFingerprintCallable().call();
+            Coins.Account account = getAccount(MainApplication.getApplication());
+            return  (fingerprint.equalsIgnoreCase(rootXfp)
+                    || reverseHex(fingerprint).equalsIgnoreCase(rootXfp))
+                    && path.toUpperCase().startsWith(account.getPath());
+        }
+
+        boolean matchKeyXfp(String fingerprint) {
+            Coins.Account account = getAccount(MainApplication.getApplication());
+            String xpub = new GetExtendedPublicKeyCallable(account.getPath()).call();
+            String xfp = getExpubFingerprint(xpub);
+            return  (fingerprint.equalsIgnoreCase(xfp)
+                    || reverseHex(fingerprint).equalsIgnoreCase(xfp));
+        }
+
+        private void adaptOutputs(JSONArray psbtOutputs, JSONArray outputs) throws JSONException {
+            Coins.Account account = getAccount(MainApplication.getApplication());
+            for(int i = 0; i < psbtOutputs.length(); i++) {
+                JSONObject psbtOutput = psbtOutputs.getJSONObject(i);
+                JSONObject out = new JSONObject();
+                out.put("address", psbtOutput.getString("address"));
+                out.put("value", psbtOutput.getInt("value"));
+                JSONArray bip32Derivation = psbtOutput.optJSONArray("hdPath");
+                if (bip32Derivation != null) {
+                    for (int j = 0; j < bip32Derivation.length(); j++) {
+                        JSONObject item = bip32Derivation.getJSONObject(j);
+                        String hdPath = item.getString("path");
+                        String fingerprint = item.getString("masterFingerprint");
+                        boolean match = false;
+                        if (matchRootXfp(fingerprint, hdPath)) {
+                            match = true;
+                        }
+                        if (!match) {
+                            match = matchKeyXfp(fingerprint);
+                            hdPath = account.getPath().toLowerCase() + hdPath.substring(1);
+                        }
+
+                        if (match) {
+                            out.put("isChange",true);
+                            out.put("changeAddressPath", hdPath);
+
+                        }
+                    }
+                }
+                outputs.put(out);
+            }
+        }
+    }
+
+
+    class PsbtMultiSigTxAdapter {
+        private int total;
+        private int threshold;
+        private String fingerprintsHash;
+        private JSONObject object;
+        JSONObject adapt(JSONObject psbt) throws JSONException, WatchWalletNotMatchException, NoMatchedMultisigWallet {
+            object = new JSONObject();
+            JSONArray inputs = new JSONArray();
+            JSONArray outputs = new JSONArray();
+            adaptInputs(psbt.getJSONArray("inputs"), inputs);
+            if (inputs.length() < 1) {
+                throw new WatchWalletNotMatchException("no input match masterFingerprint");
+            }
+            adaptOutputs(psbt.getJSONArray("outputs"), outputs);
+            object.put("inputs", inputs);
+            object.put("outputs", outputs);
+            object.put("multisig", true);
+            object.put("wallet_fingerprint", wallet!=null ? wallet.getWalletFingerPrint(): null);
+            return object;
+        }
+
+        private void adaptInputs(JSONArray psbtInputs, JSONArray inputs) throws JSONException, NoMatchedMultisigWallet {
+            for (int i = 0; i < psbtInputs.length(); i++) {
+                JSONObject psbtInput = psbtInputs.getJSONObject(i);
+                JSONObject in = new JSONObject();
+                JSONObject utxo = new JSONObject();
+                in.put("hash", psbtInput.getString("txId"));
+                in.put("index", psbtInput.getInt("index"));
+
+                if (i == 0) {
+                    String[] signStatus = psbtInput.getString("signStatus").split("-");
+                    total = Integer.valueOf(signStatus[2]);
+                    threshold = Integer.valueOf(signStatus[1]);
+                    object.put("signStatus", psbtInput.getString("signStatus"));
+                }
+
+                JSONArray bip32Derivation = psbtInput.getJSONArray("hdPath");
+                int length = bip32Derivation.length();
+                if (length != total) break;
+                String hdPath = "";
+                List<String> fps = new ArrayList<>();
+                for (int j = 0; j < total; j++) {
+                    JSONObject item = bip32Derivation.getJSONObject(j);
+                    hdPath = item.getString("path");
+                    String fingerprint = item.getString("masterFingerprint");
+                    fps.add(fingerprint);
+                }
+
+                // the first input xpub info
+                if (i == 0) {
+                    fingerprintsHash = fingerprintsHash(fps);
+                }
+
+                //all input should have the same xpub info
+                if (!fingerprintsHash(fps).equals(fingerprintsHash)) break;
+
+                //find the exists multisig wallet match the xub info
+                if (wallet == null) {
+                    List<MultiSigWalletEntity> wallets = mRepository.loadAllMultiSigWalletSync()
+                            .stream()
+                            .filter(w -> w.getTotal() == total && w.getThreshold() == threshold)
+                            .collect(Collectors.toList());
+                    for (MultiSigWalletEntity w : wallets) {
+                        JSONArray array = new JSONArray(w.getExPubs());
+                        List<String> walletFps = new ArrayList<>();
+                        List<String> walletRootXfps = new ArrayList<>();
+                        for (int k = 0; k < array.length(); k++) {
+                            JSONObject xpub = array.getJSONObject(k);
+                            walletFps.add(getExpubFingerprint(xpub.getString("xpub")));
+                            walletRootXfps.add(xpub.getString("xfp"));
+                        }
+                        if (fingerprintsHash(walletFps).equalsIgnoreCase(fingerprintsHash)
+                           ||fingerprintsHash(walletRootXfps).equalsIgnoreCase(fingerprintsHash)) {
+                            wallet = w;
+                            break;
+                        }
+                    }
+                }
+
+                if (wallet != null) {
+                    if (!hdPath.startsWith(wallet.getExPubPath())) {
+                        hdPath = wallet.getExPubPath()+ hdPath.substring(1);
+                    }
+                    utxo.put("publicKey", findMyPubKey(bip32Derivation));
+                    utxo.put("value", psbtInput.optInt("value"));
+                    in.put("utxo", utxo);
+                    in.put("ownerKeyPath", hdPath);
+                    in.put("masterFingerprint", wallet.getBelongTo());
+                    inputs.put(in);
+                } else {
+                    throw new NoMatchedMultisigWallet("no matched multisig wallet");
+                }
+
+            }
+        }
+
+        private String findMyPubKey(JSONArray bip32Derivation)
+                throws JSONException {
+            String xfp = wallet.getBelongTo();
+            String fp = null;
+            JSONArray array = new JSONArray(wallet.getExPubs());
+            for (int i =0 ; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+                if (obj.getString("xfp").equalsIgnoreCase(xfp)) {
+                     fp = getExpubFingerprint(obj.getString("xpub"));
+                }
+            }
+
+            if (fp != null) {
+                for (int i = 0; i < bip32Derivation.length(); i++) {
+                    if (fp.equalsIgnoreCase(bip32Derivation.getJSONObject(i)
+                            .getString("masterFingerprint"))) {
+                        return bip32Derivation.getJSONObject(i).getString("pubkey");
+                    }
+                }
+            }
+            return "";
+        }
+
+
+        private String fingerprintsHash(List<String> fps) {
+            String concat  = fps.stream()
+                    .map(String::toUpperCase)
+                    .sorted()
+                    .reduce((s1, s2) -> s1 + s2).orElse("");
+
+            return Hex.toHexString(HashUtil.sha256(concat));
+        }
+
+        private void adaptOutputs(JSONArray psbtOutputs, JSONArray outputs) throws JSONException {
+            for(int i = 0; i < psbtOutputs.length(); i++) {
+                JSONObject psbtOutput = psbtOutputs.getJSONObject(i);
+                JSONObject out = new JSONObject();
+                out.put("address", psbtOutput.getString("address"));
+                out.put("value", psbtOutput.getInt("value"));
+                JSONArray bip32Derivation = psbtOutput.optJSONArray("hdPath");
+                if (bip32Derivation != null) {
+                    for (int j = 0; j < bip32Derivation.length(); j++) {
+                        JSONObject item = bip32Derivation.getJSONObject(j);
+                        String hdPath = item.getString("path");
+                        if (!hdPath.startsWith(wallet.getExPubPath())) {
+                            hdPath = wallet.getExPubPath()+ hdPath.substring(1);
+                        }
+                        out.put("isChange",true);
+                        out.put("changeAddressPath", hdPath);
+                        break;
+
+                    }
+                }
+                outputs.put(out);
+            }
+        }
     }
 }

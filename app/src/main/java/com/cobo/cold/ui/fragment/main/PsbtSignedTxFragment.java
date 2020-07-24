@@ -102,7 +102,6 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
 
     @Override
     protected void showExportDialog() {
-        showExportPsbtDialog(mActivity, txEntity.getTxId(),
-                txEntity.getSignedHex(), () -> popBackStack(R.id.assetFragment, false));
+        showExportPsbtDialog(mActivity, txEntity, () -> popBackStack(R.id.assetFragment, false));
     }
 }

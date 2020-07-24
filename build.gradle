@@ -42,7 +42,7 @@ allprojects {
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xmaxerrs" << "400"
+            options.compilerArgs << "-Xmaxerrs" << "800"
             options.compilerArgs.add('-Xbootclasspath/p:app/libs/cvos.jar')
         }
     }

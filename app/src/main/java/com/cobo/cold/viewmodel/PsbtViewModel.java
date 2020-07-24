@@ -24,16 +24,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
-import com.cobo.cold.MainApplication;
-import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.update.utils.Storage;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,11 +33,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
-
 
 public class PsbtViewModel extends AndroidViewModel {
-    private static Pattern signedTxnPattern = Pattern.compile("^signed_[0-9a-fA-F]{8}.psbt$");
+    private static Pattern signedPsbtPattern = Pattern.compile("^signed_[0-9a-fA-F]{8}.psbt$");
     private Storage storage;
 
     public PsbtViewModel(@NonNull Application application) {
@@ -53,91 +43,8 @@ public class PsbtViewModel extends AndroidViewModel {
         storage = Storage.createByEnvironment(application);
     }
 
-    public static JSONObject adapt(JSONObject psbt) throws JSONException, WatchWalletNotMatchException {
-        JSONObject object = new JSONObject();
-        JSONArray inputs = new JSONArray();
-        JSONArray outputs = new JSONArray();
-        adaptInputs(psbt.getJSONArray("inputs"), inputs);
-        if (inputs.length() < 1) {
-            throw new WatchWalletNotMatchException("no input match masterFingerprint");
-        }
-
-        adaptOutputs(psbt.getJSONArray("outputs"), outputs);
-        object.put("inputs", inputs);
-        object.put("outputs", outputs);
-        return object;
-    }
-
-    private static void adaptInputs(JSONArray psbtInputs, JSONArray inputs) throws JSONException {
-        String masterKeyFingerprint = new GetMasterFingerprintCallable().call();
-        Coins.Account account = getAccount(MainApplication.getApplication());
-
-        for (int i = 0; i < psbtInputs.length(); i++) {
-            JSONObject psbtInput = psbtInputs.getJSONObject(i);
-            JSONObject in = new JSONObject();
-            JSONObject utxo = new JSONObject();
-            in.put("hash", psbtInput.getString("txId"));
-            in.put("index", psbtInput.getInt("index"));
-            JSONArray bip32Derivation = psbtInput.getJSONArray("hdPath");
-            for (int j = 0; j < bip32Derivation.length(); j++) {
-                JSONObject item = bip32Derivation.getJSONObject(j);
-                String hdPath = item.getString("path");
-                String fingerprint = item.getString("masterFingerprint");
-                if ((fingerprint.equals(masterKeyFingerprint)
-                        || reverseHex(fingerprint).equals(masterKeyFingerprint))
-                    && hdPath.toUpperCase().startsWith(account.getPath())) {
-                    utxo.put("publicKey", item.getString("pubkey"));
-                    utxo.put("value", psbtInput.optInt("value"));
-                    in.put("utxo", utxo);
-                    in.put("ownerKeyPath", hdPath);
-                    in.put("masterFingerprint", item.getString("masterFingerprint"));
-                    inputs.put(in);
-                    break;
-                }
-            }
-
-        }
-
-    }
-
-    private static String reverseHex(String hex) {
-        byte[] data = Hex.decode(hex);
-        for(int i = 0; i < data.length / 2; i++) {
-            byte temp = data[i];
-            data[i] = data[data.length - i - 1];
-            data[data.length - i - 1] = temp;
-        }
-        return Hex.toHexString(data);
-    }
-
-    private static void adaptOutputs(JSONArray psbtOutputs, JSONArray outputs) throws JSONException {
-        String masterKeyFingerprint = new GetMasterFingerprintCallable().call();
-        Coins.Account account = getAccount(MainApplication.getApplication());
-        for(int i = 0; i < psbtOutputs.length(); i++) {
-            JSONObject psbtOutput = psbtOutputs.getJSONObject(i);
-            JSONObject out = new JSONObject();
-            out.put("address", psbtOutput.getString("address"));
-            out.put("value", psbtOutput.getInt("value"));
-            JSONArray bip32Derivation = psbtOutput.optJSONArray("hdPath");
-            if (bip32Derivation != null) {
-                for (int j = 0; j < bip32Derivation.length(); j++) {
-                    JSONObject item = bip32Derivation.getJSONObject(j);
-                    String hdPath = item.getString("path");
-                    if (item.getString("masterFingerprint").equals(masterKeyFingerprint)
-                            && hdPath.toUpperCase().startsWith(account.getPath())) {
-                        out.put("isChange",true);
-                        out.put("changeAddressPath", hdPath);
-
-                    }
-                }
-            }
-
-            outputs.put(out);
-        }
-    }
-
     private boolean isSignedPsbt(String fileName) {
-        Matcher matcher = signedTxnPattern.matcher(fileName);
+        Matcher matcher = signedPsbtPattern.matcher(fileName);
         return matcher.matches();
     }
 

@@ -38,15 +38,6 @@
             app:popUpToInclusive="false" />
 
         <action
-            android:id="@+id/action_to_ElectrumTxConfirmFragment"
-            app:destination="@id/electrumTxConfirmFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right"
-            app:popUpTo="@id/assetFragment"
-            app:popUpToInclusive="false" />
-        <action
             android:id="@id/action_to_psbtTxConfirmFragment"
             app:destination="@id/psbtTxConfirmFragment"
             app:enterAnim="@anim/slide_in_right"
@@ -59,6 +50,13 @@
         <action
             android:id="@+id/action_QRCodeScan_to_result"
             app:destination="@id/webAuthResultFragment" />
+
+        <action android:id="@id/import_multisig_wallet"
+            app:destination="@id/importWalletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/patternLockFragment"
@@ -168,7 +166,20 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_to_switchNetwork"
+            app:destination="@id/switchNetworkFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
+
+    <fragment
+        android:id="@+id/switchNetworkFragment"
+        android:name="com.cobo.cold.ui.fragment.setting.SwitchNetworkFragment"
+        android:label="switchNetworkFragment" />
     <fragment
         android:id="@+id/chooseWatchOnly"
         android:name="com.cobo.cold.ui.fragment.setting.ChooseWatchWalletFragment"
@@ -194,21 +205,6 @@
         android:name="com.cobo.cold.ui.fragment.SyncFragment"
         tools:layout="@layout/sync_fragment"
         android:label="SyncFragment" />
-
-    <fragment
-        android:id="@+id/txnListFragment"
-        android:name="com.cobo.cold.ui.fragment.main.electrum.ElectrumTxnListFragment"
-        tools:layout="@layout/file_list"
-        android:label="ElectrumTxnListFragment" >
-        <action
-            android:id="@id/action_to_ElectrumTxConfirmFragment"
-            app:destination="@id/electrumTxConfirmFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right"
-            />
-    </fragment>
 
     <fragment
         android:id="@+id/mnemonicInputFragment"
@@ -272,12 +268,8 @@
             android:id="@+id/action_to_settingFragment"
             app:destination="@id/settingFragment" />
         <action
-            android:id="@+id/action_to_txnListFragment"
-            app:destination="@id/txnListFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right"/>
+            android:id="@+id/action_to_multisigFragment"
+            app:destination="@id/multisigFragment" />
         <action
             android:id="@+id/action_to_psbtListFragment"
             app:destination="@id/psbtListFragment"
@@ -318,6 +310,218 @@
         android:id="@+id/exportGenericXpubFragment"
         android:name="com.cobo.cold.ui.fragment.main.ExportGenericXpubFragment"
         android:label="PsbtListFragment"/>
+
+    <fragment
+        android:id="@+id/multisigFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.MultisigMainFragment"
+        android:label="MultisigMainFragment">
+        <action android:id="@+id/export_export_multisig_expub"
+            app:destination="@id/exportMultisigExpubFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@+id/create_multisig_wallet"
+            app:destination="@id/PreCreateMultiSigWalletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@+id/import_multisig_file_list"
+            app:destination="@id/importMultisigFileList"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action android:id="@+id/manage_multisig_wallet"
+            app:destination="@id/manageWalletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@id/action_to_receiveCoinFragment"
+            app:destination="@id/receiveCoinFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_to_multisig_wallet"
+            app:destination="@id/walletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@id/action_to_psbtListFragment"
+            app:destination="@id/psbtListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+
+        <action
+            android:id="@id/action_to_scan"
+            app:destination="@id/QRCodeScanFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/exportMultisigExpubFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.ExportMultisigExpubFragment"
+        android:label="ExportMultisigExpubFragment"/>
+
+    <fragment
+        android:id="@+id/walletFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.WalletFragment"
+        android:label="WalletFragment">
+        <action
+            android:id="@id/action_to_txList"
+            app:destination="@id/txListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_export_wallet_to_cosigner"
+            app:destination="@id/exportWalletToCosignerFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_export_wallet_to_electrum"
+            app:destination="@id/exportWalletToElectrum"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_to_multisig_wallet_info"
+            app:destination="@id/multisigWalletInfoFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exportWalletToElectrum"
+        android:name="com.cobo.cold.ui.fragment.multisig.ExportWalletToElectrum"
+        android:label="ExportWalletToElectrum">
+        <action
+            android:id="@+id/action_to_export_multisig_xpub_to_el"
+            app:destination="@id/exportXpubToElectrumFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/exportXpubToElectrumFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.ExportXpubToElectrumFragment"
+        android:label="ExportXpubToElectrumFragment"/>
+
+    <fragment
+        android:id="@+id/multisigWalletInfoFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.MultisigWalletInfoFragment"
+        android:label="MultisigWalletInfoFragment"/>
+
+    <fragment
+        android:id="@+id/exportWalletToCosignerFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.ExportWalletToCosignerFragment"
+        android:label="ExportWalletToCosignerFragment">
+        <action android:id="@id/action_export_wallet_to_electrum"
+            app:destination="@id/exportWalletToElectrum"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/manageWalletFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.ManageWalletFragment"
+        android:label="ManageWalletFragment"/>
+
+    <fragment
+        android:id="@+id/importMultisigFileList"
+        android:name="com.cobo.cold.ui.fragment.multisig.ImportMultisigFileList"
+        android:label="ImportMultisigFileList">
+        <action android:id="@+id/import_multisig_wallet"
+            app:destination="@id/importWalletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action android:id="@+id/action_scan_multisig_wallet"
+            app:destination="@id/QRCodeScanFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/importWalletFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.ImportWalletFragment"
+        android:label="ImportWalletFragment">
+        <action android:id="@id/action_export_wallet_to_electrum"
+            app:destination="@id/exportWalletToElectrum"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/PreCreateMultiSigWalletFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.PreCreateMultiSigWalletFragment"
+        android:label="PreCreateMultiSigWalletFragment">
+        <action android:id="@+id/action_to_collect_expubs"
+            app:destination="@id/collectExpubFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/collectExpubFragment"
+        android:name="com.cobo.cold.ui.fragment.multisig.CollectExpubFragment"
+        android:label="CollectExpubFragment">
+        <action
+            android:id="@+id/scan_xpub_info"
+            app:destination="@id/QRCodeScanFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_export_wallet_to_cosigner"
+            app:destination="@id/exportWalletToCosignerFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+    </fragment>
     <fragment
         android:id="@+id/psbtListFragment"
         android:name="com.cobo.cold.ui.fragment.main.PsbtListFragment"
@@ -341,6 +545,13 @@
             app:destination="@id/psbtSignedTxFragment" />
         <action android:id="@+id/action_to_psbt_broadcast"
             app:destination="@id/psbtBroadcastTxFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+        <action
+            android:id="@id/action_to_broadcastElectrumTxFragment"
+            app:destination="@id/broadcastElectrumTxFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"

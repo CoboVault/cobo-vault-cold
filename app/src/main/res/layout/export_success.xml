@@ -32,7 +32,7 @@
 
         <LinearLayout
             android:id="@+id/success"
-            android:layout_width="224dp"
+            android:layout_width="288dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
@@ -46,6 +46,7 @@
                 tools:ignore="ContentDescription" />
 
             <TextView
+                android:id="@+id/text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -54,6 +55,15 @@
                 android:textColor="@color/black"
                 android:text="@string/export_success" />
 
+            <TextView
+                android:id="@+id/file_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:layout_marginHorizontal="16dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
     </FrameLayout>

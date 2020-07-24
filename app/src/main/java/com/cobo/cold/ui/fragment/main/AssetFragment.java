@@ -194,8 +194,6 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     private void showFileList() {
         switch (watchWallet) {
             case ELECTRUM:
-                navigate(R.id.action_to_txnListFragment);
-                break;
             case WASABI:
             case BTCPAY:
             case GENERIC:

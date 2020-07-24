@@ -34,7 +34,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.cobo.cold.Utilities.IS_MAINNET_MDOE;
+import static com.cobo.cold.Utilities.NET_MDOE;
 import static com.cobo.cold.Utilities.PREFERENCE_SECRET;
 
 public class StatusBarView extends LinearLayout {
@@ -44,7 +44,7 @@ public class StatusBarView extends LinearLayout {
     private final SharedPreferences sp;
 
     private final OnSharedPreferenceChangeListener listener = (sp, key) -> {
-        if (IS_MAINNET_MDOE.equals(key)) {
+        if (NET_MDOE.equals(key)) {
             updateBg();
         }
     };
@@ -77,7 +77,7 @@ public class StatusBarView extends LinearLayout {
         if (!isMainNet) {
             setBackgroundColor(Color.parseColor("#FF0000"));
             findViewById(R.id.text).setVisibility(VISIBLE);
-            ((TextView)findViewById(R.id.text)).setText(R.string.testnet);
+            ((TextView)findViewById(R.id.text)).setText(R.string.test_net);
         } else {
             setBackgroundColor(Color.TRANSPARENT);
             findViewById(R.id.text).setVisibility(GONE);

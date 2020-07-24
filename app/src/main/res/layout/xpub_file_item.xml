@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2020 Cobo
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -15,49 +14,40 @@
   ~ You should have received a copy of the GNU General Public License
   ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
-        <variable
-            name="callback"
-            type="com.cobo.cold.ui.fragment.main.electrum.Callback" />
-        <variable
-            name="file"
-            type="String" />
     </data>
 
     <RelativeLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:paddingHorizontal="16dp"
+        android:layout_height="53dp"
         android:background="?attr/selectableItemBackground"
-        android:onClick="@{()->callback.onClick(file)}">
+        android:orientation="horizontal">
+
         <TextView
-            android:id="@+id/file_name"
-            android:layout_width="260dp"
-            android:layout_height="wrap_content"
-            tools:text="unsigned-1.txn"
-            android:layout_centerVertical="true"
-            android:textSize="15sp"
-            android:text="@{file}"
-            android:singleLine="true"
-            android:ellipsize="middle"
-            android:textColor="@color/white"/>
-        <ImageView
+            android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/arrow_right"
             android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"/>
-        <include
-            layout="@layout/divider"
+            android:paddingHorizontal="16dp"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/checked"
+            android:tint="@color/colorAccent" />
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_alignParentBottom="true" />
-
+            android:layout_marginHorizontal="16dp"
+            android:background="#12ffffff"
+            android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 </layout>

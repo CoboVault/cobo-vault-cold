@@ -78,7 +78,6 @@
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="6dp"
                     android:padding="16dp"
-                    android:text="@string/export_to_electrum_guide"
                     android:textColor="@color/white"
                     android:textSize="13sp" />
 

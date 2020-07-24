@@ -69,8 +69,7 @@ public class Coins {
     }
 
     public static final List<Coin> SUPPORTED_COINS = Arrays.asList(
-            BTC,
-            XTN
+            BTC
     );
 
     public static boolean isCoinSupported(@NonNull String coinCode) {

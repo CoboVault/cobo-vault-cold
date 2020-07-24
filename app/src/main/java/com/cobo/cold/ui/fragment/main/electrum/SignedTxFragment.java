@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 
@@ -28,7 +29,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.cobo.coinlib.utils.Base43;
-import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.SignedTxBinding;
 import com.cobo.cold.db.entity.TxEntity;
@@ -42,23 +42,25 @@ import com.cobo.cold.viewmodel.WatchWallet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.spongycastle.util.encoders.Hex;
+import org.spongycastle.util.encoders.Base64;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.KEY_DUPLICATE_TX;
+import static com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment.showExportPsbtDialog;
 import static com.cobo.cold.ui.fragment.main.electrum.ElectrumBroadcastTxFragment.showElectrumInfo;
-import static com.cobo.cold.ui.fragment.main.electrum.UnsignedTxFragment.showExportTxnDialog;
+import static com.cobo.cold.viewmodel.WatchWallet.PSBT_MULTISIG_SIGN_ID;
 
 
 public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
 
     private static final String KEY_TX_ID = "txid";
     protected TxEntity txEntity;
-    private List<String> changeAddress = new ArrayList<>();
     protected WatchWallet watchWallet;
+    private List<String> changeAddress = new ArrayList<>();
+    private boolean isMultiSig;
 
     @Override
     protected int setView() {
@@ -88,16 +90,42 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
         viewModel.loadTx(data.getString(KEY_TX_ID)).observe(this, txEntity -> {
             mBinding.setTx(txEntity);
             this.txEntity = txEntity;
+            isMultiSig = txEntity.getSignId().equals(PSBT_MULTISIG_SIGN_ID);
             displaySignResult(txEntity);
             refreshAmount();
             refreshFromList();
             refreshReceiveList();
+            refreshSignStatus();
             mBinding.txDetail.exportToSdcard.setOnClickListener(v -> showExportDialog());
         });
     }
 
+    private void refreshSignStatus() {
+        if (!TextUtils.isEmpty(txEntity.getSignStatus())) {
+            mBinding.txDetail.txSignStatus.setVisibility(View.VISIBLE);
+            String signStatus = txEntity.getSignStatus();
+
+            String[] splits = signStatus.split("-");
+            int sigNumber = Integer.parseInt(splits[0]);
+            int reqSigNumber = Integer.parseInt(splits[1]);
+
+            String text;
+            if (sigNumber == 0) {
+                text = getString(R.string.unsigned);
+            } else if (sigNumber < reqSigNumber) {
+                text = getString(R.string.partial_signed);
+            } else {
+                text = getString(R.string.signed);
+            }
+
+            mBinding.txDetail.signStatus.setText(text);
+        } else {
+            mBinding.txDetail.txSource.setVisibility(View.VISIBLE);
+        }
+    }
+
     protected void showExportDialog() {
-        showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(),null);
+        showExportPsbtDialog(mActivity, txEntity, null);
     }
 
     private void refreshFromList() {
@@ -134,11 +162,18 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
         try {
             JSONArray outputs = new JSONArray(to);
             for (int i = 0; i < outputs.length(); i++) {
+
+                JSONObject output = outputs.getJSONObject(i);
+                boolean isChange = output.optBoolean("isChange");
+                String changePath = null;
+                if (isChange) {
+                    changePath = output.getString("changeAddressPath");
+                }
+
                 items.add(new TransactionItem(i,
-                        outputs.getJSONObject(i).getLong("value"),
-                        outputs.getJSONObject(i).getString("address"),
-                        txEntity.getCoinCode()
-                ));
+                        output.getLong("value"),
+                        output.getString("address"),
+                        txEntity.getCoinCode(), changePath));
             }
         } catch (JSONException e) {
             return;
@@ -157,13 +192,11 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
     }
 
     protected void displaySignResult(TxEntity txEntity) {
-        byte[] txData = Hex.decode(txEntity.getSignedHex());
-        String base43 = Base43.encode(txData);
+        String base43 = Base43.encode(Base64.decode(txEntity.getSignedHex()));
         if (base43.length() <= 1000) {
             new Handler().postDelayed(() -> mBinding.txDetail.qrcodeLayout.qrcode.setData(base43), 500);
             mBinding.txDetail.export.setVisibility(View.GONE);
-            mBinding.txDetail.exportToSdcardHint.setOnClickListener(v ->
-                    showExportTxnDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(), null));
+            mBinding.txDetail.exportToSdcardHint.setOnClickListener(v -> showExportDialog());
             mBinding.txDetail.info.setOnClickListener(v -> showElectrumInfo(mActivity));
         } else {
             mBinding.txDetail.qr.setVisibility(View.GONE);
