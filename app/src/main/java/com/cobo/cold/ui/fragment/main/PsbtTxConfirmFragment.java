@@ -18,6 +18,7 @@
 package com.cobo.cold.ui.fragment.main;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -27,6 +28,7 @@ import androidx.databinding.DataBindingUtil;
 import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
+import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.ui.fragment.main.electrum.UnsignedTxFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
@@ -53,12 +55,19 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
         super.init(view);
     }
 
-    public static void showExportPsbtDialog(AppCompatActivity activity, String txId, String psbt,
+    public static void showExportPsbtDialog(AppCompatActivity activity, TxEntity tx,
+                                            Runnable onExportSuccess) {
+        showExportPsbtDialog(activity, !TextUtils.isEmpty(tx.getSignStatus()),
+                tx.getTxId(), tx.getSignedHex(), onExportSuccess);
+    }
+
+    public static void showExportPsbtDialog(AppCompatActivity activity,boolean multisig ,String txId, String psbt,
                                             Runnable onExportSuccess) {
         ModalDialog modalDialog = ModalDialog.newInstance();
         ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
                 R.layout.export_sdcard_modal, null, false);
-        String fileName = "signed_" + txId.substring(0, 8) + ".psbt";
+        String prefix = multisig ? "partially_signed_":"signed_";
+        String fileName = prefix + txId.substring(0, 8) + ".psbt";
         binding.title.setText(R.string.export_signed_txn);
         binding.fileName.setText(fileName);
         binding.actionHint.setVisibility(View.GONE);
@@ -112,12 +121,10 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
                 data.putString(BroadcastTxFragment.KEY_TXID, txId);
                 navigate(R.id.action_to_broadcastElectrumTxFragment, data);
             } else {
-                showExportPsbtDialog(mActivity, viewModel.getTxId(),
-                        viewModel.getTxHex(), this::navigateUp);
+                showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), this::navigateUp);
             }
         } else {
-            showExportPsbtDialog(mActivity, viewModel.getTxId(),
-                    viewModel.getTxHex(), this::navigateUp);
+            showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), this::navigateUp);
         }
         viewModel.getSignState().removeObservers(this);
     }

@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="导出到Electrum"
+                android:text="@string/export_xpub_guide_title_electrum"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
@@ -97,7 +97,7 @@
                     android:padding="10dp"
                     android:background="?attr/selectableItemBackground"
                     android:textColor="@color/colorAccent"
-                    android:text="暂不导出"
+                    android:text="@string/export_later"
                     android:visibility="visible"
                     android:textSize="14sp" />
             </LinearLayout>

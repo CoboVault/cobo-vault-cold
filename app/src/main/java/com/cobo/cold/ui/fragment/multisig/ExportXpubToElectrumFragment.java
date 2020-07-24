@@ -79,7 +79,6 @@ public class ExportXpubToElectrumFragment extends MultiSigBaseFragment<ExportXpu
         });
 
         mBinding.exportToSdcard.setOnClickListener(v -> exportXpub());
-
         mBinding.info.setOnClickListener(v -> showElectrumInfo());
     }
 
@@ -154,6 +153,7 @@ public class ExportXpubToElectrumFragment extends MultiSigBaseFragment<ExportXpu
         mBinding.expub.setText(xpubs.get(index).xpub);
         mBinding.prev.setVisibility(index > 0 ? View.VISIBLE : View.INVISIBLE);
         mBinding.next.setText(index < xpubs.size() - 1 ? R.string.next_one : R.string.complete);
+        mBinding.totalKeyNumber.setText(getString(R.string.total_key_number, xpubs.size()));
     }
 
     class XpubInfo {

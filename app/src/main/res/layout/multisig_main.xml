@@ -132,7 +132,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）"
+                android:text="@string/confirm_sdcard_insert"
                 android:textColor="@color/white40"
                 android:layout_gravity="start"/>
 
@@ -145,7 +145,7 @@
                 android:id="@+id/create_multisig"
                 style="@style/AcceptButton"
                 android:layout_width="match_parent"
-                android:text="创建多签钱包" />
+                android:text="@string/create_multisig_wallet" />
 
             <TextView
                 android:id="@+id/import_multisig"
@@ -153,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:background="?selectableItemBackground"
                 android:padding="10dp"
-                android:text="导入多签钱包"
+                android:text="@string/import_multisig_wallet"
                 android:textColor="@color/colorAccent" />
 
         </LinearLayout>

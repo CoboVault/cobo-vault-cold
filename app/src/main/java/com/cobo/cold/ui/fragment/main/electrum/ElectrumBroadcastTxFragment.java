@@ -93,8 +93,7 @@ public class ElectrumBroadcastTxFragment extends BaseFragment<BroadcastElectrumT
                 } else {
                     onSuccess = () -> popBackStack(R.id.assetFragment, false);
                 }
-                showExportPsbtDialog(mActivity, txEntity.getTxId(),
-                        txEntity.getSignedHex(), onSuccess);
+                showExportPsbtDialog(mActivity, txEntity, onSuccess);
             }
         });
         mBinding.info.setOnClickListener(v -> showElectrumInfo(mActivity));

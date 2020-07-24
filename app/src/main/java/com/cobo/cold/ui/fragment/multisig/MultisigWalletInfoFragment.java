@@ -81,7 +81,7 @@ public class MultisigWalletInfoFragment extends MultiSigBaseFragment<MultisigWal
         ModalDialog dialog = new ModalDialog();
         CommonModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.common_modal, null, false);
-        binding.title.setText("对照公钥信息");
+        binding.title.setText(R.string.check_xpub_info);
         binding.subTitle.setText(getDisplayXpubInfoForCC(wallet));
         binding.subTitle.setGravity(Gravity.START);
         binding.close.setOnClickListener(v -> dialog.dismiss());

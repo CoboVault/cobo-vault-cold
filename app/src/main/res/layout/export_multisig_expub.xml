@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="扩展公钥"
+                android:text="@string/extend_pubkey"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
@@ -69,8 +69,7 @@
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:background="?selectableItemBackground"
-            tools:text="原生隔离见证 >" />
+            android:background="?selectableItemBackground" />
 
         <TextView
             android:id="@+id/expub"

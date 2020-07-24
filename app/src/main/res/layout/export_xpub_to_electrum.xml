@@ -85,10 +85,11 @@
                         android:src="@drawable/info" />
                 </LinearLayout>
                 <TextView
+                    android:id="@+id/total_key_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="一共3个联署人"
+                    android:text="@string/total_key_number"
                     android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold" />

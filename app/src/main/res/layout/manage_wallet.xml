@@ -45,14 +45,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="管理多签钱包"
+                    android:text="@string/manage_myltisig_wallet"
                     android:textColor="@android:color/white"
                     android:textSize="15sp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="选择首页展示的多签钱包"
+                    android:text="@string/choose_current_wallet"
                     android:textColor="@android:color/white"
                     android:textSize="8sp" />
 

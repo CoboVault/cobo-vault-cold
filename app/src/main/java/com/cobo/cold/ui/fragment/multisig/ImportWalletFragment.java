@@ -56,8 +56,8 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
     }
 
     private void showCheckDialog() {
-        ModalDialog.showCommonModal(mActivity,"请检查钱包信息",
-                "导入前，请对钱包信息进行检查，确保和已创建的钱包信息保持一致后再导入。",
+        ModalDialog.showCommonModal(mActivity,getString(R.string.please_check_multisig_wallet_info),
+                getString(R.string.check_multisig_wallet_hint),
                 getString(R.string.know), null);
     }
 
@@ -72,24 +72,25 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
                 ModalDialog dialog = new ModalDialog();
                 CommonModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                         R.layout.common_modal, null, false);
-                binding.title.setText("钱包校验");
+                binding.title.setText(R.string.verify_multisig_wallet);
                 binding.subTitle.setText(getString(R.string.verify_wallet_hint,
                         viewModel.calculateWalletVerifyCode(threshold, xpubs, account.getPath())));
                 binding.close.setVisibility(View.GONE);
-                binding.confirm.setText("验证码一致，继续导入");
+                binding.confirm.setText(R.string.verify_code_ok);
                 binding.confirm.setOnClickListener(v -> {
                     importWallet();
                     dialog.dismiss();
                 });
                 binding.btn1.setVisibility(View.VISIBLE);
-                binding.btn1.setText("验证码不一致，检查钱包信息");
+                binding.btn1.setText(R.string.error_verify_code);
                 binding.btn1.setOnClickListener(v -> dialog.dismiss());
                 dialog.setBinding(binding);
                 dialog.show(mActivity.getSupportFragmentManager(), "");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
+        } else {
+            importWallet();
         }
     }
 
@@ -132,9 +133,10 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
             dialog.show(mActivity.getSupportFragmentManager(),"");
             handler.postDelayed(() -> {
                 dialog.dismiss();
-                Bundle bundle = Bundle.forPair("wallet_fingerprint", walletEntity.getWalletFingerPrint());
-                bundle.putBoolean("isImportMultisig",true);
-                navigate(R.id.action_export_wallet_to_electrum, bundle);
+                popBackStack(R.id.multisigFragment,false);
+                //Bundle bundle = Bundle.forPair("wallet_fingerprint", walletEntity.getWalletFingerPrint());
+                //bundle.putBoolean("isImportMultisig",true);
+                //navigate(R.id.action_export_wallet_to_electrum, bundle);
             },500);
         }
     }

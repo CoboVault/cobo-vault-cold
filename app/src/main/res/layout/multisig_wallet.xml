@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="管理多签钱包"
+                android:text="@string/manage_myltisig_wallet"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
@@ -56,25 +56,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{()->clickHandler.onClick((int)@id/action_to_txList)}"
-            app:title="签名记录"/>
+            app:title="@string/signing_history"/>
         <com.cobo.cold.ui.views.MultiSigItem
             android:id="@+id/export_wallet_to_cosigner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{()->clickHandler.onClick((int)@id/action_export_wallet_to_cosigner)}"
-            app:title="导出钱包给参与方"/>
-        <com.cobo.cold.ui.views.MultiSigItem
+            app:title="@string/export_multisig_to_cosigner"/>
+        <!--com.cobo.cold.ui.views.MultiSigItem
             android:id="@+id/export_wallet_to_electrum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{()->clickHandler.onClick((int)@id/action_export_wallet_to_electrum)}"
-            app:title="导出钱包为观察钱包(Electrum)"/>
+            app:title="@string/export_wallet_to_electrum"/-->
         <com.cobo.cold.ui.views.MultiSigItem
             android:id="@+id/wallet_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{()->clickHandler.onClick((int)@id/action_to_multisig_wallet_info)}"
-            app:title="查看钱包信息"/>
+            app:title="@string/view_wallet_info"/>
 
     </LinearLayout>
 </layout>

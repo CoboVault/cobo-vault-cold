@@ -67,8 +67,7 @@ public class PsbtBroadcastTxFragment extends BaseFragment<BroadcastPsbtTxFragmen
             mBinding.qrcodeLayout.hint.setVisibility(View.GONE);
             mBinding.exportToSdcard.setVisibility(View.VISIBLE);
             mBinding.exportToSdcard.setOnClickListener(v ->
-                    showExportPsbtDialog(mActivity, txEntity.getTxId(),
-                            txEntity.getSignedHex(), null));
+                    showExportPsbtDialog(mActivity, txEntity, null));
         } else {
             mBinding.exportToSdcard.setVisibility(View.GONE);
         }

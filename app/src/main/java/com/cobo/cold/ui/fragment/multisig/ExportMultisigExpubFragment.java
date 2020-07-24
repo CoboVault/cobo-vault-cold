@@ -58,8 +58,8 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
             ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                     R.layout.modal_with_two_button,
                     null, false);
-            binding.title.setText("导出扩展公钥");
-            binding.subTitle.setText("文件名称:");
+            binding.title.setText(R.string.export_multisig_xpub);
+            binding.subTitle.setText(R.string.file_name_label);
             binding.actionHint.setText(fileName);
             binding.actionHint.setTypeface(Typeface.DEFAULT_BOLD);
             binding.left.setText(R.string.cancel);

@@ -375,8 +375,7 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
             data.putString(KEY_TXID, txId);
             navigate(R.id.action_to_broadcastElectrumTxFragment, data);
         } else {
-            showExportPsbtDialog(mActivity, viewModel.getTxId(),
-                    viewModel.getTxHex(), this::navigateUp);
+            showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), this::navigateUp);
         }
     }
 

@@ -514,15 +514,6 @@
     <string name="address_type">地址类型：%s</string>
     <string name="cosigners">参与者:</string>
     <string name="create_multisig_wallet">创建多签钱包</string>
-    <string name="create_success"><![CDATA[
-    %s <br><br>
-    钱包名称：<br>
-    钱包验证码：<br>
-    <font color="#00cdc3">%s<font/> <br>
-    1. 您可将该多签钱包导出给参与方（参与方需创建/导入该钱包，否则无法对该钱包的交易签名）。<br> <br>
-    2. 参与方导入时，需检查要导入钱包的验证码是否和上方钱包验证码一致，确保一致后再进行导入。<br>
-    ]]>
-    </string>
     <string name="export_now">立即导出</string>
     <string name="next_one">查看下一个</string>
     <string name="prev_one">查看上一个</string>
@@ -571,5 +562,39 @@
     <string name="cannot_sign_hint">当前钱包不是该多签交易的参与方，不能对其签名</string>
     <string name="no_matched_wallet">暂无该多签钱包</string>
     <string name="no_matched_wallet_hint">您需先创建或导入该交易的多签钱包，再对该交易签名</string>
+    <string name="import_multisig_wallet_fail">导入失败</string>
+    <string name="import_multisig_wallet_fail_hint">该多签钱包不包含当前金库。</string>
+    <string name="invalid_multisig_wallet">非多签钱包</string>
+    <string name="invalid_multisig_wallet_hint">该文件/二维码不是多签钱包，无法导入。</string>
+    <string name="mainnet">主网</string>
+    <string name="testnet">测试网</string>
+    <string name="export_multisig_xpub">导出扩展公钥</string>
+    <string name="export_multisig_to_cosigner">导出钱包给参与方</string>
+    <string name="please_check_multisig_wallet_info">请检查钱包信息</string>
+    <string name="check_multisig_wallet_hint">导入前，请对钱包信息进行检查，确保和已创建的钱包信息保持一致后再导入。</string>
+    <string name="verify_multisig_wallet">钱包校验</string>
+    <string name="verify_code_ok">验证码一致，继续导入</string>
+    <string name="error_verify_code">验证码不一致，检查钱包信息</string>
+    <string name="check_xpub_info">对照公钥信息</string>
+    <string name="create">创建</string>
+    <string name="export_to_cosigner_hint">邀请参与方扫描钱包二维码， 或您将钱包导出成文件传给参与者</string>
+    <string name="total_key_number">一共%d个联署人</string>
+    <string name="wallet_name">钱包名称</string>
+    <string name="wallet_type1">钱包类型</string>
+    <string name="address_type1">地址类型</string>
+    <string name="address_path1">地址路径</string>
+    <string name="cosigner">多签参与方</string>
+    <string name="manage_myltisig_wallet">管理多签钱包</string>
+    <string name="choose_current_wallet">选择首页展示的多签钱包</string>
+    <string name="view_or_export_xpub">查看/导出扩展公钥</string>
+    <string name="confirm_sdcard_insert">请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）</string>
+    <string name="export_wallet_to_electrum">导出钱包为观察钱包(Electrum)</string>
+    <string name="view_wallet_info">查看钱包信息</string>
+    <string name="wallet_verify_code">钱包验证码</string>
+    <string name="info_for_cc">若多签参与方为Coldcard，请点击此处对照公钥信息</string>
+    <string name="p2wsh">隔离见证原生（p2wsh）</string>
+    <string name="p2wsh_p2sh">隔离见证兼容(p2wsh-p2sh)</string>
+    <string name="p2sh">传统（p2sh）</string>
+    <string name="select_xpub_file">选择公钥文件</string>
 
 </resources>

@@ -71,22 +71,16 @@ public class MultiSigViewModel extends AndroidViewModel {
     private String xfp;
     private DataRepository repo;
     private final LiveData<List<MultiSigWalletEntity>> mObservableWallets;
-    private final LiveData<List<MultiSigAddressEntity>> mObservableAddress;
     public MultiSigViewModel(@NonNull Application application) {
         super(application);
         xfp = new GetMasterFingerprintCallable().call();
         repo = ((MainApplication)application).getRepository();
         storage = Storage.createByEnvironment(application);
         mObservableWallets = repo.loadAllMultiSigWallet();
-        mObservableAddress = repo.loadAllMultiSigAddress();
     }
 
     public LiveData<List<MultiSigWalletEntity>> getAllMultiSigWallet() {
         return mObservableWallets;
-    }
-
-    public LiveData<List<MultiSigAddressEntity>> getAllMultiSigAddress() {
-        return mObservableAddress;
     }
 
     public LiveData<List<MultiSigAddressEntity>> getMultiSigAddress(String walletFingerprint) {
@@ -289,7 +283,7 @@ public class MultiSigViewModel extends AndroidViewModel {
         String verifyCode = calculateWalletVerifyCode(threshold, xpubs, account.getPath());
         String walletFingerprint = verifyCode + xfp;
         MultiSigWalletEntity wallet = new MultiSigWalletEntity(
-                "Multisig_"+ verifyCode +"_" + threshold + "-" + total,
+                "cv_"+ verifyCode +"_" + threshold + "-" + total,
                 threshold,
                 total,
                 account.getPath(),
@@ -446,9 +440,7 @@ public class MultiSigViewModel extends AndroidViewModel {
     }
 
     public void updateWallet(MultiSigWalletEntity entity) {
-        AppExecutors.getInstance().diskIO().execute(()-> {
-            repo.updateWallet(entity);
-        });
+        AppExecutors.getInstance().diskIO().execute(()-> repo.updateWallet(entity));
     }
 
     public static JSONObject decodeColdCardWalletFile(String content)

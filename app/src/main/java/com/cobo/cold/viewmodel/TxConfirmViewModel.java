@@ -67,7 +67,6 @@ import com.googlecode.protobuf.format.JsonFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.security.SignatureException;
@@ -146,8 +145,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 }
                 if (transaction instanceof UtxoTx) {
                     if (isMultisig) {
-
-                        if(!checkMultisigChangeAddress(transaction, walletFingerprint )) {
+                        if(!checkMultisigChangeAddress(transaction)) {
                             observableTx.postValue(null);
                             parseTxException.postValue(new InvalidTransactionException("invalid change address"));
                             return;
@@ -275,19 +273,12 @@ public class TxConfirmViewModel extends AndroidViewModel {
             } catch (JSONException e) {
                 e.printStackTrace();
                 parseTxException.postValue(new InvalidTransactionException("adapt failed,invalid psbt data"));
-            } catch (WatchWalletNotMatchException e) {
+            } catch (WatchWalletNotMatchException | NoMatchedMultisigWallet e) {
                 e.printStackTrace();
                 parseTxException.postValue(e);
-            } catch (NoMatchedMultisigWallet noMatchedMultisigWallet) {
-                noMatchedMultisigWallet.printStackTrace();
-                parseTxException.postValue(noMatchedMultisigWallet);
             }
 
         });
-    }
-
-    public void parsePsbtBase64(String psbtBase64) {
-        parsePsbtBase64(psbtBase64, false);
     }
 
     private JSONObject parsePsbtTx(JSONObject adaptTx) throws JSONException {
@@ -350,8 +341,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         return true;
     }
 
-    private boolean checkMultisigChangeAddress(AbsTx utxoTx, String walletFingerprint) {
-
+    private boolean checkMultisigChangeAddress(AbsTx utxoTx) {
         List<UtxoTx.ChangeAddressInfo> changeAddressInfo = ((UtxoTx) utxoTx).getChangeAddressInfo();
         if (changeAddressInfo == null || changeAddressInfo.isEmpty()) {
             return true;
@@ -532,7 +522,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
                     .filter(addressEntity -> addressEntity.getPath()
                             .startsWith(wallet.getExPubPath()+"/" + 0))
                     .max((o1, o2) -> o1.getIndex() - o2.getIndex());
-            int index = optional.get().getIndex();
+            int index = optional.map(MultiSigAddressEntity::getIndex).orElse(-1);
             if (index < max) {
                 final CountDownLatch mLatch = new CountDownLatch(1);
                 addingAddress.postValue(true);
@@ -821,6 +811,10 @@ public class TxConfirmViewModel extends AndroidViewModel {
         return authToken;
     }
 
+    public TxEntity getSignedTxEntity() {
+        return observableTx.getValue();
+    }
+
     public String getTxId() {
         return Objects.requireNonNull(observableTx.getValue()).getTxId();
     }
@@ -861,9 +855,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         }
 
         private void adaptInputs(JSONArray psbtInputs, JSONArray inputs) throws JSONException {
-            String rootXfp = new GetMasterFingerprintCallable().call();
             Coins.Account account = getAccount(MainApplication.getApplication());
-
             for (int i = 0; i < psbtInputs.length(); i++) {
                 JSONObject psbtInput = psbtInputs.getJSONObject(i);
                 JSONObject in = new JSONObject();
@@ -1043,7 +1035,6 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 }
 
             }
-
         }
 
         private String findMyPubKey(JSONArray bip32Derivation)
@@ -1074,7 +1065,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
             String concat  = fps.stream()
                     .map(String::toUpperCase)
                     .sorted()
-                    .reduce((s1,s2)->s1+s2).get();
+                    .reduce((s1, s2) -> s1 + s2).orElse("");
 
             return Hex.toHexString(HashUtil.sha256(concat));
         }

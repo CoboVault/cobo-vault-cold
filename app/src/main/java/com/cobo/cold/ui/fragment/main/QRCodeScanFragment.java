@@ -253,10 +253,10 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             }
         } catch (XfpNotMatchException e) {
             e.printStackTrace();
-            alert("导入失败","该多签钱包不包含当前金库。");
+            alert(getString(R.string.import_multisig_wallet_fail),getString(R.string.import_multisig_wallet_fail_hint));
         } catch (InvalidMultisigWalletException e) {
             e.printStackTrace();
-            alert("非多签钱包","该文件/二维码不是多签钱包，无法导入。");
+            alert(getString(R.string.invalid_multisig_wallet),getString(R.string.invalid_multisig_wallet_hint));
         } catch (JSONException e) {
             e.printStackTrace();
             alert(getString(R.string.incorrect_qrcode));

@@ -38,7 +38,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="查看/导出扩展公钥"
+                android:text="@string/view_or_export_xpub"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white" />
@@ -68,7 +68,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="创建多签钱包"
+                android:text="@string/create_multisig_wallet"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white" />
@@ -98,7 +98,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="导入多签钱包"
+                android:text="@string/import_multisig_wallet"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white" />
@@ -128,7 +128,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="管理多签钱包"
+                android:text="@string/manage_myltisig_wallet"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white" />

@@ -49,7 +49,8 @@ public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportW
             mBinding.exportToElectrum.setVisibility(View.VISIBLE);
             Bundle bundle = getArguments();
             bundle.putBoolean("isImportMultisig", true);
-            View.OnClickListener onClickListener = v -> navigate(R.id.action_export_wallet_to_electrum, bundle);
+            //View.OnClickListener onClickListener = v -> navigate(R.id.action_export_wallet_to_electrum, bundle);
+            View.OnClickListener onClickListener = v -> popBackStack(R.id.multisigFragment, false);
             mBinding.skip.setOnClickListener(onClickListener);
             mBinding.exportToElectrum.setOnClickListener(onClickListener);
         }
@@ -76,8 +77,8 @@ public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportW
         ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.modal_with_two_button,
                 null, false);
-        binding.title.setText("导出钱包给参与方");
-        binding.subTitle.setText("文件名称:");
+        binding.title.setText(R.string.export_multisig_to_cosigner);
+        binding.subTitle.setText(R.string.file_name_label);
         binding.actionHint.setText(fileName);
         binding.actionHint.setTypeface(Typeface.DEFAULT_BOLD);
         binding.left.setText(R.string.cancel);

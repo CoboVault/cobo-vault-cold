@@ -125,7 +125,7 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
     }
 
     protected void showExportDialog() {
-        showExportPsbtDialog(mActivity, txEntity.getTxId(), txEntity.getSignedHex(), null);
+        showExportPsbtDialog(mActivity, txEntity, null);
     }
 
     private void refreshFromList() {

@@ -38,7 +38,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="隔离见证原生（p2wsh）"
+                android:text="@string/p2wsh"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white" />
@@ -70,7 +70,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="隔离见证兼容(p2wsh-p2sh)"
+                android:text="@string/p2wsh_p2sh"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white" />
@@ -102,7 +102,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="传统（p2sh）"
+                android:text="@string/p2sh"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white" />

@@ -206,8 +206,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="16dp"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:text="已部分签名(1/2)" />
+                android:textStyle="bold" />
 
             <include
                 layout="@layout/divider"

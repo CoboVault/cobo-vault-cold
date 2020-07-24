@@ -540,47 +540,39 @@
     <string name="btcpay_scan_hint">BTCPay Server does not support exporting transactions by QR code. Please export transactions using microSD.</string>
     <string name="network">Blockchain</string>
     <string name="testnet_hint">The testnet currently only supports Electrum</string>
-    <string name="select_network">选择区块链网络</string>
-    <string name="test_net">测试网</string>
-    <string name="no_multisig_wallet">暂无多签钱包</string>
+    <string name="select_network">Select Blockchain</string>
+    <string name="test_net">TestNet</string>
+    <string name="no_multisig_wallet">No multisig wallet</string>
     <string name="create_multisig_wallet_hint"><![CDATA[
-    您需先创建或导入多签钱包，才能对该钱包交易签名。<br><br>
-     多签钱包创建指引：<br>
-     1. 您需先收集参与者的扩展公钥，导出扩展公钥点击右上方【更多—查看/导出扩展公钥】<br>
-     2. 扩展公钥可展示为二维码或保存为文件；若为文件格式，您需<font color="#00cdc3">将收集到的所有扩展公钥文件保存到一张TF卡内<font/>。<br>
-     3. 点击下方“创建多签钱包”按钮，确定参与者和签名的数量及地址格式后，填入收集到的扩展公钥，填入时支持扫码和读文件。<br>
+     You need to create or import  multisig wallet before sign transactions of this wallet.<br><br>
+     How to create a multisig wallet:<br>
+     1. Collect the co-signers’ XPUBs first, click More > Show/Export  XPUB to export XPUB.<br>
+     2. The XPUB can be displayed as a QR code or saved as a file,<font color="#00cdc3">you need to save XPUBs files collected in one microSD card <font/> if XPUB saved as file.<br>
+     3. Touch the "Create Multisig Wallet" button below to determine the number of co-signers and signatures and the address type, then fill in the  XPUBs, you can scan QR code or read the file. <br>
     ]]></string>
     <string name="export_all">Export All</string>
     <string name="multi_sig_account_legacy">Legacy</string>
-    <string name="multi_sig_account_p2sh">隔离见证兼容</string>
-    <string name="multi_sig_account_segwit">隔离见证原生</string>
-    <string name="select_key_number">选择参与数量</string>
-    <string name="select_threshold">选择签名数量</string>
-    <string name="select_address_type">选择地址类型</string>
-    <string name="import_multisig_wallet">导入多签钱包</string>
-    <string name="extend_pubkey">扩展公钥</string>
+    <string name="multi_sig_account_p2sh">Nested SegWit</string>
+    <string name="multi_sig_account_segwit">Native SegWit</string>
+    <string name="select_key_number">Co-Signers</string>
+    <string name="select_threshold">Signers</string>
+    <string name="select_address_type">Address Type</string>
+    <string name="import_multisig_wallet">Import Multisig Wallet</string>
+    <string name="extend_pubkey">Extend Public Key</string>
     <string name="file_name">File Name:%s</string>
-    <string name="wallet_verification_code"><![CDATA[钱包验证码：<font color="#00cdc3">%s<font>]]></string>
-    <string name="wallet_type">钱包类型：%s</string>
-    <string name="address_type">地址类型：%s</string>
-    <string name="cosigners">参与者:</string>
-    <string name="create_multisig_wallet">创建多签钱包</string>
-    <string name="create_success"><![CDATA[<font color="#fefefe">钱包名称<font/>：<br>
-    %s <br>
-    钱包验证码：<br>
-    <font color="#00cdc3">%s<font/> <br>
-    1. 您可将该多签钱包导出给参与方（参与方需创建/导入该钱包，否则无法对该钱包的交易签名）。<br> <br>
-    2. 参与方导入时，需检查要导入钱包的验证码是否和上方钱包验证码一致，确保一致后再进行导入。<br>
-    ]]>
-    </string>
-    <string name="export_now">立即导出</string>
-    <string name="next_one">查看下一个</string>
-    <string name="prev_one">查看上一个</string>
+    <string name="wallet_verification_code"><![CDATA[Wallet Verification Code：<font color="#00cdc3">%s<font>]]></string>
+    <string name="wallet_type">Wallet Type：%s</string>
+    <string name="address_type">Address Type：%s</string>
+    <string name="cosigners">Cosigner:</string>
+    <string name="create_multisig_wallet">Create Multisig Wallet</string>
+    <string name="export_now">Export Now</string>
+    <string name="next_one">Display Next</string>
+    <string name="prev_one">Display Last</string>
 
     <string name="verify_wallet_hint"><![CDATA[
-    钱包验证码：<br>
+    Wallet Verification Code：<br>
     <font color="#00cdc3">%s<font/> <br>
-    检查上方钱包验证码和导出的钱包验证码是否一致，确保一致后继续导入；若不一致，请检查钱包信息。<br>
+    Check whether the wallet verification code above and the exported wallet verification code are the same. Please make sure they are the same before importing; if they are inconsistent,  recheck the wallet info.<br>
     ]]>
     </string>
     <string name="import_success">Import Successful</string>
@@ -595,9 +587,9 @@
     Your XPUB has been filled in NO.1, the multisig wallet is independent of the order in which the XPUBs is filled
     ]]>
     </string>
-    <string name="check_input_pub_key">请检查填入的扩展公钥</string>
+    <string name="check_input_pub_key">Check the XPUB filled in</string>
     <string name="check_pub_key_hint"><![CDATA[Next you need fill in XPUB of co-signers,，<font color="#00cdc3"> please check the XPUB<font/>，to make sure that the XPUB filled in is consistent with the XPUB exported by the cosigners.]]></string>
-    <string name="no_pub_file_found">未检测到扩展公钥文件</string>
+    <string name="no_pub_file_found">No xpub file found</string>
     <string name="wrong_xpub_format_hint">Change to %s. Given XPUB is %s, please switch XPUB’s type.</string>
     <string name="wrong_xpub_format">Wrong XPUB Type</string>
     <string name="invalid_xpub_file">Wrong Data</string>
@@ -623,4 +615,38 @@
     <string name="cannot_sign_hint">The current wallet is not from the co-signer of this multisig transaction, you can\'t sign it.</string>
     <string name="no_matched_wallet">No Such Multisig Wallet</string>
     <string name="no_matched_wallet_hint">You need to create or import the multisig wallet of the transaction before signing the transaction</string>
+    <string name="import_multisig_wallet_fail">Import Failed</string>
+    <string name="import_multisig_wallet_fail_hint">This multisig wallet doesn\'t contain the current vault.</string>
+    <string name="invalid_multisig_wallet">Not Multisig Wallet</string>
+    <string name="invalid_multisig_wallet_hint">This File/QR Code is not multisig wallet，can\'t import.</string>
+    <string name="mainnet">MainNet</string>
+    <string name="testnet">TestNet</string>
+    <string name="export_multisig_xpub">Export Xpub</string>
+    <string name="export_multisig_to_cosigner">Export wallet to cosigners</string>
+    <string name="please_check_multisig_wallet_info">Check the Wallet Info</string>
+    <string name="check_multisig_wallet_hint">Please carefully check the wallet info to ensure that it is completely consistent with the created wallet information before importing.</string>
+    <string name="verify_multisig_wallet">Wallet Verify</string>
+    <string name="verify_code_ok">Verified，continue importing</string>
+    <string name="error_verify_code">No Verification Code, check wallet info</string>
+    <string name="check_xpub_info">Compare Xpubs</string>
+    <string name="create">Create</string>
+    <string name="export_to_cosigner_hint">Invite cosigners to scan the QR Code,or export file for cosigners to import</string>
+    <string name="total_key_number">Total %d Cosigners</string>
+    <string name="wallet_name">Wallet Name</string>
+    <string name="wallet_type1">Wallet type</string>
+    <string name="address_type1">Address Type</string>
+    <string name="address_path1">Derivation Path</string>
+    <string name="cosigner">Cosigners</string>
+    <string name="manage_myltisig_wallet">Manage Multisig Wallet</string>
+    <string name="choose_current_wallet">Select the wallet displayed on the homepage</string>
+    <string name="view_or_export_xpub">Show/Export  XPUB</string>
+    <string name="confirm_sdcard_insert">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting</string>
+    <string name="export_wallet_to_electrum">Export to create Watch-Only（Electrum</string>
+    <string name="view_wallet_info">Wallet Info</string>
+    <string name="wallet_verify_code">Wallet Verification Code</string>
+    <string name="info_for_cc">Cosigner is Coldcard, click here to compare XPUBs</string>
+    <string name="p2wsh">Native Segwit（p2wsh）</string>
+    <string name="p2wsh_p2sh">Nested Segwit(p2wsh-p2sh)</string>
+    <string name="p2sh">Legacy（p2sh）</string>
+    <string name="select_xpub_file">Select Xpub File</string>
 </resources>

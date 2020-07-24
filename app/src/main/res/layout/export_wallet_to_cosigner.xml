@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="导出钱包给参与方"
+                android:text="@string/export_multisig_to_cosigner"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
@@ -51,7 +51,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
@@ -62,7 +62,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginVertical="5dp"
                     android:gravity="center"
-                    android:text="邀请参与方扫描钱包二维码，\n或您将钱包导出成文件传给参与者"
+                    android:text="@string/export_to_cosigner_hint"
                     android:textColor="@color/white" />
 
                 <com.cobo.cold.ui.views.SpanedTextView

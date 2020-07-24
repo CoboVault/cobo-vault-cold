@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="创建多签钱包"
+                android:text="@string/create_multisig_wallet"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
@@ -45,20 +45,19 @@
             android:id="@+id/total"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="选择参与数量"
+            app:title="@string/select_key_number"
             app:remind_text="3"/>
         <com.cobo.cold.ui.views.MultiSigItem
             android:id="@+id/threshold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="选择签名数量"
+            app:title="@string/select_threshold"
             app:remind_text="2"/>
         <com.cobo.cold.ui.views.MultiSigItem
             android:id="@+id/address_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="选择地址类型"
-            app:remind_text="原生隔离见证"/>
+            app:title="@string/select_address_type"/>
 
         <androidx.legacy.widget.Space
             android:layout_width="match_parent"

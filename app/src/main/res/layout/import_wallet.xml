@@ -82,7 +82,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="钱包名称"
+                        android:text="@string/wallet_name"
                         android:textColor="@color/white40"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -113,7 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="钱包类型"
+                        android:text="@string/wallet_type1"
                         android:textColor="@color/white40"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -144,7 +144,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="地址类型"
+                        android:text="@string/address_type1"
                         android:textColor="@color/white40"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -175,7 +175,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="地址路径"
+                        android:text="@string/address_path1"
                         android:textColor="@color/white40"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -206,7 +206,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="多签参与方"
+                        android:text="@string/cosigner"
                         android:textColor="@color/white40"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -232,7 +232,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/action_hint"
             android:orientation="horizontal">
 
             <Button

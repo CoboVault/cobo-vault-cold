@@ -168,7 +168,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                         .bind(switchPreference.getViewHolder().findViewById(android.R.id.title));
             }
 
-            if (fingerprintPreference != null
+            if (fingerprintPreference != null && FingerprintKit.isHardwareDetected(mActivity)
                     && !Utilities.hasUserClickFingerprint(mActivity)) {
                 fingerprintBadgeView = BadgeFactory.create(mActivity)
                         .setWidthAndHeight(10, 10)
@@ -202,7 +202,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
         } else {
             if (testNetPreference != null) {
                 getPreferenceScreen().addPreference(testNetPreference);
-                testNetPreference.setRemindText(Utilities.isMainNet(mActivity) ? "主网" : "测试网");
+                testNetPreference.setRemindText(Utilities.isMainNet(mActivity) ? getString(R.string.mainnet) : getString(R.string.testnet));
             }
         }
     }
