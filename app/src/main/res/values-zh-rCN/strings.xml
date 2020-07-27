@@ -599,5 +599,9 @@
     <string name="delete_wallet_title">删除钱包？</string>
     <string name="delete_wallet_hint">确认是否删除该钱包，删除后，将不能对该钱包的交易签名。</string>
     <string name="no_multisig_Wallet">暂无多签钱包</string>
+    <string name="import_failed">导入失败</string>
+    <string name="not_include_current_vault">该多签钱包不包含当前金库。</string>
+    <string name="not_valid_multisig_wallet">非多签钱包</string>
+    <string name="invalid_wallet_hint">该文件/二维码不是多签钱包，无法导入。</string>
 
 </resources>

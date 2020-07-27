@@ -652,4 +652,8 @@
     <string name="delete_wallet_title">Delete Wallet？</string>
     <string name="delete_wallet_hint">Confirm to delete the wallet？The wallet transaction can\'t be signed after deleting.</string>
     <string name="no_multisig_Wallet">No multisig wallet</string>
+    <string name="import_failed">Import Failed</string>
+    <string name="not_include_current_vault">This multisig wallet doesn\'t contain the current vault.</string>
+    <string name="not_valid_multisig_wallet">Not Multisig Wallet</string>
+    <string name="invalid_wallet_hint">This File/QR Code is not multisig wallet，can\'t import.</string>
 </resources>
