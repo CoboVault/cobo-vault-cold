@@ -115,8 +115,16 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
         try {
             viewModel.createMultisigWallet(threshold, account, walletInfo.getJSONArray("Xpubs"))
                     .observe(this, this::onImportWalletSuccess);
-        } catch (XfpNotMatchException | JSONException e) {
+        } catch (XfpNotMatchException e) {
             e.printStackTrace();
+            ModalDialog.showCommonModal(mActivity,getString(R.string.import_failed),
+                    getString(R.string.not_include_current_vault)
+                    ,getString(R.string.know),null);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            ModalDialog.showCommonModal(mActivity,getString(R.string.not_valid_multisig_wallet),
+                    getString(R.string.invalid_wallet_hint)
+                    ,getString(R.string.know),null);
         }
 
     }
