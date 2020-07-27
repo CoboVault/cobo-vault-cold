@@ -596,5 +596,8 @@
     <string name="p2wsh_p2sh">隔离见证兼容(p2wsh-p2sh)</string>
     <string name="p2sh">传统（p2sh）</string>
     <string name="select_xpub_file">选择公钥文件</string>
+    <string name="delete_wallet_title">删除钱包？</string>
+    <string name="delete_wallet_hint">确认是否删除该钱包，删除后，将不能对该钱包的交易签名。</string>
+    <string name="no_multisig_Wallet">暂无多签钱包</string>
 
 </resources>

@@ -235,4 +235,12 @@ public class Utilities {
     public static Coins.Coin currentCoin(Context context) {
         return isMainNet(context) ? Coins.BTC : Coins.XTN;
     }
+
+    public static void setDefaultMultisigWallet(Context context, String xfp, String walletFingerprint) {
+        getPrefs(context).edit().putString(xfp+"_default",walletFingerprint).apply();
+    }
+
+    public static String getDefaultMultisigWallet(Context context, String xfp) {
+        return getPrefs(context).getString(xfp+"_default","");
+    }
 }

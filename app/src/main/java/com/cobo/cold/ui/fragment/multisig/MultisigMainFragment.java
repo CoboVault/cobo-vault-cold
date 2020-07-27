@@ -11,6 +11,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.cobo.coinlib.utils.Coins;
@@ -35,12 +36,13 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
         implements NumberPickerCallback {
     public static final String TAG = "MultisigMainFragment";
 
-    private Fragment[] fragments;
+    private MultiSigAddressFragment[] fragments;
     private String[] title;
     private String coinId;
     private MultiSigWalletEntity wallet;
     private boolean isEmpty;
     private Menu mMenu;
+    private FragmentManager fm;
 
     @Override
     protected int setView() {
@@ -53,10 +55,10 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
         coinId = Utilities.isMainNet(mActivity) ? Coins.BTC.coinId() : Coins.XTN.coinId();
         mActivity.setSupportActionBar(mBinding.toolbar);
         mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
-        viewModel.getAllMultiSigWallet().observe(this, walletEntities -> {
-            if (!walletEntities.isEmpty()) {
+        viewModel.getCurrentWallet().observe(this, w -> {
+            if (w != null) {
                 isEmpty = false;
-                wallet = walletEntities.get(0);
+                wallet = w;
             } else {
                 isEmpty = true;
             }
@@ -76,6 +78,11 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
                 MenuItem scan = mMenu.findItem(R.id.action_scan);
                 if (scan != null) scan.setVisible(false);
             }
+            if (fm != null) {
+                if (fragments != null) {
+                    fm.beginTransaction().remove(fragments[0]).remove(fragments[1]).commit();
+                }
+            }
         } else {
             mBinding.empty.setVisibility(View.GONE);
             mBinding.fab.show();
@@ -83,6 +90,7 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
             mBinding.walletLabel.setText(wallet.getWalletName() + " >");
             mBinding.walletLabel.setOnClickListener(v -> navigateToManageWallet());
             title = new String[]{getString(R.string.tab_my_address), getString(R.string.tab_my_change_address)};
+            fm = getChildFragmentManager();
             initViewPager();
             if (mMenu != null) {
                 MenuItem sdcard = mMenu.findItem(R.id.action_sdcard);
@@ -180,11 +188,15 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
 
     private void initViewPager() {
         if (fragments == null) {
-            fragments = new Fragment[title.length];
+            fragments = new MultiSigAddressFragment[title.length];
             fragments[0] = MultiSigAddressFragment.newInstance(coinId, false, wallet.getWalletFingerPrint());
             fragments[1] = MultiSigAddressFragment.newInstance(coinId, true, wallet.getWalletFingerPrint());
+        } else {
+            fragments[0].loadAddress(wallet.getWalletFingerPrint());
+            fragments[1].loadAddress(wallet.getWalletFingerPrint());
         }
-        mBinding.viewpager.setAdapter(new FragmentStatePagerAdapter(getChildFragmentManager(),
+
+        FragmentStatePagerAdapter pagerAdapter = new FragmentStatePagerAdapter(fm,
                 BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
             @Override
@@ -201,7 +213,15 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
             public CharSequence getPageTitle(int position) {
                 return title[position];
             }
-        });
+
+            @Override
+            public int getItemPosition(@NonNull Object object) {
+                return POSITION_NONE;
+            }
+
+
+        };
+        mBinding.viewpager.setAdapter(pagerAdapter);
         mBinding.tab.setupWithViewPager(mBinding.viewpager);
     }
 

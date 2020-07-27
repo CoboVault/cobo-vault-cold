@@ -90,6 +90,10 @@ public class MultiSigAddressFragment extends MultiSigBaseFragment<AddressFragmen
         Objects.requireNonNull(getParentFragment());
 
         String walletFingerprint = data.getString(KEY_WALLET_FINGERPRINT);
+        loadAddress(walletFingerprint);
+    }
+
+    public void loadAddress(String walletFingerprint) {
         subscribeUi(viewModel.getMultiSigAddress(walletFingerprint));
     }
 

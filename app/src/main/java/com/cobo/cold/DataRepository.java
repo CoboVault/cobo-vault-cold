@@ -278,4 +278,12 @@ public class DataRepository {
     public void updateWallet(MultiSigWalletEntity entity) {
         mDb.multiSigWalletDao().update(entity);
     }
+
+    public void deleteMultisigWallet(String walletFingerPrint) {
+        mDb.multiSigWalletDao().delete(walletFingerPrint);
+    }
+
+    public void deleteTxs(String walletFingerPrint) {
+        mDb.txDao().deleteTxs(walletFingerPrint);
+    }
 }
