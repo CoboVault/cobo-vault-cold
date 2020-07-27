@@ -50,5 +50,44 @@
         </FrameLayout>
 
 
+
+
+        <SeekBar
+            android:id="@+id/seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:maxHeight="6dp"
+            android:minHeight="6dp"
+            android:max="100"
+            android:min="0"
+            android:thumb="@drawable/seekbar_thumb_light"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="40dp"
+            android:progressDrawable="@drawable/seekbar_light" />
+        <LinearLayout
+            android:id="@+id/seek_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="25dp"
+            android:paddingHorizontal="10dp"
+            android:layout_gravity="bottom">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="小"/>
+            <androidx.legacy.widget.Space
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="大"/>
+        </LinearLayout>
+
+
     </FrameLayout>
 </layout>
