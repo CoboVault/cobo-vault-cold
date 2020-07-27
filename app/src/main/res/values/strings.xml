@@ -649,4 +649,7 @@
     <string name="p2wsh_p2sh">Nested Segwit(p2wsh-p2sh)</string>
     <string name="p2sh">Legacy（p2sh）</string>
     <string name="select_xpub_file">Select Xpub File</string>
+    <string name="delete_wallet_title">Delete Wallet？</string>
+    <string name="delete_wallet_hint">Confirm to delete the wallet？The wallet transaction can\'t be signed after deleting.</string>
+    <string name="no_multisig_Wallet">No multisig wallet</string>
 </resources>

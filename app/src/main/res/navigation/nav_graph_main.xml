@@ -456,7 +456,15 @@
     <fragment
         android:id="@+id/manageWalletFragment"
         android:name="com.cobo.cold.ui.fragment.multisig.ManageWalletFragment"
-        android:label="ManageWalletFragment"/>
+        android:label="ManageWalletFragment">
+        <action
+            android:id="@id/action_to_verifyMnemonic"
+            app:destination="@id/verifyMnemonicFragment1"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/importMultisigFileList"

@@ -8,36 +8,66 @@
             name="walletItem"
             type="com.cobo.cold.db.entity.MultiSigWalletEntity" />
     </data>
-    <RelativeLayout
+
+
+    <LinearLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginHorizontal="16dp"
-            android:gravity="center"
-            android:text="@{walletItem.walletName}"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            tools:text="wallet 1/2" />
-
-        <ImageView
-            android:id="@+id/checked"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/checked"
-            android:tint="@color/colorAccent" />
-
-        <include
-            layout="@layout/divider"
+        <RelativeLayout
+            android:id="@+id/item"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true" />
-    </RelativeLayout>
+            android:layout_height="60dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginHorizontal="16dp"
+                android:gravity="center"
+                android:text="@{walletItem.walletName}"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                tools:text="wallet 1/2" />
+
+            <ImageView
+                android:id="@+id/checked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/checked"
+                android:tint="@color/colorAccent" />
+
+            <include
+                layout="@layout/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/delete"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:background="#DF1E44"
+                android:gravity="center"
+                android:text="@string/delete"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
 </layout>

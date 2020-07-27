@@ -19,6 +19,7 @@ package com.cobo.cold.viewmodel;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -92,7 +93,36 @@ public class MultiSigViewModel extends AndroidViewModel {
     }
 
     public LiveData<MultiSigWalletEntity> getCurrentWallet() {
-        return getWalletEntity("d4637859");
+        MutableLiveData<MultiSigWalletEntity> result = new MutableLiveData<>();
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            String defaultMultisgWalletFp = Utilities.getDefaultMultisigWallet(getApplication(), xfp);
+            if (!TextUtils.isEmpty(defaultMultisgWalletFp)) {
+                MultiSigWalletEntity wallet = repo.loadMultisigWallet(defaultMultisgWalletFp);
+                if (wallet != null) {
+                    result.postValue(wallet);
+                } else {
+                    List<MultiSigWalletEntity>  list = repo.loadAllMultiSigWalletSync();
+                    if (!list.isEmpty()) {
+                        result.postValue(list.get(0));
+                        Utilities.setDefaultMultisigWallet(getApplication(),xfp,list.get(0).getWalletFingerPrint());
+                    } else {
+                        result.postValue(null);
+                    }
+                }
+            } else {
+                List<MultiSigWalletEntity>  list = repo.loadAllMultiSigWalletSync();
+                if (!list.isEmpty()) {
+                    result.postValue(list.get(0));
+                    Utilities.setDefaultMultisigWallet(getApplication(),xfp,list.get(0).getWalletFingerPrint());
+                } else {
+                    result.postValue(null);
+                }
+            }
+        });
+
+
+
+        return result;
     }
 
     public String getXpub(MultiSig.Account account) {
@@ -300,6 +330,7 @@ public class MultiSigViewModel extends AndroidViewModel {
             } else {
                 result.postValue(wallet);
             }
+            Utilities.setDefaultMultisigWallet(getApplication(), xfp, walletFingerprint);
         });
         return result;
     }
@@ -346,6 +377,11 @@ public class MultiSigViewModel extends AndroidViewModel {
 
     public LiveData<Boolean> getObservableAddState() {
         return addComplete;
+    }
+
+    public void deleteWallet(String walletFingerPrint) {
+        repo.deleteMultisigWallet(walletFingerPrint);
+        repo.deleteTxs(walletFingerPrint);
     }
 
     public static class AddAddressTask extends AsyncTask<Integer, Void, Void> {
