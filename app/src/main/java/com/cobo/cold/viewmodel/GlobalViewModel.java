@@ -59,9 +59,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
 import static com.cobo.coinlib.ExtendPubkeyFormat.ypub;
 import static com.cobo.coinlib.ExtendPubkeyFormat.zpub;
-import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_ADDRESS_FORMAT;
 
 public class GlobalViewModel extends AndroidViewModel {

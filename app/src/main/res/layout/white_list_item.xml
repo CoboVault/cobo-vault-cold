@@ -88,7 +88,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             app:icon="@{item.coinCode}"
-            tools:src="@drawable/coin_eth"
+            tools:src="@drawable/coin_btc"
             tools:ignore="ContentDescription" />
 
         <include

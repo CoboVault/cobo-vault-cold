@@ -25,7 +25,6 @@ import com.cobo.cold.encryptioncore.base.Payload;
 import java.util.concurrent.Callable;
 
 import static com.cobo.coinlib.utils.Coins.CURVE.SECP256K1;
-import static com.cobo.cold.db.PresetData.getCurveByPath;
 
 public class GetExtendedPublicKeyCallable implements Callable<String> {
     private final String pubKeyPath;
