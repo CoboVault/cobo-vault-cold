@@ -24,8 +24,10 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.coinlib.utils.Base43;
+import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
 import com.cobo.cold.db.entity.TxEntity;
@@ -34,6 +36,7 @@ import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.update.utils.FileUtils;
 import com.cobo.cold.update.utils.Storage;
+import com.cobo.cold.viewmodel.MultiSigViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
 import org.spongycastle.util.encoders.Base64;
@@ -76,8 +79,13 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
         ModalDialog modalDialog = ModalDialog.newInstance();
         ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
                 R.layout.export_sdcard_modal, null, false);
-        String prefix = signed ?   "signed_" : "partially_signed_";
-        String fileName = prefix + txId.substring(0, 8) + ".psbt";
+        MultiSigViewModel vm = ViewModelProviders.of(activity).get(MultiSigViewModel.class);
+        String fileName;
+        if (signed) {
+            fileName = "signed_" + txId.substring(0, 8) + ".psbt";
+        } else {
+            fileName = "part_" + txId.substring(0, 8) +"_"+vm.getXfp()+ ".psbt";
+        }
         binding.title.setText(R.string.export_signed_txn);
         binding.fileName.setText(fileName);
         binding.actionHint.setVisibility(View.GONE);
@@ -121,9 +129,9 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
         WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
         if (wallet == WatchWallet.BLUE || wallet == WatchWallet.GENERIC) {
             Bundle data = new Bundle();
-            data.putString(KEY_TXID,viewModel.getTxId());
+            data.putString(KEY_TXID, viewModel.getTxId());
             navigate(R.id.action_to_psbt_broadcast, data);
-        } else if(multisig || wallet == WatchWallet.ELECTRUM) {
+        } else if (multisig || wallet == WatchWallet.ELECTRUM) {
             String base43 = Base43.encode(Base64.decode(viewModel.getTxHex()));
             if (base43.length() <= 1000) {
                 String txId = viewModel.getTxId();
@@ -131,7 +139,13 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
                 data.putString(BroadcastTxFragment.KEY_TXID, txId);
                 navigate(R.id.action_to_broadcastElectrumTxFragment, data);
             } else {
-                showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), this::navigateUp);
+                showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), () -> {
+                            if (multisig) {
+                                popBackStack(R.id.multisigFragment, false);
+                            } else {
+                                navigateUp();
+                            }
+                        });
             }
         } else {
             showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), this::navigateUp);

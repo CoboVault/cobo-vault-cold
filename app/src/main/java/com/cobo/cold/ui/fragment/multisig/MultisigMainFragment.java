@@ -102,10 +102,12 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
                     fm.beginTransaction().remove(fragments[0]).remove(fragments[1]).commit();
                 }
             }
+            mBinding.walletLabelContainer.setVisibility(View.GONE);
         } else {
             mBinding.empty.setVisibility(View.GONE);
             mBinding.fab.show();
             mBinding.fab.setOnClickListener(v -> addAddress());
+            mBinding.walletLabelContainer.setVisibility(View.VISIBLE);
             mBinding.walletLabel.setText(wallet.getWalletName() + " ");
             mBinding.walletLabelContainer.setOnClickListener(v -> navigateToManageWallet());
             title = new String[]{getString(R.string.tab_my_address), getString(R.string.tab_my_change_address)};

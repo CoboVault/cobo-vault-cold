@@ -63,9 +63,11 @@ public class ManageWalletFragment extends MultiSigBaseFragment<ManageWalletBindi
                 adapter.setItems(multiSigWalletEntities);
                 mBinding.empty.setVisibility(View.GONE);
                 mBinding.list.setVisibility(View.VISIBLE);
+                mBinding.text.setVisibility(View.VISIBLE);
             } else {
                 mBinding.empty.setVisibility(View.VISIBLE);
                 mBinding.list.setVisibility(View.GONE);
+                mBinding.text.setVisibility(View.GONE);
             }
         });
         subscribeGetCurrentWallet();
