@@ -273,7 +273,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     @Override
     public void handleDecode(ScannedData[] res) {
         try {
-            if (!qrScanPurpose.isAnimateQr()) {
+            if (qrScanPurpose != QrScanPurpose.UNDEFINE && !qrScanPurpose.isAnimateQr()) {
                 alert(getString(R.string.unsupported_qrcode));
             } else {
                 viewModel.handleDecode(this, res);

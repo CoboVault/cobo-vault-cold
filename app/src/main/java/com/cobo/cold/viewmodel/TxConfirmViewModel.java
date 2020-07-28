@@ -1013,7 +1013,8 @@ public class TxConfirmViewModel extends AndroidViewModel {
                             walletRootXfps.add(xpub.getString("xfp"));
                         }
                         if (fingerprintsHash(walletFps).equalsIgnoreCase(fingerprintsHash)
-                           ||fingerprintsHash(walletRootXfps).equalsIgnoreCase(fingerprintsHash)) {
+                           ||(fingerprintsHash(walletRootXfps).equalsIgnoreCase(fingerprintsHash)
+                                && hdPath.startsWith(w.getExPubPath()))) {
                             wallet = w;
                             break;
                         }

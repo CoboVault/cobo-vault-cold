@@ -57,16 +57,26 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
 
     public static void showExportPsbtDialog(AppCompatActivity activity, TxEntity tx,
                                             Runnable onExportSuccess) {
-        showExportPsbtDialog(activity, !TextUtils.isEmpty(tx.getSignStatus()),
+
+        String signStatus = tx.getSignStatus();
+        boolean signed = true;
+        if (!TextUtils.isEmpty(signStatus)) {
+            String[] splits = signStatus.split("-");
+            int sigNumber = Integer.parseInt(splits[0]);
+            int reqSigNumber = Integer.parseInt(splits[1]);
+            signed = sigNumber >= reqSigNumber;
+        }
+
+        showExportPsbtDialog(activity, signed,
                 tx.getTxId(), tx.getSignedHex(), onExportSuccess);
     }
 
-    public static void showExportPsbtDialog(AppCompatActivity activity,boolean multisig ,String txId, String psbt,
+    public static void showExportPsbtDialog(AppCompatActivity activity,boolean signed ,String txId, String psbt,
                                             Runnable onExportSuccess) {
         ModalDialog modalDialog = ModalDialog.newInstance();
         ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
                 R.layout.export_sdcard_modal, null, false);
-        String prefix = multisig ? "partially_signed_":"signed_";
+        String prefix = signed ?   "signed_" : "partially_signed_";
         String fileName = prefix + txId.substring(0, 8) + ".psbt";
         binding.title.setText(R.string.export_signed_txn);
         binding.fileName.setText(fileName);

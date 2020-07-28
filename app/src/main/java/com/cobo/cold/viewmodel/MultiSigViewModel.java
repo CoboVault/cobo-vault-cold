@@ -265,11 +265,11 @@ public class MultiSigViewModel extends AndroidViewModel {
     }
 
     public String getExportXpubFileName(MultiSig.Account account) {
-        return xfp + "-"+ account.getFormat() +".json";
+        return xfp + "_"+ account.getFormat() +".json";
     }
 
     public String getExportAllXpubFileName() {
-        return "ccxp-" + xfp + ".json";
+        return "ccxp_" + xfp + ".json";
     }
 
     public String getAddressTypeString(MultiSig.Account account) {
@@ -286,6 +286,7 @@ public class MultiSigViewModel extends AndroidViewModel {
 
     public LiveData<MultiSigWalletEntity> createMultisigWallet(int threshold,
                                      MultiSig.Account account,
+                                     String name,
                                      JSONArray xpubsInfo) throws XfpNotMatchException {
         MutableLiveData<MultiSigWalletEntity> result = new MutableLiveData<>();
         int total = xpubsInfo.length();
@@ -312,8 +313,9 @@ public class MultiSigViewModel extends AndroidViewModel {
         }
         String verifyCode = calculateWalletVerifyCode(threshold, xpubs, account.getPath());
         String walletFingerprint = verifyCode + xfp;
+        String walletName = !TextUtils.isEmpty(name) ? name : "CV_"+ verifyCode +"_" + threshold + "-" + total;
         MultiSigWalletEntity wallet = new MultiSigWalletEntity(
-                "cv_"+ verifyCode +"_" + threshold + "-" + total,
+                walletName,
                 threshold,
                 total,
                 account.getPath(),
@@ -328,6 +330,7 @@ public class MultiSigViewModel extends AndroidViewModel {
                 new AddAddressTask(walletFingerprint, repo, null, 0).execute(1);
                 new AddAddressTask(walletFingerprint, repo, () -> result.postValue(wallet), 1).execute(1);
             } else {
+                repo.updateWallet(wallet);
                 result.postValue(wallet);
             }
             Utilities.setDefaultMultisigWallet(getApplication(), xfp, walletFingerprint);

@@ -91,7 +91,7 @@ public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportW
     }
 
     private void handleExportWallet() {
-        String fileName = String.format("export-CoboVault-%dof%d.txt", walletEntity.getThreshold(), walletEntity.getTotal());
+        String fileName = String.format("export_%s.txt", walletEntity.getWalletName());
         ModalDialog dialog = new ModalDialog();
         ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.modal_with_two_button,
