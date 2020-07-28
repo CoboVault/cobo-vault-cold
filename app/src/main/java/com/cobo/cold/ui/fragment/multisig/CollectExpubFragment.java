@@ -22,11 +22,13 @@ package com.cobo.cold.ui.fragment.multisig;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
@@ -36,6 +38,7 @@ import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.CollectExpubBinding;
+import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.XpubFileItemBinding;
 import com.cobo.cold.databinding.XpubInputBinding;
 import com.cobo.cold.databinding.XpubListBinding;
@@ -176,8 +179,8 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    ModalDialog.showCommonModal(mActivity, "",
-                            getString(R.string.unsupported_qrcode),
+                    showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
+                            getString(R.string.invalid_xpub_file_hint),
                             getString(R.string.know),null);
                 }
             }
@@ -258,7 +261,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
             updateXpubInfo(info, obj.getString("xfp"), xpub);
         } catch (JSONException e) {
             e.printStackTrace();
-            ModalDialog.showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
+            showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
                     getString(R.string.invalid_xpub_file_hint),
                     getString(R.string.know),null);
         }
@@ -341,6 +344,30 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
         }
     }
 
+
+    public static ModalDialog showCommonModal(AppCompatActivity activity,
+                                              String title,
+                                              String subTitle,
+                                              String buttonText,
+                                              Runnable confirmAction) {
+        ModalDialog dialog = new ModalDialog();
+        CommonModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
+                R.layout.common_modal, null, false);
+        binding.title.setText(title);
+        binding.subTitle.setText(subTitle);
+        binding.subTitle.setGravity(Gravity.LEFT);
+        binding.close.setVisibility(View.GONE);
+        binding.confirm.setText(buttonText);
+        binding.confirm.setOnClickListener(v -> {
+            if (confirmAction != null) {
+                confirmAction.run();
+            }
+            dialog.dismiss();
+        });
+        dialog.setBinding(binding);
+        dialog.show(activity.getSupportFragmentManager(), "");
+        return dialog;
+    }
 
 }
 
