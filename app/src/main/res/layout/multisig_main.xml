@@ -55,25 +55,34 @@
             android:layout_height="1dp"
             android:layout_below="@id/toolbar" />
 
-        <TextView
-            android:id="@+id/wallet_label"
+        <FrameLayout
+            android:id="@+id/wallet_label_container"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/divider"
-            android:layout_marginHorizontal="16dp"
-            android:background="?selectableItemBackground"
-            android:gravity="center_vertical"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:ellipsize="middle"
-            android:singleLine="true"
-            android:textColor="@color/colorAccent" />
+            android:background="?selectableItemBackground">
+
+            <TextView
+                android:id="@+id/wallet_label"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="16dp"
+                android:drawableEnd="@drawable/arrow_right"
+                android:drawableTint="@color/colorAccent"
+                android:ellipsize="middle"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/wallet_label"
+            android:layout_below="@id/wallet_label_container"
             app:tabIndicatorColor="@color/colorAccent"
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorHeight="2dp"
@@ -108,19 +117,19 @@
             android:id="@+id/empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/toolbar"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:layout_below="@id/toolbar"
             android:padding="16dp"
             android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 android:text="@string/no_multisig_wallet"
                 android:textColor="@color/white"
-                android:layout_gravity="start"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <com.cobo.cold.ui.views.SpanedTextView
                 android:layout_width="wrap_content"
@@ -132,9 +141,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 android:text="@string/confirm_sdcard_insert"
-                android:textColor="@color/white40"
-                android:layout_gravity="start"/>
+                android:textColor="@color/white40" />
 
             <Space
                 android:layout_width="match_parent"

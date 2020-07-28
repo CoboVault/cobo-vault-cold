@@ -112,7 +112,7 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
     private void updateUI() {
         String accountType = getAccountTypeString(account);
         String xpub = viewModel.getXpub(account);
-        mBinding.addressType.setText(String.format("%s >", accountType));
+        mBinding.addressType.setText(String.format("%s ", accountType));
         mBinding.expub.setText(xpub);
         mBinding.path.setText(String.format("(%s)", account.getPath()));
         mBinding.qrcode.setData(viewModel.getExportXpubInfo(account));
@@ -157,7 +157,7 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
     }
 
     private String getAllExtendPubkeyInfo() {
-        StringBuilder info = new StringBuilder();
+        StringBuilder info = new StringBuilder("<br>");
         for (Map.Entry<MultiSig.Account, String> entry : viewModel.getAllXpubs().entrySet()) {
             info.append(String.format("%s(%s)",getAccountTypeString(entry.getKey()),entry.getKey().getFormat())).append("<br>")
                     .append(entry.getKey().getPath()).append("<br>")

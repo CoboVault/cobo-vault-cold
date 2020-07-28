@@ -26,6 +26,7 @@ import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
 
+import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.CommonModalBinding;
@@ -42,8 +43,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import static com.cobo.cold.ui.fragment.multisig.MultisigWalletInfoFragment.getXpub;
 
 public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBinding> {
 
@@ -171,5 +170,25 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
     @Override
     protected void initData(Bundle savedInstanceState) {
 
+    }
+
+    private String getXpub(MultiSigWalletEntity wallet) {
+        StringBuilder builder = new StringBuilder();
+        try {
+            JSONArray array = new JSONArray(wallet.getExPubs());
+            for (int i = 0; i < wallet.getTotal(); i++) {
+                JSONObject info = array.getJSONObject(i);
+                String xpub = info.getString("xpub");
+                if (creator.equals("Coldcard")) {
+                    xpub = ExtendPubkeyFormat.convertExtendPubkey(xpub,ExtendPubkeyFormat.xpub);
+                }
+                builder.append(i + 1).append(". ").append(info.getString("xfp")).append("\n")
+                        .append(xpub).append("\n\n");
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return builder.toString();
     }
 }

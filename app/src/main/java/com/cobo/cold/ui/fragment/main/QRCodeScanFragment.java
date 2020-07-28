@@ -210,7 +210,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } else if(QrScanPurpose.COLLECT_XPUB == qrScanPurpose){
             navigateUp();
         } else if(QrScanPurpose.IMPORT_MULTISIG_WALLET == qrScanPurpose){
-            alert(getString(R.string.unsupported_qrcode));
+            alert(getString(R.string.invalid_multisig_wallet),
+                    getString(R.string.invalid_multisig_wallet_hint));
         } else if(isElectrumPsbtTx(res)){
             String psbtBase64 = Base64.toBase64String(Base43.decode(res));
             Bundle bundle = new Bundle();
