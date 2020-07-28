@@ -19,6 +19,8 @@ package com.cobo.cold.ui.views.qrcode;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.telecom.Log;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
@@ -62,8 +65,12 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
     private ProgressBar progressBar;
     private ImageView img;
     private EncodingScheme scheme = EncodingScheme.Cobo;
+    private Handler handler = new Handler();
+    private Runnable runnable;
 
-    int currentIndex = 0;
+    private int currentIndex = 0;
+
+    private boolean autoAnimate = true;
 
     public DynamicQrCodeView(Context context) {
         this(context, null);
@@ -72,6 +79,7 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
     public DynamicQrCodeView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
         splitData = new ArrayList<>();
+        runnable = this::showQrCode;
     }
 
     public void setEncodingScheme(EncodingScheme scheme) {
@@ -104,6 +112,15 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
         findViewById(R.id.hint).setVisibility(View.GONE);
     }
 
+    public void setAutoAnimate(boolean autoAnimate) {
+        this.autoAnimate = autoAnimate;
+        if (!autoAnimate) {
+            handler.removeCallbacks(runnable);
+        } else {
+            handler.post(runnable);
+        }
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -119,9 +136,7 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
                 showModal();
             }
         });
-
     }
-
 
     private void showModal() {
         FullScreenModal dialog = new FullScreenModal();
@@ -132,7 +147,64 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
         binding.qrcodeLayout.qrcode.setEncodingScheme(scheme);
         binding.qrcodeLayout.qrcode.setData(data);
         binding.qrcodeLayout.qrcode.disableModal();
+        setupSeekbar(binding);
+        setupController(binding);
         dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "");
+    }
+
+    private void setupController(DynamicQrcodeModalBinding binding) {
+        DynamicQrCodeView qr = binding.qrcodeLayout.qrcode;
+        if (qr.count < 2) {
+            binding.animateController.setVisibility(View.GONE);
+        } else {
+            binding.pause.setOnClickListener(v -> {
+                if (qr.autoAnimate) {
+                    qr.setAutoAnimate(false);
+                    binding.pause.setImageResource(R.drawable.resume);
+                    binding.prev.setEnabled(true);
+                    binding.next.setEnabled(true);
+                    binding.prev.setOnClickListener(prev -> {
+                        qr.currentIndex = (qr.currentIndex - 1 + count) % count;
+                        qr.showQrCode();
+                    });
+
+                    binding.next.setOnClickListener(prev -> {
+                        qr.currentIndex = (qr.currentIndex + 1) % count;
+                        qr.showQrCode();
+                    });
+                } else {
+                    qr.setAutoAnimate(true);
+                    binding.pause.setImageResource(R.drawable.pause);
+                    binding.prev.setEnabled(false);
+                    binding.next.setEnabled(false);
+                }
+            });
+        }
+
+    }
+
+    private void setupSeekbar(DynamicQrcodeModalBinding binding) {
+        float min = 0.5f;
+        float max = 1.15f;
+        float step = (max - min) / 100;
+        binding.seekbar.setProgress((int) ((1 - min) / step));
+        binding.seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                float scale = 0.5f + step * i;
+                binding.qrcodeLayout.qrcode.setScaleX(scale);
+                binding.qrcodeLayout.qrcode.setScaleY(scale);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     private void showQrCode() {
@@ -147,9 +219,9 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
                 }
             });
         }
-        if (count > 1) {
+        if (count > 1 && autoAnimate) {
             currentIndex = ++currentIndex % count;
-            postDelayed(this::showQrCode, DURATION);
+            handler.postDelayed(this::showQrCode, DURATION);
         }
     }
 

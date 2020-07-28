@@ -33,7 +33,6 @@ import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
-import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.QrcodeScanFragmentBinding;
 import com.cobo.cold.scan.CaptureHandler;
@@ -45,7 +44,6 @@ import com.cobo.cold.scan.camera.CameraManager;
 import com.cobo.cold.scan.view.PreviewFrame;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
-import com.cobo.cold.viewmodel.GlobalViewModel;
 import com.cobo.cold.viewmodel.InvalidMultisigWalletException;
 import com.cobo.cold.viewmodel.MultiSigViewModel;
 import com.cobo.cold.viewmodel.QrScanViewModel;
@@ -55,7 +53,6 @@ import com.cobo.cold.viewmodel.UuidNotMatchException;
 import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.WatchWalletNotMatchException;
 import com.cobo.cold.viewmodel.XfpNotMatchException;
-import com.cobo.cold.viewmodel.XpubNotMatchException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,7 +66,6 @@ import java.nio.charset.StandardCharsets;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.viewmodel.MultiSigViewModel.decodeColdCardWalletFile;
-import static com.cobo.cold.viewmodel.WatchWallet.ELECTRUM;
 import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
 
 public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
@@ -277,7 +273,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     @Override
     public void handleDecode(ScannedData[] res) {
         try {
-            if (!qrScanPurpose.isAnimateQr()) {
+            if (qrScanPurpose != QrScanPurpose.UNDEFINE && !qrScanPurpose.isAnimateQr()) {
                 alert(getString(R.string.unsupported_qrcode));
             } else {
                 viewModel.handleDecode(this, res);

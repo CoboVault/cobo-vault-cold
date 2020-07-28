@@ -1,3 +1,22 @@
+/*
+ *
+ * Copyright (c) 2020 Cobo
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package com.cobo.cold.ui.fragment.multisig;
 
 import android.graphics.Typeface;
@@ -7,7 +26,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
@@ -63,9 +81,7 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
             binding.actionHint.setText(fileName);
             binding.actionHint.setTypeface(Typeface.DEFAULT_BOLD);
             binding.left.setText(R.string.cancel);
-            binding.left.setOnClickListener(v -> {
-                dialog.dismiss();
-            });
+            binding.left.setOnClickListener(v -> dialog.dismiss());
             binding.right.setText(R.string.export);
             binding.right.setOnClickListener(v -> {
                 dialog.dismiss();

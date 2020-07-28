@@ -31,7 +31,6 @@ import com.cobo.bcUniformResource.UniformResource;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Coins;
-import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.BuildConfig;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
@@ -46,7 +45,6 @@ import com.cobo.cold.ui.fragment.main.QRCodeScanFragment;
 import com.cobo.cold.ui.fragment.main.QrScanPurpose;
 import com.cobo.cold.update.utils.Digest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Base64;
@@ -55,9 +53,6 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.KEY_TX_DATA;

@@ -972,8 +972,8 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
                 if (i == 0) {
                     String[] signStatus = psbtInput.getString("signStatus").split("-");
-                    total = Integer.valueOf(signStatus[2]);
                     threshold = Integer.valueOf(signStatus[1]);
+                    total = Integer.valueOf(signStatus[2]);
                     object.put("signStatus", psbtInput.getString("signStatus"));
                 }
 
@@ -997,13 +997,14 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 //all input should have the same xpub info
                 if (!fingerprintsHash(fps).equals(fingerprintsHash)) break;
 
-                //find the exists multisig wallet match the xub info
+                //find the exists multisig wallet match the xpub info
                 if (wallet == null) {
                     List<MultiSigWalletEntity> wallets = mRepository.loadAllMultiSigWalletSync()
                             .stream()
                             .filter(w -> w.getTotal() == total && w.getThreshold() == threshold)
                             .collect(Collectors.toList());
                     for (MultiSigWalletEntity w : wallets) {
+                        if (w.getTotal() != total || w.getThreshold() != threshold) continue;
                         JSONArray array = new JSONArray(w.getExPubs());
                         List<String> walletFps = new ArrayList<>();
                         List<String> walletRootXfps = new ArrayList<>();
@@ -1013,7 +1014,8 @@ public class TxConfirmViewModel extends AndroidViewModel {
                             walletRootXfps.add(xpub.getString("xfp"));
                         }
                         if (fingerprintsHash(walletFps).equalsIgnoreCase(fingerprintsHash)
-                           ||fingerprintsHash(walletRootXfps).equalsIgnoreCase(fingerprintsHash)) {
+                           ||(fingerprintsHash(walletRootXfps).equalsIgnoreCase(fingerprintsHash)
+                                && hdPath.startsWith(w.getExPubPath()))) {
                             wallet = w;
                             break;
                         }

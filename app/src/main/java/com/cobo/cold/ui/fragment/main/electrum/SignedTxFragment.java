@@ -114,6 +114,7 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
                 text = getString(R.string.unsigned);
             } else if (sigNumber < reqSigNumber) {
                 text = getString(R.string.partial_signed);
+                mBinding.txDetail.broadcastGuide.setVisibility(View.GONE);
             } else {
                 text = getString(R.string.signed);
             }

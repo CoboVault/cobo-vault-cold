@@ -32,8 +32,8 @@ import com.cobo.cold.viewmodel.GlobalViewModel;
 import com.cobo.cold.viewmodel.WalletInfoViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
-import static com.cobo.coinlib.ExtendPubkeyFormat.zpub;
 import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
+import static com.cobo.coinlib.ExtendPubkeyFormat.zpub;
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
 import static com.cobo.cold.ui.fragment.setup.SelectAddressFormatFragment.KEY_NEED_CONFIRM;
 import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;

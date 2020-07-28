@@ -26,6 +26,7 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
@@ -94,6 +95,29 @@ public class QrCodeView extends FrameLayout implements QrCodeHolder {
         binding.close.setOnClickListener(v -> dialog.dismiss());
         binding.qrcodeLayout.qrcode.setData(data);
         binding.qrcodeLayout.qrcode.disableModal();
+        float min = 0.5f;
+        float max = 1.15f;
+        float step = (max - min) / 100;
+        binding.seekbar.setProgress((int) ((1 - min) / step));
+        binding.seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                float scale = 0.5f + step * i;
+                binding.qrcodeLayout.qrcode.setScaleX(scale);
+                binding.qrcodeLayout.qrcode.setScaleY(scale);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "");
     }
 

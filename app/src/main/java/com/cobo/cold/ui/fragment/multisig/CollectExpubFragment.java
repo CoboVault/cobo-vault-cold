@@ -1,3 +1,22 @@
+/*
+ *
+ * Copyright (c) 2020 Cobo
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package com.cobo.cold.ui.fragment.multisig;
 
 import android.content.Context;
@@ -9,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
@@ -18,11 +38,10 @@ import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.CollectExpubBinding;
-import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
+import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.XpubFileItemBinding;
 import com.cobo.cold.databinding.XpubInputBinding;
 import com.cobo.cold.databinding.XpubListBinding;
-import com.cobo.cold.db.entity.MultiSigWalletEntity;
 import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.FileUtils;
@@ -92,7 +111,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                     array.put(xpub);
                 }
             }
-            viewModel.createMultisigWallet(threshold, account, array)
+            viewModel.createMultisigWallet(threshold, account, null, array)
                     .observe(this, walletEntity -> {
                         if (walletEntity != null) {
                             Bundle data = new Bundle();
@@ -160,8 +179,8 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    ModalDialog.showCommonModal(mActivity, "",
-                            getString(R.string.unsupported_qrcode),
+                    showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
+                            getString(R.string.invalid_xpub_file_hint),
                             getString(R.string.know),null);
                 }
             }
@@ -242,7 +261,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
             updateXpubInfo(info, obj.getString("xfp"), xpub);
         } catch (JSONException e) {
             e.printStackTrace();
-            ModalDialog.showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
+            showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
                     getString(R.string.invalid_xpub_file_hint),
                     getString(R.string.know),null);
         }
@@ -325,6 +344,30 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
         }
     }
 
+
+    public static ModalDialog showCommonModal(AppCompatActivity activity,
+                                              String title,
+                                              String subTitle,
+                                              String buttonText,
+                                              Runnable confirmAction) {
+        ModalDialog dialog = new ModalDialog();
+        CommonModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
+                R.layout.common_modal, null, false);
+        binding.title.setText(title);
+        binding.subTitle.setText(subTitle);
+        binding.subTitle.setGravity(Gravity.LEFT);
+        binding.close.setVisibility(View.GONE);
+        binding.confirm.setText(buttonText);
+        binding.confirm.setOnClickListener(v -> {
+            if (confirmAction != null) {
+                confirmAction.run();
+            }
+            dialog.dismiss();
+        });
+        dialog.setBinding(binding);
+        dialog.show(activity.getSupportFragmentManager(), "");
+        return dialog;
+    }
 
 }
 
