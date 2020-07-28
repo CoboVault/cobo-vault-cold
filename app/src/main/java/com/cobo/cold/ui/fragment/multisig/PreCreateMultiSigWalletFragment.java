@@ -70,6 +70,7 @@ public class PreCreateMultiSigWalletFragment extends MultiSigBaseFragment<PreCre
     private void onConfirm() {
         CollectXpubViewModel vm = ViewModelProviders.of(mActivity).get(CollectXpubViewModel.class);
         vm.initXpubInfo(total);
+        vm.startCollect = false;
         List<CollectXpubViewModel.XpubInfo> info = vm.getXpubInfo();
         for (int i = 1; i <= total; i++) {
             if (i == 1) {

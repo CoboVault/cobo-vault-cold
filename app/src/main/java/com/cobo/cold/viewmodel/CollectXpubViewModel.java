@@ -39,6 +39,7 @@ public class CollectXpubViewModel extends AndroidViewModel {
     private static Pattern xpubFileName = Pattern.compile("(.*)[0-9a-fA-F]{8}(.*).json$");
 
     private List<XpubInfo> xpubInfos;
+    public boolean startCollect;
     private Storage storage;
 
     public CollectXpubViewModel(@NonNull Application application) {
@@ -76,7 +77,8 @@ public class CollectXpubViewModel extends AndroidViewModel {
                 File[] files = storage.getElectrumDir().listFiles();
                 if (files != null) {
                     for (File f : files) {
-                        if (xpubFileName.matcher(f.getName()).matches()) {
+                        if (xpubFileName.matcher(f.getName()).matches()
+                                && !f.getName().startsWith(".")) {
                             fileList.add(f);
                         }
                     }

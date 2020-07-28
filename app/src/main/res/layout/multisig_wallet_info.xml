@@ -252,7 +252,7 @@
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
-                    <com.cobo.cold.ui.views.UnderLineTextView
+                    <com.cobo.cold.ui.views.SpanedTextView
                         android:id="@+id/show_as_xpub"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -261,8 +261,6 @@
                         android:textColor="@color/white40"
                         android:textSize="14sp" />
 
-
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -270,8 +268,7 @@
                         android:layout_marginEnd="16dp"
                         android:text="@{xpubInfo}"
                         android:textColor="@color/white"
-                        android:textSize="14sp"
-                         />
+                        android:textSize="14sp"/>
 
                     <include
                         layout="@layout/divider"

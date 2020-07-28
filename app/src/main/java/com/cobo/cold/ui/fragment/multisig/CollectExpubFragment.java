@@ -55,6 +55,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -86,12 +88,17 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
         initializeData();
         mBinding.walletType.setText(getString(R.string.wallet_type, threshold + "-" + total));
         mBinding.addressType.setText(getString(R.string.address_type, getAddressTypeString(account)));
-        mBinding.hint.setOnClickListener( v -> showHint());
+        mBinding.hint.setOnClickListener( v -> showCommonModal(mActivity, getString(R.string.export_multisig_xpub),
+                getString(R.string.invalid_xpub_file_hint), getString(R.string.know),null));
         adapter = new Adapter();
         mBinding.list.setAdapter(adapter);
         mBinding.create.setOnClickListener(v -> createWallet());
         mBinding.create.setEnabled(data.stream()
                 .allMatch(i -> !TextUtils.isEmpty(i.xpub) && !TextUtils.isEmpty(i.xfp)));
+        if (!collectXpubViewModel.startCollect) {
+            showHint();
+            collectXpubViewModel.startCollect = true;
+        }
     }
 
     private void showHint() {
@@ -174,14 +181,22 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                     String path = object.getString("path");
                     if (path.equals(CollectExpubFragment.this.path)) {
                         updateXpubInfo(info, xfp, xpub);
-                        scanResult.setValue("");
-                        scanResult.removeObservers(mActivity);
+                    } else {
+                        showCommonModal(mActivity, getString(R.string.wrong_xpub_format),
+                                getString(R.string.wrong_xpub_format_hint, getAddressTypeString(account),
+                                        getAddressTypeString(MultiSig.Account.ofPrefix(xpub.substring(0,4)))),
+                                getString(R.string.know),null);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
-                            getString(R.string.invalid_xpub_file_hint),
-                            getString(R.string.know),null);
+                    try {
+                        showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
+                                getString(R.string.invalid_xpub_file_hint),
+                                getString(R.string.know),null);
+                    } catch (Exception ignore){}
+                } finally {
+                    scanResult.setValue("");
+                    scanResult.removeObservers(mActivity);
                 }
             }
         });
@@ -210,14 +225,9 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
     @Override
     public void onClickSdcard(CollectXpubViewModel.XpubInfo info) {
         if (!hasSdcard(mActivity)) {
-            showNoSdcardModal(mActivity);
+            showXpubList(new ArrayList<>(),info);
         } else {
             collectXpubViewModel.loadXpubFile().observe(this, files -> {
-                if (files.size() == 0) {
-                    ModalDialog.showCommonModal(mActivity, getString(R.string.no_pub_file_found),
-                            getString(R.string.no_pub_file_found),
-                            getString(R.string.know), null);
-                }
                 showXpubList(files, info);
             });
         }
@@ -228,15 +238,23 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
         XpubListBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.xpub_list, null, false);
         binding.close.setOnClickListener(v -> dialog.dismiss());
-        FileListAdapter adapter = new FileListAdapter(mActivity);
-        adapter.setItems(files);
-        binding.list.setAdapter(adapter);
-        binding.confirm.setOnClickListener(v -> {
-            if (adapter.selectIndex != -1) {
-                decodeXpubFile(files.get(adapter.selectIndex), info);
+        if (!files.isEmpty()) {
+            FileListAdapter adapter = new FileListAdapter(mActivity, dialog, info);
+            adapter.setItems(files);
+            binding.list.setAdapter(adapter);
+            binding.list.setVisibility(View.VISIBLE);
+            binding.emptyView.setVisibility(View.GONE);
+        } else {
+            binding.list.setVisibility(View.GONE);
+            binding.emptyView.setVisibility(View.VISIBLE);
+            if (!hasSdcard(mActivity)) {
+                binding.emptyTitle.setText(R.string.no_sdcard);
+                binding.emptyMessage.setText(R.string.no_sdcard_hint);
+            } else {
+                binding.emptyTitle.setText(R.string.no_pub_file_found);
+                binding.emptyMessage.setText(R.string.no_pub_file_found);
             }
-            dialog.dismiss();
-        });
+        }
         dialog.setContentView(binding.getRoot());
         dialog.show();
     }
@@ -270,18 +288,21 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
     private String format(CollectXpubViewModel.XpubInfo info) {
         String index = info.index < 10 ? "0" + info.index : String.valueOf(info.index);
         if (TextUtils.isEmpty(info.xpub)) {
-            return index + ":";
+            return index + " ";
         } else {
-            return index + ":Fingerprint:" + info.xfp + "\n"
+            return index + " Fingerprint:" + info.xfp + "\n"
                     + mActivity.getString(R.string.extend_pubkey) + ":" + info.xpub;
         }
     }
 
     class FileListAdapter extends BaseBindingAdapter<File, XpubFileItemBinding> {
         int selectIndex = -1;
-
-        FileListAdapter(Context context) {
+        BottomSheetDialog dialog;
+        CollectXpubViewModel.XpubInfo info;
+        FileListAdapter(Context context, BottomSheetDialog dialog, CollectXpubViewModel.XpubInfo info) {
             super(context);
+            this.dialog = dialog;
+            this.info = info;
         }
 
         @Override
@@ -303,6 +324,10 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                 binding.getRoot().setOnClickListener(v -> {
                     selectIndex = position;
                     notifyDataSetChanged();
+                    dialog.dismiss();
+                    if (selectIndex != -1) {
+                        decodeXpubFile(getItems().get(selectIndex), info);
+                    }
                 });
             }
         }

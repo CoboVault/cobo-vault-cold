@@ -563,7 +563,7 @@
     <string name="wallet_verification_code"><![CDATA[Wallet Verification Code：<font color="#00cdc3">%s<font>]]></string>
     <string name="wallet_type">Wallet Type：%s</string>
     <string name="address_type">Address Type：%s</string>
-    <string name="cosigners">Cosigner:</string>
+    <string name="cosigners">\nCosigner:</string>
     <string name="create_multisig_wallet">Create Multisig Wallet</string>
     <string name="export_now">Export Now</string>
     <string name="next_one">Display Next</string>
@@ -644,10 +644,12 @@
     <string name="export_wallet_to_electrum">Export to create Watch-Only（Electrum</string>
     <string name="view_wallet_info">Wallet Info</string>
     <string name="wallet_verify_code">Wallet Verification Code</string>
-    <string name="info_for_cc">Cosigner is Coldcard, click here to compare XPUBs</string>
-    <string name="p2wsh">Native Segwit（p2wsh）</string>
-    <string name="p2wsh_p2sh">Nested Segwit(p2wsh-p2sh)</string>
-    <string name="p2sh">Legacy（p2sh）</string>
+    <string name="info_for_cc"><![CDATA[
+    Cosigner is Coldcard, <u>click here to compare XPUBs</u>
+    ]]></string>
+    <string name="p2wsh">Native Segwit(P2WSH)</string>
+    <string name="p2wsh_p2sh">Nested Segwit(P2WSH-P2SH)</string>
+    <string name="p2sh">Legacy(P2SH)</string>
     <string name="select_xpub_file">Select Xpub File</string>
     <string name="delete_wallet_title">Delete Wallet？</string>
     <string name="delete_wallet_hint">Confirm to delete the wallet？The wallet transaction can\'t be signed after deleting.</string>

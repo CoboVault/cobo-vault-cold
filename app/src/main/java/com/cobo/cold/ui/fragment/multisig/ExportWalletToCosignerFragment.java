@@ -40,6 +40,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
+import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
 import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
 
 public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportWalletToCosignerBinding> {
@@ -91,25 +92,30 @@ public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportW
     }
 
     private void handleExportWallet() {
-        String fileName = String.format("export_%s.txt", walletEntity.getWalletName());
-        ModalDialog dialog = new ModalDialog();
-        ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
-                R.layout.modal_with_two_button,
-                null, false);
-        binding.title.setText(R.string.export_multisig_to_cosigner);
-        binding.subTitle.setText(R.string.file_name_label);
-        binding.actionHint.setText(fileName);
-        binding.actionHint.setTypeface(Typeface.DEFAULT_BOLD);
-        binding.left.setText(R.string.cancel);
-        binding.left.setOnClickListener(left -> dialog.dismiss());
-        binding.right.setText(R.string.export);
-        binding.right.setOnClickListener(right -> {
-            dialog.dismiss();
-            if (writeToSdcard(storage, walletFileContent, fileName)) {
-                exportSuccess(mActivity, null);
-            }
-        });
-        dialog.setBinding(binding);
-        dialog.show(mActivity.getSupportFragmentManager(), "");
+        if (hasSdcard(mActivity)) {
+            String fileName = String.format("export_%s.txt", walletEntity.getWalletName());
+            ModalDialog dialog = new ModalDialog();
+            ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                    R.layout.modal_with_two_button,
+                    null, false);
+            binding.title.setText(R.string.export_multisig_to_cosigner);
+            binding.subTitle.setText(R.string.file_name_label);
+            binding.actionHint.setText(fileName);
+            binding.actionHint.setTypeface(Typeface.DEFAULT_BOLD);
+            binding.left.setText(R.string.cancel);
+            binding.left.setOnClickListener(left -> dialog.dismiss());
+            binding.right.setText(R.string.export);
+            binding.right.setOnClickListener(right -> {
+                dialog.dismiss();
+                if (writeToSdcard(storage, walletFileContent, fileName)) {
+                    exportSuccess(mActivity, null);
+                }
+            });
+            dialog.setBinding(binding);
+            dialog.show(mActivity.getSupportFragmentManager(), "");
+        } else {
+            ModalDialog.showCommonModal(mActivity, getString(R.string.no_sdcard),
+                    getString(R.string.no_sdcard_hint),getString(R.string.know),null);
+        }
     }
 }

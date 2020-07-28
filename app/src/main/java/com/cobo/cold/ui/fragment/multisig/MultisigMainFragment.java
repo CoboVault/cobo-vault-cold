@@ -106,8 +106,8 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
             mBinding.empty.setVisibility(View.GONE);
             mBinding.fab.show();
             mBinding.fab.setOnClickListener(v -> addAddress());
-            mBinding.walletLabel.setText(wallet.getWalletName() + " >");
-            mBinding.walletLabel.setOnClickListener(v -> navigateToManageWallet());
+            mBinding.walletLabel.setText(wallet.getWalletName() + " ");
+            mBinding.walletLabelContainer.setOnClickListener(v -> navigateToManageWallet());
             title = new String[]{getString(R.string.tab_my_address), getString(R.string.tab_my_change_address)};
             fm = getChildFragmentManager();
             initViewPager();

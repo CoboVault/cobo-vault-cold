@@ -65,14 +65,43 @@
             android:layout_height="200dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="3"
-            tools:listitem="@layout/xpub_file_item"/>
-
-        <Button
-            android:id="@+id/confirm"
+            tools:listitem="@layout/xpub_file_item"
+            android:visibility="gone"/>
+        <LinearLayout
+            android:id="@+id/empty_view"
             android:layout_width="match_parent"
-            style="@style/AcceptButton"
-            android:layout_margin="16dp"
-            android:text="@string/confirm"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/sdcard_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/empty_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/empty_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white40"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 </layout>
