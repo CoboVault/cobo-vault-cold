@@ -227,9 +227,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
         if (!hasSdcard(mActivity)) {
             showXpubList(new ArrayList<>(),info);
         } else {
-            collectXpubViewModel.loadXpubFile().observe(this, files -> {
-                showXpubList(files, info);
-            });
+            collectXpubViewModel.loadXpubFile().observe(this, files -> showXpubList(files, info));
         }
     }
 
@@ -291,7 +289,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
             return index + " ";
         } else {
             return index + " Fingerprint:" + info.xfp + "\n"
-                    + mActivity.getString(R.string.extend_pubkey) + ":" + info.xpub;
+                    + mActivity.getString(R.string.extend_pubkey1) + ":" + info.xpub;
         }
     }
 
@@ -370,11 +368,11 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
     }
 
 
-    public static ModalDialog showCommonModal(AppCompatActivity activity,
-                                              String title,
-                                              String subTitle,
-                                              String buttonText,
-                                              Runnable confirmAction) {
+    private static ModalDialog showCommonModal(AppCompatActivity activity,
+                                               String title,
+                                               String subTitle,
+                                               String buttonText,
+                                               Runnable confirmAction) {
         ModalDialog dialog = new ModalDialog();
         CommonModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
                 R.layout.common_modal, null, false);

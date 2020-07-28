@@ -64,6 +64,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.cobo.coinlib.Util.reverseHex;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2SH;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_P2SH;
 
 public class MultiSigViewModel extends AndroidViewModel {
 
@@ -128,9 +131,9 @@ public class MultiSigViewModel extends AndroidViewModel {
     public String getXpub(MultiSig.Account account) {
         if (!xpubsMap.containsKey(account)) {
             String expub = new GetExtendedPublicKeyCallable(account.getPath()).call();
-            if (account == MultiSig.Account.P2WSH) {
+            if (account == P2WSH) {
                 expub = ExtendPubkeyFormat.convertExtendPubkey(expub, ExtendPubkeyFormat.Zpub);
-            } else if (account == MultiSig.Account.P2WSH_P2SH) {
+            } else if (account == P2WSH_P2SH) {
                 expub = ExtendPubkeyFormat.convertExtendPubkey(expub, ExtendPubkeyFormat.Ypub);
             }
             xpubsMap.put(account, expub);
@@ -252,7 +255,8 @@ public class MultiSigViewModel extends AndroidViewModel {
     public String getExportAllXpubInfo() {
         JSONObject object = new JSONObject();
         try {
-            for (MultiSig.Account value : MultiSig.Account.values()) {
+            MultiSig.Account[] accounts = new MultiSig.Account[] {P2WSH, P2WSH_P2SH, P2SH};
+            for (MultiSig.Account value : accounts) {
                 String format = value.getFormat().toLowerCase().replace("-", "_");
                 object.put(format + "_deriv", value.getPath());
                 object.put(format, getXpub(value));
@@ -275,9 +279,9 @@ public class MultiSigViewModel extends AndroidViewModel {
     public String getAddressTypeString(MultiSig.Account account) {
         int id = R.string.multi_sig_account_segwit;
 
-        if (account == MultiSig.Account.P2WSH_P2SH) {
+        if (account == P2WSH_P2SH) {
             id = R.string.multi_sig_account_p2sh;
-        } else if (account == MultiSig.Account.P2SH) {
+        } else if (account == P2SH) {
             id = R.string.multi_sig_account_legacy;
         }
 

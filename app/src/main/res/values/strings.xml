@@ -1,4 +1,5 @@
 <!--
+  ~
   ~ Copyright (c) 2020 Cobo
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -13,6 +14,7 @@
   ~
   ~ You should have received a copy of the GNU General Public License
   ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
+  ~
   -->
 
 <resources>
@@ -42,7 +44,7 @@
     <string name="www_cobo_com" translatable="false">www.cobo.com</string>
     <string name="device_info">Serial Number: %s \n Firmware Version: %s\n System Version：%s\n App Version：%s</string>
     <string name="addr" translatable="false">addr.</string>
-    <string name="asset_list_empty">Please go to Menu - Add / Hide Assets to add assets you need</string>
+    <string name="asset_list_empty">Please go to Menu > Add / Hide Assets to add assets you need</string>
     <string name="mnemonic_hint1">"The recovery phrase is used to restore your wallet. Use a Cobo Tablet to record your 24 recovery phrase words and store them securely."</string>
     <string name="mnemonic_hint2">Do not share your recovery phrase with anyone or take a picture of it. If it is lost or stolen, all assets are irretrievable.</string>
     <string name="saved">Recovery Phrase Saved</string>
@@ -63,7 +65,7 @@
     <string name="eos_pubkey">Public Key：\n%s</string>
     <string name="receive_warning">This address is only for %s, other digital assets sent to the above address will be lost.</string>
     <string name="receive_coin">Receive %s</string>
-    <string name="version_update_hint"><![CDATA[Please visit: <font color="#00cdc3">https://cobo.com/hardware-wallet/downloads<font/> to check for firmware updates. If you are not using the latest firmware, download it from the official Cobo Vault website and save it on a TF card (FAT32 format, 32GB or less storage). Transfer the file to your device as shown in the image below. (TF card not included with purchase.)]]></string>
+    <string name="version_update_hint"><![CDATA[Please visit: <font color="#00cdc3">https://cobo.com/hardware-wallet/downloads<font/> to check for firmware updates. If you are not using the latest firmware, download it from the official Cobo Vault website and save it on a microSD card (FAT32 format, 32GB or less storage). Transfer the file to your device as shown in the image below. (microSD card not included with purchase.)]]></string>
     <string name="version">Version </string>
     <string name="setting_language">Language</string>
     <string name="setting_vibrator">Vibrate On / Off</string>
@@ -326,7 +328,7 @@
     <string name="tag">Memo</string>
     <string name="confirm_to_verify_mnemonic">Next Step</string>
     <string name="pattern_unlock_hint">Pattern passwords may be used to unlock Cobo Vault.</string>
-    <string name="new_version_footer_hint">You can also go to [Menu > Settings > Version] and touch “Update Now” later.</string>
+    <string name="new_version_footer_hint">You can also go to Menu > Settings > Version and touch “Update Now” later.</string>
     <string name="factory_reset_warning">Are you sure you want to permanently wipe the device?</string>
     <string-array name="create_vault_step">
         <item>"Creating vault…"</item>
@@ -366,7 +368,7 @@
     <string name="error_txn_file">Unable to read file, please try importing again.</string>
     <string name="export_signed_txn">Export File to Broadcast</string>
     <string name="electrum_import_signed_txn">In Electrum, go to Tools > Load Transaction > From File to open the file. </string>
-    <string name="insert_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less.</string>
+  导出  <string name="insert_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less.</string>
     <string name="electrum_import_xpub_action">Open when inputting your master public key on Electrum.</string>
     <string name="transaction_source_label">Wallet</string>
     <string name="use_electrum_to_broadcast">Scan the QR code with Electrum to broadcast</string>
@@ -382,7 +384,7 @@
     <string name="file_name_label">File name:</string>
     <string name="master_xpub">Master Public Key (%s)</string>
     <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning? Tap the QR code to enlarge<br>or <u>touch here to export the file with microSD</u>.]]></string>
-    <string name="generic_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>No scanning?  <u>Touch here to export the file with microSD</u>.]]></string>
+    <string name="generic_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>touch here to export the file with microSD</u>.]]></string>
     <string name="scan_electrum_hint">Difficulty scanning? You can import pending transactions from Electrum using a microSD card.</string>
     <string name="sign_txn_in_sdcard">Unsigned Transaction Files</string>
     <string name="master_pubkey_not_match">Transaction not recognized. Your Cobo Vault has not been successfully paired with the watch-only wallet.</string>
@@ -487,7 +489,7 @@
 
     <string name="wasabi_broadcast_guide"><![CDATA[
        Broadcast with Wasabi<br>
-       go to [wasabi--Tools--Transactions Broadcaster--Import transaction] open this file to broadcast
+       go to Wasabi > Tools > Transactions Broadcaster > Import transaction open this file to broadcast
     ]]></string>
 
     <string name="btcpay_broadcast_guide"><![CDATA[
@@ -542,13 +544,13 @@
     <string name="testnet_hint">The testnet currently only supports Electrum</string>
     <string name="select_network">Select Blockchain</string>
     <string name="test_net">TestNet</string>
-    <string name="no_multisig_wallet">No multisig wallet</string>
+    <string name="no_multisig_wallet">No Multisig Wallet</string>
     <string name="create_multisig_wallet_hint"><![CDATA[
      You need to create or import  multisig wallet before sign transactions of this wallet.<br><br>
      How to create a multisig wallet:<br>
      1. Collect the co-signers’ XPUBs first, click More > Show/Export  XPUB to export XPUB.<br>
-     2. The XPUB can be displayed as a QR code or saved as a file,<font color="#00cdc3">you need to save XPUBs files collected in one microSD card <font/> if XPUB saved as file.<br>
-     3. Touch the "Create Multisig Wallet" button below to determine the number of co-signers and signatures and the address type, then fill in the  XPUBs, you can scan QR code or read the file. <br>
+     2. The XPUB can be displayed as a QR code or saved as a file,<font color="#00cdc3"> you need to save XPUBs files collected in one microSD card <font/> if XPUB saved as file (FAT32 format, 32GB or less storage).<br>
+     3. Touch the "Create Multisig Wallet" button below to determine the number of co-signers and signatures and the address type, then fill in the  XPUBs by scanning QR code or importing the file. <br>
     ]]></string>
     <string name="export_all">Export All</string>
     <string name="multi_sig_account_legacy">Legacy</string>
@@ -559,6 +561,7 @@
     <string name="select_address_type">Address Type</string>
     <string name="import_multisig_wallet">Import Multisig Wallet</string>
     <string name="extend_pubkey">Extend Public Key</string>
+    <string name="extend_pubkey1">XPUB</string>
     <string name="file_name">File Name:%s</string>
     <string name="wallet_verification_code"><![CDATA[Wallet Verification Code：<font color="#00cdc3">%s<font>]]></string>
     <string name="wallet_type">Wallet Type：%s</string>
@@ -572,7 +575,7 @@
     <string name="verify_wallet_hint"><![CDATA[
     Wallet Verification Code：<br>
     <font color="#00cdc3">%s<font/> <br>
-    Check whether the wallet verification code above and the exported wallet verification code are the same. Please make sure they are the same before importing; if they are inconsistent,  recheck the wallet info.<br>
+    Check whether the wallet verification code above and the exported wallet verification code are the same. Please make sure they are the same before importing, if they are inconsistent, recheck the wallet info.<br>
     ]]>
     </string>
     <string name="import_success">Import Successful</string>
@@ -584,53 +587,53 @@
     <string name="signed">Signed</string>
     <string name="collect_xpub_hint"><![CDATA[
     Please fill in XPUB of co-signers. <font color="#00cdc3">Check the XPUB<font/> to make sure that the XPUB filled in is consistent with the XPUB exported.<img src="info"><br>
-    Your XPUB has been filled in NO.1, the multisig wallet is independent of the order in which the XPUBs is filled
+    Your XPUB has been filled in NO.1, the multisig wallet is independent of the order in which the XPUBs is filled.
     ]]>
     </string>
     <string name="check_input_pub_key">Check the XPUB filled in</string>
-    <string name="check_pub_key_hint"><![CDATA[Next you need fill in XPUB of co-signers,，<font color="#00cdc3"> please check the XPUB<font/>，to make sure that the XPUB filled in is consistent with the XPUB exported by the cosigners.]]></string>
-    <string name="no_pub_file_found">No xpub file found</string>
+    <string name="check_pub_key_hint"><![CDATA[Next you need fill in XPUB of co-signers,<font color="#00cdc3"> please check the XPUB<font/> to make sure that the XPUB filled in is consistent with the XPUB exported by the cosigners.]]></string>
+    <string name="no_pub_file_found">No XPUB file found</string>
     <string name="wrong_xpub_format_hint">Change to %s. Given XPUB is %s, please switch XPUB’s type.</string>
     <string name="wrong_xpub_format">Wrong XPUB Type</string>
     <string name="invalid_xpub_file">Wrong Data</string>
     <string name="invalid_xpub_file_hint"><![CDATA[
         Please fill in cosigners’ XPUB. <br><br>
         How to export XPUB：<br>
-        Co-signer use <font color="#00cdc3">Cobo Vault<font/>, go to Cobo Vault-> Menu->Multisig Wallet->More->Show/Export Vault’s XPUB, you can scan or export file.<br>
-        Co-signer use <font color="#00cdc3">Coldcard<font/>, go to ColdCard-> Setting->Multisig Wallets->Export XPUB
+        Co-signer use <font color="#00cdc3">Cobo Vault<font/>, go to Cobo Vault > Menu > Multisig Wallet > More > Show/Export XPUB, you can scan or export file.<br>
+        Co-signer use <font color="#00cdc3">Coldcard<font/>, go to Coldcard > Setting > Multisig Wallets > Export XPUB.
     ]]></string>
     <string name="duplicate_xpub_title">Repeat XPUB</string>
-    <string name="duplicate_xpub_hint">You have filled in the XPUB.  Please fill in the XPUBs of other cosigners.</string>
+    <string name="duplicate_xpub_hint">You have filled in the XPUB. Please fill in the XPUB of other cosigners.</string>
     <string name="no_multisig_wallet_file">No Multisig Wallet File</string>
-    <string name="no_multisig_wallet_file_hint">You can click the QR code button to scan the QR code of multisig wallet, or import multisig wallet file (Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting.)</string>
+    <string name="no_multisig_wallet_file_hint">You can click the QR code button to scan the QR code of multisig wallet, or import multisig wallet file (Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting)</string>
     <string name="stop_export_xpub">Keep Creating</string>
     <string name="stop_export_xpub_hint">You need to scan %d public key to complete the creation of watch-only wallet</string>
     <string name="keep_create">Keep Creating</string>
     <string name="create_later">Create Later</string>
     <string name="open_int_siglesig_wallet">Open the transaction in My Cobo Vault</string>
-    <string name="open_int_siglesig_wallet_hint">This transaction is single-sign.  To open a single-sign transaction, go to Menu > My Cobo Vault, and click the Scan or MicroSD card icon</string>
+    <string name="open_int_siglesig_wallet_hint">This transaction is single-sign. Go to Menu > My Cobo Vault, and click the Scan or MicroSD card icon.</string>
     <string name="open_int_multisig_wallet">Open the transaction in Multisig Wallet</string>
-    <string name="open_int_multisig_wallet_hint">This transaction is multisig.  To open a multisig transaction, go to Menu > Multisig Wallet, and click the Scan or MicroSD card icon</string>
+    <string name="open_int_multisig_wallet_hint">This transaction is multisig. Go to Menu > Multisig Wallet, and click the Scan or MicroSD card icon.</string>
     <string name="cannot_sign">Can’t sign it</string>
     <string name="cannot_sign_hint">The current wallet is not from the co-signer of this multisig transaction, you can\'t sign it.</string>
     <string name="no_matched_wallet">No Such Multisig Wallet</string>
-    <string name="no_matched_wallet_hint">You need to create or import the multisig wallet of the transaction before signing the transaction</string>
+    <string name="no_matched_wallet_hint">You need to create or import the multisig wallet of the transaction before signing the transaction.</string>
     <string name="import_multisig_wallet_fail">Import Failed</string>
     <string name="import_multisig_wallet_fail_hint">This multisig wallet doesn\'t contain the current vault.</string>
     <string name="invalid_multisig_wallet">Not Multisig Wallet</string>
-    <string name="invalid_multisig_wallet_hint">This File/QR Code is not multisig wallet，can\'t import.</string>
+    <string name="invalid_multisig_wallet_hint">This File/QR Code is not multisig wallet, can\'t import.</string>
     <string name="mainnet">MainNet</string>
     <string name="testnet">TestNet</string>
-    <string name="export_multisig_xpub">Export Xpub</string>
+    <string name="export_multisig_xpub">Export XPUB</string>
     <string name="export_multisig_to_cosigner">Export wallet to cosigners</string>
     <string name="please_check_multisig_wallet_info">Check the Wallet Info</string>
     <string name="check_multisig_wallet_hint">Please carefully check the wallet info to ensure that it is completely consistent with the created wallet information before importing.</string>
     <string name="verify_multisig_wallet">Wallet Verify</string>
-    <string name="verify_code_ok">Verified，continue importing</string>
-    <string name="error_verify_code">No Verification Code, check wallet info</string>
-    <string name="check_xpub_info">Compare Xpubs</string>
+    <string name="verify_code_ok">Verified, continue importing</string>
+    <string name="error_verify_code">Wrong Verification Code, check wallet info</string>
+    <string name="check_xpub_info">Compare XPUBs</string>
     <string name="create">Create</string>
-    <string name="export_to_cosigner_hint">Invite cosigners to scan the QR Code,or export file for cosigners to import</string>
+    <string name="export_to_cosigner_hint">Invite cosigners to scan the QR Code,\nor export file for cosigners to import</string>
     <string name="total_key_number">Total %d Cosigners</string>
     <string name="wallet_name">Wallet Name</string>
     <string name="wallet_type1">Wallet type</string>
@@ -639,23 +642,24 @@
     <string name="cosigner">Cosigners</string>
     <string name="manage_myltisig_wallet">Manage Multisig Wallet</string>
     <string name="choose_current_wallet">Select the wallet displayed on the homepage</string>
-    <string name="view_or_export_xpub">Show/Export  XPUB</string>
-    <string name="confirm_sdcard_insert">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting</string>
-    <string name="export_wallet_to_electrum">Export to create Watch-Only（Electrum</string>
+    <string name="view_or_export_xpub">Show/Export XPUB</string>
+    <string name="confirm_sdcard_insert">Complete graphic tutorial for multisig wallet, please visit: https://support.cobo.com/hc/en-us/articles/360051569994</string>
+    <string name="export_wallet_to_electrum">Export to create Watch-Only（Electrum）</string>
     <string name="view_wallet_info">Wallet Info</string>
     <string name="wallet_verify_code">Wallet Verification Code</string>
     <string name="info_for_cc"><![CDATA[
     Cosigner is Coldcard, <u>click here to compare XPUBs</u>
     ]]></string>
-    <string name="p2wsh">Native Segwit(P2WSH)</string>
-    <string name="p2wsh_p2sh">Nested Segwit(P2WSH-P2SH)</string>
-    <string name="p2sh">Legacy(P2SH)</string>
-    <string name="select_xpub_file">Select Xpub File</string>
+    <string name="p2wsh">Native Segwit (P2WSH)</string>
+    <string name="p2wsh_p2sh">Nested Segwit (P2WSH-P2SH)</string>
+    <string name="p2sh">Legacy (P2SH)</string>
+    <string name="select_xpub_file">Select XPUB File</string>
     <string name="delete_wallet_title">Delete Wallet？</string>
-    <string name="delete_wallet_hint">Confirm to delete the wallet？The wallet transaction can\'t be signed after deleting.</string>
-    <string name="no_multisig_Wallet">No multisig wallet</string>
+    <string name="delete_wallet_hint">Confirm to delete the wallet？ The wallet transaction can\'t be signed after deleting.</string>
+    <string name="no_multisig_Wallet">No Multisig Wallet</string>
     <string name="import_failed">Import Failed</string>
     <string name="not_include_current_vault">This multisig wallet doesn\'t contain the current vault.</string>
     <string name="not_valid_multisig_wallet">Not Multisig Wallet</string>
-    <string name="invalid_wallet_hint">This File/QR Code is not multisig wallet，can\'t import.</string>
+    <string name="invalid_wallet_hint">This File/QR Code is not multisig wallet, can\'t import.</string>
+    <string name="check_verify_code_hint">Co-signers need to check whether the verification code of the wallet to be imported is the same as the verification code of above, ensure that they are consistent before importing.</string>
 </resources>

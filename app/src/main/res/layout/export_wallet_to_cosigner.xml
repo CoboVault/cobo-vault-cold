@@ -65,12 +65,36 @@
                     android:text="@string/export_to_cosigner_hint"
                     android:textColor="@color/white" />
 
-                <com.cobo.cold.ui.views.SpanedTextView
-                    android:id="@+id/verify_code"
-                    android:layout_width="wrap_content"
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/wallet_verification_code"
-                    android:textColor="@color/white" />
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp">
+
+                    <View
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent" />
+
+                    <com.cobo.cold.ui.views.SpanedTextView
+                        android:id="@+id/verify_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wallet_verification_code"
+                        android:textColor="@color/white" />
+
+                    <ImageView
+                        android:id="@+id/info"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/info" />
+
+                </LinearLayout>
+
+
 
                 <include
                     android:id="@+id/qrcode_layout"
@@ -102,7 +126,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="@string/cancel"
+                    android:text="@string/export_later"
                     android:textColor="@color/colorAccent" />
             </LinearLayout>
         </ScrollView>

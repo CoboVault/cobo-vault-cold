@@ -26,6 +26,8 @@ import androidx.room.PrimaryKey;
 
 import com.cobo.cold.model.Tx;
 
+import java.util.Objects;
+
 @Entity(tableName = "txs", indices = {@Index("txId")})
 
 public class TxEntity implements Tx, FilterableItem {
@@ -193,5 +195,29 @@ public class TxEntity implements Tx, FilterableItem {
 
     public void setSignStatus(String signStatus) {
         this.signStatus = signStatus;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TxEntity txEntity = (TxEntity) o;
+        return txId.equals(txEntity.txId) &&
+                coinId.equals(txEntity.coinId) &&
+                coinCode.equals(txEntity.coinCode) &&
+                amount.equals(txEntity.amount) &&
+                from.equals(txEntity.from) &&
+                to.equals(txEntity.to) &&
+                fee.equals(txEntity.fee) &&
+                signedHex.equals(txEntity.signedHex) &&
+                memo.equals(txEntity.memo) &&
+                Objects.equals(signId, txEntity.signId) &&
+                belongTo.equals(txEntity.belongTo) &&
+                signStatus.equals(txEntity.signStatus);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(txId, coinId, coinCode, amount, from, to, fee, signedHex, memo, belongTo, signStatus);
     }
 }
