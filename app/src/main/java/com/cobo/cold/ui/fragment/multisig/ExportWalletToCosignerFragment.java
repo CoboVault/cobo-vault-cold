@@ -88,6 +88,11 @@ public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportW
                     mBinding.verifyCode.setText(getString(R.string.wallet_verification_code, w.getVerifyCode()));
                 });
         mBinding.exportToSdcard.setOnClickListener(v -> handleExportWallet());
+        mBinding.info.setOnClickListener(v -> ModalDialog.showCommonModal(mActivity,
+                getString(R.string.wallet_verify_code),
+                getString(R.string.check_verify_code_hint),
+                getString(R.string.know),
+                null));
 
     }
 

@@ -40,8 +40,9 @@ import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.Storage;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import java.util.Map;
-
+import static com.cobo.coinlib.utils.MultiSig.Account.P2SH;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_P2SH;
 import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
 import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
 import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
@@ -158,10 +159,11 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
 
     private String getAllExtendPubkeyInfo() {
         StringBuilder info = new StringBuilder("<br>");
-        for (Map.Entry<MultiSig.Account, String> entry : viewModel.getAllXpubs().entrySet()) {
-            info.append(String.format("%s(%s)",getAccountTypeString(entry.getKey()),entry.getKey().getFormat())).append("<br>")
-                    .append(entry.getKey().getPath()).append("<br>")
-                    .append(entry.getValue()).append("<br><br>");
+        MultiSig.Account[] accounts = new MultiSig.Account[] {P2WSH, P2WSH_P2SH, P2SH};
+        for (MultiSig.Account a : accounts) {
+            info.append(String.format("%s(%s)",getAccountTypeString(a),a.getFormat())).append("<br>")
+                    .append(a.getPath()).append("<br>")
+                    .append(viewModel.getXpub(a)).append("<br><br>");
         }
 
         return info.toString();

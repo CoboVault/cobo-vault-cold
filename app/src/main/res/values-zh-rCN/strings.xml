@@ -1,4 +1,5 @@
 <!--
+  ~
   ~ Copyright (c) 2020 Cobo
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -13,6 +14,7 @@
   ~
   ~ You should have received a copy of the GNU General Public License
   ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
+  ~
   -->
 
 <resources>
@@ -315,7 +317,7 @@
     <string name="file_name_label">该文件的文件名为：</string>
     <string name="master_xpub">主公钥（%s）</string>
     <string name="electrum_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或<u>\点击此处导出文件\</u>]]></string>
-    <string name="generic_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>无扫码功能？<u>\点击此处导出文件\</u>]]></string>
+    <string name="generic_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或<u>\点击此处导出文件\</u>]]></string>
     <string name="scan_electrum_hint">若扫描 Electrum 困难，可将待签交易导出成文件，点击首页的TF卡按钮，对文件签名。</string>
     <string name="sign_txn_in_sdcard">对文件签名</string>
     <string name="master_pubkey_not_match">该交易无法识别，您的 Cobo 金库与此观察钱包不匹配。</string>
@@ -495,9 +497,9 @@
     <string name="create_multisig_wallet_hint"><![CDATA[
     您需先创建或导入多签钱包，才能对该钱包交易签名。<br><br>
      多签钱包创建指引：<br>
-     1. 您需先收集参与者的扩展公钥，导出扩展公钥点击右上方【更多—查看/导出扩展公钥】<br>
-     2. 扩展公钥可展示为二维码或保存为文件；若为文件格式，您需<font color="#00cdc3">将收集到的所有扩展公钥文件保存到一张TF卡内<font/>。<br>
-     3. 点击下方“创建多签钱包”按钮，确定参与者和签名的数量及地址格式后，填入收集到的扩展公钥，填入时支持扫码和读文件。<br>
+     1. 您需先收集参与方的扩展公钥，导出扩展公钥点击右上方【更多--查看/导出扩展公钥】<br>
+     2. 扩展公钥可展示为二维码或保存为文件；若为文件格式，您需<font color="#00cdc3">将收集到的所有扩展公钥文件保存到一张TF卡内<font/>（FAT32格式，容量不能超过32G）。<br>
+     3. 点击下方“创建多签钱包”按钮，确定参与方和签名的数量及地址格式后，填入收集到的扩展公钥，填入时支持扫码和读文件。<br>
     ]]></string>
     <string name="export_all">导出全部</string>
     <string name="multi_sig_account_legacy">传统</string>
@@ -508,6 +510,7 @@
     <string name="select_address_type">选择地址类型</string>
     <string name="import_multisig_wallet">导入多签钱包</string>
     <string name="extend_pubkey">扩展公钥</string>
+    <string name="extend_pubkey1">扩展公钥</string>
     <string name="file_name">文件名称:%s</string>
     <string name="wallet_verification_code"><![CDATA[钱包验证码：<font color="#00cdc3">%s<font>]]></string>
     <string name="wallet_type">钱包类型：%s</string>
@@ -525,43 +528,43 @@
     </string>
     <string name="import_success">导入成功</string>
     <string name="view_xpub_qrcode">查看公钥二维码</string>
-    <string name="multisig_wallet_info_xpub_warning">*以上公钥仅用于生成多签钱包，不会暴露您个人钱包的任何信息\n*请不要将以上公钥信息泄露给非钱包成员（可通过公钥获取钱包地址及指导地址上存有的资产）</string>
+    <string name="multisig_wallet_info_xpub_warning">*以上公钥仅用于生成多签钱包，不会暴露您个人钱包的任何信息\n*请不要将以上公钥信息泄露给非钱包成员（可通过公钥获取钱包地址及知道地址上存有的资产）</string>
     <string name="sign_status">交易状态</string>
     <string name="unsigned">未签名</string>
     <string name="partial_signed">已被部分签名</string>
     <string name="signed">已签名</string>
     <string name="collect_xpub_hint"><![CDATA[
-    请在下列文本框中填入钱包参与者的扩展公钥，<font color="#00cdc3">填入时请检查扩展公钥<font/>，确保填入的信息和参与者导出时的信息一致。<img src="info"><br> 您的扩展公钥已自动填入1号，多签钱包的创建结果与填入扩展公钥的顺序无关
+    请在下列文本框中填入钱包参与方的扩展公钥，<font color="#00cdc3">填入时请检查扩展公钥<font/>，确保填入的信息和参与方导出时的信息一致。<img src="info"><br> 您的扩展公钥已自动填入1号，多签钱包的创建结果与填入扩展公钥的顺序无关。
     ]]>
     </string>
     <string name="check_input_pub_key">请检查填入的扩展公钥</string>
-    <string name="check_pub_key_hint"><![CDATA[接下来您需要填入参与者的扩展公钥，<font color="#00cdc3">填入时请检查扩展公钥<font/>，确保填入的信息和参与者导出时的信息一致。]]></string>
+    <string name="check_pub_key_hint"><![CDATA[接下来您需要填入参与方的扩展公钥，<font color="#00cdc3">填入时请检查扩展公钥<font/>，确保填入的信息和参与方导出的信息是一致的。]]></string>
     <string name="no_pub_file_found">未检测到扩展公钥文件</string>
     <string name="wrong_xpub_format_hint">多签钱包的地址类型为“%s”，您填入的扩展公钥为“%s”，请切换扩展公钥类型。</string>
     <string name="wrong_xpub_format">扩展公钥格式错误</string>
     <string name="invalid_xpub_file">非法数据</string>
     <string name="invalid_xpub_file_hint"><![CDATA[
-        请填入参与者的扩展公钥；<br><br>
+        请填入参与方的扩展公钥；<br><br>
         导出扩展公钥指引：<br>
-        参与者若为 <font color="#00cdc3">Cobo 金库<font/>，请前往【Cobo 金库—菜单--多签钱包--更多--查看/导出扩展公钥】，可扫描、或导出扩展公钥为文件。<br>
-        参与者若为 <font color="#00cdc3">Coldcard<font/>，请前往【ColdCard—Setting—Multisig Wallets— Export XPUB】，导出扩展公钥为文件。
+        参与方若为 <font color="#00cdc3">Cobo 金库<font/>，请前往【Cobo 金库--菜单--多签钱包--更多--查看/导出扩展公钥】，可扫描、或导出扩展公钥为文件。<br>
+        参与方若为 <font color="#00cdc3">Coldcard<font/>，请前往【Coldcard--Setting--Multisig Wallets--Export XPUB】，导出扩展公钥为文件。
     ]]></string>
     <string name="duplicate_xpub_title">重复的扩展公钥</string>
-    <string name="duplicate_xpub_hint">该扩展公钥您已填入，请填入其他参与者的扩展公钥</string>
+    <string name="duplicate_xpub_hint">该扩展公钥您已填入，请填入其他参与方的扩展公钥。</string>
     <string name="no_multisig_wallet_file">暂无钱包文件</string>
-    <string name="no_multisig_wallet_file_hint">您可点击右上方扫码按钮扫描钱包二维码导入，或将钱包文件保存到TF卡内导入（仅支持FAT格式，容量不超过32G</string>
+    <string name="no_multisig_wallet_file_hint">您可点击右上方扫码按钮扫描钱包二维码导入，或将钱包文件保存到TF卡内导入（仅支持FAT格式，容量不超过32G）</string>
     <string name="stop_export_xpub">停止创建观察钱包?</string>
     <string name="stop_export_xpub_hint">您还需用Electrum上扫描%d个公钥就可完成观察钱包的创建</string>
     <string name="keep_create">继续创建</string>
     <string name="create_later">稍后创建</string>
     <string name="open_int_siglesig_wallet">请在单签钱包打开该交易</string>
-    <string name="open_int_siglesig_wallet_hint">该交易为单签交易，打开单签交易请前往【菜单—我的 Cobo 金库】，点击右上方扫码或读文件按钮</string>
+    <string name="open_int_siglesig_wallet_hint">该交易为单签交易，打开单签交易请前往【菜单--我的 Cobo 金库】，点击右上方扫码或读文件按钮。</string>
     <string name="open_int_multisig_wallet">请在多签钱包打开该交易</string>
-    <string name="open_int_multisig_wallet_hint">该交易为多签交易，打开多签交易请前往【菜单—多签钱包】，点击右上方扫码或读文件按钮</string>
+    <string name="open_int_multisig_wallet_hint">该交易为多签交易，打开多签交易请前往【菜单--多签钱包】，点击右上方扫码或读文件按钮。</string>
     <string name="cannot_sign">不能签名</string>
-    <string name="cannot_sign_hint">当前钱包不是该多签交易的参与方，不能对其签名</string>
+    <string name="cannot_sign_hint">当前钱包不是该多签交易的参与方，不能对其签名。</string>
     <string name="no_matched_wallet">暂无该多签钱包</string>
-    <string name="no_matched_wallet_hint">您需先创建或导入该交易的多签钱包，再对该交易签名</string>
+    <string name="no_matched_wallet_hint">您需先创建或导入该交易的多签钱包，再对该交易签名。</string>
     <string name="import_multisig_wallet_fail">导入失败</string>
     <string name="import_multisig_wallet_fail_hint">该多签钱包不包含当前金库。</string>
     <string name="invalid_multisig_wallet">非多签钱包</string>
@@ -571,13 +574,13 @@
     <string name="export_multisig_xpub">导出扩展公钥</string>
     <string name="export_multisig_to_cosigner">导出钱包给参与方</string>
     <string name="please_check_multisig_wallet_info">请检查钱包信息</string>
-    <string name="check_multisig_wallet_hint">导入前，请对钱包信息进行检查，确保和已创建的钱包信息保持一致后再导入。</string>
+    <string name="check_multisig_wallet_hint">导入前，请对钱包信息进行检查，确保和已创建的钱包信息一致后再导入。</string>
     <string name="verify_multisig_wallet">钱包校验</string>
     <string name="verify_code_ok">验证码一致，继续导入</string>
     <string name="error_verify_code">验证码不一致，检查钱包信息</string>
     <string name="check_xpub_info">对照公钥信息</string>
     <string name="create">创建</string>
-    <string name="export_to_cosigner_hint">邀请参与方扫描钱包二维码， 或您将钱包导出成文件传给参与者</string>
+    <string name="export_to_cosigner_hint">邀请参与方扫描钱包二维码，\n或将钱包导出成文件传给参与方</string>
     <string name="total_key_number">一共%d个联署人</string>
     <string name="wallet_name">钱包名称</string>
     <string name="wallet_type1">钱包类型</string>
@@ -587,16 +590,16 @@
     <string name="manage_myltisig_wallet">管理多签钱包</string>
     <string name="choose_current_wallet">选择首页展示的多签钱包</string>
     <string name="view_or_export_xpub">查看/导出扩展公钥</string>
-    <string name="confirm_sdcard_insert">请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）</string>
+    <string name="confirm_sdcard_insert">多签功能完整图文教程，请访问：https://support.cobo.com/hc/zh-cn/articles/360051569994</string>
     <string name="export_wallet_to_electrum">导出钱包为观察钱包(Electrum)</string>
     <string name="view_wallet_info">查看钱包信息</string>
     <string name="wallet_verify_code">钱包验证码</string>
     <string name="info_for_cc"><![CDATA[
     若多签参与方为Coldcard，<u>请点击此处对照公钥信息</u>
     ]]></string>
-    <string name="p2wsh">隔离见证原生(P2WSH)</string>
-    <string name="p2wsh_p2sh">隔离见证兼容(P2WSH-P2SH)</string>
-    <string name="p2sh">传统(P2SH)</string>
+    <string name="p2wsh">隔离见证原生（P2WSH）</string>
+    <string name="p2wsh_p2sh">隔离见证兼容（P2WSH-P2SH）</string>
+    <string name="p2sh">传统（P2SH）</string>
     <string name="select_xpub_file">选择公钥文件</string>
     <string name="delete_wallet_title">删除钱包？</string>
     <string name="delete_wallet_hint">确认是否删除该钱包，删除后，将不能对该钱包的交易签名。</string>
@@ -605,5 +608,6 @@
     <string name="not_include_current_vault">该多签钱包不包含当前金库。</string>
     <string name="not_valid_multisig_wallet">非多签钱包</string>
     <string name="invalid_wallet_hint">该文件/二维码不是多签钱包，无法导入。</string>
+    <string name="check_verify_code_hint">参与方导入时，检查要导入钱包的验证码是否和该验证码一致，一致后再导入</string>
 
 </resources>

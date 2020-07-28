@@ -133,7 +133,8 @@ public class MultisigWalletInfoFragment extends MultiSigBaseFragment<MultisigWal
             for (int i = 0; i < wallet.getTotal(); i++) {
                 JSONObject info = array.getJSONObject(i);
                 builder.append(i + 1).append(". ").append(info.getString("xfp")).append("\n")
-                        .append(info.getString("xpub")).append("\n\n");
+                        .append(info.getString("xpub")).append("\n");
+                if (i < wallet.getTotal() - 1) builder.append("\n");
             }
 
         } catch (JSONException e) {
