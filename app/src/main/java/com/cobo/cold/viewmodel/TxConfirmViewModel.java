@@ -347,22 +347,26 @@ public class TxConfirmViewModel extends AndroidViewModel {
             return true;
         }
 
-        String exPubPath = wallet.getExPubPath();
-        for (UtxoTx.ChangeAddressInfo info : changeAddressInfo) {
-            String path = info.hdPath;
-            String address = info.address;
-            if (!path.startsWith(exPubPath)) return false;
-            path = path.replace(exPubPath + "/","");
+        try {
+            String exPubPath = wallet.getExPubPath();
+            for (UtxoTx.ChangeAddressInfo info : changeAddressInfo) {
+                String path = info.hdPath;
+                String address = info.address;
+                if (!path.startsWith(exPubPath)) return false;
+                path = path.replace(exPubPath + "/", "");
 
-            String[] index = path.split("/");
+                String[] index = path.split("/");
 
-            if (index.length != 2) return false;
-            String expectedAddress = wallet.deriveAddress(
-                    new int[] {Integer.valueOf(index[0]), Integer.valueOf(index[1])});
+                if (index.length != 2) return false;
+                String expectedAddress = wallet.deriveAddress(
+                        new int[]{Integer.valueOf(index[0]), Integer.valueOf(index[1])});
 
-            if (!expectedAddress.equals(address)) {
-                return false;
+                if (!expectedAddress.equals(address)) {
+                    return false;
+                }
             }
+        } catch (NumberFormatException e) {
+            return false;
         }
         return true;
     }
