@@ -87,7 +87,7 @@ android {
 
     buildTypes {
         release {
-            debuggable true
+            debuggable false
             minifyEnabled enableProguardInReleaseBuilds
             shrinkResources enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile('proguard-android.txt')
@@ -243,7 +243,7 @@ def getReleaseKeystore() {
         throw new FileNotFoundException("could not find ${keystoreDir}")
     }
 
-    def keystorePropsFile = new File(keystoreDir, "keystore_v2.properties")
+    def keystorePropsFile = new File(keystoreDir, "test.properties")
     if (!keystorePropsFile.exists()) {
         throw new FileNotFoundException("could not find ${keystorePropsFile}")
     }
