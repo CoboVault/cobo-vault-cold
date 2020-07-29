@@ -96,7 +96,7 @@ public class QrScanViewModel extends AndroidViewModel {
                     if (MultiSigViewModel.decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8)) != null){
                         fragment.handleImportMultisigWallet(hex);
                     } else {
-                        throw new UnknowQrCodeException("invalid multisig wallet qrcode");
+                        throw new InvalidMultisigWalletException("invalid multisig wallet qrcode");
                     }
                 } else {
                     if (wallet.supportBc32QrCode()) {
@@ -109,7 +109,7 @@ public class QrScanViewModel extends AndroidViewModel {
 
         } else {
             if (QrScanPurpose.IMPORT_MULTISIG_WALLET == fragment.getPurpose()) {
-                throw new UnknowQrCodeException("invalid multisig wallet qrcode");
+                throw new InvalidMultisigWalletException("invalid multisig wallet qrcode");
             }
             JSONObject object = parseToJson(data, valueType);
             if (object == null) {
