@@ -621,7 +621,7 @@
     <string name="import_multisig_wallet_fail">Import Failed</string>
     <string name="import_multisig_wallet_fail_hint">This multisig wallet doesn\'t contain the current vault.</string>
     <string name="invalid_multisig_wallet">Not Multisig Wallet</string>
-    <string name="invalid_multisig_wallet_hint">This File/QR Code is not multisig wallet, can\'t import.</string>
+    <string name="invalid_multisig_wallet_hint">This QR Code is not multisig wallet, can\'t import.</string>
     <string name="mainnet">MainNet</string>
     <string name="testnet">TestNet</string>
     <string name="export_multisig_xpub">Export XPUB</string>
