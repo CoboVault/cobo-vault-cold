@@ -31,6 +31,7 @@ import com.cobo.cold.update.utils.Storage;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -84,6 +85,7 @@ public class CollectXpubViewModel extends AndroidViewModel {
                     }
                 }
             }
+            fileList.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
             result.postValue(fileList);
         });
         return result;

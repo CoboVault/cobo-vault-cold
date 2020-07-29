@@ -63,6 +63,7 @@ public class PsbtViewModel extends AndroidViewModel {
                     }
                 }
             }
+            fileList.sort(String::compareTo);
             result.postValue(fileList);
         });
         return result;
