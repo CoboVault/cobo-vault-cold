@@ -85,7 +85,11 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
         } else {
             fileName = "part_" + txId.substring(0, 8) +"_"+vm.getXfp()+ ".psbt";
         }
-        binding.title.setText(R.string.export_signed_txn);
+        if (signed) {
+            binding.title.setText(R.string.export_signed_txn);
+        } else {
+            binding.title.setText(R.string.export_file);
+        }
         binding.fileName.setText(fileName);
         binding.actionHint.setVisibility(View.GONE);
         binding.cancel.setOnClickListener(vv -> modalDialog.dismiss());

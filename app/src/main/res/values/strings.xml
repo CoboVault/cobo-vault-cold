@@ -614,8 +614,6 @@
     <string name="open_int_siglesig_wallet_hint">This transaction is single-sign. Go to Menu > My Cobo Vault, and click the Scan or MicroSD card icon.</string>
     <string name="open_int_multisig_wallet">Open the transaction in Multisig Wallet</string>
     <string name="open_int_multisig_wallet_hint">This transaction is multisig. Go to Menu > Multisig Wallet, and click the Scan or MicroSD card icon.</string>
-    <string name="cannot_sign">Can’t sign it</string>
-    <string name="cannot_sign_hint">The current wallet is not from the co-signer of this multisig transaction, you can\'t sign it.</string>
     <string name="no_matched_wallet">No Such Multisig Wallet</string>
     <string name="no_matched_wallet_hint">You need to create or import the multisig wallet of the transaction before signing the transaction.</string>
     <string name="import_multisig_wallet_fail">Import Failed</string>
@@ -663,4 +661,6 @@
     <string name="invalid_wallet_hint">This File/QR Code is not multisig wallet, can\'t import.</string>
     <string name="check_verify_code_hint">Co-signers need to check whether the verification code of the wallet to be imported is the same as the verification code of above, ensure that they are consistent before importing.</string>
     <string name="multisig_already_signed">This transaction has been signed, please broadcast it directly.</string>
+    <string name="export_file">Export File</string>
+
 </resources>
