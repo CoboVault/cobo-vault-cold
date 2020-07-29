@@ -265,7 +265,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         try {
             byte[] data = Base43.decode(res);
             return new String(data).startsWith("psbt");
-        } catch (EncoderException e) {
+        } catch (EncoderException|IllegalArgumentException e) {
             e.printStackTrace();
         }
         return false;
