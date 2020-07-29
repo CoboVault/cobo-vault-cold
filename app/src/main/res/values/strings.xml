@@ -146,7 +146,7 @@
 
     <string name="tab_my_address">Receiving</string>
     <string name="tab_my_change_address">Change</string>
-    <string name="web_auth1"><![CDATA[1. Please visit <font color="#00cdc3">https://cobo.com/hardware-wallet/web-authentication<font/>]]></string>
+    <string name="web_auth1"><![CDATA[1. Please visit <font color="#00cdc3">https://cobo.com/auth<font/>]]></string>
     <string name="web_auth2"><![CDATA[2. Click on <font color="#00cdc3">\"Scan QR Code\" <font/>below and scan the QR code displayed on the website]]></string>
     <string name="web_auth3">3. Enter the code displayed on your Cobo Vault on the official website for authentication;</string>
     <string name="web_auth4">4. If authentication fails, do not use your device as it may have been compromised</string>
@@ -347,7 +347,7 @@
         5. Touch “Display Public Key QRCode” below then click the camera icon in Electrum to scan the QR code that displays on Cobo Vault, when adding a cosigner, choose "Enter cosigner key"<br>
         6. Set a password.<br>
         7. Enter the watch-only wallet.<br>
-        <font color="#808080">请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）<font/>
+        <font color="#808080">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting.<br>
     ]]></string>
     <string name="export_xpub">Show Master Public Key</string>
     <string name="export_to_electrum_guide_hint">How to create a watch-only wallet with Electrum:</string>
@@ -368,7 +368,7 @@
     <string name="error_txn_file">Unable to read file, please try importing again.</string>
     <string name="export_signed_txn">Export File to Broadcast</string>
     <string name="electrum_import_signed_txn">In Electrum, go to Tools > Load Transaction > From File to open the file. </string>
-  导出  <string name="insert_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less.</string>
+    <string name="insert_sdcard_hint">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less.</string>
     <string name="electrum_import_xpub_action">Open when inputting your master public key on Electrum.</string>
     <string name="transaction_source_label">Wallet</string>
     <string name="use_electrum_to_broadcast">Scan the QR code with Electrum to broadcast</string>
@@ -643,7 +643,7 @@
     <string name="manage_myltisig_wallet">Manage Multisig Wallet</string>
     <string name="choose_current_wallet">Select the wallet displayed on the homepage</string>
     <string name="view_or_export_xpub">Show/Export XPUB</string>
-    <string name="confirm_sdcard_insert">Complete graphic tutorial for multisig wallet, please visit: https://support.cobo.com/hc/en-us/articles/360051569994</string>
+    <string name="confirm_sdcard_insert">Complete graphic tutorial for multisig wallet, please visit: https://cobo.com/multisig</string>
     <string name="export_wallet_to_electrum">Export to create Watch-Only（Electrum）</string>
     <string name="view_wallet_info">Wallet Info</string>
     <string name="wallet_verify_code">Wallet Verification Code</string>
@@ -662,4 +662,5 @@
     <string name="not_valid_multisig_wallet">Not Multisig Wallet</string>
     <string name="invalid_wallet_hint">This File/QR Code is not multisig wallet, can\'t import.</string>
     <string name="check_verify_code_hint">Co-signers need to check whether the verification code of the wallet to be imported is the same as the verification code of above, ensure that they are consistent before importing.</string>
+    <string name="multisig_already_signed">This transaction has been signed, please broadcast it directly.</string>
 </resources>

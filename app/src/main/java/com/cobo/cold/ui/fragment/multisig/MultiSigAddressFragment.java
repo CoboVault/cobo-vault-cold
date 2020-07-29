@@ -46,6 +46,7 @@ public class MultiSigAddressFragment extends MultiSigBaseFragment<AddressFragmen
 
     private boolean isChangeAddress;
     private List<MultiSigAddressEntity> addressEntities;
+    private LiveData<List<MultiSigAddressEntity>> address;
     private final AddressClickCallback mAddrCallback = addr -> {
         Bundle bundle = Objects.requireNonNull(getArguments());
         Bundle data = new Bundle();
@@ -94,7 +95,12 @@ public class MultiSigAddressFragment extends MultiSigBaseFragment<AddressFragmen
     }
 
     public void loadAddress(String walletFingerprint) {
-        subscribeUi(viewModel.getMultiSigAddress(walletFingerprint));
+        if (address != null) {
+            address.removeObservers(this);
+            address = null;
+        }
+        address = viewModel.getMultiSigAddress(walletFingerprint);
+        subscribeUi(address);
     }
 
     private void subscribeUi(LiveData<List<MultiSigAddressEntity>> address) {

@@ -87,6 +87,7 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
     private List<String> changeAddress = new ArrayList<>();
     private int feeAttackCheckingState;
     private FeeAttackChecking feeAttackChecking;
+    private boolean signed;
 
     @Override
     protected int setView() {
@@ -117,6 +118,12 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
     private void handleSign() {
         if (feeAttackCheckingState == SAME_OUTPUTS) {
             feeAttackChecking.showFeeAttackWarning();
+            return;
+        }
+
+        if (signed) {
+            ModalDialog.showCommonModal(mActivity,getString(R.string.broadcast_tx),
+                    getString(R.string.multisig_already_signed), getString(R.string.know), null);
             return;
         }
         boolean fingerprintSignEnable = Utilities.isFingerprintSignEnable(mActivity);
@@ -196,6 +203,7 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
                 text = getString(R.string.partial_signed);
             } else {
                 text = getString(R.string.signed);
+                signed = true;
             }
 
             mBinding.txDetail.signStatus.setText(text);

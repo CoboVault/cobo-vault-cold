@@ -65,7 +65,7 @@
     <string name="setting_vibrator">震动开关</string>
     <string name="setting_brightness">屏幕亮度</string>
     <string name="setting_screen_off_time">锁屏时间</string>
-    <string name="web_auth1"><![CDATA[1. 请打开 <font color="#00cdc3">https://cobo.com/hardware-wallet/web-authentication<font/>；]]></string>
+    <string name="web_auth1"><![CDATA[1. 请打开 <font color="#00cdc3">https://cobo.com/auth<font/>；]]></string>
     <string name="web_auth2"><![CDATA[2. 点击下方 <font color="#00cdc3">\"扫码验证\" <font/>按钮，扫描网站上的二维码；]]></string>
     <string name="web_auth3">3.将扫描后的结果输入到网站，获取设备验证信息；</string>
     <string name="web_auth4">4.如果扫描失败，您的设备可能已经被攻击，建议您停止使用该设备。</string>
@@ -590,7 +590,7 @@
     <string name="manage_myltisig_wallet">管理多签钱包</string>
     <string name="choose_current_wallet">选择首页展示的多签钱包</string>
     <string name="view_or_export_xpub">查看/导出扩展公钥</string>
-    <string name="confirm_sdcard_insert">多签功能完整图文教程，请访问：https://support.cobo.com/hc/zh-cn/articles/360051569994</string>
+    <string name="confirm_sdcard_insert">多签功能完整图文教程，请访问：https://cobo.com/multisig</string>
     <string name="export_wallet_to_electrum">导出钱包为观察钱包(Electrum)</string>
     <string name="view_wallet_info">查看钱包信息</string>
     <string name="wallet_verify_code">钱包验证码</string>
@@ -609,5 +609,6 @@
     <string name="not_valid_multisig_wallet">非多签钱包</string>
     <string name="invalid_wallet_hint">该文件/二维码不是多签钱包，无法导入。</string>
     <string name="check_verify_code_hint">参与方导入时，检查要导入钱包的验证码是否和该验证码一致，一致后再导入</string>
+    <string name="multisig_already_signed">该交易已被签名，您可直接广播。</string>
 
 </resources>
