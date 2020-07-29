@@ -56,12 +56,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
-import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
 import static com.cobo.cold.viewmodel.MultiSigViewModel.convertXpub;
 
 public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBinding>
@@ -182,10 +180,13 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                     if (path.equals(CollectExpubFragment.this.path)) {
                         updateXpubInfo(info, xfp, xpub);
                     } else {
-                        showCommonModal(mActivity, getString(R.string.wrong_xpub_format),
-                                getString(R.string.wrong_xpub_format_hint, getAddressTypeString(account),
-                                        getAddressTypeString(MultiSig.Account.ofPrefix(xpub.substring(0,4)))),
-                                getString(R.string.know),null);
+                        try {
+                            showCommonModal(mActivity, getString(R.string.wrong_xpub_format),
+                                    getString(R.string.wrong_xpub_format_hint, getAddressTypeString(account),
+                                            getAddressTypeString(MultiSig.Account.ofPrefix(xpub.substring(0,4)))),
+                                    getString(R.string.know),null);
+                        } catch (IllegalStateException ignore){}
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -368,7 +369,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
     }
 
 
-    private static ModalDialog showCommonModal(AppCompatActivity activity,
+    public static ModalDialog showCommonModal(AppCompatActivity activity,
                                                String title,
                                                String subTitle,
                                                String buttonText,

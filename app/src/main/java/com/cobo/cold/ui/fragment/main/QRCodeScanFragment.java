@@ -43,6 +43,7 @@ import com.cobo.cold.scan.bean.ZxingConfigBuilder;
 import com.cobo.cold.scan.camera.CameraManager;
 import com.cobo.cold.scan.view.PreviewFrame;
 import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.fragment.multisig.CollectExpubFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.InvalidMultisigWalletException;
 import com.cobo.cold.viewmodel.MultiSigViewModel;
@@ -274,7 +275,11 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     @Override
     public void handleDecode(ScannedData[] res) {
         try {
-            if (qrScanPurpose != QrScanPurpose.UNDEFINE && !qrScanPurpose.isAnimateQr()) {
+            if (qrScanPurpose == QrScanPurpose.COLLECT_XPUB) {
+                CollectExpubFragment.showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
+                        getString(R.string.invalid_xpub_file_hint),
+                        getString(R.string.know),null);
+            } else if (qrScanPurpose != QrScanPurpose.UNDEFINE && !qrScanPurpose.isAnimateQr()) {
                 alert(getString(R.string.unsupported_qrcode));
             } else {
                 viewModel.handleDecode(this, res);
@@ -302,10 +307,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
                             WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
         } catch (InvalidMultisigWalletException e) {
             e.printStackTrace();
-            alert(getString(R.string.identification_failed),
-                    getString(R.string.master_pubkey_not_match)
-                            + getString(R.string.watch_wallet_not_match,
-                            WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
+            alert(getString(R.string.invalid_multisig_wallet),getString(R.string.invalid_multisig_wallet_hint));
         }
     }
 
