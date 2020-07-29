@@ -27,7 +27,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.coinlib.utils.Base43;
-import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
 import com.cobo.cold.db.entity.TxEntity;
@@ -143,12 +142,18 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
                             if (multisig) {
                                 popBackStack(R.id.multisigFragment, false);
                             } else {
-                                navigateUp();
+                                popBackStack(R.id.assetFragment, false);
                             }
                         });
             }
         } else {
-            showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), this::navigateUp);
+            showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), () -> {
+                if (multisig) {
+                    popBackStack(R.id.multisigFragment, false);
+                } else {
+                    popBackStack(R.id.assetFragment, false);
+                }
+            });
         }
         viewModel.getSignState().removeObservers(this);
     }
