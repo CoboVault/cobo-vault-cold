@@ -202,22 +202,12 @@ public class TxEntity implements Tx, FilterableItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TxEntity txEntity = (TxEntity) o;
-        return txId.equals(txEntity.txId) &&
-                coinId.equals(txEntity.coinId) &&
-                coinCode.equals(txEntity.coinCode) &&
-                amount.equals(txEntity.amount) &&
-                from.equals(txEntity.from) &&
-                to.equals(txEntity.to) &&
-                fee.equals(txEntity.fee) &&
-                signedHex.equals(txEntity.signedHex) &&
-                memo.equals(txEntity.memo) &&
-                Objects.equals(signId, txEntity.signId) &&
-                belongTo.equals(txEntity.belongTo) &&
-                signStatus.equals(txEntity.signStatus);
+        return Objects.equals(from, txEntity.from) &&
+                Objects.equals(to, txEntity.to);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(txId, coinId, coinCode, amount, from, to, fee, signedHex, memo, belongTo, signStatus);
+        return Objects.hash(from, to);
     }
 }

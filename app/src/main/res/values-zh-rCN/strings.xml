@@ -353,7 +353,7 @@
     <string name="export_xpub_guide_text1_btcpay">BTCPay Server 导入指引:</string>
     <string name="export_xpub_guide_text1_blue">BlueWallet 导入指引:</string>
     <string name="export_xpub_guide_text2_electrum"><![CDATA[
-        1. 打开 Electrum，新建钱包 <br>
+        1. 打开 Electrum(4.0.0版本及以上)，新建钱包 <br>
         2. 选择<font color="#00cdc3">“标准钱包”<font/> <br>
         3. 选择<font color="#00cdc3">“使用主公钥”<font/> <br>
         4. 在输入主公钥页面点击照相机按钮，扫描主公钥二维码（点击下方按钮查看二维码）<br>

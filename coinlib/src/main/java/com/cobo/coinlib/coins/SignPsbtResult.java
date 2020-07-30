@@ -29,6 +29,6 @@ public class SignPsbtResult {
     }
 
     public boolean isValid() {
-        return !TextUtils.isEmpty(txId) && !TextUtils.isEmpty(psbtB64);
+        return !TextUtils.isEmpty(psbtB64);
     }
 }

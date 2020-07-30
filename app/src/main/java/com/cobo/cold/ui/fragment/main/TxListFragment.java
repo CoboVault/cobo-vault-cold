@@ -26,6 +26,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.TxListBinding;
@@ -45,6 +46,8 @@ import java.util.stream.Collectors;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
 import static com.cobo.cold.ui.fragment.main.TxFragment.KEY_TX_ID;
+import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
+import static com.cobo.cold.viewmodel.WatchWallet.ELECTRUM;
 import static com.cobo.cold.viewmodel.WatchWallet.ELECTRUM_SIGN_ID;
 import static com.cobo.cold.viewmodel.WatchWallet.PSBT_MULTISIG_SIGN_ID;
 import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
@@ -54,7 +57,6 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
     private TxAdapter adapter;
     private TxCallback txCallback;
     private String query;
-    private Comparator<TxEntity> txEntityComparator;
     private boolean multisig;
     private String walletFingerprint;
 
@@ -96,10 +98,10 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         }
         txs.observe(this, txEntities -> {
             if (!multisig) {
-                Collections.reverse(txEntities);
                 txEntities = txEntities.stream()
                         .filter(this::shouldShow)
                         .filter(this::filterByMode)
+                        .sorted((o1, o2) -> (int) (o1.getTimeStamp() - o2.getTimeStamp()))
                         .collect(Collectors.toList());
             } else {
                 Collections.reverse(txEntities);
@@ -145,7 +147,16 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         if (watchWallet == WatchWallet.COBO) {
             return !txEntity.getSignId().endsWith("_sign_id");
         } else {
-            return watchWallet.getSignId().equals(txEntity.getSignId());
+            if (watchWallet == ELECTRUM) {
+                Coins.Account account = getAccount(mActivity);
+                if (account == Coins.Account.SegWit) {
+                    return watchWallet.getSignId().equals(txEntity.getSignId()+"_NATIVE_SEGWIT");
+                } else {
+                    return watchWallet.getSignId().equals(txEntity.getSignId());
+                }
+            } else {
+                return watchWallet.getSignId().equals(txEntity.getSignId());
+            }
         }
     }
 
