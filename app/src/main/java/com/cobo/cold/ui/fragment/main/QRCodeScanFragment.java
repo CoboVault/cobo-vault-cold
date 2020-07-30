@@ -278,7 +278,12 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             if (qrScanPurpose == QrScanPurpose.COLLECT_XPUB) {
                 CollectExpubFragment.showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
                         getString(R.string.invalid_xpub_file_hint),
-                        getString(R.string.know),null);
+                        getString(R.string.know),() -> {
+                            mBinding.setProgress("");
+                            if (mHandler != null) {
+                                mHandler.restartPreviewAndDecode();
+                            }
+                        });
             } else if (qrScanPurpose != QrScanPurpose.UNDEFINE && !qrScanPurpose.isAnimateQr()) {
                 alert(getString(R.string.unsupported_qrcode));
             } else {
