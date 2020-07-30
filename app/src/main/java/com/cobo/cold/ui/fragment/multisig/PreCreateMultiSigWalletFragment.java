@@ -42,6 +42,7 @@ public class PreCreateMultiSigWalletFragment extends MultiSigBaseFragment<PreCre
 
     private int total = 3;
     private int threshold = 2;
+    private int accountValue = 0;
     private MultiSig.Account account = MultiSig.Account.P2WSH;
     private State state = State.STATE_NONE;
 
@@ -99,7 +100,7 @@ public class PreCreateMultiSigWalletFragment extends MultiSigBaseFragment<PreCre
         String[] displayValue = IntStream.range(1, 15)
                 .mapToObj(i -> String.valueOf(i + 1))
                 .toArray(String[]::new);
-        showSelector(displayValue, getString(R.string.select_key_number));
+        showSelector(displayValue, total, 2, 15,getString(R.string.select_key_number));
     }
 
     private void selectCosignerNumber() {
@@ -107,32 +108,34 @@ public class PreCreateMultiSigWalletFragment extends MultiSigBaseFragment<PreCre
         String[] displayValue = IntStream.range(0, total)
                 .mapToObj(i -> String.valueOf(i + 1))
                 .toArray(String[]::new);
-        showSelector(displayValue, getString(R.string.select_threshold));
+        showSelector(displayValue, threshold, 1, total, getString(R.string.select_threshold));
     }
 
     private void selectAddressType() {
         state = State.STATE3;
-        String[] displayValue = new String[]{getString(R.string.multi_sig_account_legacy),
+        String[] displayValue = new String[]{
+                getString(R.string.multi_sig_account_segwit),
                 getString(R.string.multi_sig_account_p2sh),
-                getString(R.string.multi_sig_account_segwit)};
-        showSelector(displayValue, getString(R.string.select_address_type));
+                getString(R.string.multi_sig_account_legacy)
+                };
+        showSelector(displayValue, accountValue, 0,displayValue.length -1, getString(R.string.select_address_type));
     }
 
-    private void showSelector(String[] displayValue, String title) {
+    private void showSelector(String[] displayValue, int value, int min, int max,String title) {
         BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
         AddAddressBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.add_address_bottom_sheet,null,false);
-        binding.setValue(0);
+        binding.setValue(value);
         binding.title.setText(title);
         binding.close.setOnClickListener(v -> dialog.dismiss());
-        binding.picker.setValue(0);
         binding.picker.setDisplayedValues(displayValue);
-        binding.picker.setMinValue(0);
-        binding.picker.setMaxValue(displayValue.length - 1);
-        binding.picker.setOnValueChangedListener((picker, oldVal, newVal) -> binding.setValue(newVal + 1));
+        binding.picker.setMinValue(min);
+        binding.picker.setMaxValue(max);
+        binding.picker.setValue(value);
+        binding.picker.setOnValueChangedListener((picker, oldVal, newVal) -> binding.setValue(newVal));
         binding.confirm.setText(R.string.confirm);
         binding.confirm.setOnClickListener(v-> {
-            onValueSet(binding.picker.getValue() + 1);
+            onValueSet(binding.picker.getValue());
             dialog.dismiss();
 
         });
@@ -143,12 +146,14 @@ public class PreCreateMultiSigWalletFragment extends MultiSigBaseFragment<PreCre
     @Override
     public void onValueSet(int value) {
         if (state == State.STATE1) {
-            total = value + 1;
+            total = value;
         } else if(state == State.STATE2) {
             threshold = value;
         } else if(state == State.STATE3) {
-            account = MultiSig.Account.values()[value - 1];
+            accountValue = value;
+            account = MultiSig.Account.values()[value];
         }
+        threshold = Math.min(threshold, total);
         state = State.STATE_NONE;
         updateUI();
     }

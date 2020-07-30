@@ -21,9 +21,9 @@ package com.cobo.coinlib.utils;
 
 public class MultiSig {
     public enum Account {
-        P2SH("m/45'", "P2SH"),
+        P2WSH("m/48'/0'/0'/2'", "P2WSH"),
         P2WSH_P2SH("m/48'/0'/0'/1'", "P2WSH-P2SH"),
-        P2WSH("m/48'/0'/0'/2'", "P2WSH");
+        P2SH("m/45'", "P2SH");
 
         private final String format;
         private String path;
