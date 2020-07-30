@@ -268,6 +268,12 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
             } else {
                 xpub = obj.getString(account.getFormat().toLowerCase().replace("-", "_"));
             }
+            if (TextUtils.isEmpty(xpub) || !ExtendPubkeyFormat.isValidXpub(xpub)) {
+                showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
+                        getString(R.string.invalid_xpub_file_hint),
+                        getString(R.string.know),null);
+                return;
+            }
             if (!xpub.startsWith(account.getXpubPrefix())) {
                 ModalDialog.showCommonModal(mActivity,getString(R.string.wrong_xpub_format),
                         getString(R.string.wrong_xpub_format_hint,getAddressTypeString(account),
@@ -276,7 +282,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                 return;
             }
             updateXpubInfo(info, obj.getString("xfp"), xpub);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
                     getString(R.string.invalid_xpub_file_hint),

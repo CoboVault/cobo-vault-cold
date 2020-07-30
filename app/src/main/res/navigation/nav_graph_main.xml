@@ -758,12 +758,6 @@
         tools:layout="@layout/broadcast_electrum_tx_fragment"
         android:name="com.cobo.cold.ui.fragment.main.electrum.ElectrumBroadcastTxFragment"
         android:label="ElectrumBroadcastTxFragment">
-        <action
-            android:id="@+id/action_to_home"
-            app:destination="@id/assetFragment"
-            app:popUpTo="@id/assetFragment"
-            app:popUpToInclusive="false"
-            app:launchSingleTop="true" />
     </fragment>
 
     <fragment

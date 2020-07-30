@@ -45,7 +45,7 @@ import static com.cobo.cold.viewmodel.WatchWallet.PSBT_MULTISIG_SIGN_ID;
 public class ElectrumBroadcastTxFragment extends BaseFragment<BroadcastElectrumTxFragmentBinding> {
 
     public static final String KEY_TXID = "txId";
-    private final View.OnClickListener goHome = v -> navigate(R.id.action_to_home);
+    private View.OnClickListener navUp = v -> popBackStack(R.id.assetFragment, false);
     private TxEntity txEntity;
     private boolean isMultisig;
 
@@ -72,8 +72,8 @@ public class ElectrumBroadcastTxFragment extends BaseFragment<BroadcastElectrumT
     @Override
     protected void init(View view) {
         Bundle data = Objects.requireNonNull(getArguments());
-        mBinding.toolbar.setNavigationOnClickListener(goHome);
-        mBinding.complete.setOnClickListener(goHome);
+        mBinding.toolbar.setNavigationOnClickListener(navUp);
+        mBinding.complete.setOnClickListener(navUp);
         CoinListViewModel viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
         viewModel.loadTx(data.getString(KEY_TXID)).observe(this, txEntity -> {
             this.txEntity = txEntity;
@@ -82,6 +82,11 @@ public class ElectrumBroadcastTxFragment extends BaseFragment<BroadcastElectrumT
             String txString = getSignTxString(txEntity);
             if (isMultisig) {
                 mBinding.status.setText(getString(R.string.sign_status) + ":" + getSignStatus(txEntity));
+            }
+            if (isMultisig) {
+                navUp = v -> popBackStack(R.id.multisigFragment, false);
+                mBinding.toolbar.setNavigationOnClickListener(navUp);
+                mBinding.complete.setOnClickListener(navUp);
             }
             mBinding.qrcodeLayout.qrcode.setData(txString);
         });
