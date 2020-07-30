@@ -282,11 +282,17 @@ public class TxConfirmViewModel extends AndroidViewModel {
     }
 
     private JSONObject parsePsbtTx(JSONObject adaptTx) throws JSONException {
+        Coins.Account account = getAccount(getApplication());
+        WatchWallet wallet = WatchWallet.getWatchWallet(getApplication());
+        String signId = WatchWallet.getWatchWallet(getApplication()).getSignId();
+        if (account == Coins.Account.SegWit && wallet == ELECTRUM) {
+            signId += "_NATIVE_SEGWIT";
+        }
         boolean isMultisig = adaptTx.optBoolean("multisig");
         TransactionProtoc.SignTransaction.Builder builder = TransactionProtoc.SignTransaction.newBuilder();
         boolean isMainNet = Utilities.isMainNet(getApplication());
         builder.setCoinCode(Utilities.currentCoin(getApplication()).coinCode())
-                .setSignId(isMultisig? "PSBT_MULTISIG" : WatchWallet.getWatchWallet(getApplication()).getSignId())
+                .setSignId(isMultisig? "PSBT_MULTISIG" : signId)
                 .setTimestamp(generateAutoIncreaseId())
                 .setDecimal(8);
         String signTransaction = new JsonFormat().printToString(builder.build());
@@ -296,7 +302,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
     }
 
     private long generateAutoIncreaseId() {
-        List<TxEntity> txEntityList = mRepository.loadElectrumTxsSync(Utilities.currentCoin(getApplication()).coinId());
+        List<TxEntity> txEntityList = mRepository.loadAllTxsSync(Utilities.currentCoin(getApplication()).coinId());
         if (txEntityList == null || txEntityList.isEmpty()) {
             return 0;
         }

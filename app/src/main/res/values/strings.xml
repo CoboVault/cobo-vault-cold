@@ -420,7 +420,7 @@
     <string name="export_xpub_guide_text1_btcpay">How to create a watch-only wallet with BTCPay Server:</string>
     <string name="export_xpub_guide_text1_blue">How to create a watch-only wallet with BlueWallet:</string>
     <string name="export_xpub_guide_text2_electrum"><![CDATA[
-        1. Open Electrum and create a new wallet. <br>
+        1. Open Electrum(Version ≥ 4.0.0) and create a new wallet. <br>
         2. Choose <font color="#00cdc3">“Standard wallet”<font/>. <br>
         3. Choose <font color="#00cdc3">“Use a master key”<font/>. <br>
         4. Touch “Display Master Public Key QR Code” below then click the camera icon in Electrum to scan the QR code that displays on Cobo Vault.<br>
