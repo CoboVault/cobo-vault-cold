@@ -276,7 +276,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                 return;
             }
             updateXpubInfo(info, obj.getString("xfp"), xpub);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
                     getString(R.string.invalid_xpub_file_hint),
