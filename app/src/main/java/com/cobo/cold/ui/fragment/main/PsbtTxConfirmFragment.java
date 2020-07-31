@@ -83,7 +83,11 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
         if (signed) {
             fileName = "signed_" + txId.substring(0, 8) + ".psbt";
         } else {
-            fileName = "part_" + txId.substring(0, 8) +"_"+vm.getXfp()+ ".psbt";
+            if (txId.startsWith("unknown_txid")) {
+                fileName = "part_" + vm.getXfp() + ".psbt";
+            } else {
+                fileName = "part_" + txId.substring(0, 8) + "_" + vm.getXfp() + ".psbt";
+            }
         }
         if (signed) {
             binding.title.setText(R.string.export_signed_txn);
