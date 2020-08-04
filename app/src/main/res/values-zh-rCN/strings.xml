@@ -609,5 +609,8 @@
     <string name="check_verify_code_hint">参与方导入时，检查要导入钱包的验证码是否和该验证码一致，一致后再导入</string>
     <string name="multisig_already_signed">该交易已被签名，您可直接广播。</string>
     <string name="export_file">导出文件</string>
-
+    <string name="contact_info">微博: @Cobo金库大掌柜\n邮箱: support@cobo.com</string>
+    <string name="keep_mnemonic_hint">*Cobo在任何情况下都不会询问您的助记词 请务必妥善保管好助记词，不要透露给任何人</string>
+    <string name="contact_us">联系我们</string>
+    <string name="current_device_info">当前设备信息</string>
 </resources>

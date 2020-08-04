@@ -39,8 +39,14 @@ import com.cobo.cold.databinding.UpdatingBinding;
 import com.cobo.cold.encryptioncore.utils.Preconditions;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.data.UpdateManifest;
+import com.cobo.cold.update.utils.FileUtils;
+import com.cobo.cold.update.utils.Storage;
+import com.cobo.cold.util.HashUtil;
 import com.cobo.cold.viewmodel.UpdatingViewModel;
 
+import org.spongycastle.util.encoders.Hex;
+
+import java.io.File;
 import java.util.Objects;
 
 import static android.content.Context.BATTERY_SERVICE;
@@ -52,11 +58,13 @@ public class UpdatingHelper implements OnBatteryChangeListener {
     private final AppCompatActivity mActivity;
     private final boolean proactive;
     private int batteryPercent = -1;
+    private Storage storage;
 
     public UpdatingHelper(AppCompatActivity activity, boolean proactive) {
         mActivity = activity;
         this.proactive = proactive;
         updatingViewModel = ViewModelProviders.of(mActivity).get(UpdatingViewModel.class);
+        storage = Storage.createByEnvironment(mActivity);
         BroadcastReceiver mReceiver = registerBroadcastReceiver(activity);
         subscribeUpdateChecking();
     }
@@ -87,12 +95,14 @@ public class UpdatingHelper implements OnBatteryChangeListener {
 
         UpdateHintModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.update_hint_modal, null, false);
+        final File updateFile = storage.getUpdateZipFile();
+        String sha256 = Hex.toHexString(HashUtil.sha256(FileUtils.bufferlize(updateFile)));
 
         dialog.setBinding(binding);
         binding.close.setOnClickListener(v -> dialog.dismiss());
         binding.footer.setVisibility(proactive ? View.GONE : View.VISIBLE);
         binding.subTitle.setText(mActivity.getString(R.string.new_version_hint_message,
-                getDisplayVersion(manifest)));
+                getDisplayVersion(manifest)) + "\nsha256:\n" + sha256);
         if (percent < UpdatingViewModel.MIN_BATTERY_FOR_UPDATE) {
             String batterHint = mActivity.getString(R.string.update_alert_boot_low_battery_message,
                     UpdatingViewModel.MIN_BATTERY_FOR_UPDATE + "%", percent +"%");

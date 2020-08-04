@@ -662,5 +662,8 @@
     <string name="check_verify_code_hint">Co-signers need to check whether the verification code of the wallet to be imported is the same as the verification code of above, ensure that they are consistent before importing.</string>
     <string name="multisig_already_signed">This transaction has been signed, please broadcast it directly.</string>
     <string name="export_file">Export File</string>
-
+    <string name="contact_info">Twitter: @Cobo Vault\nEmail：support@cobo.com</string>
+    <string name="keep_mnemonic_hint">*Cobo will never ask for your Recovery Phrase under any circumstances, please be sure to keep your Recovery Phrase and don’t disclose them to anyone</string>
+    <string name="contact_us">Contact US</string>
+    <string name="current_device_info">Current Equipment Info</string>
 </resources>
