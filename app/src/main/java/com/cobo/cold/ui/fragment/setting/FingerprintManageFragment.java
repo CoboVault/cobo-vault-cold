@@ -31,6 +31,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.FingerprintManageBinding;
 import com.cobo.cold.databinding.InputModalBinding;
@@ -41,6 +42,12 @@ import com.cobo.cold.ui.modal.ModalDialog;
 
 import java.util.Objects;
 
+import static com.cobo.cold.callables.FingerprintPolicyCallable.OFF;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_PASSPHRASE;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.WRITE;
+import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
+
 public class FingerprintManageFragment extends BaseFragment<FingerprintManageBinding> {
 
     private Fingerprint fingerprint;
@@ -48,6 +55,7 @@ public class FingerprintManageFragment extends BaseFragment<FingerprintManageBin
     private final ObservableField<String> input = new ObservableField<>();
     private String fingerprintName;
     private ModalDialog dialog;
+    private String password;
 
     @Override
     protected int setView() {
@@ -70,6 +78,7 @@ public class FingerprintManageFragment extends BaseFragment<FingerprintManageBin
         mBinding.remove.title.setTextColor(Color.parseColor("#F0264E"));
         mBinding.remove.item.setOnClickListener(v -> remove());
         input.set(fingerprint.getName().toString());
+        password = data.getString(PASSWORD);
     }
 
     private void remove() {
@@ -87,7 +96,8 @@ public class FingerprintManageFragment extends BaseFragment<FingerprintManageBin
                 public void onSuccess() {
                     if (!fpKit.hasEnrolledFingerprint()) {
                         Utilities.setFingerprintUnlockEnable(mActivity, false);
-                        Utilities.setFingerprintSignEnable(mActivity, false);
+                        new FingerprintPolicyCallable(password, WRITE, TYPE_PASSPHRASE, OFF).call();
+                        new FingerprintPolicyCallable(password, WRITE, TYPE_SIGN_TX, OFF).call();
                         NavHostFragment.findNavController(FingerprintManageFragment.this)
                                 .popBackStack(R.id.settingFragment, false);
                     } else {

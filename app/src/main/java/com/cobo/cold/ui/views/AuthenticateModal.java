@@ -110,6 +110,7 @@ public class AuthenticateModal {
             }
         }, initCryptoObject());
         binding.fingerprintLayout.setVisibility(View.VISIBLE);
+        binding.fingerprintLayout.setTag(fpKit);
         binding.passwordLayout.setVisibility(View.GONE);
         binding.switchToPassword.setOnClickListener(v -> {
             binding.fingerprintLayout.setVisibility(View.GONE);
@@ -150,8 +151,15 @@ public class AuthenticateModal {
             binding.subTitle.setVisibility(View.GONE);
         }
 
-        binding.closePassword.setOnClickListener(v -> dialog.dismiss());
-        binding.closeFingerprint.setOnClickListener(v -> dialog.dismiss());
+        Runnable close = () -> {
+            if (binding.fingerprintLayout.getTag() != null) {
+                FingerprintKit fp = (FingerprintKit) binding.fingerprintLayout.getTag();
+                fp.cancelVerify();
+            }
+            dialog.dismiss();
+        };
+        binding.closePassword.setOnClickListener(v -> close.run());
+        binding.closeFingerprint.setOnClickListener(v -> close.run());
         binding.confirm.setOnClickListener(v -> {
 
             Handler handler = new Handler();

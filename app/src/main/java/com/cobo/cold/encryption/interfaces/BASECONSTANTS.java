@@ -46,6 +46,7 @@ public abstract class BASECONSTANTS {
         int CHANGE_USER_PASSWORD = 0x0901;
         int RESET_USER_PASSWORD = 0x0902;
         int VERIFY_USER_PASSWORD = 0x0903;
+        int FINGERPRINT_POLICY = 0x0904;
         int GET_MESSAGE = 0x0905;
         int REGISTER_PUBLIC_KEY = 0x0906;
         int VERIFY_FINGERPRINT = 0x0907;
@@ -89,6 +90,9 @@ public abstract class BASECONSTANTS {
         int MESSAGE = 0x0406;
         int MESSAGE_SIGNATURE = 0x0407;
         int MASTER_FINGERPRINT = 0x020B;
+        int ACCESS_MODE = 0x0701;
+        int FINGERPRINT_POLICY_TYPE = 0x0408;
+        int FINGERPRINT_POLICY_VALUE = 0x0409;
     }
 
     public interface VALS {

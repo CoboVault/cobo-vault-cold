@@ -25,18 +25,30 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.ui.preference.SwitchPreference;
 
+import java.util.Objects;
+
 import static com.cobo.cold.Utilities.SHARED_PREFERENCES_KEY;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.OFF;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.ON;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_PASSPHRASE;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.WRITE;
+import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 
 public class FingerprintPreferenceFragment extends PreferenceFragmentCompat {
 
     public static final String FINGERPRINT_UNLOCK = "fingerprint_unlock";
     public static final String FINGERPRINT_SIGN = "fingerprint_sign";
+    public static final String FINGERPRINT_PASSPHRASE = "fingerprint_passphrase";
 
     private SwitchPreference fingerprintUnlock;
     private SwitchPreference fingerprintSign;
-
+    private SwitchPreference fingerprintPassphrase;
+    private String password;
     private Activity mActivity;
 
     @Override
@@ -47,6 +59,8 @@ public class FingerprintPreferenceFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        password = Objects.requireNonNull(Objects.requireNonNull(getParentFragment()).getArguments())
+                .getString(PASSWORD);
         mActivity = getActivity();
         getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES_KEY);
         addPreferencesFromResource(R.xml.fingerprint_preference);
@@ -62,20 +76,30 @@ public class FingerprintPreferenceFragment extends PreferenceFragmentCompat {
 
         fingerprintSign = findPreference(FINGERPRINT_SIGN);
         if (fingerprintSign != null) {
-            fingerprintSign.setChecked(Utilities.isFingerprintSignEnable(mActivity));
+            fingerprintSign.setChecked(new FingerprintPolicyCallable(READ, TYPE_SIGN_TX).call());
+        }
+
+        fingerprintPassphrase = findPreference(FINGERPRINT_PASSPHRASE);
+        if (fingerprintPassphrase != null) {
+            fingerprintPassphrase.setChecked(new FingerprintPolicyCallable(READ, TYPE_PASSPHRASE).call());
         }
     }
 
     @Override
     public boolean onPreferenceTreeClick(Preference preference) {
+        boolean isChecked = !((SwitchPreference)preference).isChecked();
         switch (preference.getKey()) {
             case FINGERPRINT_UNLOCK:
-                fingerprintUnlock.setChecked(!fingerprintUnlock.isChecked());
-                Utilities.setFingerprintUnlockEnable(mActivity, fingerprintUnlock.isChecked());
+                fingerprintUnlock.setChecked(isChecked);
+                Utilities.setFingerprintUnlockEnable(mActivity, isChecked);
                 break;
             case FINGERPRINT_SIGN:
-                fingerprintSign.setChecked(!fingerprintSign.isChecked());
-                Utilities.setFingerprintSignEnable(mActivity, fingerprintSign.isChecked());
+                fingerprintSign.setChecked(isChecked);
+                new FingerprintPolicyCallable(password, WRITE, TYPE_SIGN_TX, isChecked ? ON : OFF).call();
+                break;
+            case FINGERPRINT_PASSPHRASE:
+                fingerprintPassphrase.setChecked(isChecked);
+                new FingerprintPolicyCallable(password, WRITE, TYPE_PASSPHRASE, isChecked ? ON : OFF).call();
                 break;
         }
 
