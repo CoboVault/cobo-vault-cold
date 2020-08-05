@@ -26,6 +26,7 @@ import android.hardware.fingerprint.Fingerprint;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 
@@ -33,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -40,8 +42,11 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.allenliu.badgeview.BadgeFactory;
 import com.allenliu.badgeview.BadgeView;
 import com.android.internal.app.LocalePicker;
+import com.cobo.coinlib.Util;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.callables.FingerprintPolicyCallable;
+import com.cobo.cold.callables.GetMessageCallable;
 import com.cobo.cold.callables.ResetCallable;
 import com.cobo.cold.config.FeatureFlags;
 import com.cobo.cold.databinding.CommonModalBinding;
@@ -60,6 +65,9 @@ import com.cobo.cold.util.DataCleaner;
 import com.cobo.cold.viewmodel.UpdatingViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
+import org.spongycastle.util.encoders.Hex;
+
+import java.security.SignatureException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -68,10 +76,13 @@ import java.util.concurrent.Executors;
 import static android.content.Context.FINGERPRINT_SERVICE;
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.Utilities.SHARED_PREFERENCES_KEY;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_PASSPHRASE;
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.setting.LicenseFragment.KEY_TITLE;
 import static com.cobo.cold.ui.fragment.setting.LicenseFragment.KEY_URL;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
+import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.SIGNATURE;
 
 public class MainPreferenceFragment extends PreferenceFragmentCompat {
 
@@ -317,11 +328,32 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     };
 
     private void handlePassphrase() {
-        AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), "",
-                token -> Navigation.findNavController(Objects.requireNonNull(getView()))
-                        .navigate(R.id.action_settingFragment_to_passphraseFragment,
-                                Bundle.forPair(PASSWORD, token.password)),
-                forgetPassword);
+        boolean fingerprint = new FingerprintPolicyCallable(READ, TYPE_PASSPHRASE).call();
+        AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), "", fingerprint,
+                token -> {
+                    NavController navController = Navigation.findNavController(Objects.requireNonNull(getView()));
+                    if (token.password != null) {
+                        navController.navigate(R.id.action_settingFragment_to_passphraseFragment,
+                                Bundle.forPair(PASSWORD, token.password));
+                    } else if (token.signature != null) {
+                        String message = new GetMessageCallable().call();
+                        String signatureRS = null;
+                        if (!TextUtils.isEmpty(message)) {
+                            try {
+                                token.signature.update(Hex.decode(message));
+                                byte[] signature = token.signature.sign();
+                                byte[] rs = Util.decodeRSFromDER(signature);
+                                signatureRS = Hex.toHexString(rs);
+                            } catch (SignatureException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (signatureRS != null) {
+                            navController.navigate(R.id.action_settingFragment_to_passphraseFragment,
+                                    Bundle.forPair(SIGNATURE, signatureRS));
+                        }
+                    }
+                }, forgetPassword);
     }
 
     private void handleFingerprintSetting() {

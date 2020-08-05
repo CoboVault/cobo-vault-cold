@@ -50,8 +50,10 @@ import java.util.List;
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.Utilities.IS_SET_PASSPHRASE;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
+import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.SIGNATURE;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATED;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING;
+import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING_FAILED;
 
 public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding> {
 
@@ -119,6 +121,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
 
     private void updatePassphrase() {
         viewModel.setPassword(getArguments().getString(PASSWORD));
+        viewModel.setSignature(getArguments().getString(SIGNATURE));
         viewModel.updatePassphrase(passphrase1.get());
         subscribeVaultState(viewModel);
     }
@@ -150,6 +153,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                 Utilities.setVaultId(mActivity, viewModel.getVaultId());
                 Utilities.setCurrentBelongTo(mActivity,
                         TextUtils.isEmpty(passphrase1.get()) ? "main" : "hidden");
+                viewModel.getVaultCreateState().removeObservers(this);
 
                 Runnable onComplete = () -> {
                     Bundle data = new Bundle();
@@ -163,6 +167,12 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                 };
                 List<CoinEntity> coins = PresetData.generateCoins(mActivity);
                 viewModel.presetData(coins, onComplete);
+            } else if (state == VAULT_STATE_CREATING_FAILED) {
+                viewModel.getVaultCreateState().removeObservers(this);
+                if (dialog != null && dialog.getDialog() != null
+                        && dialog.getDialog().isShowing()) {
+                    dialog.dismiss();
+                }
             }
         });
     }

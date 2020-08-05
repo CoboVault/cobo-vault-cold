@@ -53,6 +53,7 @@ public class SetupVaultViewModel extends AndroidViewModel {
     private static final int VAULT_STATE_NOT_CREATE = 0;
     public static final int VAULT_STATE_CREATING = 1;
     public static final int VAULT_STATE_CREATED = 2;
+    public static final int VAULT_STATE_CREATING_FAILED = 3;
 
     private final ObservableField<String> pwd1 = new ObservableField<>("");
     private final ObservableField<String> pwd2 = new ObservableField<>("");
@@ -64,6 +65,7 @@ public class SetupVaultViewModel extends AndroidViewModel {
 
     private final DataRepository mRepository;
     private String password;
+    private String signature;
 
     public SetupVaultViewModel(@NonNull Application application) {
         super(application);
@@ -115,6 +117,10 @@ public class SetupVaultViewModel extends AndroidViewModel {
         this.password = password;
     }
 
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
     public boolean validateMnemonic(String mnemonic) {
         return Bip39.validateMnemonic(mnemonic);
     }
@@ -133,11 +139,16 @@ public class SetupVaultViewModel extends AndroidViewModel {
     public void updatePassphrase(String passphrase) {
         AppExecutors.getInstance().diskIO().execute(() -> {
             vaultCreateState.postValue(VAULT_STATE_CREATING);
-            new UpdatePassphraseCallable(passphrase, password).call();
-            vaultId = new GetVaultIdCallable().call();
-            deleteHiddenVaultData();
-            vaultCreateState.postValue(VAULT_STATE_CREATED);
-            password = null;
+            if (new UpdatePassphraseCallable(passphrase, password, signature).call()) {
+                vaultId = new GetVaultIdCallable().call();
+                deleteHiddenVaultData();
+                vaultCreateState.postValue(VAULT_STATE_CREATED);
+                password = null;
+                signature = null;
+            } else {
+                vaultCreateState.postValue(VAULT_STATE_CREATING_FAILED);
+            }
+
         });
     }
 

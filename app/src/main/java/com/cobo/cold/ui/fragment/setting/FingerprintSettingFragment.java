@@ -30,6 +30,7 @@ import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.fragment.BaseFragment;
 
 import java.util.List;
+import java.util.Objects;
 
 public class FingerprintSettingFragment extends BaseFragment<FingerprintSettingBinding> {
 
@@ -77,9 +78,8 @@ public class FingerprintSettingFragment extends BaseFragment<FingerprintSettingB
         @Override
         protected void onBindItem(SettingItemWithArrowBinding binding, Fingerprint item) {
             binding.title.setText(item.getName());
-            Bundle data = new Bundle();
-            data.putParcelable("xfp", item);
-
+            Bundle data = getArguments();
+            Objects.requireNonNull(data).putParcelable("xfp", item);
             binding.getRoot().setOnClickListener(v -> navigate(R.id.action_to_fingerprintManage, data));
         }
     }

@@ -34,6 +34,7 @@ import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.config.FeatureFlags;
 import com.cobo.cold.databinding.ElectrumTxConfirmFragmentBinding;
 import com.cobo.cold.databinding.ProgressModalBinding;
@@ -65,6 +66,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
@@ -120,13 +123,14 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
             feeAttackChecking.showFeeAttackWarning();
             return;
         }
-
         if (signed) {
             ModalDialog.showCommonModal(mActivity,getString(R.string.broadcast_tx),
                     getString(R.string.multisig_already_signed), getString(R.string.know), null);
             return;
         }
-        boolean fingerprintSignEnable = Utilities.isFingerprintSignEnable(mActivity);
+
+        boolean fingerprintSignEnable = new FingerprintPolicyCallable(READ, TYPE_SIGN_TX).call();
+
         if (txEntity != null) {
             if (FeatureFlags.ENABLE_WHITE_LIST) {
                 if (isAddressInWhiteList()) {

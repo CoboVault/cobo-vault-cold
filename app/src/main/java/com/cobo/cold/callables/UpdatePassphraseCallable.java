@@ -17,34 +17,46 @@
 
 package com.cobo.cold.callables;
 
+import android.text.TextUtils;
+
 import com.cobo.cold.encryption.interfaces.CONSTANTS;
 import com.cobo.cold.encryptioncore.base.Packet;
 
 import java.util.concurrent.Callable;
 
-public class UpdatePassphraseCallable implements Callable<String> {
+public class UpdatePassphraseCallable implements Callable<Boolean> {
 
     private final String passphrase;
     private final String password;
+    private final String signature;
 
-    public UpdatePassphraseCallable(String passphrase, String password) {
+    public UpdatePassphraseCallable(String passphrase, String password, String signature) {
         this.passphrase = passphrase;
         this.password = password;
+        this.signature = signature;
     }
 
     @Override
-    public String call() {
+    public Boolean call() {
+        if (TextUtils.isEmpty(signature) && TextUtils.isEmpty(password)) {
+            return false;
+        }
         try {
-            final Packet packet = new Packet.Builder(CONSTANTS.METHODS.UPDATE_PASSPHRASE)
-                    .addTextPayload(CONSTANTS.TAGS.PASSPHRASE, passphrase)
-                    .addHexPayload(CONSTANTS.TAGS.CURRENT_PASSWORD, password)
-                    .build();
-            final Callable<Packet> callable = new BlockingCallable(packet);
+            final Packet.Builder builder = new Packet.Builder(CONSTANTS.METHODS.UPDATE_PASSPHRASE)
+                    .addTextPayload(CONSTANTS.TAGS.PASSPHRASE, passphrase);
+
+            if (!TextUtils.isEmpty(password)) {
+                builder.addHexPayload(CONSTANTS.TAGS.CURRENT_PASSWORD, password);
+            } else {
+                builder.addHexPayload(CONSTANTS.TAGS.MESSAGE_SIGNATURE, signature);
+            }
+            final Callable<Packet> callable = new BlockingCallable(builder.build());
             callable.call();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return null;
+        return false;
     }
 }

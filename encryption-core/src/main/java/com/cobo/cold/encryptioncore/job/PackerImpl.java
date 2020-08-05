@@ -73,9 +73,6 @@ class PackerImpl implements Packer {
     @VisibleForTesting
     byte[] serializeBody(@NonNull Packet packet) throws IOException {
         fitPayload(packet, CONSTANTS.TAGS.PACKET_ID, ByteFormatter.short2bytes(packet.getId()));
-        fitPayload(packet, CONSTANTS.TAGS.ENCRYPTION_STATUS, new byte[]{
-                (byte) (mCipher != null ?
-                        CONSTANTS.ENCRYPTION_STATUS.ENABLED : CONSTANTS.ENCRYPTION_STATUS.DISABLED)});
         return serializePayloads(packet.getPayloads());
     }
 
