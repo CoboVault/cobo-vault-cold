@@ -33,6 +33,7 @@ import androidx.navigation.Navigation;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.config.FeatureFlags;
 import com.cobo.cold.databinding.ProgressModalBinding;
 import com.cobo.cold.databinding.TxConfirmFragmentBinding;
@@ -55,6 +56,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.DUPLICATE_TX;
@@ -102,7 +105,7 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
             feeAttackChecking.showFeeAttackWarning();
             return;
         }
-        boolean fingerprintSignEnable = Utilities.isFingerprintSignEnable(mActivity);
+        boolean fingerprintSignEnable = new FingerprintPolicyCallable(READ, TYPE_SIGN_TX).call();
         if (txEntity != null) {
             if (FeatureFlags.ENABLE_WHITE_LIST) {
                 if (isAddressInWhiteList()) {

@@ -31,6 +31,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.cobo.cold.ui.modal.ModalDialog;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.cobo.cold.ui.fragment.setting.FingerprintPreferenceFragment.FINGERPRINT_PASSPHRASE;
 import static com.cobo.cold.ui.fragment.setting.FingerprintPreferenceFragment.FINGERPRINT_SIGN;
 import static com.cobo.cold.ui.fragment.setting.FingerprintPreferenceFragment.FINGERPRINT_UNLOCK;
 
@@ -175,19 +176,9 @@ public class Utilities {
         return sp.getBoolean(FINGERPRINT_UNLOCK, false);
     }
 
-    public static boolean isFingerprintSignEnable(Context context) {
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
-        return sp.getBoolean(FINGERPRINT_SIGN, false);
-    }
-
     public static void setFingerprintUnlockEnable(Context context, boolean enable) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
         sp.edit().putBoolean(FINGERPRINT_UNLOCK, enable).apply();
-    }
-
-    public static void setFingerprintSignEnable(Context context, boolean enable) {
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
-        sp.edit().putBoolean(FINGERPRINT_SIGN, enable).apply();
     }
 
     public static boolean hasUserClickFingerprint(Context context) {

@@ -25,6 +25,12 @@
         android:title="@string/use_fingerprint_unlock" />
 
     <com.cobo.cold.ui.preference.SwitchPreference
+        android:key="fingerprint_passphrase"
+        android:persistent="true"
+        android:defaultValue="true"
+        android:title="@string/switch_passphrase" />
+
+    <com.cobo.cold.ui.preference.SwitchPreference
         android:key="fingerprint_sign"
         android:persistent="true"
         android:defaultValue="true"

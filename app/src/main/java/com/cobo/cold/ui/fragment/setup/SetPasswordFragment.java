@@ -62,6 +62,7 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
     private String currentPassword; //old password hash
 
     public static final String PASSWORD = "password";
+    public static final String SIGNATURE = "signature";
 
     public static final String MNEMONIC = "mnemonic";
 

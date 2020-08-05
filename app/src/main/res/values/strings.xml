@@ -218,7 +218,7 @@
     <string name="tx_to">To</string>
     <string name="tx_fee">Fee</string>
     <string name="tx_memo">Memo</string>
-    <string name="tx_confirm">Confirm Transaction Details</string>
+    <string name="tx_confirm">Verify Fingerprint</string>
     <string name="sign">Sign</string>
     <string name="find_password">Forgot Password</string>
     <string name="update_hint">Only install firmware upgrades downloaded from the official Cobo Vault website.</string>
@@ -350,4 +350,5 @@
     <string name="keep_mnemonic_hint">*Cobo will never ask for your Recovery Phrase under any circumstances, please be sure to keep your Recovery Phrase and don’t disclose them to anyone</string>
     <string name="contact_us">Contact US</string>
     <string name="current_device_info">Current Equipment Info</string>
+    <string name="switch_passphrase">Enter Passphrase Vault</string>
 </resources>

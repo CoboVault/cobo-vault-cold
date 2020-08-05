@@ -30,6 +30,7 @@ import androidx.databinding.ObservableField;
 import com.cobo.coinlib.Util;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.callables.RegisterPublicKeyCallable;
 import com.cobo.cold.databinding.FingerprintEnrollBinding;
 import com.cobo.cold.databinding.InputModalBinding;
@@ -54,6 +55,10 @@ import java.security.spec.ECPoint;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cobo.cold.callables.FingerprintPolicyCallable.ON;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_PASSPHRASE;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
+import static com.cobo.cold.callables.FingerprintPolicyCallable.WRITE;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 import static com.cobo.cold.util.KeyStoreUtil.KEYSTORE_PROVIDER_NAME;
 
@@ -68,6 +73,7 @@ public class FingerprintEnrollFragment extends BaseFragment<FingerprintEnrollBin
     private boolean enrollSuccess;
     private ModalDialog dialog;
     public static final String SECP256R1 = "FINGERPRINT_SECP256_R1";
+    private String password;
 
     @Override
     protected int setView() {
@@ -77,6 +83,8 @@ public class FingerprintEnrollFragment extends BaseFragment<FingerprintEnrollBin
     @Override
     protected void init(View view) {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+        Bundle bundle = getArguments();
+        password = Objects.requireNonNull(bundle).getString(PASSWORD);
         prepareEnrollment();
     }
 
@@ -150,7 +158,6 @@ public class FingerprintEnrollFragment extends BaseFragment<FingerprintEnrollBin
             }
             if (list.size() == 1) {
                 Utilities.setFingerprintUnlockEnable(mActivity, true);
-                Utilities.setFingerprintSignEnable(mActivity, true);
             }
         }
     }
@@ -205,8 +212,7 @@ public class FingerprintEnrollFragment extends BaseFragment<FingerprintEnrollBin
     }
 
     private boolean registerPublicKey(KeyStore keyStore) {
-        Bundle bundle = getArguments();
-        if (bundle != null && !TextUtils.isEmpty(bundle.getString(PASSWORD))) {
+        if (!TextUtils.isEmpty(password)) {
             ECPublicKey publicKey;
             try {
                 publicKey = (ECPublicKey) keyStore.getCertificate(SECP256R1).getPublicKey();
