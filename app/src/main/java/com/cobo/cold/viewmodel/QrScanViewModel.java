@@ -98,6 +98,12 @@ public class QrScanViewModel extends AndroidViewModel {
                     } else {
                         throw new InvalidMultisigWalletException("invalid multisig wallet qrcode");
                     }
+                } else if (QrScanPurpose.MULTISIG_TX == fragment.getPurpose()) {
+                    if (hex.startsWith(Hex.toHexString("psbt".getBytes()))) {
+                        handleSignPsbt(hex);
+                        return;
+                    }
+                    throw new UnknowQrCodeException("unknow bc32 qrcode");
                 } else {
                     if (wallet.supportBc32QrCode()) {
                         handleBc32Qrcode(hex);
@@ -133,6 +139,7 @@ public class QrScanViewModel extends AndroidViewModel {
     private void handleSignPsbt(String hex) {
         Bundle bundle = new Bundle();
         bundle.putString("psbt_base64", Base64.toBase64String(Hex.decode(hex)));
+        bundle.putBoolean("multisig", fragment.getPurpose() == QrScanPurpose.MULTISIG_TX);
         fragment.navigate(R.id.action_to_psbtTxConfirmFragment, bundle);
     }
 

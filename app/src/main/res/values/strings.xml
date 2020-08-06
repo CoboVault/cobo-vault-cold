@@ -383,8 +383,8 @@
     <string name="export_xpub_text_file">Export Master Public Key File</string>
     <string name="file_name_label">File name:</string>
     <string name="master_xpub">Master Public Key (%s)</string>
-    <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning? Tap the QR code to enlarge<br>or <u>touch here to export the file with microSD</u>.]]></string>
-    <string name="generic_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to enlarge<br>or <u>touch here to export the file with microSD</u>.]]></string>
+    <string name="electrum_qrcode_hint"><![CDATA[Difficulty scanning? Tap the QR code to adjust size<br>or <u>touch here to export the file with microSD</u>.]]></string>
+    <string name="generic_qrcode_hint"><![CDATA[Difficulty scanning?Tap the QR code to adjust size<br>or <u>touch here to export the file with microSD</u>.]]></string>
     <string name="scan_electrum_hint">Difficulty scanning? You can import pending transactions from Electrum using a microSD card.</string>
     <string name="sign_txn_in_sdcard">Unsigned Transaction Files</string>
     <string name="master_pubkey_not_match">Transaction not recognized. Your Cobo Vault has not been successfully paired with the watch-only wallet.</string>
@@ -667,4 +667,7 @@
     <string name="contact_us">Contact US</string>
     <string name="current_device_info">Current Equipment Info</string>
     <string name="switch_passphrase">Enter Passphrase Vault</string>
+    <string name="broadcast_multisig_tx_hint">Please scan the QR code or export file to broadcast</string>
+    <string name="export_multisig_tx_hint">Invite cosigners to continue signing,or export file to combine the transaction in Electrum</string>
+    <string name="export_tx">Export Transaction</string>
 </resources>

@@ -134,7 +134,7 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
 
     protected void onSignSuccess() {
         WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
-        if (multisig || wallet == WatchWallet.ELECTRUM) {
+        if (wallet == WatchWallet.ELECTRUM) {
             String base43 = Base43.encode(Base64.decode(viewModel.getTxHex()));
             if (base43.length() <= 1000) {
                 String txId = viewModel.getTxId();
@@ -150,7 +150,7 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
                             }
                         });
             }
-        } else if (wallet == WatchWallet.BLUE || wallet == WatchWallet.GENERIC) {
+        } else if (multisig || wallet == WatchWallet.BLUE || wallet == WatchWallet.GENERIC) {
             Bundle data = new Bundle();
             data.putString(KEY_TXID, viewModel.getTxId());
             navigate(R.id.action_to_psbt_broadcast, data);

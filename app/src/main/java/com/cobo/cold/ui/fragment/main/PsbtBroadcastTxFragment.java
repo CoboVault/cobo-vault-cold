@@ -36,12 +36,15 @@ import org.spongycastle.util.encoders.Hex;
 import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment.showExportPsbtDialog;
+import static com.cobo.cold.viewmodel.WatchWallet.PSBT_MULTISIG_SIGN_ID;
 
 public class PsbtBroadcastTxFragment extends BaseFragment<BroadcastPsbtTxFragmentBinding> {
 
     public static final String KEY_TXID = "txId";
-    private View.OnClickListener goHome = v -> popBackStack(R.id.assetFragment,false);
+    private View.OnClickListener goHome;
     private TxEntity txEntity;
+    private boolean isMultisig;
+    private boolean signed;
 
     @Override
     protected int setView() {
@@ -51,30 +54,68 @@ public class PsbtBroadcastTxFragment extends BaseFragment<BroadcastPsbtTxFragmen
     @Override
     protected void init(View view) {
         Bundle data = Objects.requireNonNull(getArguments());
-        mBinding.toolbar.setNavigationOnClickListener(goHome);
-        mBinding.complete.setOnClickListener(goHome);
         CoinListViewModel viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
         viewModel.loadTx(data.getString(KEY_TXID)).observe(this, txEntity -> {
             this.txEntity = txEntity;
+            isMultisig = txEntity.getSignId().equals(PSBT_MULTISIG_SIGN_ID);
             mBinding.setCoinCode(txEntity.getCoinCode());
             mBinding.qrcodeLayout.qrcode.setEncodingScheme(DynamicQrCodeView.EncodingScheme.Bc32);
             mBinding.qrcodeLayout.qrcode.setData(Hex.toHexString(Base64.decode(txEntity.getSignedHex())));
+            updateUI();
         });
+    }
 
-        WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
-
-        if (wallet.supportSdcard()) {
+    private void updateUI() {
+        if(isMultisig) {
+            goHome = v-> popBackStack(R.id.multisigFragment,false);
+            mBinding.toolbarTitle.setText(getString(R.string.export_tx));
             mBinding.qrcodeLayout.hint.setVisibility(View.GONE);
             mBinding.exportToSdcard.setVisibility(View.VISIBLE);
             mBinding.exportToSdcard.setOnClickListener(v ->
                     showExportPsbtDialog(mActivity, txEntity, null));
+            mBinding.signStatus.setText(getString(R.string.sign_status)+ ":"+ getSignStatus(txEntity));
+            if (signed) {
+                mBinding.scanHint.setText(R.string.broadcast_multisig_tx_hint);
+            } else {
+                mBinding.scanHint.setText(R.string.export_multisig_tx_hint);
+            }
         } else {
-            mBinding.exportToSdcard.setVisibility(View.GONE);
+            goHome = v-> popBackStack(R.id.assetFragment,false);
+            WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
+            if (wallet.supportSdcard()) {
+                mBinding.qrcodeLayout.hint.setVisibility(View.GONE);
+                mBinding.exportToSdcard.setVisibility(View.VISIBLE);
+                mBinding.exportToSdcard.setOnClickListener(v ->
+                        showExportPsbtDialog(mActivity, txEntity, null));
+            } else {
+                mBinding.exportToSdcard.setVisibility(View.GONE);
+            }
+            mBinding.scanHint.setText(getString(R.string.use_wallet_to_broadcast,
+                    WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
         }
-        mBinding.scanHint.setText(getString(R.string.use_wallet_to_broadcast,
-                WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
+        mBinding.toolbar.setNavigationOnClickListener(goHome);
+        mBinding.complete.setOnClickListener(goHome);
     }
 
+    private String getSignStatus(TxEntity txEntity) {
+        String signStatus = txEntity.getSignStatus();
+
+        String[] splits = signStatus.split("-");
+        int sigNumber = Integer.parseInt(splits[0]);
+        int reqSigNumber = Integer.parseInt(splits[1]);
+
+        String text;
+        if (sigNumber == 0) {
+            text = getString(R.string.unsigned);
+        } else if (sigNumber < reqSigNumber) {
+            text = getString(R.string.partial_signed);
+        } else {
+            text = getString(R.string.signed);
+            signed = true;
+        }
+
+        return text;
+    }
 
     @Override
     protected void initData(Bundle savedInstanceState) {

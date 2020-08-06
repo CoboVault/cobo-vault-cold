@@ -316,8 +316,8 @@
     <string name="export_xpub_text_file">导出主公钥文件</string>
     <string name="file_name_label">该文件的文件名为：</string>
     <string name="master_xpub">主公钥（%s）</string>
-    <string name="electrum_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或<u>\点击此处导出文件\</u>]]></string>
-    <string name="generic_qrcode_hint"><![CDATA[扫码困难？点击二维码进行放大<br>或<u>\点击此处导出文件\</u>]]></string>
+    <string name="electrum_qrcode_hint"><![CDATA[扫码困难？点击二维码调整大小<br>或<u>\点击此处导出文件\</u>]]></string>
+    <string name="generic_qrcode_hint"><![CDATA[扫码困难？点击二维码调整大小<br>或<u>\点击此处导出文件\</u>]]></string>
     <string name="scan_electrum_hint">若扫描 Electrum 困难，可将待签交易导出成文件，点击首页的TF卡按钮，对文件签名。</string>
     <string name="sign_txn_in_sdcard">对文件签名</string>
     <string name="master_pubkey_not_match">该交易无法识别，您的 Cobo 金库与此观察钱包不匹配。</string>
@@ -614,4 +614,7 @@
     <string name="contact_us">联系我们</string>
     <string name="current_device_info">当前设备信息</string>
     <string name="switch_passphrase">进入密语金库</string>
+    <string name="broadcast_multisig_tx_hint">您可通过扫描二维码或导出文件广播该交易</string>
+    <string name="export_multisig_tx_hint">邀请参与方扫码继续签名，或导出文件在Electrum组合该交易</string>
+    <string name="export_tx">导出交易</string>
 </resources>
