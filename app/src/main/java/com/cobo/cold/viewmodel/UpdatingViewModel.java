@@ -28,7 +28,11 @@ import com.cobo.cold.AppExecutors;
 import com.cobo.cold.update.Checking;
 import com.cobo.cold.update.Updating;
 import com.cobo.cold.update.data.UpdateManifest;
+import com.cobo.cold.update.utils.FileUtils;
 import com.cobo.cold.update.utils.Storage;
+import com.cobo.cold.util.HashUtil;
+
+import org.spongycastle.util.encoders.Hex;
 
 public class UpdatingViewModel extends AndroidViewModel {
 
@@ -54,18 +58,21 @@ public class UpdatingViewModel extends AndroidViewModel {
     }
 
     private void checkUpdate() {
-        AppExecutors.getInstance().diskIO().execute(() -> {
-            final Storage storage = Storage.createByEnvironment(mContext);
-            if (storage == null) {
-                return;
-            }
-            try {
-                UpdateManifest manifest = new Checking(storage).call();
-                updateManifest.postValue(manifest);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        final Storage storage = Storage.createByEnvironment(mContext);
+        if (storage != null) {
+            AppExecutors.getInstance().networkIO().execute(() -> {
+                try {
+                    UpdateManifest manifest = new Checking(storage).call();
+                    if (manifest != null) {
+                        manifest.sha256 = Hex.toHexString(HashUtil.sha256(FileUtils.bufferlize(storage.getUpdateZipFile())));
+                    }
+                    updateManifest.postValue(manifest);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
     }
 
     public void doUpdate(String password) {
