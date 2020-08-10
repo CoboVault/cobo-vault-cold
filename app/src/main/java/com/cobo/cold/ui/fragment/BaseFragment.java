@@ -136,15 +136,28 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment {
     }
 
     public void navigate(@IdRes int id) {
-        NavHostFragment.findNavController(this).navigate(id);
+        try {
+            NavHostFragment.findNavController(this).navigate(id);
+        } catch (IllegalArgumentException ignore) {
+        }
+
+    }
+
+    public void popBackStack(@IdRes int id, boolean inclusive) {
+        try {
+            NavHostFragment.findNavController(this).popBackStack(id, inclusive);
+        } catch (IllegalArgumentException ignore) {
+        }
     }
 
     public void navigate(@IdRes int id, Bundle data) {
-        NavHostFragment.findNavController(this).navigate(id, data);
+        try {
+            NavHostFragment.findNavController(this).navigate(id, data);
+        } catch (IllegalArgumentException ignore) {
+        }
     }
 
     public AppCompatActivity getHostActivity() {
         return mActivity;
     }
 }
-

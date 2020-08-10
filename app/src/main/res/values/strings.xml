@@ -351,4 +351,11 @@
     <string name="contact_us">Contact US</string>
     <string name="current_device_info">Current Equipment Info</string>
     <string name="switch_passphrase">Enter Passphrase Vault</string>
+    <string name="check_mnemonic">Check Recovery Phrase</string>
+    <string name="check_failed">Check Failed</string>
+    <string name="check_mnemonic_failed">The entered recovery phrase does not match the one in the Cobo Vault.</string>
+    <string name="invalid_mnemonic_hint">You have entered an invalid recovery phrase, please try again.</string>
+    <string name="check_successful">Check Successful</string>
+    <string name="check_successful_hint">The entered recovery phrase matched the one in the Cobo Vault.</string>
+    <string name="notice">Notice</string>
 </resources>

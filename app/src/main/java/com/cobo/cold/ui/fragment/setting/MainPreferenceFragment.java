@@ -96,6 +96,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     private static final String SETTING_VERSION = "setting_version";
     private static final String SETTING_FINGERPRINT = "setting_fingerprint";
     private static final String SETTING_PASSPHRASE = "setting_passphrase";
+    public static final String SETTING_CHECK_MNEMONIC = "setting_check_mnemonic";
 
     private SwitchPreference switchPreference;
     private SimplePreference versionPreference;
@@ -275,6 +276,14 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                     update();
                 }
                 break;
+            case SETTING_CHECK_MNEMONIC:
+                AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), "",
+                        token -> {
+                            Bundle bundle1 = new Bundle();
+                            bundle1.putBoolean("checkMnemonic", true);
+                            Navigation.findNavController(Objects.requireNonNull(getView()))
+                                    .navigate(R.id.action_select_mnemonic_count, bundle1);
+                        }, forgetPassword);
             default:
                 break;
         }
