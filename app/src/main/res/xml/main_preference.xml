@@ -41,6 +41,10 @@
         android:key="setting_mnemonic_entry"
         android:title="@string/create_import_vault" />
 
+    <com.cobo.cold.ui.preference.SimplePreference
+        android:key="setting_check_mnemonic"
+        android:title="@string/check_mnemonic" />
+
     <!--com.cobo.cold.ui.preference.SimplePreference
         android:key="setting_testnet"
         android:persistent="true"

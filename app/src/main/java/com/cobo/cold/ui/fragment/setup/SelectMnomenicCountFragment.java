@@ -23,6 +23,9 @@ import android.view.View;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.SelectMnemonicCountBinding;
 
+import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
+import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
+
 public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMnemonicCountBinding> {
 
     @Override
@@ -39,7 +42,20 @@ public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMn
     }
 
     private void next(View view) {
-        navigate(R.id.action_to_mnemonicInputFragment);
+        Bundle bundle = getArguments();
+
+        boolean checkMnemonic = false;
+        if (bundle != null) {
+            checkMnemonic = bundle.getBoolean("checkMnemonic");
+        }
+        if (checkMnemonic) {
+            bundle.putString(KEY_TITLE, getString(R.string.verify_mnemonic));
+            bundle.putInt("mnemonicCount", viewModel.getMnemonicCount().get());
+            navigate(R.id.action_to_verifyMnemonic, bundle);
+        } else {
+            navigate(R.id.action_to_mnemonicInputFragment);
+        }
+
     }
 
     @Override

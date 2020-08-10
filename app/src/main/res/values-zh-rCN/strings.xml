@@ -618,4 +618,11 @@
     <string name="broadcast_multisig_tx_hint">您可通过扫描二维码或导出文件广播该交易</string>
     <string name="export_multisig_tx_hint">邀请参与方扫码继续签名，或导出文件在Electrum组合该交易</string>
     <string name="export_tx">导出交易</string>
+    <string name="check_mnemonic">检查助记词</string>
+    <string name="check_failed">验证失败</string>
+    <string name="check_mnemonic_failed">输入的助记词和当前金库的助记词不一致。</string>
+    <string name="invalid_mnemonic_hint">输入了无效的助记词，请逐字检查。</string>
+    <string name="check_successful">验证成功</string>
+    <string name="check_successful_hint">输入的助记词和当前金库的助记词一致。</string>
+    <string name="notice">提示</string>
 </resources>
