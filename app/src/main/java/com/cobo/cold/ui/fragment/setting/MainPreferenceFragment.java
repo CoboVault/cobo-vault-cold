@@ -101,6 +101,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     public static final String SETTING_CHOOSE_WATCH_WALLET = "setting_choose_watch_only_wallet";
     public static final String SETTING_ADDRESS_FORMAT = "setting_address_format";
     public static final String SETTING_TESTNET = "setting_testnet";
+    public static final String SETTING_CHECK_MNEMONIC = "setting_check_mnemonic";
 
     private SwitchPreference switchPreference;
     private SimplePreference versionPreference;
@@ -314,6 +315,15 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                 bundle.putInt(Constants.KEY_TITLE, R.string.select_network);
                 Navigation.findNavController(Objects.requireNonNull(getView()))
                         .navigate(R.id.action_to_switchNetwork, bundle);
+            case SETTING_CHECK_MNEMONIC:
+                AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), "",
+                        token -> {
+                            Bundle bundle1 = new Bundle();
+                            bundle1.putBoolean("checkMnemonic", true);
+                            Navigation.findNavController(Objects.requireNonNull(getView()))
+                                    .navigate(R.id.action_select_mnemonic_count, bundle1);
+                        }, forgetPassword);
+
             default:
                 break;
         }

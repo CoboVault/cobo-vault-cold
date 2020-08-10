@@ -20,17 +20,24 @@ package com.cobo.cold.ui.fragment.unlock;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.cobo.coinlib.utils.Bip39;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.VerifyMnemonicBinding;
+import com.cobo.cold.databinding.VerifyOkBinding;
 import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.util.Keyboard;
 import com.cobo.cold.viewmodel.SharedDataViewModel;
 
@@ -56,6 +63,10 @@ public class VerifyMnemonicFragment extends BaseFragment<VerifyMnemonicBinding> 
     protected void init(View view) {
         Bundle data = Objects.requireNonNull(getArguments());
         navId = data.getInt(KEY_NAV_ID);
+        int mnemonicCount = data.getInt("mnemonicCount");
+        if (mnemonicCount == 0) {
+            mnemonicCount = Utilities.getMnemonicCount(mActivity);
+        }
         if (data.getBoolean(IS_FORCE)) {
             mBinding.toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
         } else {
@@ -64,8 +75,8 @@ public class VerifyMnemonicFragment extends BaseFragment<VerifyMnemonicBinding> 
         String title = data.getString(KEY_TITLE);
         title = TextUtils.isEmpty(title) ? getString(R.string.verify_mnemonic) : title;
         mBinding.toolbarTitle.setText(title);
-        mBinding.table.setMnemonicNumber(Utilities.getMnemonicCount(mActivity));
-        mBinding.setCount(Utilities.getMnemonicCount(mActivity));
+        mBinding.table.setMnemonicNumber(mnemonicCount);
+        mBinding.setCount(mnemonicCount);
         mBinding.verifyMnemonic.setOnClickListener(this::validateMnemonic);
         mBinding.table.getWordsList().forEach(o -> o.addOnPropertyChangedCallback(
                 new Observable.OnPropertyChangedCallback() {
@@ -90,15 +101,34 @@ public class VerifyMnemonicFragment extends BaseFragment<VerifyMnemonicBinding> 
                 .reduce((s1, s2) -> s1 + " " + s2)
                 .orElse("");
 
+        if (!Bip39.validateMnemonic(mnemonic)) {
+            Utilities.alert(mActivity, getString(R.string.notice),
+                    getString(R.string.invalid_mnemonic_hint),
+                    getString(R.string.confirm), null);
+            return;
+        }
         SharedDataViewModel model = ViewModelProviders.of(mActivity).get(SharedDataViewModel.class);
         boolean match = model.verifyMnemonic(mnemonic);
         if (match) {
             mBinding.table.getWordsList().clear();
-            navigate(navId, Bundle.forPair(MNEMONIC, mnemonic));
+            if (navId != 0) {
+                navigate(navId, Bundle.forPair(MNEMONIC, mnemonic));
+            } else {
+                ModalDialog dialog = new ModalDialog();
+                VerifyOkBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                        R.layout.verify_ok, null, false);
+                dialog.setBinding(binding);
+                dialog.show(mActivity.getSupportFragmentManager(), "");
+                new Handler().postDelayed(()-> {
+                    dialog.dismiss();
+                    popBackStack(R.id.settingFragment,false);
+                },1500);
+
+            }
         } else {
-            Utilities.alert(mActivity, getString(R.string.hint),
-                    getString(R.string.wrong_mnemonic),
-                    getString(R.string.confirm), null);
+            Utilities.alert(mActivity, getString(R.string.check_failed),
+                    getString(R.string.check_mnemonic_failed),
+                    getString(R.string.confirm), ()->popBackStack(R.id.settingFragment,false));
         }
     }
 
