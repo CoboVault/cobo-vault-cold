@@ -409,8 +409,9 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
     public void handleSign() {
         AppExecutors.getInstance().diskIO().execute(() -> {
-            Signer[] signer = initSigners();
             SignCallback callback = initSignCallback();
+            callback.startSign();
+            Signer[] signer = initSigners();
             signTransaction(transaction, callback, signer);
         });
 
@@ -472,7 +473,6 @@ public class TxConfirmViewModel extends AndroidViewModel {
     }
 
     private void signTransaction(@NonNull AbsTx transaction, @NonNull SignCallback callback, Signer... signer) {
-        callback.startSign();
         if (signer == null) {
             callback.onFail();
             return;
