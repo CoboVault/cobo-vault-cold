@@ -327,5 +327,12 @@
     <string name="contact_us">联系我们</string>
     <string name="current_device_info">当前设备信息</string>
     <string name="switch_passphrase">进入密语金库</string>
+    <string name="check_mnemonic">检查助记词</string>
+    <string name="check_failed">验证失败</string>
+    <string name="check_mnemonic_failed">输入的助记词和当前金库的助记词不一致。</string>
+    <string name="invalid_mnemonic_hint">输入了无效的助记词，请逐字检查。</string>
+    <string name="check_successful">验证成功</string>
+    <string name="check_successful_hint">输入的助记词和当前金库的助记词一致。</string>
+    <string name="notice">提示</string>
 
 </resources>
