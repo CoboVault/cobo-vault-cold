@@ -35,14 +35,34 @@ import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.Hex;
 
 import static com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment.showExportPsbtDialog;
+import static com.cobo.cold.viewmodel.WatchWallet.PSBT_MULTISIG_SIGN_ID;
 
 public class PsbtSignedTxFragment extends SignedTxFragment {
+
+    private boolean isMultisig;
+
     @Override
     protected void displaySignResult(TxEntity txEntity) {
-        if (watchWallet == WatchWallet.WASABI || watchWallet == WatchWallet.BTCPAY) {
-            mBinding.txDetail.qr.setVisibility(View.GONE);
-            mBinding.txDetail.broadcastGuide.setGravity(Gravity.START);
-            mBinding.txDetail.broadcastGuide.setText(getBroadcastGuideText());
+        isMultisig = txEntity.getSignId().equals(PSBT_MULTISIG_SIGN_ID);
+        if (isMultisig){
+            boolean signed = isSigned(txEntity);
+            mBinding.txDetail.scanHint.setText(signed ? getString(R.string.broadcast_multisig_tx_hint)
+                    : getString(R.string.export_multisig_tx_hint));
+            //show bc32 animated qr code
+            mBinding.txDetail.dynamicQrcodeLayout.qrcode.setVisibility(View.VISIBLE);
+            mBinding.txDetail.dynamicQrcodeLayout.qrcode.setEncodingScheme(DynamicQrCodeView.EncodingScheme.Bc32);
+            mBinding.txDetail.dynamicQrcodeLayout.qrcode.setData(Hex.toHexString(Base64.decode(txEntity.getSignedHex())));
+            mBinding.txDetail.dynamicQrcodeLayout.hint.setVisibility(View.GONE);
+
+            mBinding.txDetail.qrcodeLayout.qrcode.setVisibility(View.GONE);
+            mBinding.txDetail.broadcastGuide.setVisibility(View.GONE);
+            mBinding.txDetail.export.setVisibility(View.GONE);
+
+            mBinding.txDetail.info.setVisibility(View.INVISIBLE);
+            mBinding.txDetail.exportToSdcardHint.setVisibility(View.VISIBLE);
+            mBinding.txDetail.exportToSdcardHint.setText(R.string.generic_qrcode_hint);
+            mBinding.txDetail.exportToSdcardHint.setOnClickListener(v -> showExportDialog());
+
         } else if (watchWallet == WatchWallet.BLUE || watchWallet == WatchWallet.GENERIC) {
             if (watchWallet == WatchWallet.BLUE) {
                 mBinding.txDetail.info.setOnClickListener(v -> showBlueWalletInfo());
@@ -73,6 +93,10 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
 
             }
 
+        } else if(watchWallet == WatchWallet.WASABI || watchWallet == WatchWallet.BTCPAY) {
+            mBinding.txDetail.qr.setVisibility(View.GONE);
+            mBinding.txDetail.broadcastGuide.setGravity(Gravity.START);
+            mBinding.txDetail.broadcastGuide.setText(getBroadcastGuideText());
         }
     }
 
@@ -83,6 +107,14 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
             return R.string.btcpay_broadcast_guide;
         }
         return 0;
+    }
+
+    private boolean isSigned(TxEntity txEntity) {
+        String signStatus = txEntity.getSignStatus();
+        String[] splits = signStatus.split("-");
+        int sigNumber = Integer.parseInt(splits[0]);
+        int reqSigNumber = Integer.parseInt(splits[1]);
+        return sigNumber >= reqSigNumber;
     }
 
     private void showBlueWalletInfo() {
@@ -102,6 +134,12 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
 
     @Override
     protected void showExportDialog() {
-        showExportPsbtDialog(mActivity, txEntity, () -> popBackStack(R.id.assetFragment, false));
+        Runnable runnable;
+        if (isMultisig) {
+            runnable = () -> popBackStack(R.id.assetFragment, false);
+        } else {
+            runnable = ()-> popBackStack(R.id.multisigFragment, false);
+        }
+        showExportPsbtDialog(mActivity, txEntity, runnable);
     }
 }

@@ -86,10 +86,17 @@
                         android:gravity="center"
                         android:text="@string/use_wallet_to_broadcast"
                         android:textColor="@color/white"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textSize="14sp" />
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/sign_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/use_wallet_to_broadcast"
+                    android:textColor="@color/white40"
+                    android:textSize="14sp" />
 
                 <include
                     android:id="@+id/qrcode_layout"
@@ -97,16 +104,16 @@
 
                 <com.cobo.cold.ui.views.SpanedTextView
                     android:id="@+id/export_to_sdcard"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="10dp"
-                    android:paddingVertical="10dp"
                     android:gravity="center"
+                    android:paddingVertical="10dp"
                     android:text="@string/electrum_qrcode_hint"
                     android:textColor="@color/white"
                     android:textSize="12sp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/complete"

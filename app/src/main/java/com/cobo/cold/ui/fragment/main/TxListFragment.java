@@ -80,9 +80,9 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         txCallback = tx -> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_TX_ID, tx.getTxId());
-            if (ELECTRUM_SIGN_ID.equals(tx.getSignId()) || PSBT_MULTISIG_SIGN_ID.equals(tx.getSignId())) {
+            if (ELECTRUM_SIGN_ID.equals(tx.getSignId())) {
                 navigate(R.id.action_to_electrumTxFragment, bundle);
-            } else if (getWatchWallet(mActivity).supportPsbt()) {
+            } else if (getWatchWallet(mActivity).supportPsbt() || PSBT_MULTISIG_SIGN_ID.equals(tx.getSignId())) {
                 navigate(R.id.action_to_psbtSignedTxFragment, bundle);
             } else {
                 navigate(R.id.action_to_txFragment, bundle);

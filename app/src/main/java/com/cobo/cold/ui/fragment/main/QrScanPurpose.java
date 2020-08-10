@@ -22,7 +22,7 @@ package com.cobo.cold.ui.fragment.main;
 public enum QrScanPurpose {
     WEB_AUTH("webAuth",true),
     ADDRESS("address",false),
-    MULTISIG_TX("multisig_tx",false),
+    MULTISIG_TX("multisig_tx",true),
     IMPORT_MULTISIG_WALLET("importMultiSigWallet",true),
     COLLECT_XPUB("collect_xpub",false),
     UNDEFINE("undefine",false);
