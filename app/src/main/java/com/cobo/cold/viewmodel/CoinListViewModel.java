@@ -53,7 +53,7 @@ public class CoinListViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<CoinEntity>> getCoins() {
-        return mObservableCoins;
+        return mRepository.loadCoins();
     }
 
     public void toggleCoin(Coin coin) {
