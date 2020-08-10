@@ -636,15 +636,15 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
     public void handleSign() {
         AppExecutors.getInstance().diskIO().execute(() -> {
-            Signer[] signer = initSigners();
             SignCallback callback = initSignCallback();
+            callback.startSign();
+            Signer[] signer = initSigners();
             signTransaction(transaction, callback, signer);
         });
     }
 
     public void handleSignPsbt(String psbt) {
         AppExecutors.getInstance().diskIO().execute(() -> {
-            Signer[] signer = initSigners();
             SignPsbtCallback callback = new SignPsbtCallback() {
                 @Override
                 public void startSign() {
@@ -689,6 +689,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 }
             };
             callback.startSign();
+            Signer[] signer = initSigners();
             Btc btc = new Btc(new BtcImpl(Utilities.isMainNet(getApplication())));
             if (isMultisig || WatchWallet.getWatchWallet(getApplication()) == ELECTRUM) {
                 btc.signPsbt(psbt, callback, false, signer);
@@ -732,7 +733,6 @@ public class TxConfirmViewModel extends AndroidViewModel {
     }
 
     private void signTransaction(@NonNull AbsTx transaction, @NonNull SignCallback callback, Signer... signer) {
-        callback.startSign();
         if (signer == null) {
             callback.onFail();
             return;
