@@ -26,6 +26,7 @@ import com.cobo.coinlib.interfaces.Coin;
 import com.cobo.coinlib.utils.B58;
 import com.cobo.coinlib.utils.Coins;
 
+import org.bouncycastle.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
@@ -76,8 +77,9 @@ public class Iost extends AbsCoin {
 
         @Override
         public String derive(String xPubKey) {
-            String pubKeyHex = Util.pubKeyFromExtentPubKey(xPubKey).substring(2);
-            return new B58().encodeToString(Hex.decode(pubKeyHex));
+            byte[] bytes = new B58().decode(xPubKey);
+            byte[] pubKey = Arrays.copyOfRange(bytes,bytes.length - 4 - 32,bytes.length - 4);
+            return new B58().encodeToString(pubKey);
         }
     }
 }
