@@ -611,11 +611,11 @@
     <string name="multisig_already_signed">该交易已被签名，您可直接广播。</string>
     <string name="export_file">导出文件</string>
     <string name="contact_info">微博: @Cobo金库大掌柜\n邮箱: support@cobo.com</string>
-    <string name="keep_mnemonic_hint">*Cobo在任何情况下都不会询问您的助记词 请务必妥善保管好助记词，不要透露给任何人</string>
+    <string name="keep_mnemonic_hint">*Cobo在任何情况下都不会询问您的助记词，请务必妥善保管好助记词，不要透露给任何人</string>
     <string name="contact_us">联系我们</string>
-    <string name="current_device_info">当前设备信息</string>
+    <string name="current_device_info">设备信息</string>
     <string name="switch_passphrase">进入密语金库</string>
-    <string name="broadcast_multisig_tx_hint">您可通过扫描二维码或导出文件广播该交易</string>
+    <string name="broadcast_multisig_tx_hint">您可扫描二维码或导出文件进行广播</string>
     <string name="export_multisig_tx_hint">邀请参与方扫码继续签名，或导出文件在Electrum组合该交易</string>
     <string name="export_tx">导出交易</string>
     <string name="check_mnemonic">检查助记词</string>

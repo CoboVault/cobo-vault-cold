@@ -547,7 +547,7 @@
     <string name="test_net">TestNet</string>
     <string name="no_multisig_wallet">No Multisig Wallet</string>
     <string name="create_multisig_wallet_hint"><![CDATA[
-     You need to create or import  multisig wallet before sign transactions of this wallet.<br><br>
+     You need to create or import a multisig wallet before signing transactions with this wallet.<br><br>
      How to create a multisig wallet:<br>
      1. Collect the co-signers’ XPUBs first, click More > Show/Export  XPUB to export XPUB.<br>
      2. The XPUB can be displayed as a QR code or saved as a file,<font color="#00cdc3"> you need to save XPUBs files collected in one microSD card <font/> if XPUB saved as file (FAT32 format, 32GB or less storage).<br>
@@ -666,16 +666,16 @@
     <string name="contact_info">Twitter: @Cobo Vault\nEmail：support@cobo.com</string>
     <string name="keep_mnemonic_hint">*Cobo will never ask for your Recovery Phrase under any circumstances, please be sure to keep your Recovery Phrase and don’t disclose them to anyone</string>
     <string name="contact_us">Contact US</string>
-    <string name="current_device_info">Current Equipment Info</string>
+    <string name="current_device_info">Equipment Info</string>
     <string name="switch_passphrase">Enter Passphrase Vault</string>
     <string name="broadcast_multisig_tx_hint">Please scan the QR code or export file to broadcast</string>
-    <string name="export_multisig_tx_hint">Invite cosigners to continue signing,or export file to combine the transaction in Electrum</string>
+    <string name="export_multisig_tx_hint">Invite cosigners to continue signing, or export file to combine the transaction in Electrum</string>
     <string name="export_tx">Export Transaction</string>
-    <string name="check_mnemonic">Check Recovery Phrase</string>
+    <string name="check_mnemonic">Recovery Phrase Check</string>
     <string name="check_failed">Check Failed</string>
-    <string name="check_mnemonic_failed">The entered recovery phrase does not match the one in the Cobo Vault.</string>
+    <string name="check_mnemonic_failed">The entered recovery phrase does not match the one in the Cobo Vault. Do not reset the device until a valid backup was verified.</string>
     <string name="invalid_mnemonic_hint">You have entered an invalid recovery phrase, please try again.</string>
     <string name="check_successful">Check Successful</string>
     <string name="check_successful_hint">The entered recovery phrase matched the one in the Cobo Vault.</string>
-    <string name="notice">Notice</string>
+    <string name="notice">Error</string>
 </resources>
