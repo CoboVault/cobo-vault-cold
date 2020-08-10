@@ -27,6 +27,7 @@ public class UpdateManifest {
     public FileInfo serial;
     public FileInfo app;
     public FileInfo system;
+    public String sha256;
 
     private UpdateManifest(FileInfo serial, FileInfo app, FileInfo system) {
         this.serial = serial;
