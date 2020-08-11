@@ -70,7 +70,6 @@ import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
-import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.DUPLICATE_TX;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.exportSuccess;
@@ -253,9 +252,6 @@ public class ElectrumTxConfirmFragment extends BaseFragment<ElectrumTxConfirmFra
             feeAttackCheckingState = state;
             if (state != NORMAL) {
                 feeAttackChecking = new FeeAttackChecking(this);
-            }
-            if(state == DUPLICATE_TX) {
-                feeAttackChecking.showDuplicateTx(viewModel.getPreviousSignTx());
             }
         });
     }
