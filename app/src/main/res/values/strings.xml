@@ -236,7 +236,7 @@
     <string name="verify_code_hint">Please input the verification code into the official website\'s Web Authentication page to have your device authenticated.</string>
     <string name="update_alert_boot_low_battery_message">Device power level needs to be above %s to ensure the upgrade is successful. Current battery level is %s, please replace or charge the battery.</string>
     <string name="update">Update</string>
-    <string name="new_version_hint_message">New version %s is present. Compare the following sha256 with the sha256 of your download package on the official website, ensure that they are consistent, then click "Update Now"</string>
+    <string name="new_version_hint_message">A new version %s is available for update. Compare the following sha256 with the sha256 of your download package on the official website, ensure that they are consistent, then click "Update Now"</string>
     <string name="updating">Updating…</string>
     <string name="update_now">Update Now</string>
     <string name="delete_fingerprint">Delete Fingerprint</string>
