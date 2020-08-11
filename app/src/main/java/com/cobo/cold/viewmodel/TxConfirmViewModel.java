@@ -40,6 +40,7 @@ import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;
 import com.cobo.coinlib.path.AddressIndex;
 import com.cobo.coinlib.path.CoinPath;
+import com.cobo.coinlib.utils.B58;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
@@ -510,7 +511,9 @@ public class TxConfirmViewModel extends AndroidViewModel {
             if (shouldProvidePublicKey) {
                 String pubKey;
                 if (Coins.curveFromCoinCode(coinCode) == Coins.CURVE.ED25519) {
-                    pubKey = Util.getPublicKeyHex(exPub).substring(2);
+                    byte[] bytes = new B58().decode(exPub);
+                    byte[] pubKeyBytes = Arrays.copyOfRange(bytes,bytes.length - 4 - 32,bytes.length - 4);
+                    pubKey = Hex.toHexString(pubKeyBytes);
                 } else {
                     pubKey = Util.getPublicKeyHex(exPub, distinctPaths[i]);
                 }
