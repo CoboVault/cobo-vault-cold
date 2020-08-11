@@ -320,12 +320,12 @@
     <string name="start">开始</string>
     <string name="pattern_lock_hide_track">为防偷窥，解锁时将隐藏轨迹</string>
     <string name="abnormal_tx">异常交易</string>
-    <string name="fee_attack_warning">检测到该笔交易有风险，不能对其签名，您可前往：https://cobo.com/hardware-wallet/XXX 了解详情，您也可邮件联系客服：support@cobo.com</string>
+    <string name="fee_attack_warning">检测到该笔交易存在费用超付攻击风险，禁止对其签名，您可前往：https://cobo.com/hardware-wallet/fee-attack 了解详情，您也可邮件联系客服：support@cobo.com</string>
     <string name="already_signed">检测到您已对该笔交易签名，您可直接广播该交易</string>
     <string name="contact_info">微博: @Cobo金库大掌柜\n邮箱: support@cobo.com</string>
-    <string name="keep_mnemonic_hint">*Cobo在任何情况下都不会询问您的助记词 请务必妥善保管好助记词，不要透露给任何人</string>
+    <string name="keep_mnemonic_hint">*Cobo在任何情况下都不会询问您的助记词，请务必妥善保管好助记词，不要透露给任何人</string>
     <string name="contact_us">联系我们</string>
-    <string name="current_device_info">当前设备信息</string>
+    <string name="current_device_info">设备信息</string>
     <string name="switch_passphrase">进入密语金库</string>
     <string name="check_mnemonic">检查助记词</string>
     <string name="check_failed">验证失败</string>

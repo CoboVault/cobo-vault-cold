@@ -1,4 +1,5 @@
 <!--
+  ~
   ~ Copyright (c) 2020 Cobo
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -13,6 +14,7 @@
   ~
   ~ You should have received a copy of the GNU General Public License
   ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
+  ~
   -->
 
 <resources>
@@ -349,13 +351,13 @@
     <string name="contact_info">Twitter: @Cobo Vault\nEmail：support@cobo.com</string>
     <string name="keep_mnemonic_hint">*Cobo will never ask for your Recovery Phrase under any circumstances, please be sure to keep your Recovery Phrase and don’t disclose them to anyone</string>
     <string name="contact_us">Contact US</string>
-    <string name="current_device_info">Current Equipment Info</string>
+    <string name="current_device_info">Equipment Info</string>
     <string name="switch_passphrase">Enter Passphrase Vault</string>
-    <string name="check_mnemonic">Check Recovery Phrase</string>
+    <string name="check_mnemonic">Recovery Phrase Check</string>
     <string name="check_failed">Check Failed</string>
-    <string name="check_mnemonic_failed">The entered recovery phrase does not match the one in the Cobo Vault.</string>
+    <string name="check_mnemonic_failed">The entered recovery phrase does not match the one in the Cobo Vault. Do not reset the device until a valid backup was verified.</string>
     <string name="invalid_mnemonic_hint">You have entered an invalid recovery phrase, please try again.</string>
     <string name="check_successful">Check Successful</string>
     <string name="check_successful_hint">The entered recovery phrase matched the one in the Cobo Vault.</string>
-    <string name="notice">Notice</string>
+    <string name="notice">Error</string>
 </resources>
