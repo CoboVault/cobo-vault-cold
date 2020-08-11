@@ -49,7 +49,7 @@ public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMn
             checkMnemonic = bundle.getBoolean("checkMnemonic");
         }
         if (checkMnemonic) {
-            bundle.putString(KEY_TITLE, getString(R.string.verify_mnemonic));
+            bundle.putString(KEY_TITLE, getString(R.string.check_mnemonic));
             bundle.putInt("mnemonicCount", viewModel.getMnemonicCount().get());
             navigate(R.id.action_to_verifyMnemonic, bundle);
         } else {
