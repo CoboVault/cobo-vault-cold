@@ -116,12 +116,12 @@ public class VerifyMnemonicFragment extends BaseFragment<VerifyMnemonicBinding> 
                 ModalDialog dialog = new ModalDialog();
                 VerifyOkBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                         R.layout.verify_ok, null, false);
-                dialog.setBinding(binding);
-                dialog.show(mActivity.getSupportFragmentManager(), "");
-                new Handler().postDelayed(()-> {
+                binding.confirm.setOnClickListener(v -> {
                     dialog.dismiss();
                     popBackStack(R.id.settingFragment,false);
-                },1500);
+                });
+                dialog.setBinding(binding);
+                dialog.show(mActivity.getSupportFragmentManager(), "");
 
             }
         } else {

@@ -34,7 +34,7 @@
 
         <LinearLayout
             android:id="@+id/success"
-            android:layout_width="224dp"
+            android:layout_width="288dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
@@ -66,6 +66,14 @@
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 android:text="@string/check_successful_hint" />
+
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="match_parent"
+                style="@style/AcceptButton"
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/confirm"/>
 
         </LinearLayout>
 
