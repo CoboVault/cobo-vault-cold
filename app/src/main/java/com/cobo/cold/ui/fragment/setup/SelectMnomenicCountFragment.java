@@ -23,10 +23,11 @@ import android.view.View;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.SelectMnemonicCountBinding;
 
-import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
 
 public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMnemonicCountBinding> {
+
+    private boolean checkMnemonic;
 
     @Override
     protected int setView() {
@@ -39,19 +40,26 @@ public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMn
         mBinding.setViewModel(viewModel);
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.next.setOnClickListener(this::next);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            checkMnemonic = bundle.getBoolean("checkMnemonic");
+
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (checkMnemonic) {
+            viewModel.setMnemonicCount(24);
+        }
     }
 
     private void next(View view) {
-        Bundle bundle = getArguments();
-
-        boolean checkMnemonic = false;
-        if (bundle != null) {
-            checkMnemonic = bundle.getBoolean("checkMnemonic");
-        }
         if (checkMnemonic) {
-            bundle.putString(KEY_TITLE, getString(R.string.check_mnemonic));
-            bundle.putInt("mnemonicCount", viewModel.getMnemonicCount().get());
-            navigate(R.id.action_to_verifyMnemonic, bundle);
+            getArguments().putString(KEY_TITLE, getString(R.string.check_mnemonic));
+            getArguments().putInt("mnemonicCount", viewModel.getMnemonicCount().get());
+            navigate(R.id.action_to_verifyMnemonic, getArguments());
         } else {
             navigate(R.id.action_to_mnemonicInputFragment);
         }

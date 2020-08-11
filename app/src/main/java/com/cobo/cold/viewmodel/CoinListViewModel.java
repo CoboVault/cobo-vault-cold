@@ -114,7 +114,11 @@ public class CoinListViewModel extends AndroidViewModel {
                 }
                 syncBuilder.addCoin(coin);
             }
-            sync.postValue(syncBuilder.build());
+            if (syncBuilder.getCoinsCount() == 0) {
+                sync.postValue("");
+            } else {
+                sync.postValue(syncBuilder.build());
+            }
 
         });
         return sync;

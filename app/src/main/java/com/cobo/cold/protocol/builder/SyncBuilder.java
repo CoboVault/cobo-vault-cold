@@ -45,6 +45,10 @@ public class SyncBuilder extends BaseBuilder {
         sync.addCoins(coin.toProto());
     }
 
+    public int getCoinsCount() {
+        return sync.getCoinsCount();
+    }
+
     public static class Sync {
         public List<Coin> coins = new ArrayList<>();
     }
