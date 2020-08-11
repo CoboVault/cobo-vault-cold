@@ -34,7 +34,7 @@
 
         <LinearLayout
             android:id="@+id/success"
-            android:layout_width="288dp"
+            android:layout_width="224dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
