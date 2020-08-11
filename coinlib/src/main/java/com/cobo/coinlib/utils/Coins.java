@@ -51,8 +51,7 @@ public class Coins {
             XZC,
             XRP,
             IOST,
-            EOS,
-            XTN
+            EOS
     );
 
     public static boolean isCoinSupported(@NonNull String coinCode) {
