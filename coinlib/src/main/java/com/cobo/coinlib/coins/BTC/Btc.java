@@ -22,6 +22,8 @@ import androidx.annotation.NonNull;
 import com.cobo.coinlib.coins.AbsCoin;
 import com.cobo.coinlib.coins.AbsDeriver;
 import com.cobo.coinlib.coins.AbsTx;
+import com.cobo.coinlib.coins.BCH.Bch;
+import com.cobo.coinlib.coins.LTC.Ltc;
 import com.cobo.coinlib.coins.SignTxResult;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.Coin;
@@ -150,10 +152,12 @@ public class Btc extends AbsCoin {
             StringBuilder destinations = new StringBuilder();
             for (int i = 0; i < outputs.length(); i++) {
                 JSONObject output = outputs.getJSONObject(i);
+                String address = output.getString("address");
+                String newAddress = convertAddress(address);
                 outputAmount += output.getLong("value");
                 if (output.optBoolean("isChange") && output.has("changeAddressPath")) {
                     changeAddressInfo = new ChangeAddressInfo(
-                            output.getString("address"),
+                            newAddress,
                             output.getString("changeAddressPath"),
                             output.getLong("value"));
                     outputsClone.remove(i);
@@ -164,13 +168,22 @@ public class Btc extends AbsCoin {
                 nf.setMaximumFractionDigits(20);
                 String amount = nf.format(satoshiToBtc(output.getLong("value")));
                 outputsClone.getJSONObject(i).put("value", amount + " " + coinCode);
-                destinations.append(output.get("address")).append(SEPARATOR);
+                destinations.append(address).append(SEPARATOR);
             }
             if (outputsClone.length() == 1) {
                 to = destinations.deleteCharAt(destinations.length() - 1).toString();
             } else {
                 to = outputsClone.toString();
             }
+        }
+
+        protected String convertAddress(String outAddress) {
+            if (getCoinCode().equals(Coins.BCH.coinCode())) {
+                outAddress = Bch.toCashAddress(outAddress);
+            } else if(getCoinCode().equals(Coins.LTC.coinCode())) {
+                outAddress = Ltc.convertAddress(outAddress);
+            }
+            return outAddress;
         }
 
         protected void parseInput() throws JSONException, InvalidTransactionException {

@@ -25,6 +25,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
+import com.cobo.coinlib.coins.BCH.Bch;
+import com.cobo.coinlib.coins.LTC.Ltc;
+import com.cobo.coinlib.utils.Coins;
+import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.ui.views.qrcode.QrCodeView;
 
 import java.text.SimpleDateFormat;
@@ -80,6 +84,26 @@ public class BindingAdapters {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",
                     Locale.getDefault());
             view.setText(formatter.format(time));
+        }
+    }
+
+    @BindingAdapter("address")
+    public static void setAddress(TextView view, AddressEntity entity) {
+        String address = entity.getAddressString();
+        if (entity.getCoinId().equals(Coins.BCH.coinId())) {
+            if (address.startsWith("1")) {
+                view.setText(Bch.toCashAddress(address));
+            } else {
+                view.setText(address);
+            }
+        } else if (entity.getCoinId().equals(Coins.LTC.coinId())) {
+            if (address.startsWith("3")) {
+                view.setText(Ltc.convertAddress(address));
+            } else {
+                view.setText(address);
+            }
+        } else {
+            view.setText(address);
         }
     }
 }

@@ -21,6 +21,7 @@ import com.cobo.coinlib.coins.AbsDeriver;
 import com.cobo.coinlib.coins.BTC.Btc;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.Coin;
+import com.github.kiulian.converter.AddressConverter;
 
 import org.bitcoinj.core.LegacyAddress;
 import org.bitcoinj.crypto.DeterministicKey;
@@ -38,10 +39,23 @@ public class Bch extends Btc {
         return "BCH";
     }
 
+    public static String toCashAddress(String legacyAddress) {
+        if (legacyAddress.startsWith("q") || legacyAddress.startsWith("bitcoincash")) {
+            return legacyAddress;
+        } else {
+            return AddressConverter.toCashAddress(legacyAddress).replace("bitcoincash:","");
+        }
+    }
+
     public static class Tx extends Btc.Tx {
         public Tx(JSONObject metaData, String coinCode)
                 throws JSONException, InvalidTransactionException {
             super(metaData, coinCode);
+        }
+
+        @Override
+        protected String convertAddress(String outAddress) {
+            return Bch.toCashAddress(outAddress);
         }
 
         @Override
@@ -64,18 +78,23 @@ public class Bch extends Btc {
     }
 
     public static class Deriver extends AbsDeriver {
+        private static boolean legacyAddress = false;
 
         @Override
         public String derive(String xPubKey, int changeIndex, int addrIndex) {
             DeterministicKey address = getAddrDeterministicKey(xPubKey, changeIndex, addrIndex);
             LegacyAddress addr = LegacyAddress.fromPubKeyHash(MAINNET, address.getPubKeyHash());
-            return addr.toBase58();
+            String legacy = addr.toBase58();
+            if (legacyAddress) return legacy;
+            return Bch.toCashAddress(legacy);
         }
 
         @Override
         public String derive(String xPubKey) {
-            return LegacyAddress.fromPubKeyHash(MAINNET,
+            String legacy = LegacyAddress.fromPubKeyHash(MAINNET,
                     getDeterministicKey(xPubKey).getPubKeyHash()).toBase58();
+            if (legacyAddress) return legacy;
+            return Bch.toCashAddress(legacy);
         }
     }
 }

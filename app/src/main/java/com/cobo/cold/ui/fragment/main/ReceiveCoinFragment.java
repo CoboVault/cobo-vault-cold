@@ -20,6 +20,9 @@ package com.cobo.cold.ui.fragment.main;
 import android.os.Bundle;
 import android.view.View;
 
+import com.cobo.coinlib.coins.BCH.Bch;
+import com.cobo.coinlib.coins.LTC.Ltc;
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ReceiveFragmentBinding;
 import com.cobo.cold.ui.fragment.BaseFragment;
@@ -42,9 +45,16 @@ public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         Bundle data = getArguments();
         Objects.requireNonNull(data);
-        mBinding.setAddress(data.getString(KEY_ADDRESS));
+        String coinCode = data.getString(KEY_COIN_CODE);
+        mBinding.setCoinCode(coinCode);
+        String address = data.getString(KEY_ADDRESS);
+        if (coinCode.equals(Coins.BCH.coinCode())) {
+            address = Bch.toCashAddress(address);
+        } else if (coinCode.equals(Coins.LTC.coinCode())) {
+            address = Ltc.convertAddress(address);
+        }
+        mBinding.setAddress(address);
         mBinding.setAddressName(data.getString(KEY_ADDRESS_NAME));
-        mBinding.setCoinCode(data.getString(KEY_COIN_CODE));
         mBinding.setPath(data.getString(KEY_ADDRESS_PATH));
         mBinding.qrcode.setData(data.getString(KEY_ADDRESS));
     }
