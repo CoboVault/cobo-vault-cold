@@ -17,7 +17,8 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -73,7 +74,7 @@
             android:textColor="@color/white40"
             tools:text="0x4f77d6a…52ce9824"
             android:layout_alignStart="@id/name"
-            android:text="@{address.addressString}"
+            app:address="@{address}"
             android:layout_marginTop="4dp" />
 
         <ImageView

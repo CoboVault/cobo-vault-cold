@@ -28,6 +28,8 @@ import org.bitcoinj.crypto.DeterministicKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 public class Ltc extends Btc {
     public Ltc(Coin impl) {
         super(impl);
@@ -43,11 +45,24 @@ public class Ltc extends Btc {
         public Tx(JSONObject metaData, String coinCode) throws JSONException, InvalidTransactionException {
             super(metaData, coinCode);
         }
+
+        @Override
+        protected String convertAddress(String outAddress) {
+            return Ltc.convertAddress(outAddress);
+        }
+    }
+
+    public static String convertAddress(String address) {
+        if (address.startsWith("M")) {
+            return address;
+        }
+        byte[] data = Base58.decode(address);
+        return Base58.encodeChecked(0x32, Arrays.copyOfRange(data,1, data.length - 4));
     }
 
     public static class Deriver extends Btc.Deriver {
 
-        static final boolean legacyAddress = true;
+        static final boolean legacyAddress = false;
 
         @Override
         public String derive(String xPubKey, int changeIndex, int addrIndex) {

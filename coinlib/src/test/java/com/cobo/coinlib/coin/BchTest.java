@@ -40,11 +40,29 @@ public class BchTest {
                 "19emQ5tpdoYDKd3aia7wo9PQtwej88bpsz",
                 "1JBKtGPGXPFb3pDeK1cF8czdgvYMzaxyE5"
                 };
+
+        String[] cashAddress = new String[] {
+                "qz65ywjm92m27wshfnew2w3us5vsgxqkxc55t9lqcw",
+                "qpfs2gcfwg322segkj4h30du4vtjyvsxtq6msk90a5",
+                "qpt4cr4juduwl36w35rwfwvz6am2z7mxcg8a84k28n",
+                "qpa62j36dy2xjjlzcaavm9p8fe5um6p2ru9zysy4u4",
+                "qpqyj9gqwyy0ghac582cec90h7jjls5zev5ug44pqx",
+                "qpuhatcelvquhr37gatm5dd9ssll3adkzuch8ugqu6",
+                "qrh8m7rp5ggkwyj4dc553480pyhr06kzq599ddue4c",
+                "qrkx2a5t6z89fmpn4ppmjvnp2mlleds9tvnscqluqf",
+                "qz2q8yqwm4693ukfjrh44l39cwp7p9dwussj65sdn8",
+                "qp0w2a2ukdpwezjcwjs7nr4twjdwwz58x596n9ysw0",
+                "qz7xurac6mvkcptrjcxaalt3mra7rqnscyg7mjm9e6"
+        };
         String pubKey = "xpub6CjD9XYc1hEKcAMsSasAA87Mw8bSUr6WQKrJ1ErLofJPP9sxeZ3sh1dH2S5ywQTRNrXsfXzT686jJNdX2m9KhvMDh4eQM9AdSkkQLLMbDG6";
-        for (int i = 0 ; i < addr.length; i++) {
+        for (int i = 0 ; i < cashAddress.length; i++) {
             String address = new Bch.Deriver().derive(pubKey,0,i);
-            assertEquals(address,addr[i]);
+            assertEquals(address,cashAddress[i]);
         }
+        for (int i = 0 ; i < addr.length; i++) {
+            assertEquals(Bch.toCashAddress(addr[i]),cashAddress[i]);
+        }
+
     }
 
 }

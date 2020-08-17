@@ -50,6 +50,7 @@ android {
 
 dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'com.github.sealedtx:bitcoin-cash-converter:1.0'
     implementation ('org.bitcoinj:bitcoinj-core:0.15.2'){
         exclude group: 'com.squareup.okhttp3'
     }
