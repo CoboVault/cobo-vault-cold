@@ -235,8 +235,11 @@ public class DataRepository {
     }
 
     public List<MultiSigWalletEntity> loadAllMultiSigWalletSync() {
+        String netmode = Utilities.isMainNet(context) ? "main" : "testnet";
         String xfp = new GetMasterFingerprintCallable().call();
-        return mDb.multiSigWalletDao().loadAllSync(xfp);
+        return mDb.multiSigWalletDao().loadAllSync(xfp)
+                .stream().filter(w->w.getNetwork().equals(netmode))
+                .collect(Collectors.toList());
     }
 
     public LiveData<List<MultiSigAddressEntity>> loadAllMultiSigAddress() {

@@ -23,7 +23,10 @@ public class MultiSig {
     public enum Account {
         P2WSH("m/48'/0'/0'/2'", "P2WSH"),
         P2WSH_P2SH("m/48'/0'/0'/1'", "P2WSH-P2SH"),
-        P2SH("m/45'", "P2SH");
+        P2SH("m/45'", "P2SH"),
+        P2WSH_TEST("m/48'/1'/0'/2'", "P2WSH"),
+        P2WSH_P2SH_TEST("m/48'/1'/0'/1'", "P2WSH-P2SH"),
+        P2SH_TEST("m/45'", "P2SH");
 
         private final String format;
         private String path;
@@ -42,14 +45,6 @@ public class MultiSig {
             return P2WSH;
         }
 
-        public static Account ofFormat(String format) {
-            for (Account value : Account.values()) {
-                if (value.format.equalsIgnoreCase(format)) {
-                    return value;
-                }
-            }
-            return P2WSH;
-        }
         public static Account ofPrefix(String format) {
             for (Account value : Account.values()) {
                 if (value.getXpubPrefix().equals(format)) {
@@ -57,6 +52,10 @@ public class MultiSig {
                 }
             }
             return P2WSH;
+        }
+
+        public boolean isTest() {
+            return (this == P2WSH_TEST || this == P2WSH_P2SH_TEST || this == P2SH_TEST);
         }
 
         public String getPath() {
@@ -75,6 +74,12 @@ public class MultiSig {
                     return "Zpub";
                 case P2WSH_P2SH:
                     return "Ypub";
+                case P2SH_TEST:
+                    return "tpub";
+                case P2WSH_TEST:
+                    return "Vpub";
+                case P2WSH_P2SH_TEST:
+                    return "Upub";
             }
             return "xpub";
         }

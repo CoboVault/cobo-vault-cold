@@ -142,13 +142,15 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
     private String getAddressTypeString(MultiSig.Account account) {
         int id = R.string.multi_sig_account_segwit;
 
-        if (account == MultiSig.Account.P2WSH_P2SH) {
+        if (account == MultiSig.Account.P2WSH_P2SH
+                || account == MultiSig.Account.P2WSH_P2SH_TEST) {
             id = R.string.multi_sig_account_p2sh;
-        } else if (account == MultiSig.Account.P2SH) {
+        } else if (account == MultiSig.Account.P2SH || account == MultiSig.Account.P2SH_TEST) {
             id = R.string.multi_sig_account_legacy;
         }
 
-        return getString(id);
+        return String.format(getString(id)+"(%s)",account.isTest()
+                ? getString(R.string.testnet): getString(R.string.mainnet));
     }
 
     private void initializeData() {
@@ -177,7 +179,8 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                     String xfp = object.getString("xfp");
                     String xpub = object.getString("xpub");
                     String path = object.getString("path");
-                    if (path.equals(CollectExpubFragment.this.path)) {
+                    if (path.equals(CollectExpubFragment.this.path)
+                            && xpub.startsWith(account.getXpubPrefix())) {
                         updateXpubInfo(info, xfp, xpub);
                     } else {
                         try {
@@ -263,10 +266,14 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
             JSONObject obj = new JSONObject(FileUtils.readString(file));
 
             String xpub;
+            String path;
             if (obj.has("xpub")) {
                 xpub = obj.getString("xpub");
+                path = obj.getString("path");
             } else {
-                xpub = obj.getString(account.getFormat().toLowerCase().replace("-", "_"));
+                String tag = account.getFormat().toLowerCase().replace("-", "_");
+                xpub = obj.getString(tag);
+                path = obj.getString(tag+"_deriv");
             }
             if (TextUtils.isEmpty(xpub) || !ExtendPubkeyFormat.isValidXpub(xpub)) {
                 showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
@@ -274,7 +281,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                         getString(R.string.know),null);
                 return;
             }
-            if (!xpub.startsWith(account.getXpubPrefix())) {
+            if (!xpub.startsWith(account.getXpubPrefix()) || !path.equals(account.getPath())) {
                 ModalDialog.showCommonModal(mActivity,getString(R.string.wrong_xpub_format),
                         getString(R.string.wrong_xpub_format_hint,getAddressTypeString(account),
                                 getAddressTypeString(MultiSig.Account.ofPrefix(xpub.substring(0,4)))),
@@ -385,7 +392,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                 R.layout.common_modal, null, false);
         binding.title.setText(title);
         binding.subTitle.setText(subTitle);
-        binding.subTitle.setGravity(Gravity.LEFT);
+        binding.subTitle.setGravity(Gravity.START);
         binding.close.setVisibility(View.GONE);
         binding.confirm.setText(buttonText);
         binding.confirm.setOnClickListener(v -> {

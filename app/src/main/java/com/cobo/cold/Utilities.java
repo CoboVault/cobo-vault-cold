@@ -32,30 +32,28 @@ import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.ui.modal.ModalDialog;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.cobo.cold.ui.fragment.setting.FingerprintPreferenceFragment.FINGERPRINT_PASSPHRASE;
-import static com.cobo.cold.ui.fragment.setting.FingerprintPreferenceFragment.FINGERPRINT_SIGN;
 import static com.cobo.cold.ui.fragment.setting.FingerprintPreferenceFragment.FINGERPRINT_UNLOCK;
 
 public class Utilities {
-    public static final String PREFERENCE_SECRET = "secret";
-    public static final String PREFERENCE_KEY_PATTERN = "pattern";
-    public static final String PREFERENCE_KEY_VAULT_CREATED = "vault_created";
-    public static final String PREFERENCE_KEY_LANGUAGE_SET = "language_set";
-    public static final String PREFERENCE_KEY_VAULT_ID = "vault_id";
+    private static final String PREFERENCE_SECRET = "secret";
+    private static final String PREFERENCE_KEY_PATTERN = "pattern";
+    private static final String PREFERENCE_KEY_VAULT_CREATED = "vault_created";
+    private static final String PREFERENCE_KEY_LANGUAGE_SET = "language_set";
+    private static final String PREFERENCE_KEY_VAULT_ID = "vault_id";
 
     public static final String SHARED_PREFERENCES_KEY = "com.cobo.cold.prefs";
 
     public static final String IS_SETUP_VAULT = "is_setup_vault";
     public static final String IS_SET_PASSPHRASE = "is_set_passphrase";
-    public static final String PREFERENCE_KEY_BELONG_TO = "belong_to";
-    public static final String PREFERENCE_KEY_PWD_RETRY = "pwd_retry_times";
-    public static final String PREFERENCE_KEY_PATTERN_RETRY = "pattern_retry_times";
-    public static final String PREFERENCE_KEY_MNEMONIC_COUNT = "mnemonic_count";
-    public static final String FINGERPRINT_CLICKED = "fingerprint_clicked";
-    public static final String PATTERN_LOCK_CLICKED = "pattern_lock_clicked";
-    public static final String FINGERPRINT_PASSWORD = "fingerprint_password";
-    public static final String ATTACK_DETECTED = "attack_detected";
-    public static final String INPUT_SETTINGS_CLEARED = "input_settings_cleared";
+    private static final String PREFERENCE_KEY_BELONG_TO = "belong_to";
+    private static final String PREFERENCE_KEY_PWD_RETRY = "pwd_retry_times";
+    private static final String PREFERENCE_KEY_PATTERN_RETRY = "pattern_retry_times";
+    private static final String PREFERENCE_KEY_MNEMONIC_COUNT = "mnemonic_count";
+    private static final String FINGERPRINT_CLICKED = "fingerprint_clicked";
+    private static final String PATTERN_LOCK_CLICKED = "pattern_lock_clicked";
+    private static final String FINGERPRINT_PASSWORD = "fingerprint_password";
+    private static final String ATTACK_DETECTED = "attack_detected";
+    private static final String INPUT_SETTINGS_CLEARED = "input_settings_cleared";
     public static final String NET_MDOE = "network_mode";
 
     public static void alert(AppCompatActivity activity,
@@ -204,17 +202,17 @@ public class Utilities {
         sp.edit().putBoolean(ATTACK_DETECTED,attacked).apply();
     }
 
-    public static boolean isAttackDetected(Context context) {
+    static boolean isAttackDetected(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
         return sp.getBoolean(ATTACK_DETECTED,false);
     }
 
-    public static boolean isInputSettingsCleared(Context context) {
+    static boolean isInputSettingsCleared(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
         return sp.getBoolean(INPUT_SETTINGS_CLEARED,false);
     }
 
-    public static void setInputSettingsCleared(Context context) {
+    static void setInputSettingsCleared(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
         sp.edit().putBoolean(INPUT_SETTINGS_CLEARED,true).apply();
     }

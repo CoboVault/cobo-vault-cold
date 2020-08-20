@@ -22,7 +22,6 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.cobo.coinlib.utils.Coins;
@@ -32,7 +31,6 @@ import com.cobo.cold.MainApplication;
 import com.cobo.cold.db.entity.AccountEntity;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.db.entity.TxEntity;
-import com.cobo.cold.model.Coin;
 import com.cobo.cold.protocol.EncodeConfig;
 import com.cobo.cold.protocol.builder.SyncBuilder;
 
@@ -41,29 +39,14 @@ import java.util.List;
 public class CoinListViewModel extends AndroidViewModel {
 
     private final DataRepository mRepository;
-    private final MediatorLiveData<List<CoinEntity>> mObservableCoins;
 
     public CoinListViewModel(@NonNull Application application) {
         super(application);
-
-        mObservableCoins = new MediatorLiveData<>();
-        mObservableCoins.setValue(null);
         mRepository = ((MainApplication) application).getRepository();
-        mObservableCoins.addSource(mRepository.loadCoins(), mObservableCoins::setValue);
     }
 
     public LiveData<List<CoinEntity>> getCoins() {
         return mRepository.loadCoins();
-    }
-
-    public void toggleCoin(Coin coin) {
-        CoinEntity entity = new CoinEntity(coin);
-        entity.setShow(!coin.isShow());
-        mRepository.updateCoin(entity);
-    }
-
-    public LiveData<CoinEntity> loadCoin(int id) {
-        return mRepository.loadCoin(id);
     }
 
     public LiveData<TxEntity> loadTx(String txId) {

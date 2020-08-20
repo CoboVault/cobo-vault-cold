@@ -17,14 +17,34 @@
 
 package com.cobo.cold.ui.fragment.setting;
 
-import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+
+import androidx.navigation.Navigation;
 
 import com.cobo.cold.R;
-import com.cobo.cold.ui.MainActivity;
+import com.cobo.cold.ui.fragment.Constants;
+import com.cobo.cold.viewmodel.WatchWallet;
+
+import java.util.Objects;
 
 import static com.cobo.cold.Utilities.NET_MDOE;
+import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_CHOOSE_WATCH_WALLET;
 
 public class SwitchNetworkFragment extends ListPreferenceFragment {
+
+    @Override
+    protected void init(View view) {
+        super.init(view);
+        mBinding.confirm.setText(R.string.confirm);
+        mBinding.confirm.setVisibility(View.VISIBLE);
+        mBinding.confirm.setOnClickListener(v-> {
+            Bundle data = new Bundle();
+            data.putInt(Constants.KEY_TITLE, R.string.choose_watch_only_wallet);
+            Navigation.findNavController(Objects.requireNonNull(getView()))
+                    .navigate(R.id.action_to_chooseWatchOnly, data);
+        });
+    }
 
     @Override
     protected int getEntries() {
@@ -58,7 +78,11 @@ public class SwitchNetworkFragment extends ListPreferenceFragment {
     }
 
     private void onNetWorkSwitch() {
-        startActivity(new Intent(mActivity, MainActivity.class));
+        WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
+        if ("testnet".equals(value) && !wallet.supportTestnet()) {
+            prefs.edit().putString(SETTING_CHOOSE_WATCH_WALLET, WatchWallet.ELECTRUM.getWalletId()).apply();
+        }
+        //startActivity(new Intent(mActivity, MainActivity.class));
     }
 }
 

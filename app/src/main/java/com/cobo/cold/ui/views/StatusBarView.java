@@ -21,21 +21,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
-import android.os.PowerManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import static android.content.Context.MODE_PRIVATE;
 import static com.cobo.cold.Utilities.NET_MDOE;
-import static com.cobo.cold.Utilities.PREFERENCE_SECRET;
 
 public class StatusBarView extends LinearLayout {
 
@@ -63,7 +56,7 @@ public class StatusBarView extends LinearLayout {
 
     public StatusBarView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        sp = getContext().getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
+        sp = Utilities.getPrefs(mContext);
     }
 
     @Override
@@ -94,18 +87,5 @@ public class StatusBarView extends LinearLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         sp.unregisterOnSharedPreferenceChangeListener(listener);
-    }
-
-    private boolean isDryCell() {
-        boolean isDryCell = false;
-        PowerManager pm = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
-        try {
-            Method method = PowerManager.class.getMethod("isDryCell");
-            isDryCell = (boolean) method.invoke(pm);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "[isDryCell] isDryCell = " + isDryCell);
-        return isDryCell;
     }
 }

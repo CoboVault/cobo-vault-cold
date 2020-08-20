@@ -63,13 +63,40 @@ public class Coins {
             return type;
         }
 
+        public static Account ofPath(String path) {
+            for (Account value : Account.values()) {
+                if (value.getPath().equalsIgnoreCase(path)) {
+                    return value;
+                }
+            }
+            return SegWit;
+        }
+
+        public String getXpubPrefix() {
+            switch (this) {
+                case P2PKH:
+                    return "xpub";
+                case P2SH:
+                    return "ypub";
+                case SegWit:
+                    return "zpub";
+                case P2PKH_TESTNET:
+                    return "tpub";
+                case P2SH_TESTNET:
+                    return "upub";
+                case SegWit_TESTNET:
+                    return "vpub";
+            }
+            return "xpub";
+        }
+
         public boolean isMainNet() {
             return this == P2PKH || this == P2SH || this == SegWit;
         }
     }
 
     public static final List<Coin> SUPPORTED_COINS = Arrays.asList(
-            BTC
+            BTC,XTN
     );
 
     public static boolean isCoinSupported(@NonNull String coinCode) {

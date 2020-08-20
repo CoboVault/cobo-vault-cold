@@ -227,13 +227,12 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
                 if (ex instanceof XpubNotMatchException || ex instanceof WatchWalletNotMatchException) {
                     errorMessage = getString(R.string.master_pubkey_not_match);
                 }
-                boolean multisig = false;
+
                 if (ex instanceof InvalidTransactionException) {
                     InvalidTransactionException e = (InvalidTransactionException) ex;
                     if (e.getErrorCode() == InvalidTransactionException.IS_NOTMULTISIG_TX) {
                         title = getString(R.string.open_int_siglesig_wallet);
                         errorMessage = getString(R.string.open_int_siglesig_wallet_hint);
-                        multisig = true;
                     } else if (e.getErrorCode() == InvalidTransactionException.IS_MULTISIG_TX) {
                         title = getString(R.string.open_int_multisig_wallet);
                         errorMessage = getString(R.string.open_int_multisig_wallet_hint);
@@ -245,7 +244,7 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
                     title = getString(R.string.no_matched_wallet);
                     errorMessage = getString(R.string.no_matched_wallet_hint);
                     buttonText = getString(R.string.know);
-                    multisig = true;
+
                 }
                 ModalDialog.showCommonModal(mActivity,
                         title,

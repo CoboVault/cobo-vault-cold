@@ -17,6 +17,7 @@
 
 package com.cobo.coinlib.coin;
 
+import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.coins.BTC.Btc;
 import com.cobo.coinlib.coins.BTC.Deriver;
 import com.cobo.coinlib.utils.MultiSig;
@@ -88,6 +89,49 @@ public class BtcTest {
         }
     }
 
+
+    @Test
+    public void deriveTestnetAddress() {
+        String[] addr = new String[] {
+                "2N4J1WajwKZKpRtzzUmaW9B5GEqkppqdVY9",
+                "2N5vzpJv9yHyi8aCREm1DfMfdZcEPeLKFKh",
+                "2N3cagc4up2Xoz7BufANWrppQXethv76LUv",
+                "2N3aTw1qLWkqtHcdCJ5eWhsuQQckbuyuzkN",
+                "2Mz1sUMfKi6hiBNYMgn71Q5NpSeexmr76MF",
+                "2MwmYudTmtY7yPiMcpyoFL5oBZiUq6M5tTM",
+                "2MyxPa8GmEcynJojy4bUeb5G3y9nHGUrj5i",
+                "2Mx3FigCdk7WfWSJMBkH3wMHALYZJoXH4VH",
+                "2MzvSdkBeoFSLpVQSgnpp2daZiyEf2iMqin",
+                "2MstUHV6svqiiwzCyykkuTSKdCYUiKSfAbC",
+                "2N9iKrXVw2rk9iZWUhReCZtx8tzDNgTWyfP",
+        };
+        String pubKey = "upub5EALNCP4Y7P3JQtLi1Rzms8CBztexbPxZRNkxa9YcnhFx4w9BMbH7EMehatPCv8KruffErPyVcdxA7aceFPhdDyHKof7UrZ6uD9rVExiqsq";
+        for (int i = 0 ; i < addr.length; i++) {
+            String address = new Deriver(false).derive(ExtendPubkeyFormat.convertExtendPubkey(pubKey,ExtendPubkeyFormat.xpub),0,i, Btc.AddressType.P2SH);
+            assertEquals(address,addr[i]);
+        }
+
+
+        addr = new String[] {
+                "tb1qk5my3s95fqzuy9e8adaj8e2yrnj3sempjqeskv",
+                "tb1qwqhnxk06d9kv8nyseky3s7drtfn289ez93cenx",
+                "tb1qj2zy686vq69pts87g9ghd36fh22pdts0q4pzcf",
+                "tb1qtahjsjxm0pfcarhar43tt0u5567leum28umfry",
+                "tb1qyarwllvn2ez0kzeqhl67xtxhel9l8wx62jq0vz",
+                "tb1qx2tgev0n7vac6uxkmf83d4v52nkxtsyuu5v3h0",
+                "tb1qltnyye32afq57ewnrvgu2qqjy7yvruawzgs0x9",
+                "tb1qg4pase9pv5pj0afgf6y2y382cslxzahquqev3y",
+                "tb1qg2ukt2y7zrx6lfzc3snpjadlsleg00qfq2mwxt",
+                "tb1qynv707xunc89jqpmc2nygaltl0dmres2yhu3qh",
+        };
+        pubKey = "vpub5Z3SXQwuvQWt5vBQiRYrqhbou6BB7u1TFcA4DTQxPirU4oqMwnWW5DcSmM31h7SzofmUM3xHHn8rEht38jyuX8tfXS2D1desPVRsvnD5Dtr";
+        for (int i = 0 ; i < addr.length; i++) {
+            String address = new Deriver(false).derive(ExtendPubkeyFormat.convertExtendPubkey(pubKey,ExtendPubkeyFormat.xpub),0,i, Btc.AddressType.SegWit);
+            assertEquals(address,addr[i]);
+        }
+    }
+
+
     @Test
     public void testCreateMultiSigAddress() {
         String pubkey1 = "0375e00eb72e29da82b89367947f29ef34afb75e8654f6ea368e0acdfd92976b7c";
@@ -99,8 +143,14 @@ public class BtcTest {
         String address = new Deriver(true).createMultiSigAddress(2, pubkeys, MultiSig.Account.P2WSH_P2SH);
         assertEquals("3PA7HYj6x6xmk9WPGfrwqeKckYcQyNPdS7", address);
 
+        address = new Deriver(false).createMultiSigAddress(2, pubkeys, MultiSig.Account.P2WSH_P2SH);
+        assertEquals("2NEiKMHf8ZZU7ww8vwoUpTbJsxtpai1VjtM", address);
+
         address = new Deriver(true).createMultiSigAddress(2, pubkeys, MultiSig.Account.P2WSH);
         assertEquals("bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej", address);
+
+        address = new Deriver(false).createMultiSigAddress(2, pubkeys, MultiSig.Account.P2WSH);
+        assertEquals("tb1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxsey6dra", address);
     }
 
     @Test
@@ -124,6 +174,24 @@ public class BtcTest {
         List<String> xpubs = Lists.newArrayList(xpub1,xpub2,xpub3);
         for (int i = 0; i < expect.length; i++) {
             String s = new Deriver(true).deriveMultiSigAddress(2, xpubs, new int[]{0, i}, MultiSig.Account.P2WSH);
+            assertEquals(expect[i],s);
+        }
+
+        expect = new String[] {
+                "tb1qf4fqa472u8xlf9ghdrp4v2xxcxfh4d6ee7f8478ywecfpthh6vussmgx5l",
+                "tb1q6uk9x0202nvrt27ne28njljyt25cuta26f6g2wju7y8at88x43cqld92aa",
+                "tb1qn3mk6h9n4wvspsv5w4f78ez97mzf4kq5a73cs8zsajdz5ugvudesrueesj",
+                "tb1q7ul39ax900kg65psk6g5es8hjfxkfnfcq7mp4zz9f9nwm93hjx9s72264j",
+                "tb1qmfhfrd7dqqd3x66d6aw04e96xxec74gnkhkgtpwtngmwm9n2hdnqxn8uy9",
+                "tb1qekcvc8n8wpld7zgxrtycyf7cn7s9vyz0fx70zjm7quakl7d309dq0d0dl4",
+                "tb1q27wugty8uy3zp3ujfvdmf4fn0u76g5ufrm699sfxrrdlv5xkkvasp8lrpa",
+                "tb1qf26d8y6u2c3qkt66cwdkrwh9gvun9dq6rxftmmrm8umgjugnmh4qdu4s5a",
+                "tb1q86h2qmukyqyflt3z7gw4q6975kakcvkv24utq63d76h4pzccpp5s9xr8h9",
+                "tb1q3cg55awjrqdc7gwyxvdccuhhrttkxn9lpau45u4zelf0sq349wfqtmcv7p"
+        };
+
+        for (int i = 0; i < expect.length; i++) {
+            String s = new Deriver(false).deriveMultiSigAddress(2, xpubs, new int[]{0, i}, MultiSig.Account.P2WSH);
             assertEquals(expect[i],s);
         }
 

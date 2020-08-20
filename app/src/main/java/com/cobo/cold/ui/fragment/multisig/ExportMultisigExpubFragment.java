@@ -31,6 +31,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.ExportMultisigExpubBinding;
 import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
@@ -41,8 +42,11 @@ import com.cobo.cold.update.utils.Storage;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import static com.cobo.coinlib.utils.MultiSig.Account.P2SH;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2SH_TEST;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_P2SH;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_P2SH_TEST;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_TEST;
 import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
 import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
 import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
@@ -50,7 +54,7 @@ import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
 public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMultisigExpubBinding>
         implements Toolbar.OnMenuItemClickListener {
     public static final String TAG = "ExportMultisigExpubFragment";
-    private MultiSig.Account account = MultiSig.Account.P2WSH;
+    private MultiSig.Account account;
     @Override
     protected int setView() {
         return R.layout.export_multisig_expub;
@@ -62,6 +66,8 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.toolbar.inflateMenu(R.menu.export_all);
         mBinding.toolbar.setOnMenuItemClickListener(this);
+        account = Utilities.isMainNet(mActivity) ?
+                MultiSig.Account.P2WSH : MultiSig.Account.P2WSH_TEST;
         updateUI();
         mBinding.addressType.setOnClickListener(v -> showBottomSheetMenu());
         mBinding.exportToSdcard.setOnClickListener(v -> exportToSdcard());
@@ -123,12 +129,15 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
         int accountType = R.string.multi_sig_account_segwit;
         switch (account) {
             case P2WSH_P2SH:
+            case P2WSH_P2SH_TEST:
                 accountType = R.string.multi_sig_account_p2sh;
                 break;
             case P2SH:
+            case P2SH_TEST:
                 accountType = R.string.multi_sig_account_legacy;
                 break;
             case P2WSH:
+            case P2WSH_TEST:
                 break;
         }
         return getString(accountType);
@@ -159,7 +168,10 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
 
     private String getAllExtendPubkeyInfo() {
         StringBuilder info = new StringBuilder("<br>");
-        MultiSig.Account[] accounts = new MultiSig.Account[] {P2WSH, P2WSH_P2SH, P2SH};
+        MultiSig.Account[] accounts =
+        Utilities.isMainNet(mActivity) ?
+                new MultiSig.Account[] {P2WSH, P2WSH_P2SH, P2SH}
+                :new MultiSig.Account[] {P2WSH_TEST, P2WSH_P2SH_TEST, P2SH_TEST};
         for (MultiSig.Account a : accounts) {
             info.append(String.format("%s(%s)",getAccountTypeString(a),a.getFormat())).append("<br>")
                     .append(a.getPath()).append("<br>")
@@ -174,9 +186,15 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
         SwitchXpubBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.switch_xpub_bottom_sheet, null, false);
         refreshCheckedStatus(binding.getRoot());
-        binding.nativeSegwit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2WSH));
-        binding.nestedSegeit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2WSH_P2SH));
-        binding.legacy.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2SH));
+        if (Utilities.isMainNet(mActivity)) {
+            binding.nativeSegwit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2WSH));
+            binding.nestedSegeit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2WSH_P2SH));
+            binding.legacy.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2SH));
+        } else {
+            binding.nativeSegwit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2WSH_TEST));
+            binding.nestedSegeit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2WSH_P2SH_TEST));
+            binding.legacy.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2SH_TEST));
+        }
         dialog.setContentView(binding.getRoot());
         dialog.show();
     }

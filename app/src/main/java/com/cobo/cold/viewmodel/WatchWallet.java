@@ -60,9 +60,13 @@ public enum WatchWallet {
     public static WatchWallet getWatchWallet(Context context) {
         String wallet = Utilities.getPrefs(context)
                 .getString(SETTING_CHOOSE_WATCH_WALLET, COBO.getWalletId());
+        return getWatchWalletById(wallet);
+    }
+
+    public static WatchWallet getWatchWalletById(String walletId) {
         WatchWallet selectWatchWallet = COBO;
         for (WatchWallet watchWallet: WatchWallet.values()) {
-            if (watchWallet.getWalletId().equals(wallet)) {
+            if (watchWallet.getWalletId().equals(walletId)) {
                 selectWatchWallet = watchWallet;
                 break;
             }
@@ -148,6 +152,16 @@ public enum WatchWallet {
         switch (this) {
             case COBO:
             case ELECTRUM:
+            case GENERIC:
+                return true;
+        }
+        return false;
+    }
+
+    public boolean supportTestnet() {
+        switch (this) {
+            case ELECTRUM:
+            case BTCPAY:
             case GENERIC:
                 return true;
         }

@@ -141,7 +141,11 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 boolean isMultisig = transaction.isMultisig();
                 String walletFingerprint = null;
                 if (isMultisig) {
-                    walletFingerprint = object.getJSONObject("btcTx").getString("wallet_fingerprint");
+                    if (object.has("btcTx")) {
+                        walletFingerprint = object.getJSONObject("btcTx").getString("wallet_fingerprint");
+                    } else if (object.has("xtnTx")) {
+                        walletFingerprint = object.getJSONObject("xtnTx").getString("wallet_fingerprint");
+                    }
                 }
                 if (transaction instanceof UtxoTx) {
                     if (isMultisig) {
@@ -231,7 +235,13 @@ public class TxConfirmViewModel extends AndroidViewModel {
         tx.setFee(nf.format(transaction.getFee()) + " " + coinCode);
         tx.setMemo(transaction.getMemo());
         tx.setBelongTo(wallet.getWalletFingerPrint());
-        tx.setSignStatus(object.getJSONObject("btcTx").getString("signStatus"));
+        String signStatus = null;
+        if (object.has("btcTx")) {
+            signStatus = object.getJSONObject("btcTx").getString("signStatus");
+        } else if(object.has("xtnTx")) {
+            signStatus = object.getJSONObject("xtnTx").getString("signStatus");
+        }
+        tx.setSignStatus(signStatus);
         return tx;
     }
 
@@ -365,7 +375,8 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
                 if (index.length != 2) return false;
                 String expectedAddress = wallet.deriveAddress(
-                        new int[]{Integer.valueOf(index[0]), Integer.valueOf(index[1])});
+                        new int[]{Integer.valueOf(index[0]), Integer.valueOf(index[1])},
+                        Utilities.isMainNet(getApplication()));
 
                 if (!expectedAddress.equals(address)) {
                     return false;
@@ -408,7 +419,8 @@ public class TxConfirmViewModel extends AndroidViewModel {
                     hdpath = hdpath.replace(wallet.getExPubPath() + "/","");
                     String[] index = hdpath.split("/");
                     String from = wallet.deriveAddress(
-                            new int[] {Integer.valueOf(index[0]), Integer.valueOf(index[1])});
+                            new int[] {Integer.valueOf(index[0]), Integer.valueOf(index[1])},
+                            Utilities.isMainNet(getApplication()));
                     inputsClone.put(new JSONObject().put("value", value)
                             .put("address",from));
                 }
@@ -924,7 +936,8 @@ public class TxConfirmViewModel extends AndroidViewModel {
             for(int i = 0; i < psbtOutputs.length(); i++) {
                 JSONObject psbtOutput = psbtOutputs.getJSONObject(i);
                 JSONObject out = new JSONObject();
-                out.put("address", psbtOutput.getString("address"));
+                String address = psbtOutput.getString("address");
+                out.put("address", address);
                 out.put("value", psbtOutput.getInt("value"));
                 JSONArray bip32Derivation = psbtOutput.optJSONArray("hdPath");
                 if (bip32Derivation != null) {

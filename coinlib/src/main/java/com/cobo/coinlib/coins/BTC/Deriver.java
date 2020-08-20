@@ -96,7 +96,7 @@ public class Deriver {
     }
 
     private String derivePublicKey(String xpub, int change, int index) {
-        DeterministicKey key = DeterministicKey.deserializeB58(xpub, network);
+        DeterministicKey key = DeterministicKey.deserializeB58(xpub, MainNetParams.get());
         DeterministicKey changeKey = HDKeyDerivation.deriveChildKey(key, change);
         return HDKeyDerivation.deriveChildKey(changeKey, index).getPublicKeyAsHex();
     }
@@ -108,9 +108,9 @@ public class Deriver {
         Script p2ms = createMultiSigOutputScript(threshold, pubKeys);
         Script p2wsh = ScriptBuilder.createP2WSHOutputScript(p2ms);
 
-        if (type == MultiSig.Account.P2WSH) {
+        if (type == MultiSig.Account.P2WSH || type == MultiSig.Account.P2WSH_TEST) {
             return SegwitAddress.fromHash(network, p2wsh.getPubKeyHash()).toBech32();
-        } else if(type == MultiSig.Account.P2WSH_P2SH){
+        } else if(type == MultiSig.Account.P2WSH_P2SH || type == MultiSig.Account.P2WSH_P2SH_TEST){
             Script p2sh = ScriptBuilder.createP2SHOutputScript(p2wsh);
             return LegacyAddress.fromScriptHash(network, p2sh.getPubKeyHash()).toBase58();
         } else {

@@ -625,4 +625,5 @@
     <string name="check_successful">验证成功</string>
     <string name="check_successful_hint">输入的助记词和当前金库的助记词一致。</string>
     <string name="notice">提示</string>
+    <string name="import_failed_network_not_match">当前设置的区块链网络为%s，要导入的钱包为%s，您需先切换区块链网络为%s（菜单—设置—区块链网络）</string>
 </resources>

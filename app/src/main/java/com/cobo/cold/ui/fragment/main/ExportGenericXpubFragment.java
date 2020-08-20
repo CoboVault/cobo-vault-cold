@@ -23,6 +23,7 @@ import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
 
+import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
@@ -37,12 +38,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
-import static com.cobo.coinlib.ExtendPubkeyFormat.tpub;
-import static com.cobo.coinlib.ExtendPubkeyFormat.upub;
-import static com.cobo.coinlib.ExtendPubkeyFormat.vpub;
-import static com.cobo.coinlib.ExtendPubkeyFormat.xpub;
-import static com.cobo.coinlib.ExtendPubkeyFormat.ypub;
-import static com.cobo.coinlib.ExtendPubkeyFormat.zpub;
 import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
 import static com.cobo.cold.viewmodel.GlobalViewModel.getAccount;
 import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
@@ -126,20 +121,6 @@ public class ExportGenericXpubFragment extends BaseFragment<ExportXpubGenericBin
     }
 
     private String convertExtpub(String expub, Coins.Account account) {
-        switch (account) {
-            case P2PKH_TESTNET:
-                return convertExtendPubkey(expub, tpub);
-            case P2SH_TESTNET:
-                return convertExtendPubkey(expub, upub);
-            case SegWit_TESTNET:
-                return convertExtendPubkey(expub, vpub);
-            case P2PKH:
-                return convertExtendPubkey(expub, xpub);
-            case SegWit:
-                return convertExtendPubkey(expub, zpub);
-            case P2SH:
-                return convertExtendPubkey(expub, ypub);
-        }
-        return expub;
+        return convertExtendPubkey(expub, ExtendPubkeyFormat.valueOf(account.getXpubPrefix()));
     }
 }

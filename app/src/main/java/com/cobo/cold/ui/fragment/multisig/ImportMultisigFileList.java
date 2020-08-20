@@ -28,19 +28,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.FileListBinding;
 import com.cobo.cold.databinding.FileListItemBinding;
 import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.fragment.main.electrum.Callback;
+import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.FileUtils;
 import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.viewmodel.InvalidMultisigWalletException;
 import com.cobo.cold.viewmodel.MultiSigViewModel;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.cobo.cold.viewmodel.GlobalViewModel.hasSdcard;
@@ -101,15 +106,26 @@ public class ImportMultisigFileList extends MultiSigBaseFragment<FileListBinding
     @Override
     public void onClick(String file) {
         Storage storage = Storage.createByEnvironment(mActivity);
+        Objects.requireNonNull(storage);
         try {
             JSONObject walletFile = MultiSigViewModel.decodeColdCardWalletFile(
                     FileUtils.readString(new File(storage.getExternalDir(), file)));
+            String path = walletFile.getString("Derivation");
+            boolean isTestnet = !Utilities.isMainNet(mActivity);
+            if (MultiSig.Account.ofPath(path).isTest() != isTestnet) {
+                String currentNet = isTestnet ? getString(R.string.testnet) : getString(R.string.mainnet);
+                String walletFileNet = MultiSig.Account.ofPath(path).isTest() ? getString(R.string.testnet) : getString(R.string.mainnet);
+                ModalDialog.showCommonModal(mActivity, getString(R.string.import_failed),
+                        getString(R.string.import_failed_network_not_match, currentNet, walletFileNet, walletFileNet),
+                        getString(R.string.know),null);
+                return;
+            }
+
             Bundle data = new Bundle();
             data.putString("wallet_info",walletFile.toString());
             navigate(R.id.import_multisig_wallet, data);
-        } catch (InvalidMultisigWalletException e) {
+        } catch (InvalidMultisigWalletException | JSONException e) {
             e.printStackTrace();
-
         }
 
 

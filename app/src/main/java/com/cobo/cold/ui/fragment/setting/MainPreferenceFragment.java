@@ -145,7 +145,10 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
             getPreferenceScreen().removePreference(fingerprintPreference);
         }
         testNetPreference = findPreference(SETTING_TESTNET);
-        updateMenu();
+        if (testNetPreference != null) {
+            testNetPreference.setRemindText(Utilities.isMainNet(mActivity) ?
+                    getString(R.string.mainnet) : getString(R.string.testnet));
+        }
     }
 
     @Override
@@ -166,7 +169,10 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
             chooseWalletPreference.setRemindText(WatchWallet.getWatchWallet(mActivity)
                     .getWalletName(mActivity));
         }
-        updateMenu();
+        if (testNetPreference != null) {
+            testNetPreference.setRemindText(Utilities.isMainNet(mActivity) ?
+                    getString(R.string.mainnet) : getString(R.string.testnet));
+        }
         Looper.getMainLooper().getQueue().addIdleHandler(() -> {
 
             if (!Utilities.hasUserClickPatternLock(mActivity)) {
@@ -203,21 +209,6 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     private void update() {
         new UpdatingHelper(mActivity,true);
     }
-
-    private void updateMenu() {
-        WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
-        if (wallet != WatchWallet.GENERIC && wallet != WatchWallet.ELECTRUM) {
-            if (testNetPreference != null) {
-                getPreferenceScreen().removePreference(testNetPreference);
-            }
-        } else {
-            if (testNetPreference != null) {
-                getPreferenceScreen().addPreference(testNetPreference);
-                testNetPreference.setRemindText(Utilities.isMainNet(mActivity) ? getString(R.string.mainnet) : getString(R.string.testnet));
-            }
-        }
-    }
-
 
     private static void restartApplication(AppCompatActivity activity) {
         final Intent intent = ((Context) activity).getPackageManager().getLaunchIntentForPackage(((Context) activity).getPackageName());
@@ -315,6 +306,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                 bundle.putInt(Constants.KEY_TITLE, R.string.select_network);
                 Navigation.findNavController(Objects.requireNonNull(getView()))
                         .navigate(R.id.action_to_switchNetwork, bundle);
+                break;
             case SETTING_CHECK_MNEMONIC:
                 AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), "",
                         token -> {
@@ -323,6 +315,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                             Navigation.findNavController(Objects.requireNonNull(getView()))
                                     .navigate(R.id.action_select_mnemonic_count, bundle1);
                         }, forgetPassword);
+                break;
 
             default:
                 break;

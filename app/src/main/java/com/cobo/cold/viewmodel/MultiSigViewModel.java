@@ -56,7 +56,6 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +65,11 @@ import java.util.stream.Collectors;
 
 import static com.cobo.coinlib.Util.reverseHex;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2SH;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2SH_TEST;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_P2SH;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_P2SH_TEST;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_TEST;
 
 public class MultiSigViewModel extends AndroidViewModel {
 
@@ -97,12 +99,13 @@ public class MultiSigViewModel extends AndroidViewModel {
     }
 
     public LiveData<MultiSigWalletEntity> getCurrentWallet() {
+        String netmode = Utilities.isMainNet(getApplication()) ? "main" : "testnet";
         MutableLiveData<MultiSigWalletEntity> result = new MutableLiveData<>();
         AppExecutors.getInstance().diskIO().execute(() -> {
             String defaultMultisgWalletFp = Utilities.getDefaultMultisigWallet(getApplication(), xfp);
             if (!TextUtils.isEmpty(defaultMultisgWalletFp)) {
                 MultiSigWalletEntity wallet = repo.loadMultisigWallet(defaultMultisgWalletFp);
-                if (wallet != null) {
+                if (wallet != null && wallet.getNetwork().equals(netmode)) {
                     result.postValue(wallet);
                 } else {
                     List<MultiSigWalletEntity>  list = repo.loadAllMultiSigWalletSync();
@@ -123,21 +126,13 @@ public class MultiSigViewModel extends AndroidViewModel {
                 }
             }
         });
-
-
-
         return result;
     }
 
     public String getXpub(MultiSig.Account account) {
         if (!xpubsMap.containsKey(account)) {
             String expub = new GetExtendedPublicKeyCallable(account.getPath()).call();
-            if (account == P2WSH) {
-                expub = ExtendPubkeyFormat.convertExtendPubkey(expub, ExtendPubkeyFormat.Zpub);
-            } else if (account == P2WSH_P2SH) {
-                expub = ExtendPubkeyFormat.convertExtendPubkey(expub, ExtendPubkeyFormat.Ypub);
-            }
-            xpubsMap.put(account, expub);
+            xpubsMap.put(account, convertXpub(expub,account));
         }
         return xpubsMap.get(account);
     }
@@ -256,7 +251,9 @@ public class MultiSigViewModel extends AndroidViewModel {
     public String getExportAllXpubInfo() {
         JSONObject object = new JSONObject();
         try {
-            MultiSig.Account[] accounts = new MultiSig.Account[] {P2WSH, P2WSH_P2SH, P2SH};
+            MultiSig.Account[] accounts = Utilities.isMainNet(getApplication()) ?
+                    new MultiSig.Account[] { P2WSH, P2WSH_P2SH, P2SH } :
+                    new MultiSig.Account[] { P2WSH_TEST, P2WSH_P2SH_TEST, P2SH_TEST } ;
             for (MultiSig.Account value : accounts) {
                 String format = value.getFormat().toLowerCase().replace("-", "_");
                 object.put(format + "_deriv", value.getPath());
@@ -280,9 +277,9 @@ public class MultiSigViewModel extends AndroidViewModel {
     public String getAddressTypeString(MultiSig.Account account) {
         int id = R.string.multi_sig_account_segwit;
 
-        if (account == P2WSH_P2SH) {
+        if (account == P2WSH_P2SH || account == P2WSH_P2SH_TEST) {
             id = R.string.multi_sig_account_p2sh;
-        } else if (account == P2SH) {
+        } else if (account == P2SH || account == P2SH_TEST) {
             id = R.string.multi_sig_account_legacy;
         }
 
@@ -344,15 +341,8 @@ public class MultiSigViewModel extends AndroidViewModel {
     }
 
     public static String convertXpub(String xpub, MultiSig.Account account) {
-        switch (account) {
-            case P2SH:
-                return ExtendPubkeyFormat.convertExtendPubkey(xpub,ExtendPubkeyFormat.xpub);
-            case P2WSH:
-                return ExtendPubkeyFormat.convertExtendPubkey(xpub,ExtendPubkeyFormat.Zpub);
-            case P2WSH_P2SH:
-                return ExtendPubkeyFormat.convertExtendPubkey(xpub,ExtendPubkeyFormat.Ypub);
-        }
-        return xpub;
+        ExtendPubkeyFormat format = ExtendPubkeyFormat.valueOf(account.getXpubPrefix());
+        return ExtendPubkeyFormat.convertExtendPubkey(xpub,format);
     }
 
     public void addAddress(String walletFingerprint, int number, int changeIndex) {
