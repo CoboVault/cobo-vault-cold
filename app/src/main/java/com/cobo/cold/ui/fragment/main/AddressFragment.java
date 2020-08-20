@@ -117,9 +117,7 @@ public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
         isChangeAddress = data.getBoolean(KEY_IS_CHANGE_ADDRESS);
         accountHdPath = Objects.requireNonNull(getAccount(mActivity)).getPath();
         Objects.requireNonNull(getParentFragment());
-        CoinViewModel.Factory factory = new CoinViewModel.Factory(mActivity.getApplication(),
-                data.getString(KEY_COIN_ID));
-        viewModel = ViewModelProviders.of(getParentFragment(), factory).get(CoinViewModel.class);
+        viewModel = ViewModelProviders.of(getParentFragment()).get(CoinViewModel.class);
         subscribeUi(viewModel.getAddress());
     }
 

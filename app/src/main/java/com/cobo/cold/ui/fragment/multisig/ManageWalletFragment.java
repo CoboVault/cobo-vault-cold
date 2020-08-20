@@ -38,7 +38,9 @@ import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 
@@ -59,6 +61,7 @@ public class ManageWalletFragment extends MultiSigBaseFragment<ManageWalletBindi
         adapter = new Adapter(mActivity);
         mBinding.list.setAdapter(adapter);
         viewModel.getAllMultiSigWallet().observe(this, multiSigWalletEntities -> {
+            multiSigWalletEntities = filterNetwork(multiSigWalletEntities);
             if (!multiSigWalletEntities.isEmpty()) {
                 adapter.setItems(multiSigWalletEntities);
                 mBinding.empty.setVisibility(View.GONE);
@@ -71,6 +74,13 @@ public class ManageWalletFragment extends MultiSigBaseFragment<ManageWalletBindi
             }
         });
         subscribeGetCurrentWallet();
+    }
+
+    private List<MultiSigWalletEntity> filterNetwork(List<MultiSigWalletEntity> multiSigWalletEntities) {
+        String netmode = Utilities.isMainNet(mActivity) ? "main" : "testnet";
+        return multiSigWalletEntities.stream()
+                .filter(w->w.getNetwork().equals(netmode))
+                .collect(Collectors.toList());
     }
 
     private void subscribeGetCurrentWallet() {

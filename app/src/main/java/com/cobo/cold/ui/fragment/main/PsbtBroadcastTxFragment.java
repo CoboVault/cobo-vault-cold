@@ -41,7 +41,6 @@ import static com.cobo.cold.viewmodel.WatchWallet.PSBT_MULTISIG_SIGN_ID;
 public class PsbtBroadcastTxFragment extends BaseFragment<BroadcastPsbtTxFragmentBinding> {
 
     public static final String KEY_TXID = "txId";
-    private View.OnClickListener goHome;
     private TxEntity txEntity;
     private boolean isMultisig;
     private boolean signed;
@@ -66,6 +65,7 @@ public class PsbtBroadcastTxFragment extends BaseFragment<BroadcastPsbtTxFragmen
     }
 
     private void updateUI() {
+        View.OnClickListener goHome;
         if(isMultisig) {
             goHome = v-> popBackStack(R.id.multisigFragment,false);
             mBinding.toolbarTitle.setText(getString(R.string.export_tx));

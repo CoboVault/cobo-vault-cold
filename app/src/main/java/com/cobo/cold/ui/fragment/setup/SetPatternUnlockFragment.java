@@ -50,7 +50,6 @@ public class SetPatternUnlockFragment extends BaseFragment<SetPatternUnlockBindi
     private int stage = STAGE_1;
     private String patternStr;
 
-    private boolean isSetupVault;
     private final PatternLockViewListener mListener = new PatternLockViewListener() {
         @Override
         public void onStarted() {
@@ -133,7 +132,7 @@ public class SetPatternUnlockFragment extends BaseFragment<SetPatternUnlockBindi
     protected void init(View view) {
 
         Bundle data = getArguments();
-        isSetupVault = data != null && data.getBoolean(IS_SETUP_VAULT);
+        boolean isSetupVault = data != null && data.getBoolean(IS_SETUP_VAULT);
         if (isSetupVault) {
             mBinding.toolbar.setVisibility(View.GONE);
             mBinding.divider.setVisibility(View.GONE);

@@ -20,20 +20,18 @@ package com.cobo.cold.viewmodel;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.ObservableField;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.cobo.coinlib.exception.InvalidPathException;
 import com.cobo.coinlib.path.AddressIndex;
 import com.cobo.coinlib.path.CoinPath;
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.db.entity.AddressEntity;
-import com.cobo.cold.db.entity.CoinEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,16 +39,10 @@ import java.util.stream.Collectors;
 public class CoinViewModel extends AndroidViewModel {
 
     private final DataRepository mRepository;
-    private static LiveData<CoinEntity> mObservableCoin;
-    private final LiveData<List<AddressEntity>> mObservableAddress;
-    public final ObservableField<CoinEntity> coin = new ObservableField<>();
 
-    private CoinViewModel(@NonNull Application application,final String coinId) {
+    public CoinViewModel(@NonNull Application application) {
         super(application);
         mRepository = ((MainApplication)application).getRepository();
-        mObservableCoin = mRepository.loadCoin(coinId);
-        mObservableAddress = mRepository.loadAddress(coinId);
-
     }
 
     public List<AddressEntity> filterChangeAddress(List<AddressEntity> addressEntities) {
@@ -81,38 +73,13 @@ public class CoinViewModel extends AndroidViewModel {
         }
         return false;
     }
-    public LiveData<CoinEntity> getObservableCoin() {
-        return mObservableCoin;
-    }
 
     public LiveData<List<AddressEntity>> getAddress() {
-        return mObservableAddress;
-    }
-
-    public void setCoin(CoinEntity coin) {
-        this.coin.set(coin);
+        return mRepository.loadAddress(Utilities.isMainNet(getApplication()) ?
+                        Coins.BTC.coinId() : Coins.XTN.coinId());
     }
 
     public void updateAddress(AddressEntity addr) {
         AppExecutors.getInstance().diskIO().execute(() -> mRepository.updateAddress(addr));
-    }
-
-    public static class Factory extends ViewModelProvider.NewInstanceFactory {
-        @NonNull
-        private final Application mApplication;
-
-        private final String mCoinId;
-
-        public Factory(@NonNull Application application, String coinId) {
-            mApplication = application;
-            mCoinId = coinId;
-        }
-
-        @NonNull
-        @Override
-        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            //noinspection unchecked
-            return (T) new CoinViewModel(mApplication, mCoinId);
-        }
     }
 }

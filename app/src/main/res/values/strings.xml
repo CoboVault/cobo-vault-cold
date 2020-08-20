@@ -678,4 +678,5 @@
     <string name="check_successful">Check Successful</string>
     <string name="check_successful_hint">The entered recovery phrase matched the one in the Cobo Vault.</string>
     <string name="notice">Error</string>
+    <string name="import_failed_network_not_match">The current blockchain network is %s, and the wallet to be imported is %s. You need to switch the blockchain network to %s first (Menu > Settings > Blockchain)</string>
 </resources>

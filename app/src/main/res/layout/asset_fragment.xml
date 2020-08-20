@@ -24,10 +24,6 @@
         <variable
             name="query"
             type="androidx.databinding.ObservableField&lt;String>" />
-
-        <variable
-            name="coinViewModel"
-            type="com.cobo.cold.viewmodel.CoinViewModel" />
     </data>
 
     <RelativeLayout

@@ -126,7 +126,7 @@ public class MultisigWalletInfoFragment extends MultiSigBaseFragment<MultisigWal
         return builder.toString();
     }
 
-    static String getXpub(MultiSigWalletEntity wallet) {
+    private static String getXpub(MultiSigWalletEntity wallet) {
         StringBuilder builder = new StringBuilder();
         try {
             JSONArray array = new JSONArray(wallet.getExPubs());

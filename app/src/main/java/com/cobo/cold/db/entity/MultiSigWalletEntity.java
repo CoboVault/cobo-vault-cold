@@ -141,8 +141,8 @@ public class MultiSigWalletEntity {
         this.network = network;
     }
 
-    public String deriveAddress(int[] index) {
-        Deriver deriver = new Deriver(true);
+    public String deriveAddress(int[] index, boolean isMainnet) {
+        Deriver deriver = new Deriver(isMainnet);
         List<String> xpubList = new ArrayList<>();
         try {
             JSONArray jsonArray = new JSONArray(getExPubs());
@@ -152,10 +152,9 @@ public class MultiSigWalletEntity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String address = deriver.deriveMultiSigAddress(getThreshold(),
+        return deriver.deriveMultiSigAddress(getThreshold(),
                 xpubList, new int[] {index[0], index[1]},
                 MultiSig.Account.ofPath(getExPubPath()));
-        return address;
     }
 
     @Override

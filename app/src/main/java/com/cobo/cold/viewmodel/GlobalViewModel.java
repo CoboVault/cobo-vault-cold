@@ -31,10 +31,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.coins.BTC.Btc;
 import com.cobo.coinlib.coins.BTC.Deriver;
-import com.cobo.coinlib.exception.InvalidPathException;
-import com.cobo.coinlib.path.Account;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.BuildConfig;
@@ -60,8 +59,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
-import static com.cobo.coinlib.ExtendPubkeyFormat.ypub;
-import static com.cobo.coinlib.ExtendPubkeyFormat.zpub;
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_ADDRESS_FORMAT;
 
 public class GlobalViewModel extends AndroidViewModel {
@@ -175,21 +172,9 @@ public class GlobalViewModel extends AndroidViewModel {
             ExpubInfo expubInfo = new ExpubInfo().getExPubInfo();
             String hdPath = expubInfo.getHdPath();
             String extPub = expubInfo.getExpub();
-            try {
-                Account account = Account.parseAccount(hdPath);
-                if (account.getParent().getParent().getValue() == 49
-                        && extPub.startsWith("xpub")) {
-                    exPub.postValue(convertExtendPubkey(extPub, ypub));
-                } else if (extPub.startsWith("ypub")) {
-                    exPub.postValue(extPub);
-                } else if (account.getParent().getParent().getValue() == 84
-                        && extPub.startsWith("xpub")) {
-                    exPub.postValue(convertExtendPubkey(extPub, zpub));
-                }
-            } catch (InvalidPathException e) {
-                e.printStackTrace();
-            }
-
+            Coins.Account account = Coins.Account.ofPath(hdPath);
+            exPub.postValue(convertExtendPubkey(extPub,
+                    ExtendPubkeyFormat.valueOf(account.getXpubPrefix())));
         });
         return exPub;
     }
@@ -275,7 +260,6 @@ public class GlobalViewModel extends AndroidViewModel {
                     accountEntity = entity;
                     hdPath = entity.getHdPath();
                     expub = entity.getExPub();
-
                 }
             }
             return this;

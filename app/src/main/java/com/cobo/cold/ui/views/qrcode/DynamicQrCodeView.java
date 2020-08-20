@@ -20,7 +20,6 @@ package com.cobo.cold.ui.views.qrcode;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.telecom.Log;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;

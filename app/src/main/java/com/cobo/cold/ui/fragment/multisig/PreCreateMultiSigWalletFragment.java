@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.AddAddressBottomSheetBinding;
 import com.cobo.cold.databinding.PreCreateMultisigWalletBinding;
 import com.cobo.cold.ui.fragment.main.NumberPickerCallback;
@@ -43,7 +44,8 @@ public class PreCreateMultiSigWalletFragment extends MultiSigBaseFragment<PreCre
     private int total = 3;
     private int threshold = 2;
     private int accountValue = 0;
-    private MultiSig.Account account = MultiSig.Account.P2WSH;
+    private MultiSig.Account account;
+    private MultiSig.Account[] accounts;
     private State state = State.STATE_NONE;
 
     enum State {
@@ -65,6 +67,11 @@ public class PreCreateMultiSigWalletFragment extends MultiSigBaseFragment<PreCre
         mBinding.threshold.setOnClickListener(v -> selectCosignerNumber());
         mBinding.addressType.setOnClickListener(v -> selectAddressType());
         mBinding.confirm.setOnClickListener(v -> onConfirm());
+        accounts = Utilities.isMainNet(mActivity) ?
+                new MultiSig.Account[] {MultiSig.Account.P2WSH, MultiSig.Account.P2WSH_P2SH, MultiSig.Account.P2SH }
+                :
+                new MultiSig.Account[] {MultiSig.Account.P2WSH_TEST,MultiSig.Account.P2WSH_P2SH_TEST, MultiSig.Account.P2SH_TEST };
+        account = accounts[0];
         updateUI();
     }
 
@@ -151,7 +158,7 @@ public class PreCreateMultiSigWalletFragment extends MultiSigBaseFragment<PreCre
             threshold = value;
         } else if(state == State.STATE3) {
             accountValue = value;
-            account = MultiSig.Account.values()[value];
+            account = accounts[value];
         }
         threshold = Math.min(threshold, total);
         state = State.STATE_NONE;

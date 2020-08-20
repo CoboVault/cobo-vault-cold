@@ -64,12 +64,10 @@ public class QrScanViewModel extends AndroidViewModel {
 
     private final boolean isSetupVault;
     private QRCodeScanFragment fragment;
-    private final DataRepository repository;
 
     private QrScanViewModel(@NonNull Application application, DataRepository repository, boolean isSetupVault) {
         super(application);
         this.isSetupVault = isSetupVault;
-        this.repository = repository;
         repository.loadCoins();
     }
 

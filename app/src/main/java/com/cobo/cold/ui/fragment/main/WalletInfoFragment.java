@@ -32,8 +32,6 @@ import com.cobo.cold.viewmodel.GlobalViewModel;
 import com.cobo.cold.viewmodel.WalletInfoViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
-import static com.cobo.coinlib.ExtendPubkeyFormat.convertExtendPubkey;
-import static com.cobo.coinlib.ExtendPubkeyFormat.zpub;
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
 import static com.cobo.cold.ui.fragment.setup.SelectAddressFormatFragment.KEY_NEED_CONFIRM;
 import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
@@ -70,24 +68,23 @@ public class WalletInfoFragment extends BaseFragment<WalletInfoBinding> {
 
         viewModel.getXpub(account).observe(this, xpub -> {
             if (!TextUtils.isEmpty(xpub)) {
-                if (watchWallet == WatchWallet.BLUE) {
-                    xpub = convertExtendPubkey(xpub, zpub);
-                } else if(watchWallet == WatchWallet.ELECTRUM) {
-                    xpub = convertExtendPubkey(xpub, ExtendPubkeyFormat.xpub);
-                }
+                xpub = ExtendPubkeyFormat.convertExtendPubkey(xpub,
+                        ExtendPubkeyFormat.valueOf(account.getXpubPrefix()));
                 mBinding.xpub.setText(xpub);
             }
         });
-
     }
 
     private String getAddressFormat() {
         switch (account) {
             case SegWit:
+            case SegWit_TESTNET:
                 return getString(R.string.native_segwit);
             case P2PKH:
+            case P2PKH_TESTNET:
                 return getString(R.string.p2pkh);
             case P2SH:
+            case P2SH_TESTNET:
                 return getString(R.string.nested_segwit);
         }
         return "";

@@ -48,7 +48,6 @@ import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.viewmodel.AddAddressViewModel;
-import com.cobo.cold.viewmodel.CoinViewModel;
 import com.cobo.cold.viewmodel.SetupVaultViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -152,11 +151,6 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        CoinViewModel.Factory factory = new CoinViewModel.Factory(mActivity.getApplication(), coinId);
-        CoinViewModel viewModel = ViewModelProviders.of(this, factory)
-                .get(CoinViewModel.class);
-        mBinding.setCoinViewModel(viewModel);
-        subscribeUi(viewModel);
         checkAndAddNewCoins();
     }
 
@@ -167,10 +161,6 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 -> viewModel.presetData(PresetData.generateCoins(mActivity), null)
         );
 
-    }
-
-    private void subscribeUi(CoinViewModel viewModel) {
-        viewModel.getObservableCoin().observe(this, viewModel::setCoin);
     }
 
     @Override

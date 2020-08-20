@@ -39,14 +39,8 @@ import com.cobo.cold.databinding.UpdatingBinding;
 import com.cobo.cold.encryptioncore.utils.Preconditions;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.data.UpdateManifest;
-import com.cobo.cold.update.utils.FileUtils;
-import com.cobo.cold.update.utils.Storage;
-import com.cobo.cold.util.HashUtil;
 import com.cobo.cold.viewmodel.UpdatingViewModel;
 
-import org.spongycastle.util.encoders.Hex;
-
-import java.io.File;
 import java.util.Objects;
 
 import static android.content.Context.BATTERY_SERVICE;

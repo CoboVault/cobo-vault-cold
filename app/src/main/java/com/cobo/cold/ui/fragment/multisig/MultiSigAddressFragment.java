@@ -94,7 +94,7 @@ public class MultiSigAddressFragment extends MultiSigBaseFragment<AddressFragmen
         loadAddress(walletFingerprint);
     }
 
-    public void loadAddress(String walletFingerprint) {
+    void loadAddress(String walletFingerprint) {
         if (address != null) {
             address.removeObservers(this);
             address = null;
@@ -132,7 +132,7 @@ class AddressAdapter extends BaseBindingAdapter<MultiSigAddressEntity, MultisigA
 
     private final AddressClickCallback mAddressCallback;
 
-    public AddressAdapter(Context context, AddressClickCallback callback) {
+    AddressAdapter(Context context, AddressClickCallback callback) {
         super(context);
         mAddressCallback = callback;
 
