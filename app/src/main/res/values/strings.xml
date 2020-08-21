@@ -83,8 +83,8 @@
     </string-array>
 
     <string-array name="network_entries">
-        <item>主网</item>
-        <item>测试网</item>
+        <item>Main Net</item>
+        <item>Test Net</item>
     </string-array>
 
     <string-array name="network_values" translatable="false">
@@ -542,9 +542,8 @@
     <string name="clear_and_power_off">Erase all Information and Power off</string>
     <string name="btcpay_scan_hint">BTCPay Server does not support exporting transactions by QR code. Please export transactions using microSD.</string>
     <string name="network">Blockchain</string>
-    <string name="testnet_hint">The testnet currently only supports Electrum</string>
     <string name="select_network">Select Blockchain</string>
-    <string name="test_net">TestNet</string>
+    <string name="test_net">Test Net</string>
     <string name="no_multisig_wallet">No Multisig Wallet</string>
     <string name="create_multisig_wallet_hint"><![CDATA[
      You need to create or import a multisig wallet before signing transactions with this wallet.<br><br>
@@ -621,8 +620,8 @@
     <string name="import_multisig_wallet_fail_hint">This multisig wallet doesn\'t contain the current vault.</string>
     <string name="invalid_multisig_wallet">Not Multisig Wallet</string>
     <string name="invalid_multisig_wallet_hint">This QR Code is not multisig wallet, can\'t import.</string>
-    <string name="mainnet">MainNet</string>
-    <string name="testnet">TestNet</string>
+    <string name="mainnet">Main Net</string>
+    <string name="testnet">Test Net</string>
     <string name="export_multisig_xpub">Export XPUB</string>
     <string name="export_multisig_to_cosigner">Export wallet to cosigners</string>
     <string name="please_check_multisig_wallet_info">Check the Wallet Info</string>

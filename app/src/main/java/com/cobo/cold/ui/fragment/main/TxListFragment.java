@@ -98,6 +98,7 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         txs.observe(this, txEntities -> {
             if (!multisig) {
                 txEntities = txEntities.stream()
+                        .filter(this::filterSingleSig)
                         .filter(this::shouldShow)
                         .filter(this::filterByMode)
                         .sorted((o1, o2) -> (int) (o1.getTimeStamp() - o2.getTimeStamp()))
@@ -105,7 +106,6 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
             } else {
                 Collections.reverse(txEntities);
             }
-
 
             if (txEntities.isEmpty()) {
                 showEmpty(true);
@@ -144,11 +144,12 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
     private boolean filterByMode(TxEntity txEntity) {
         WatchWallet watchWallet = getWatchWallet(mActivity);
         if (watchWallet == WatchWallet.COBO) {
-            return !txEntity.getSignId().endsWith("_sign_id");
+            return !txEntity.getSignId().contains("_sign_id")
+                    && !txEntity.getSignId().contains(PSBT_MULTISIG_SIGN_ID);
         } else {
             if (watchWallet == ELECTRUM) {
                 Coins.Account account = getAccount(mActivity);
-                if (account == Coins.Account.SegWit) {
+                if (account == Coins.Account.SegWit || account == Coins.Account.SegWit_TESTNET) {
                     return watchWallet.getSignId().equals(txEntity.getSignId()+"_NATIVE_SEGWIT");
                 } else {
                     return watchWallet.getSignId().equals(txEntity.getSignId());
@@ -161,6 +162,10 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
 
     private boolean shouldShow(TxEntity tx) {
         return Utilities.getCurrentBelongTo(mActivity).equals(tx.getBelongTo());
+    }
+
+    private boolean filterSingleSig(TxEntity txEntity) {
+        return TextUtils.isEmpty(txEntity.getSignStatus());
     }
 
     @Override
@@ -192,7 +197,6 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
 
         }
     }
-
 }
 
 
