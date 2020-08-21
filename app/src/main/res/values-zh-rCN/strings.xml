@@ -491,7 +491,6 @@
     <string name="clear_and_power_off">删除所有信息并关机</string>
     <string name="btcpay_scan_hint">BTCPay Server 暂不支持将交易导成二维码，您可将待签交易导出成文件</string>
     <string name="network">区块链网络</string>
-    <string name="testnet_hint">测试网暂时只支持Electrum</string>
     <string name="select_network">选择区块链网络</string>
     <string name="test_net">测试网</string>
     <string name="no_multisig_wallet">暂无多签钱包</string>
@@ -626,4 +625,8 @@
     <string name="check_successful_hint">输入的助记词和当前金库的助记词一致。</string>
     <string name="notice">提示</string>
     <string name="import_failed_network_not_match">当前设置的区块链网络为%s，要导入的钱包为%s，您需先切换区块链网络为%s（菜单—设置—区块链网络）</string>
+    <string-array name="network_entries">
+        <item>主网</item>
+        <item>测试网</item>
+    </string-array>
 </resources>

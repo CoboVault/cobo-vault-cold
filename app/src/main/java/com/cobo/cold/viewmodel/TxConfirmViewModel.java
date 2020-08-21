@@ -295,7 +295,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         Coins.Account account = getAccount(getApplication());
         WatchWallet wallet = WatchWallet.getWatchWallet(getApplication());
         String signId = WatchWallet.getWatchWallet(getApplication()).getSignId();
-        if (account == Coins.Account.SegWit && wallet == ELECTRUM) {
+        if ((account == Coins.Account.SegWit || account == Coins.Account.SegWit_TESTNET) && wallet == ELECTRUM) {
             signId += "_NATIVE_SEGWIT";
         }
         boolean isMultisig = adaptTx.optBoolean("multisig");
