@@ -35,6 +35,7 @@ import com.cobo.cold.MainApplication;
 import com.cobo.cold.callables.GetExtendedPublicKeyCallable;
 import com.cobo.cold.callables.GetRandomEntropyCallable;
 import com.cobo.cold.callables.GetVaultIdCallable;
+import com.cobo.cold.callables.RestartSeCallable;
 import com.cobo.cold.callables.UpdatePassphraseCallable;
 import com.cobo.cold.callables.WebAuthCallable;
 import com.cobo.cold.callables.WriteMnemonicCallable;
@@ -140,12 +141,19 @@ public class SetupVaultViewModel extends AndroidViewModel {
     public void updatePassphrase(String passphrase) {
         AppExecutors.getInstance().diskIO().execute(() -> {
             vaultCreateState.postValue(VAULT_STATE_CREATING);
-            if (new UpdatePassphraseCallable(passphrase, password, signature).call()) {
+            boolean success;
+            if (TextUtils.isEmpty(passphrase)) {
+                success = new RestartSeCallable().call();
+            } else {
+                success = new UpdatePassphraseCallable(passphrase, password, signature).call();
+            }
+
+            if (success) {
                 vaultId = new GetVaultIdCallable().call();
                 deleteHiddenVaultData();
-                vaultCreateState.postValue(VAULT_STATE_CREATED);
                 password = null;
                 signature = null;
+                vaultCreateState.postValue(VAULT_STATE_CREATED);
             } else {
                 vaultCreateState.postValue(VAULT_STATE_CREATING_FAILED);
             }

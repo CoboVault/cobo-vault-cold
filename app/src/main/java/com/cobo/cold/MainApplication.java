@@ -30,6 +30,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.cobo.coinlib.v8.ScriptLoader;
+import com.cobo.cold.callables.RestartSeCallable;
 import com.cobo.cold.db.AppDatabase;
 import com.cobo.cold.encryption.EncryptionCoreProvider;
 import com.cobo.cold.logging.FileLogger;
@@ -78,6 +79,21 @@ public class MainApplication extends Application {
 
         startAttackCheckingService();
         resetInputMethodSettings();
+        RestartSe();
+    }
+
+    private void RestartSe() {
+        if (Utilities.hasVaultCreated(this) &&
+                !Utilities.getLegacyBelongTo(this).equals("hidden")) {
+            mAppExecutors.diskIO().execute(() -> {
+                boolean success = new RestartSeCallable().call();
+                if (success) {
+                    getRepository().deleteHiddenVaultData();
+                    Utilities.setCurrentBelongTo(this, "main");
+                }
+            });
+        }
+
     }
 
     private void resetInputMethodSettings() {
