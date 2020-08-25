@@ -25,6 +25,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -39,15 +40,22 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.cobo.cold.AppExecutors;
+import com.cobo.cold.MainApplication;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.callables.UpdatePassphraseCallable;
 import com.cobo.cold.databinding.ActivityMainBinding;
+import com.cobo.cold.databinding.CommonModalBinding;
+import com.cobo.cold.databinding.CreateVaultModalBinding;
 import com.cobo.cold.fingerprint.FingerprintKit;
 import com.cobo.cold.ui.common.FullScreenActivity;
 import com.cobo.cold.ui.fragment.AboutFragment;
 import com.cobo.cold.ui.fragment.main.AssetFragment;
 import com.cobo.cold.ui.fragment.multisig.MultisigMainFragment;
 import com.cobo.cold.ui.fragment.setting.SettingFragment;
+import com.cobo.cold.ui.modal.ModalDialog;
+import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.ui.views.DrawerAdapter;
 import com.cobo.cold.ui.views.FullScreenDrawer;
 import com.cobo.cold.ui.views.UpdatingHelper;
@@ -59,6 +67,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.restartApplication;
 
 public class MainActivity extends FullScreenActivity {
 
@@ -86,10 +96,17 @@ public class MainActivity extends FullScreenActivity {
         initNavController();
         belongTo = Utilities.getCurrentBelongTo(this);
         vaultId = Utilities.getVaultId(this);
-        if (savedInstanceState == null) {
-            new UpdatingHelper(this);
+
+        if (Utilities.getLegacyBelongTo(this).equals("hidden")) {
+            notice(getString(R.string.notice1),
+                    getString(R.string.default_vault_notice),
+                    getString(R.string.confirm), this::requestPassword);
+        } else {
+            if (savedInstanceState == null) {
+                new UpdatingHelper(this);
+            }
+            ViewModelProviders.of(this).get(GlobalViewModel.class);
         }
-        ViewModelProviders.of(this).get(GlobalViewModel.class);
     }
 
     private void initNavController() {
@@ -285,5 +302,52 @@ public class MainActivity extends FullScreenActivity {
         mMainFragments.put(R.id.drawer_multisig, MultisigMainFragment.TAG);
         mMainFragments.put(R.id.drawer_settings, SettingFragment.TAG);
         mMainFragments.put(R.id.drawer_about, AboutFragment.TAG);
+    }
+
+    private void requestPassword() {
+        AuthenticateModal.show(this, getString(R.string.password_modal_title), "",
+                token -> {
+                    ModalDialog dialog = showProgress();
+                    AppExecutors.getInstance().diskIO().execute(() -> {
+                        boolean success = new UpdatePassphraseCallable("", token.password, "").call();
+                        dialog.dismiss();
+                        if (success) {
+                            ((MainApplication) getApplication()).getRepository().deleteHiddenVaultData();
+                            Utilities.setLegacyBelongTo(this, "main");
+                            restartApplication(this);
+                        }
+                    });
+                }, null);
+    }
+
+    public void notice(
+            String title,
+            String subTitle,
+            String buttonText,
+            Runnable confirmAction) {
+        ModalDialog dialog = new ModalDialog();
+        CommonModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(this),
+                R.layout.common_modal, null, false);
+        binding.title.setText(title);
+        binding.subTitle.setText(subTitle);
+        binding.close.setVisibility(View.GONE);
+        binding.confirm.setText(buttonText);
+        binding.confirm.setOnClickListener(v -> {
+            if (confirmAction != null) {
+                confirmAction.run();
+            }
+        });
+        dialog.setBinding(binding);
+        dialog.show(getSupportFragmentManager(), "");
+    }
+
+    public ModalDialog showProgress() {
+        CreateVaultModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(this),
+                R.layout.create_vault_modal, null, false);
+        ModalDialog dialog = ModalDialog.newInstance();
+        dialog.setBinding(binding);
+        dialog.show(getSupportFragmentManager(), "");
+        binding.text.setText(R.string.switching_to_main_vault);
+        return dialog;
     }
 }

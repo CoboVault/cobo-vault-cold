@@ -213,7 +213,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         tx.setFrom(getFromAddress());
         tx.setTo(getToAddress());
         tx.setAmount(nf.format(transaction.getAmount()) + " " + transaction.getUnit());
-        tx.setFee(nf.format(transaction.getFee()) + " " + coinCode);
+        tx.setFee(nf.format(transaction.getFee()) + " BTC");
         tx.setMemo(transaction.getMemo());
         tx.setBelongTo(mRepository.getBelongTo());
         return tx;
@@ -232,7 +232,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         tx.setFrom(getMultiSigFromAddress());
         tx.setTo(getToAddress());
         tx.setAmount(nf.format(transaction.getAmount()) + " " + transaction.getUnit());
-        tx.setFee(nf.format(transaction.getFee()) + " " + coinCode);
+        tx.setFee(nf.format(transaction.getFee()) + " BTC");
         tx.setMemo(transaction.getMemo());
         tx.setBelongTo(wallet.getWalletFingerPrint());
         String signStatus = null;

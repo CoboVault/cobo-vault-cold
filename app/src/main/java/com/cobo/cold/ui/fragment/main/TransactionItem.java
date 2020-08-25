@@ -42,7 +42,7 @@ public class TransactionItem {
         double value = satoshi / Math.pow(10, 8);
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(20);
-        return nf.format(value) + " " + coinCode;
+        return nf.format(value) + " BTC";
     }
 
     public int getId() {

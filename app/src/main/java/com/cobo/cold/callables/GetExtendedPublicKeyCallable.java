@@ -18,6 +18,8 @@
 package com.cobo.cold.callables;
 
 import com.cobo.coinlib.utils.Coins;
+import com.cobo.cold.MainApplication;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.encryption.interfaces.CONSTANTS;
 import com.cobo.cold.encryptioncore.base.Packet;
 import com.cobo.cold.encryptioncore.base.Payload;
@@ -29,9 +31,11 @@ import static com.cobo.coinlib.utils.Coins.CURVE.SECP256K1;
 public class GetExtendedPublicKeyCallable implements Callable<String> {
     private final String pubKeyPath;
     private final Coins.CURVE curve = SECP256K1;
+    private final boolean isMainWallet;
 
     public GetExtendedPublicKeyCallable(String pubKeyPath) {
         this.pubKeyPath = pubKeyPath;
+        isMainWallet = Utilities.getCurrentBelongTo(MainApplication.getApplication()).equals("main");
     }
 
     @Override
@@ -39,6 +43,7 @@ public class GetExtendedPublicKeyCallable implements Callable<String> {
         final Callable<Packet> callable = new BlockingCallable(
                 new Packet.Builder(CONSTANTS.METHODS.GET_EXTENDED_PUBLICKEY)
                         .addBytePayload(CONSTANTS.TAGS.CURVE, getCurveTag())
+                        .addBytePayload(CONSTANTS.TAGS.WALLET_FLAG, isMainWallet? 0 : 0x50)
                         .addTextPayload(CONSTANTS.TAGS.PATH, pubKeyPath.toUpperCase()).build());
         final Packet result;
         try {

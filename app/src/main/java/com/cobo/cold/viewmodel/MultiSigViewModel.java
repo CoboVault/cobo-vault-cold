@@ -432,7 +432,7 @@ public class MultiSigViewModel extends AndroidViewModel {
                 multisigAddress.setPath(wallet.getExPubPath()+"/"+changeIndex+"/"+(addressCount + i));
                 multisigAddress.setAddress(addr);
                 multisigAddress.setIndex(i + addressCount);
-                multisigAddress.setName((isMainNet? "BTC" : "XTN")+ "-" + (i + addressCount));
+                multisigAddress.setName("BTC-" + (i + addressCount));
                 multisigAddress.setWalletFingerPrint(walletFingerprint);
                 multisigAddress.setChangeIndex(changeIndex);
                 entities.add(multisigAddress);
