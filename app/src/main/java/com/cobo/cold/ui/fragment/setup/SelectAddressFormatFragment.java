@@ -25,6 +25,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
 import com.cobo.cold.ui.fragment.setting.ListPreferenceFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
@@ -45,6 +46,9 @@ public class SelectAddressFormatFragment extends ListPreferenceFragment {
             needConfirm = data.getBoolean(KEY_NEED_CONFIRM);
         }
         subTitles = getResources().getStringArray(R.array.address_format_subtitle);
+        if (!Utilities.isMainNet(mActivity)) {
+            subTitles = getResources().getStringArray(R.array.address_format_subtitle_testnet);
+        }
         mBinding.confirm.setVisibility(View.VISIBLE);
         mBinding.confirm.setText(R.string.next);
         mBinding.confirm.setOnClickListener(v -> next());

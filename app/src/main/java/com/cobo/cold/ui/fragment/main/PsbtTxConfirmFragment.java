@@ -134,7 +134,11 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
 
     protected void onSignSuccess() {
         WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
-        if (wallet == WatchWallet.ELECTRUM) {
+        if (multisig || wallet == WatchWallet.BLUE || wallet == WatchWallet.GENERIC) {
+            Bundle data = new Bundle();
+            data.putString(KEY_TXID, viewModel.getTxId());
+            navigate(R.id.action_to_psbt_broadcast, data);
+        } else if (wallet == WatchWallet.ELECTRUM) {
             String base43 = Base43.encode(Base64.decode(viewModel.getTxHex()));
             if (base43.length() <= 1000) {
                 String txId = viewModel.getTxId();
@@ -142,26 +146,12 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
                 data.putString(BroadcastTxFragment.KEY_TXID, txId);
                 navigate(R.id.action_to_broadcastElectrumTxFragment, data);
             } else {
-                showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), () -> {
-                            if (multisig) {
-                                popBackStack(R.id.multisigFragment, false);
-                            } else {
-                                popBackStack(R.id.assetFragment, false);
-                            }
-                        });
+                showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(),
+                        () -> popBackStack(R.id.assetFragment, false));
             }
-        } else if (multisig || wallet == WatchWallet.BLUE || wallet == WatchWallet.GENERIC) {
-            Bundle data = new Bundle();
-            data.putString(KEY_TXID, viewModel.getTxId());
-            navigate(R.id.action_to_psbt_broadcast, data);
         } else {
-            showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(), () -> {
-                if (multisig) {
-                    popBackStack(R.id.multisigFragment, false);
-                } else {
-                    popBackStack(R.id.assetFragment, false);
-                }
-            });
+            showExportPsbtDialog(mActivity, viewModel.getSignedTxEntity(),
+                    () -> popBackStack(R.id.assetFragment, false));
         }
         viewModel.getSignState().removeObservers(this);
     }
