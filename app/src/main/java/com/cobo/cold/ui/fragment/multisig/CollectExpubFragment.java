@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.CollectExpubBinding;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.XpubFileItemBinding;
@@ -136,7 +137,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
         total = bundle.getInt("total");
         threshold = bundle.getInt("threshold");
         path = bundle.getString("path");
-        account = MultiSig.Account.ofPath(path);
+        account = MultiSig.Account.ofPath(path, !Utilities.isMainNet(mActivity));
     }
 
     private String getAddressTypeString(MultiSig.Account account) {
