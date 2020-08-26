@@ -90,6 +90,7 @@ public class PsbtBroadcastTxFragment extends BaseFragment<BroadcastPsbtTxFragmen
             } else {
                 mBinding.exportToSdcard.setVisibility(View.GONE);
             }
+            mBinding.signStatus.setVisibility(View.GONE);
             mBinding.scanHint.setText(getString(R.string.use_wallet_to_broadcast,
                     WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
         }

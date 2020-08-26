@@ -121,6 +121,11 @@
         <item><![CDATA[eg. <font color="#00cdc3">bc1<font/>qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu]]></item>
     </string-array>
 
+    <string-array name="address_format_subtitle_testnet">
+        <item><![CDATA[eg. <font color="#00cdc3">2<font/>7VucYSaXLCAsxYyAPfbSi9eh4iEcbShgf]]></item>
+        <item><![CDATA[eg. <font color="#00cdc3">tb1<font/>qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu]]></item>
+    </string-array>
+
     <string-array name="address_format_value" translatable="false">
         <item>P2WPKH-P2SH</item>
         <item>P2WPKH</item>

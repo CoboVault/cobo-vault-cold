@@ -476,6 +476,11 @@
         <item><![CDATA[举例：<font color="#00cdc3">bc1<font/>qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu]]></item>
     </string-array>
 
+    <string-array name="address_format_subtitle_testnet">
+        <item><![CDATA[举例：<font color="#00cdc3">2<font/>7VucYSaXLCAsxYyAPfbSi9eh4iEcbShgf]]></item>
+        <item><![CDATA[举例：<font color="#00cdc3">tb1<font/>qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu]]></item>
+    </string-array>
+
     <string name="abnormal_tx">异常交易</string>
     <string name="fee_attack_warning">检测到该笔交易存在费用超付攻击风险，禁止对其签名，您可前往：https://cobo.com/hardware-wallet/fee-attack 了解详情，您也可邮件联系客服：support@cobo.com</string>
     <string name="already_signed">检测到您已对该笔交易签名，您可直接广播该交易</string>

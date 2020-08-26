@@ -68,7 +68,7 @@ public class StatusBarView extends LinearLayout {
     private void updateBg() {
         boolean isMainNet = Utilities.isMainNet(getContext());
         if (!isMainNet) {
-            setBackgroundColor(Color.parseColor("#FF0000"));
+            setBackgroundColor(Color.parseColor("#FFC700"));
             findViewById(R.id.text).setVisibility(VISIBLE);
             ((TextView)findViewById(R.id.text)).setText(R.string.test_net);
         } else {
