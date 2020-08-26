@@ -51,6 +51,7 @@ public abstract class BASECONSTANTS {
         int REGISTER_PUBLIC_KEY = 0x0906;
         int VERIFY_FINGERPRINT = 0x0907;
         int CLEAR_TOKEN = 0x0908;
+        int RESTART_SE = 0x0108;
     }
 
     public interface TAGS {
@@ -93,6 +94,7 @@ public abstract class BASECONSTANTS {
         int ACCESS_MODE = 0x0701;
         int FINGERPRINT_POLICY_TYPE = 0x0408;
         int FINGERPRINT_POLICY_VALUE = 0x0409;
+        int WALLET_FLAG = 0x0210;
     }
 
     public interface VALS {

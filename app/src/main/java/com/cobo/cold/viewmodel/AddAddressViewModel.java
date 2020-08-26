@@ -138,7 +138,7 @@ public class AddAddressViewModel extends AndroidViewModel {
                 addressEntity.setAddressString(addr);
                 addressEntity.setCoinId(coinEntity.getCoinId());
                 addressEntity.setIndex(i + addressCount);
-                addressEntity.setName(coinEntity.getCoinCode() + "-" + (i + addressCount));
+                addressEntity.setName("BTC-" + (i + addressCount));
                 addressEntity.setBelongTo(coinEntity.getBelongTo());
                 entities.add(addressEntity);
             }

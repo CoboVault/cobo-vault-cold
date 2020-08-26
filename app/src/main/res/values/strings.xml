@@ -63,8 +63,8 @@
     <string name="scan_progress">Please continue scanning: %s</string>
     <string name="eos_hint">Here is your %s public key （safe to share）</string>
     <string name="eos_pubkey">Public Key：\n%s</string>
-    <string name="receive_warning">This address is only for %s, other digital assets sent to the above address will be lost.</string>
-    <string name="receive_coin">Receive %s</string>
+    <string name="receive_warning">This address is only for BTC, other digital assets sent to the above address will be lost.</string>
+    <string name="receive_coin">Receive BTC</string>
     <string name="version_update_hint"><![CDATA[Please visit: <font color="#00cdc3">https://cobo.com/hardware-wallet/downloads<font/> to check for firmware updates. If you are not using the latest firmware, download it from the official Cobo Vault website and save it on a microSD card (FAT32 format, 32GB or less storage). Transfer the file to your device as shown in the image below. (microSD card not included with purchase.)]]></string>
     <string name="version">Version </string>
     <string name="setting_language">Language</string>
@@ -678,4 +678,8 @@
     <string name="check_successful_hint">The entered recovery phrase matched the one in the Cobo Vault.</string>
     <string name="notice">Error</string>
     <string name="import_failed_network_not_match">The current blockchain network is %s, and the wallet to be imported is %s. You need to switch the blockchain network to %s first (Menu > Settings > Blockchain)</string>
+    <string name="notice1">Notice</string>
+    <string name="default_vault_notice">You have upgraded to V1.5.0. For the safety of your assets, the device will enter the default vault every time it restarts (including upgrades, power-off restarts, shutdown restarts etc.).</string>
+    <string name="switching_to_main_vault">正在切换到默认金库</string>
+
 </resources>

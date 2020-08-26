@@ -79,7 +79,7 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         txCallback = tx -> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_TX_ID, tx.getTxId());
-            if (ELECTRUM_SIGN_ID.equals(tx.getSignId())) {
+            if (tx.getSignId().startsWith(ELECTRUM_SIGN_ID)) {
                 navigate(R.id.action_to_electrumTxFragment, bundle);
             } else if (getWatchWallet(mActivity).supportPsbt() || PSBT_MULTISIG_SIGN_ID.equals(tx.getSignId())) {
                 navigate(R.id.action_to_psbtSignedTxFragment, bundle);
@@ -150,7 +150,7 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
             if (watchWallet == ELECTRUM) {
                 Coins.Account account = getAccount(mActivity);
                 if (account == Coins.Account.SegWit || account == Coins.Account.SegWit_TESTNET) {
-                    return watchWallet.getSignId().equals(txEntity.getSignId()+"_NATIVE_SEGWIT");
+                    return (watchWallet.getSignId()+"_NATIVE_SEGWIT").equals(txEntity.getSignId());
                 } else {
                     return watchWallet.getSignId().equals(txEntity.getSignId());
                 }

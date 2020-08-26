@@ -1,4 +1,5 @@
 /*
+ *
  * Copyright (c) 2020 Cobo
  *
  * This program is free software: you can redistribute it and/or modify
@@ -13,40 +14,29 @@
  *
  * You should have received a copy of the GNU General Public License
  * in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 package com.cobo.cold.callables;
 
-import com.cobo.cold.MainApplication;
-import com.cobo.cold.Utilities;
 import com.cobo.cold.encryption.interfaces.CONSTANTS;
 import com.cobo.cold.encryptioncore.base.Packet;
-import com.cobo.cold.encryptioncore.base.Payload;
 
 import java.util.concurrent.Callable;
 
-public class GetMasterFingerprintCallable implements Callable<String> {
-
-    private final boolean isMainWallet;
-    public GetMasterFingerprintCallable() {
-        isMainWallet = Utilities.getCurrentBelongTo(MainApplication.getApplication()).equals("main");
-    }
+public class RestartSeCallable implements Callable {
     @Override
-    public String call() {
+    public Boolean call() {
         try {
-            final Callable<Packet> callable = new BlockingCallable(
-                    new Packet.Builder(CONSTANTS.METHODS.GET_MASTER_FINGERPRINT)
-                            .addBytePayload(CONSTANTS.TAGS.WALLET_FLAG, isMainWallet? 0 : 0x50).build());
-            final Packet result = callable.call();
-            final Payload payload = result.getPayload(CONSTANTS.TAGS.MASTER_FINGERPRINT);
-
-            if (payload != null) {
-                return payload.toHex().toUpperCase();
-            }
+            final Packet packet = new Packet.Builder(CONSTANTS.METHODS.RESTART_SE)
+                    .build();
+            final Callable<Packet> callable = new BlockingCallable(packet);
+            callable.call();
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
 
-        return "";
+        return true;
     }
 }

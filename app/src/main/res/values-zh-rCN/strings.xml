@@ -56,8 +56,8 @@
     <string name="scan_progress">请持续扫描,当前进度%s</string>
     <string name="eos_hint">以下是您的 %s 公钥（可安全分享）</string>
     <string name="eos_pubkey">公钥：\n %s</string>
-    <string name="receive_warning">此地址只接收 %s体系资产,\n发送其他体系币种到此地址将无法找回。</string>
-    <string name="receive_coin">接收 %s</string>
+    <string name="receive_warning">此地址只接收BTC体系资产,\n发送其他体系币种到此地址将无法找回。</string>
+    <string name="receive_coin">接收 BTC</string>
     <string name="amount_hint">设置收币额度</string>
     <string name="version_update_hint"><![CDATA[请访问: <font color="#00cdc3">https://cobo.com/hardware-wallet/downloads<font/> 查看是否有更新。如需更新，请按下图依次取下电池和TF卡，下载最新安装包到TF卡根目录下（TF卡仅支持FAT32格式，且容量不能超过32G），插回卡后开机，按照系统提示更新。]]></string>
     <string name="version">版本</string>
@@ -629,4 +629,7 @@
         <item>主网</item>
         <item>测试网</item>
     </string-array>
+    <string name="notice1">提示</string>
+    <string name="default_vault_notice">您已升级到V1.5.0，为了您的资产安全，设备每次重启后（包括升级、断电重启、关机重启等）将进入默认金库。</string>
+    <string name="switching_to_main_vault">正在切换到默认金库</string>
 </resources>

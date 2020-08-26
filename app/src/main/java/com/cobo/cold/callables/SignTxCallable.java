@@ -20,6 +20,8 @@ package com.cobo.cold.callables;
 import androidx.annotation.NonNull;
 
 import com.cobo.coinlib.utils.Coins;
+import com.cobo.cold.MainApplication;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.encryption.interfaces.CONSTANTS;
 import com.cobo.cold.encryption.signature.Signature;
 import com.cobo.cold.encryptioncore.base.Packet;
@@ -39,12 +41,14 @@ public class SignTxCallable implements Callable<String> {
     private final String hash;
     private final Coins.CURVE curve;
     private final String authToken;
+    private final boolean isMainWallet;
 
     public SignTxCallable(String path, String hash, String authToken) {
         this.hdPath = path;
         this.hash = hash;
         this.curve = getCurveByPath(path);
         this.authToken = authToken;
+        isMainWallet = Utilities.getCurrentBelongTo(MainApplication.getApplication()).equals("main");
     }
 
     private static boolean isCanonical(byte[] sigs) {
@@ -82,6 +86,7 @@ public class SignTxCallable implements Callable<String> {
             final Callable<Packet> callable = new BlockingCallable(
                     new Packet.Builder(CONSTANTS.METHODS.SIGN)
                             .addTextPayload(CONSTANTS.TAGS.PATH, hdPath)
+                            .addBytePayload(CONSTANTS.TAGS.WALLET_FLAG, isMainWallet? 0 : 0x50)
                             .addBytePayload(CONSTANTS.TAGS.CURVE, getCurveTag())
                             .addHexPayload(CONSTANTS.TAGS.AUTH_TOKEN, authToken)
                             .addHexPayload(CONSTANTS.TAGS.TX_HASH, hash).build());

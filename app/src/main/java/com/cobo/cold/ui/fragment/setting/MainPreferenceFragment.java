@@ -210,7 +210,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
         new UpdatingHelper(mActivity,true);
     }
 
-    private static void restartApplication(AppCompatActivity activity) {
+    public static void restartApplication(AppCompatActivity activity) {
         final Intent intent = ((Context) activity).getPackageManager().getLaunchIntentForPackage(((Context) activity).getPackageName());
         Objects.requireNonNull(intent).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivity(intent);
