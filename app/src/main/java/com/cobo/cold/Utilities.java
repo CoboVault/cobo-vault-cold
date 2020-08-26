@@ -47,7 +47,8 @@ public class Utilities {
 
     public static final String IS_SETUP_VAULT = "is_setup_vault";
     public static final String IS_SET_PASSPHRASE = "is_set_passphrase";
-    public static final String PREFERENCE_KEY_BELONG_TO = "belong_to";
+    public static final String PREFERENCE_KEY_BELONG_TO = "belong_to_v2";
+    public static final String PREFERENCE_KEY_LEGACY_BELONG_TO = "belong_to";
     public static final String PREFERENCE_KEY_PWD_RETRY = "pwd_retry_times";
     public static final String PREFERENCE_KEY_PATTERN_RETRY = "pattern_retry_times";
     public static final String PREFERENCE_KEY_MNEMONIC_COUNT = "mnemonic_count";
@@ -138,7 +139,17 @@ public class Utilities {
 
     public static String getCurrentBelongTo(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
-        return sp.getString(PREFERENCE_KEY_BELONG_TO, "");
+        return sp.getString(PREFERENCE_KEY_BELONG_TO, "main");
+    }
+
+    public static void setLegacyBelongTo(Context context, String s) {
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
+        sp.edit().putString(PREFERENCE_KEY_LEGACY_BELONG_TO, s).commit();
+    }
+
+    public static String getLegacyBelongTo(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
+        return sp.getString(PREFERENCE_KEY_LEGACY_BELONG_TO, "");
     }
 
     public static void setPasswordRetryTimes(Context context, int times) {

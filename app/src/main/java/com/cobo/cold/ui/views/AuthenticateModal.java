@@ -152,6 +152,7 @@ public class AuthenticateModal {
         }
 
         Runnable close = () -> {
+            Keyboard.hide(activity, binding.input);
             if (binding.fingerprintLayout.getTag() != null) {
                 FingerprintKit fp = (FingerprintKit) binding.fingerprintLayout.getTag();
                 fp.cancelVerify();
@@ -175,6 +176,7 @@ public class AuthenticateModal {
                         Utilities.setPasswordRetryTimes(activity, 0);
                         Utilities.setPatternRetryTimes(activity, 0);
                         dialog.dismiss();
+                        Keyboard.hide(activity, binding.input);
                         onVerify.onVerify(new OnVerify.VerifyToken(passwordHash,null));
                     });
                 } else {
@@ -196,12 +198,17 @@ public class AuthenticateModal {
                 }
             });
         });
-        binding.forget.setOnClickListener(v -> {
-            dialog.dismiss();
-            if (onForget != null) {
+
+        if (onForget == null) {
+            binding.forget.setVisibility(View.GONE);
+        } else {
+            binding.forget.setOnClickListener(v -> {
+                dialog.dismiss();
                 onForget.run();
-            }
-        });
+            });
+        }
+
+
     }
 
     private static String getHintText(int retryTimes, Activity activity) {
