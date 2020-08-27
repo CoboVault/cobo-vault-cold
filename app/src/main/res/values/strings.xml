@@ -361,7 +361,7 @@
     <string name="check_successful_hint">The entered recovery phrase matched the one in the Cobo Vault.</string>
     <string name="notice">Error</string>
     <string name="notice1">Notice</string>
-    <string name="default_vault_notice">You have upgraded to V1.5.0. For the safety of your assets, the device will enter the default vault every time it restarts (including upgrades, power-off restarts, shutdown restarts etc.).</string>
-    <string name="switching_to_main_vault">正在切换到默认金库</string>
+    <string name="default_vault_notice">You have successfully upgraded to the latest version. To protect your assets, the Vault automatically resets to the default vault every time the device is restarted. (Also when it upgrades, shuts down or is restarted.)</string>
+    <string name="switching_to_main_vault">Entering the default vault, please keep screen on.</string>
 
 </resources>
