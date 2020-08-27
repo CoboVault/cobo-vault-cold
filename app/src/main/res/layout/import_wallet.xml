@@ -181,14 +181,13 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/path"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_marginEnd="16dp"
-                        android:text="@{wallet.exPubPath}"
                         android:textColor="@color/white"
-                        android:textSize="14sp"
-                        />
+                        android:textSize="14sp" />
 
                     <include
                         layout="@layout/divider"
