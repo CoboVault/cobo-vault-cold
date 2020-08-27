@@ -54,6 +54,7 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
     private int threshold;
     private String creator;
     private MultiSigWalletEntity dummyWallet;
+    private boolean isTestNet;
 
     @Override
     protected int setView() {
@@ -63,11 +64,14 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
     @Override
     protected void init(View view) {
         super.init(view);
+        isTestNet = !Utilities.isMainNet(mActivity);
         Bundle data = getArguments();
         Objects.requireNonNull(data);
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         dummyWallet = constructWalletEntity(data);
         mBinding.setWallet(dummyWallet);
+        mBinding.path.setText(dummyWallet.getExPubPath() + String.format("(%s)",
+                isTestNet ? getString(R.string.testnet) : getString(R.string.mainnet)));
         mBinding.setAddressType(MultiSig.Account.ofPath(dummyWallet.getExPubPath()).getFormat());
         mBinding.setXpubInfo(getXpub(dummyWallet));
         mBinding.confirm.setOnClickListener(v -> showVerifyCode());

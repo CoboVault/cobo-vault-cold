@@ -33,6 +33,7 @@ import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.QrcodeScanFragmentBinding;
 import com.cobo.cold.scan.CaptureHandler;
@@ -233,6 +234,17 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             MultiSigViewModel viewModel = ViewModelProviders.of(mActivity).get(MultiSigViewModel.class);
             String xfp = viewModel.getXfp();
             JSONObject obj = decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8));
+
+            boolean isWalletFileTest = obj.optBoolean("isTest", false);
+            boolean isTestnet = !Utilities.isMainNet(mActivity);
+            if (isWalletFileTest != isTestnet) {
+                String currentNet = isTestnet ? getString(R.string.testnet) : getString(R.string.mainnet);
+                String walletFileNet = isWalletFileTest ? getString(R.string.testnet) : getString(R.string.mainnet);
+                alert(getString(R.string.import_failed),
+                        getString(R.string.import_failed_network_not_match, currentNet, walletFileNet, walletFileNet));
+                return;
+            }
+
             Bundle bundle = new Bundle();
             bundle.putString("wallet_info",obj.toString());
             JSONArray array = obj.getJSONArray("Xpubs");

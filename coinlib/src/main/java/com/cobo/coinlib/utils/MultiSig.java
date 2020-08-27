@@ -37,8 +37,17 @@ public class MultiSig {
         }
 
         public static Account ofPath(String path, boolean isTestnet) {
+
+            if (path.equals(P2SH.getPath())) {
+                if (isTestnet) {
+                    return P2SH_TEST;
+                } else {
+                    return P2SH;
+                }
+            }
+
             for (Account value : Account.values()) {
-                if (value.path.equals(path) && isTestnet == value.isTest()) {
+                if (value.path.equals(path)) {
                     return value;
                 }
             }

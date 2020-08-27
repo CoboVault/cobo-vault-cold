@@ -29,6 +29,7 @@ import androidx.databinding.DataBindingUtil;
 import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.MultisigWalletInfoBinding;
 import com.cobo.cold.db.entity.MultiSigWalletEntity;
@@ -45,6 +46,8 @@ public class MultisigWalletInfoFragment extends MultiSigBaseFragment<MultisigWal
 
     private MultiSigWalletEntity wallet;
     private boolean isEditing;
+    private boolean isTestNet;
+
     @Override
     protected int setView() {
         return R.layout.multisig_wallet_info;
@@ -55,6 +58,7 @@ public class MultisigWalletInfoFragment extends MultiSigBaseFragment<MultisigWal
         super.init(view);
         Bundle data = getArguments();
         Objects.requireNonNull(data);
+        isTestNet = !Utilities.isMainNet(mActivity);
         mBinding.toolbar.setNavigationOnClickListener(v -> {
             navigateUp();
             Keyboard.hide(mActivity, mBinding.walletName);
@@ -72,6 +76,8 @@ public class MultisigWalletInfoFragment extends MultiSigBaseFragment<MultisigWal
 
     private void setBindings(MultiSigWalletEntity w) {
         mBinding.setWallet(w);
+        mBinding.path.setText(w.getExPubPath() + String.format("(%s)",
+                isTestNet ? getString(R.string.testnet) : getString(R.string.mainnet)));
         mBinding.setAddressType(MultiSig.Account.ofPath(w.getExPubPath()).getFormat());
         mBinding.setXpubInfo(getXpub(w));
         mBinding.showAsXpub.setOnClickListener(v -> showAsXpub());
@@ -110,6 +116,7 @@ public class MultisigWalletInfoFragment extends MultiSigBaseFragment<MultisigWal
     }
 
     private String getDisplayXpubInfoForCC(MultiSigWalletEntity wallet) {
+        ExtendPubkeyFormat destFormat = isTestNet ? ExtendPubkeyFormat.tpub : ExtendPubkeyFormat.xpub;
         StringBuilder builder = new StringBuilder();
         try {
             JSONArray array = new JSONArray(wallet.getExPubs());
@@ -117,7 +124,7 @@ public class MultisigWalletInfoFragment extends MultiSigBaseFragment<MultisigWal
                 JSONObject info = array.getJSONObject(i);
                 builder.append(i + 1).append(". ").append(info.getString("xfp")).append("<br>")
                         .append(ExtendPubkeyFormat.convertExtendPubkey(info.getString("xpub"),
-                                ExtendPubkeyFormat.xpub)).append("<br><br>");
+                                destFormat)).append("<br><br>");
             }
 
         } catch (JSONException e) {
