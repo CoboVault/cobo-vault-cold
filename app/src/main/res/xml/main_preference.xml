@@ -47,13 +47,12 @@
         android:title="@string/system_settings" />
 
     <com.cobo.cold.ui.preference.SimplePreference
-        android:key="setting_factory_reset"
-        android:title="@string/factory_reset" />
-
-    <com.cobo.cold.ui.preference.SimplePreference
         android:key="setting_white_list"
         android:title="@string/white_list" />
 
+    <com.cobo.cold.ui.preference.SimplePreference
+        android:key="setting_factory_reset"
+        android:title="@string/factory_reset" />
 
     <com.cobo.cold.ui.preference.SimplePreference
         android:key="setting_safety_instruction"
