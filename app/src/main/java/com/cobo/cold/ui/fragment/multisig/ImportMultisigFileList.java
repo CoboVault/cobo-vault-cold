@@ -112,7 +112,7 @@ public class ImportMultisigFileList extends MultiSigBaseFragment<FileListBinding
                     FileUtils.readString(new File(storage.getExternalDir(), file)));
             String path = walletFile.getString("Derivation");
             boolean isTestnet = !Utilities.isMainNet(mActivity);
-            if (MultiSig.Account.ofPath(path).isTest() != isTestnet) {
+            if (MultiSig.Account.ofPath(path, isTestnet).isTest() != isTestnet) {
                 String currentNet = isTestnet ? getString(R.string.testnet) : getString(R.string.mainnet);
                 String walletFileNet = MultiSig.Account.ofPath(path).isTest() ? getString(R.string.testnet) : getString(R.string.mainnet);
                 ModalDialog.showCommonModal(mActivity, getString(R.string.import_failed),

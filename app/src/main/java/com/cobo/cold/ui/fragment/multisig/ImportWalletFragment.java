@@ -29,6 +29,7 @@ import androidx.databinding.DataBindingUtil;
 import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.ExportSuccessBinding;
 import com.cobo.cold.databinding.ImportWalletBinding;
@@ -43,6 +44,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static com.cobo.cold.viewmodel.MultiSigViewModel.convertXpub;
 
 public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBinding> {
 
@@ -117,11 +120,18 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
             walletInfo = new JSONObject(data.getString("wallet_info"));
             threshold = Integer.parseInt(walletInfo.getString("Policy").split(" of ")[0]);
             int total = Integer.parseInt(walletInfo.getString("Policy").split(" of ")[1]);
-            account = MultiSig.Account.ofPath(walletInfo.getString("Derivation"));
+            account = MultiSig.Account.ofPath(walletInfo.getString("Derivation"), !Utilities.isMainNet(mActivity));
             creator = walletInfo.optString("Creator");
 
+            JSONArray array = walletInfo.getJSONArray("Xpubs");
+
+            for (int i = 0; i < array.length(); i++) {
+                String xpub = array.getJSONObject(i).getString("xpub");
+                array.getJSONObject(i).put("xpub", convertXpub(xpub,account));
+            }
+
             return new MultiSigWalletEntity(walletInfo.getString("Name"),
-                    threshold, total,account.getPath(),walletInfo.getJSONArray("Xpubs").toString(),"","","");
+                    threshold, total,account.getPath(),array.toString(),"","","");
         } catch (JSONException e) {
             e.printStackTrace();
         }

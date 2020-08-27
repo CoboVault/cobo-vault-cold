@@ -635,6 +635,6 @@
         <item>测试网</item>
     </string-array>
     <string name="notice1">提示</string>
-    <string name="default_vault_notice">您已升级到V1.5.0，为了您的资产安全，设备每次重启后（包括升级、断电重启、关机重启等）将进入默认金库。</string>
-    <string name="switching_to_main_vault">正在切换到默认金库</string>
+    <string name="default_vault_notice">您已升级到新版本，为了您的资产安全，设备每次重启后（包括升级、断电重启、关机重启等）将进入默认金库。</string>
+    <string name="switching_to_main_vault">正在进入默认金库，请勿锁屏</string>
 </resources>

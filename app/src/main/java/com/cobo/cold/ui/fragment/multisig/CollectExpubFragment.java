@@ -113,7 +113,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                 JSONObject xpub = new JSONObject();
                 if (ExtendPubkeyFormat.isValidXpub(info.xpub)) {
                     xpub.put("xfp", info.xfp);
-                    xpub.put("xpub", convertXpub(info.xpub, MultiSig.Account.ofPath(path)));
+                    xpub.put("xpub", convertXpub(info.xpub, account));
                     array.put(xpub);
                 }
             }
