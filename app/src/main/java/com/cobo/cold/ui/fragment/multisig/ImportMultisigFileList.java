@@ -110,11 +110,11 @@ public class ImportMultisigFileList extends MultiSigBaseFragment<FileListBinding
         try {
             JSONObject walletFile = MultiSigViewModel.decodeColdCardWalletFile(
                     FileUtils.readString(new File(storage.getExternalDir(), file)));
-            String path = walletFile.getString("Derivation");
+            boolean isWalletFileTest = walletFile.optBoolean("isTest", false);
             boolean isTestnet = !Utilities.isMainNet(mActivity);
-            if (MultiSig.Account.ofPath(path, isTestnet).isTest() != isTestnet) {
+            if (isWalletFileTest != isTestnet) {
                 String currentNet = isTestnet ? getString(R.string.testnet) : getString(R.string.mainnet);
-                String walletFileNet = MultiSig.Account.ofPath(path).isTest() ? getString(R.string.testnet) : getString(R.string.mainnet);
+                String walletFileNet = isWalletFileTest ? getString(R.string.testnet) : getString(R.string.mainnet);
                 ModalDialog.showCommonModal(mActivity, getString(R.string.import_failed),
                         getString(R.string.import_failed_network_not_match, currentNet, walletFileNet, walletFileNet),
                         getString(R.string.know),null);
@@ -124,7 +124,7 @@ public class ImportMultisigFileList extends MultiSigBaseFragment<FileListBinding
             Bundle data = new Bundle();
             data.putString("wallet_info",walletFile.toString());
             navigate(R.id.import_multisig_wallet, data);
-        } catch (InvalidMultisigWalletException | JSONException e) {
+        } catch (InvalidMultisigWalletException e) {
             e.printStackTrace();
         }
 

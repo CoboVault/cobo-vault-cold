@@ -523,6 +523,9 @@ public class MultiSigViewModel extends AndroidViewModel {
                     }
                     object.put(label, value);
                 } else if (label.equals("Derivation")) {
+                    if (MultiSig.Account.ofPath(value).isTest()) {
+                        object.put("isTest", true);
+                    }
                     object.put(label, value);
                     path = value;
                 } else if(label.equals("Format")) {
@@ -530,6 +533,9 @@ public class MultiSigViewModel extends AndroidViewModel {
                 } else if (pattern.matcher(label).matches()) {
                     JSONObject xpub = new JSONObject();
                     if (ExtendPubkeyFormat.isValidXpub(value)) {
+                        if (value.startsWith("tpub") || value.startsWith("Upub") || value.startsWith("Vpub")) {
+                            object.put("isTest", true);
+                        }
                         xpub.put("xfp", label);
                         xpub.put("xpub", convertXpub(value, MultiSig.Account.ofPath(path)));
                         xpubs.put(xpub);
