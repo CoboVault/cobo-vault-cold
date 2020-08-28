@@ -166,6 +166,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                     }
                     if (TextUtils.isEmpty(passphrase1.get())) {
                         startActivity(new Intent(mActivity, MainActivity.class));
+                        mActivity.finish();
                     } else {
                         Navigation.findNavController(mActivity, R.id.nav_host_fragment)
                                 .navigate(R.id.action_to_manageCoinFragment, data);
