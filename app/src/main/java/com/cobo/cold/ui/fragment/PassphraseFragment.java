@@ -164,6 +164,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                         dialog.dismiss();
                     }
                     startActivity(new Intent(mActivity, MainActivity.class));
+                    mActivity.finish();
                 };
                 List<CoinEntity> coins = PresetData.generateCoins(mActivity);
                 viewModel.presetData(coins, onComplete);
