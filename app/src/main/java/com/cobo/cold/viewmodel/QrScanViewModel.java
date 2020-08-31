@@ -115,6 +115,10 @@ public class QrScanViewModel extends AndroidViewModel {
             if (QrScanPurpose.IMPORT_MULTISIG_WALLET == fragment.getPurpose()) {
                 throw new InvalidMultisigWalletException("invalid multisig wallet qrcode");
             }
+
+            if (QrScanPurpose.MULTISIG_TX == fragment.getPurpose()) {
+                throw new InvalidTransactionException("invalid multisig tx qrcode");
+            }
             JSONObject object = parseToJson(data, valueType);
             if (object == null) {
                 throw new JSONException("object null");
