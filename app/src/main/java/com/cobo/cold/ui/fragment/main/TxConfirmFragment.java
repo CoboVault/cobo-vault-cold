@@ -44,6 +44,7 @@ import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
+import com.cobo.cold.ui.views.OnMultiClickListener;
 import com.cobo.cold.util.KeyStoreUtil;
 import com.cobo.cold.viewmodel.TxConfirmViewModel;
 
@@ -95,7 +96,12 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
         mBinding.setViewModel(viewModel);
         subscribeTxEntityState();
 
-        mBinding.sign.setOnClickListener(v -> handleSign());
+        mBinding.sign.setOnClickListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View v) {
+                handleSign();
+            }
+        });
 
     }
 
