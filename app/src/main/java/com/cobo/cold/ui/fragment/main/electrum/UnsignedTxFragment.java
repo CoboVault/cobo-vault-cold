@@ -48,6 +48,7 @@ import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
+import com.cobo.cold.ui.views.OnMultiClickListener;
 import com.cobo.cold.util.KeyStoreUtil;
 import com.cobo.cold.viewmodel.GlobalViewModel;
 import com.cobo.cold.viewmodel.NoMatchedMultisigWallet;
@@ -115,7 +116,12 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
                 .getChangeAddress()
                 .observe(this, address -> this.changeAddress = address);
         subscribeTxEntityState();
-        mBinding.sign.setOnClickListener(v -> handleSign());
+        mBinding.sign.setOnClickListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View v) {
+                handleSign();
+            }
+        });
     }
 
     private void handleSign() {

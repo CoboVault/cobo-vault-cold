@@ -677,7 +677,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
                         updateTxSignStatus(tx);
                     }
                     if (TextUtils.isEmpty(txId)) {
-                        txId = "unknown_txid_" + tx.hashCode();
+                        txId = "unknown_txid_" + Math.abs(tx.hashCode());
                     }
                     tx.setTxId(txId);
                     tx.setSignedHex(psbtB64);
