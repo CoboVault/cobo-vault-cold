@@ -20,6 +20,8 @@ package com.cobo.cold.callables;
 import android.text.TextUtils;
 
 import com.cobo.coinlib.Util;
+import com.cobo.cold.MainApplication;
+import com.cobo.cold.Utilities;
 import com.cobo.cold.encryption.interfaces.CONSTANTS;
 import com.cobo.cold.encryptioncore.base.Packet;
 import com.cobo.cold.encryptioncore.base.Payload;
@@ -28,11 +30,17 @@ import java.util.concurrent.Callable;
 
 public class GetVaultIdCallable implements Callable<String> {
     private static final String pubKeyPath = "M/44'/1131373167'/0'";
+    private final boolean isMainWallet;
 
+
+    public GetVaultIdCallable() {
+        isMainWallet = Utilities.getCurrentBelongTo(MainApplication.getApplication()).equals("main");
+    }
     @Override
     public String call() {
         final Callable<Packet> callable = new BlockingCallable(
                 new Packet.Builder(CONSTANTS.METHODS.GET_EXTENDED_PUBLICKEY)
+                        .addBytePayload(CONSTANTS.TAGS.WALLET_FLAG, isMainWallet? 0 : 0x50)
                         .addTextPayload(CONSTANTS.TAGS.PATH, pubKeyPath).build());
         final Packet result;
         String xPubKey = null;
