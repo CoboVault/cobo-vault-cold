@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
+import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.convertLegacyAddress;
 import static com.cobo.cold.ui.fragment.main.TxFragment.KEY_TX_ID;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.ELECTRUM_SIGN_ID;
 
@@ -176,10 +177,12 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
 
         private void updateFrom(TxListItemBinding binding, TxEntity item) {
             String from = item.getFrom();
-            binding.from.setText(item.getFrom());
+            from = convertLegacyAddress(item, from);
+            binding.from.setText(from);
             try {
                 JSONArray inputs = new JSONArray(from);
                 String address = inputs.getJSONObject(0).getString("address");
+                address = convertLegacyAddress(item, address);
                 binding.from.setText(address);
             } catch (JSONException e) {
                 e.printStackTrace();

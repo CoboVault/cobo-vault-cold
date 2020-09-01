@@ -30,6 +30,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
+import com.cobo.coinlib.coins.BCH.Bch;
+import com.cobo.coinlib.coins.LTC.Ltc;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
@@ -260,6 +262,7 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
 
     private void refreshFromList() {
         String from = txEntity.getFrom();
+        from = convertLegacyAddress(txEntity,from);
         mBinding.txDetail.from.setText(from);
         List<TransactionItem> items = new ArrayList<>();
         try {
@@ -272,9 +275,20 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
                 ));
             }
             String fromAddress = inputs.getJSONObject(0).getString("address");
+            fromAddress = convertLegacyAddress(txEntity, fromAddress);
             mBinding.txDetail.from.setText(fromAddress);
         } catch (JSONException ignore) {
         }
+    }
+
+    public static String convertLegacyAddress(TxEntity tx, String fromAddress) {
+        String coinCode = tx.getCoinCode();
+        if (coinCode.equals(Coins.BCH.coinCode())) {
+            fromAddress = Bch.toCashAddress(fromAddress);
+        } else if (coinCode.equals(Coins.LTC.coinCode())) {
+            fromAddress = Ltc.convertAddress(fromAddress);
+        }
+        return fromAddress;
     }
 
     private void subscribeSignState() {

@@ -28,6 +28,8 @@ import android.view.View;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.cobo.coinlib.coins.BCH.Bch;
+import com.cobo.coinlib.coins.LTC.Ltc;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.TxBinding;
@@ -46,6 +48,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.KEY_DUPLICATE_TX;
+import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.convertLegacyAddress;
 
 
 public class TxFragment extends BaseFragment<TxBinding> {
@@ -165,6 +168,7 @@ public class TxFragment extends BaseFragment<TxBinding> {
 
     private void refreshFromList() {
         String from = txEntity.getFrom();
+        from = convertLegacyAddress(txEntity, from);
         mBinding.txDetail.from.setText(from);
         List<TransactionItem> items = new ArrayList<>();
         try {
@@ -177,6 +181,7 @@ public class TxFragment extends BaseFragment<TxBinding> {
                 ));
             }
             String fromAddress = inputs.getJSONObject(0).getString("address");
+            fromAddress = convertLegacyAddress(txEntity, fromAddress);
             mBinding.txDetail.from.setText(fromAddress);
         } catch (JSONException ignore) {}
     }
