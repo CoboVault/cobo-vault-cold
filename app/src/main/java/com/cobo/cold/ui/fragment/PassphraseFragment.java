@@ -122,8 +122,8 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
     private void updatePassphrase() {
         viewModel.setPassword(getArguments().getString(PASSWORD));
         viewModel.setSignature(getArguments().getString(SIGNATURE));
-        viewModel.updatePassphrase(passphrase1.get());
         subscribeVaultState(viewModel);
+        viewModel.updatePassphrase(passphrase1.get());
     }
 
     private void setFilterSpace(EditText editText) {
@@ -156,9 +156,6 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                 viewModel.getVaultCreateState().removeObservers(this);
 
                 Runnable onComplete = () -> {
-                    Bundle data = new Bundle();
-                    data.putBoolean(IS_SETUP_VAULT, false);
-                    data.putBoolean(IS_SET_PASSPHRASE, true);
                     if (dialog != null && dialog.getDialog() != null
                             && dialog.getDialog().isShowing()) {
                         dialog.dismiss();
@@ -166,8 +163,12 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                     startActivity(new Intent(mActivity, MainActivity.class));
                     mActivity.finish();
                 };
-                List<CoinEntity> coins = PresetData.generateCoins(mActivity);
-                viewModel.presetData(coins, onComplete);
+                if (TextUtils.isEmpty(passphrase1.get())) {
+                    onComplete.run();
+                } else {
+                    List<CoinEntity> coins = PresetData.generateCoins(mActivity);
+                    viewModel.presetData(coins, onComplete);
+                }
             } else if (state == VAULT_STATE_CREATING_FAILED) {
                 viewModel.getVaultCreateState().removeObservers(this);
                 if (dialog != null && dialog.getDialog() != null
