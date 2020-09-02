@@ -56,8 +56,13 @@ public class Ltc extends Btc {
         if (address.startsWith("M")) {
             return address;
         }
-        byte[] data = Base58.decode(address);
-        return Base58.encodeChecked(0x32, Arrays.copyOfRange(data,1, data.length - 4));
+        try {
+            byte[] data = Base58.decode(address);
+            return Base58.encodeChecked(0x32, Arrays.copyOfRange(data,1, data.length - 4));
+        } catch (Exception e) {
+            return address;
+        }
+
     }
 
     public static class Deriver extends Btc.Deriver {

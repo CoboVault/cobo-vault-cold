@@ -123,8 +123,8 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
     private void updatePassphrase() {
         viewModel.setPassword(getArguments().getString(PASSWORD));
         viewModel.setSignature(getArguments().getString(SIGNATURE));
-        viewModel.updatePassphrase(passphrase1.get());
         subscribeVaultState(viewModel);
+        viewModel.updatePassphrase(passphrase1.get());
     }
 
     private void setFilterSpace(EditText editText) {
@@ -156,24 +156,28 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                         TextUtils.isEmpty(passphrase1.get()) ? "main" : "hidden");
                 viewModel.getVaultCreateState().removeObservers(this);
 
-                Runnable onComplete = () -> {
-                    Bundle data = new Bundle();
-                    data.putBoolean(IS_SETUP_VAULT, false);
-                    data.putBoolean(IS_SET_PASSPHRASE, true);
+                if (TextUtils.isEmpty(passphrase1.get())) {
                     if (dialog != null && dialog.getDialog() != null
                             && dialog.getDialog().isShowing()) {
                         dialog.dismiss();
                     }
-                    if (TextUtils.isEmpty(passphrase1.get())) {
-                        startActivity(new Intent(mActivity, MainActivity.class));
-                        mActivity.finish();
-                    } else {
+                    startActivity(new Intent(mActivity, MainActivity.class));
+                    mActivity.finish();
+                } else {
+                    Runnable onComplete = () -> {
+                        Bundle data = new Bundle();
+                        data.putBoolean(IS_SETUP_VAULT, false);
+                        data.putBoolean(IS_SET_PASSPHRASE, true);
+                        if (dialog != null && dialog.getDialog() != null
+                                && dialog.getDialog().isShowing()) {
+                            dialog.dismiss();
+                        }
                         Navigation.findNavController(mActivity, R.id.nav_host_fragment)
                                 .navigate(R.id.action_to_manageCoinFragment, data);
-                    }
-                };
-                List<CoinEntity> coins = PresetData.generateCoins(mActivity);
-                viewModel.presetData(coins, onComplete);
+                    };
+                    List<CoinEntity> coins = PresetData.generateCoins(mActivity);
+                    viewModel.presetData(coins, onComplete);
+                }
 
             } else if (state == VAULT_STATE_CREATING_FAILED) {
                 viewModel.getVaultCreateState().removeObservers(this);
