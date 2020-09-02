@@ -43,7 +43,12 @@ public class Bch extends Btc {
         if (legacyAddress.startsWith("q") || legacyAddress.startsWith("bitcoincash")) {
             return legacyAddress;
         } else {
-            return AddressConverter.toCashAddress(legacyAddress).replace("bitcoincash:","");
+            try {
+                return AddressConverter.toCashAddress(legacyAddress).replace("bitcoincash:","");
+            }catch (Exception e) {
+                return legacyAddress;
+            }
+
         }
     }
 

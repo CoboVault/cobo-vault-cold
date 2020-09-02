@@ -148,6 +148,11 @@ public class SetupVaultViewModel extends AndroidViewModel {
                 success = new UpdatePassphraseCallable(passphrase, password, signature).call();
             }
 
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             if (success) {
                 vaultId = new GetVaultIdCallable().call();
                 deleteHiddenVaultData();
