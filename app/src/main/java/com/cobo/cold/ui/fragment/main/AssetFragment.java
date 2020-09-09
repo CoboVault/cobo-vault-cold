@@ -95,7 +95,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         if (Coins.BTC.coinCode().equals(coinCode)) {
             return R.menu.asset_hasmore;
         }
-        return showPublicKey ? R.menu.asset_without_add : R.menu.asset;
+        return (showPublicKey || Coins.isPolkadotFamily(coinCode)) ? R.menu.asset_without_add : R.menu.asset;
     }
 
     private void initTabs() {

@@ -118,31 +118,29 @@ public class AddAddressViewModel extends AndroidViewModel {
         protected Void doInBackground(String... strings) {
 
             AccountEntity defaultAccount = repo.loadAccountsForCoin(coinEntity).get(0);
+            String path = defaultAccount.getHdPath();
             int addressCount = coinEntity.getAddressCount();
-            Account account;
-            try {
-                account = Account.parseAccount(defaultAccount.getHdPath());
-            } catch (InvalidPathException e) {
-                return null;
-            }
 
             String exPub = defaultAccount.getExPub();
             if (TextUtils.isEmpty(exPub)) {
-                exPub = new GetExtendedPublicKeyCallable(account.toString()).call();
+                exPub = new GetExtendedPublicKeyCallable(path).call();
                 defaultAccount.setExPub(exPub);
             }
 
             List<AddressEntity> entities = new ArrayList<>();
+            AbsDeriver deriver = AbsDeriver.newInstance(coinEntity.getCoinCode());
             for (int i = 0; i < strings.length; i++) {
                 AddressEntity addressEntity = new AddressEntity();
-                addressEntity.setPath(
-                        account.external()
-                                .address(i + addressCount).toString());
+                int change = 0;
+                int index = i + addressCount;
+                if (Coins.isPolkadotFamily(coinEntity.getCoinCode())) {
+                    addressEntity.setPath(defaultAccount.getHdPath());
+                } else {
+                    addressEntity.setPath(String.format(path + "/%s/%s", change, index));
+                }
 
-                int coinType = account.getParent().getValue();
-                AbsDeriver deriver = AbsDeriver.newInstance(Coins.coinCodeOfIndex(coinType));
                 if (deriver != null) {
-                    String addr = deriver.derive(exPub, 0, i + addressCount);
+                    String addr = deriver.derive(exPub, change, index);
                     addressEntity.setAddressString(addr);
                     addressEntity.setCoinId(coinEntity.getCoinId());
                     addressEntity.setIndex(i + addressCount);

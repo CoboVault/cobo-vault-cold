@@ -18,6 +18,7 @@
 package com.cobo.cold.viewmodel;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -109,10 +110,15 @@ public class CoinListViewModel extends AndroidViewModel {
                     account.addressLength = accountEntity.getAddressLength();
                     account.hdPath = accountEntity.getHdPath();
                     account.xPub = accountEntity.getExPub();
+                    if (TextUtils.isEmpty(account.xPub)) {
+                        continue;
+                    }
                     account.isMultiSign = false;
                     coin.addAccount(account);
                 }
-                syncBuilder.addCoin(coin);
+                if (coin.accounts.size() > 0) {
+                    syncBuilder.addCoin(coin);
+                }
             }
             if (syncBuilder.getCoinsCount() == 0) {
                 sync.postValue("");

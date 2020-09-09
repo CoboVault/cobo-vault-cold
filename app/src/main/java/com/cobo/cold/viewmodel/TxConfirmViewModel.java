@@ -18,6 +18,7 @@
 package com.cobo.cold.viewmodel;
 
 import android.app.Application;
+import android.content.res.AssetManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -77,6 +78,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 import static com.cobo.coinlib.coins.BTC.Electrum.TxUtils.isMasterPublicKeyMatch;
+import static com.cobo.coinlib.v8.ScriptLoader.readAsset;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.DUPLICATE_TX;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
@@ -274,6 +276,9 @@ public class TxConfirmViewModel extends AndroidViewModel {
     private String getFromAddress() {
         if (!TextUtils.isEmpty(transaction.getFrom())) {
             return transaction.getFrom();
+        } else if(Coins.isPolkadotFamily(coinCode)) {
+            AddressEntity addressEntity = mRepository.loadAddressBypath(transaction.getHdPath());
+            return addressEntity.getAddressString();
         }
         String[] paths = transaction.getHdPath().split(AbsTx.SEPARATOR);
         String[] externalPath = Stream.of(paths)
@@ -304,9 +309,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
                 return inputsClone.toString();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (InvalidPathException e) {
+        } catch (JSONException | InvalidPathException e) {
             e.printStackTrace();
         }
 
@@ -436,6 +439,8 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 TxEntity tx = observableTx.getValue();
                 Objects.requireNonNull(tx).setTxId(txId);
                 tx.setSignedHex(rawTx);
+                Log.w("kkk","txId = " + txId);
+                Log.w("kkk","rawTx = " + rawTx);
                 mRepository.insertTx(tx);
                 signState.postValue(STATE_SIGN_SUCCESS);
                 if (Coins.showPublicKey(tx.getCoinCode())) {
@@ -510,7 +515,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         for (int i = 0; i < distinctPaths.length; i++) {
             if (shouldProvidePublicKey) {
                 String pubKey;
-                if (Coins.curveFromCoinCode(coinCode) == Coins.CURVE.ED25519) {
+                if (Coins.curveFromCoinCode(coinCode) == Coins.CURVE.ED25519 || Coins.isPolkadotFamily(coinCode)) {
                     byte[] bytes = new B58().decode(exPub);
                     byte[] pubKeyBytes = Arrays.copyOfRange(bytes,bytes.length - 4 - 32,bytes.length - 4);
                     pubKey = Hex.toHexString(pubKeyBytes);

@@ -55,7 +55,7 @@ dependencies {
         exclude group: 'com.squareup.okhttp3'
     }
     implementation 'com.madgag.spongycastle:core:1.58.0.0@jar'
-    implementation 'com.eclipsesource.j2v8:j2v8:5.0.103@aar'
+    implementation 'com.eclipsesource.j2v8:j2v8:6.2.0@aar'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20180813'
     testImplementation 'com.google.guava:guava:27.1-android'

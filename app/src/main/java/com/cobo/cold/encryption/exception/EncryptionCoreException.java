@@ -69,6 +69,7 @@ public class EncryptionCoreException extends RuntimeException {
         mDefineMap.put(0x0407,	"ERT_VerConflict");
         mDefineMap.put(0x0408,	"ERT_HDWalletSwitchNeed");
         mDefineMap.put(0x0409,	"ERT_HDWalletSwitchNotMatch");
+        mDefineMap.put(0x040a,	"ERT_needEntropy");
         mDefineMap.put(0x0500,	"ERT_CHIP_FAIL");
         mDefineMap.put(0x0501,	"ERT_RngFail");
         mDefineMap.put(0x0502,	"ERT_SFlashFail");

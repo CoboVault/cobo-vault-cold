@@ -30,6 +30,7 @@ import androidx.databinding.ObservableField;
 import com.cobo.coinlib.WordList;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.callables.VerifyMnemonicCallable;
 import com.cobo.cold.databinding.CreateVaultModalBinding;
 import com.cobo.cold.databinding.MnemonicInputFragmentBinding;
 import com.cobo.cold.db.PresetData;
@@ -41,14 +42,18 @@ import com.cobo.cold.viewmodel.SetupVaultViewModel;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
+import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATED;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING;
+import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING_FAILED;
 
 public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputFragmentBinding> {
 
     protected ModalDialog dialog;
+    private boolean isEnbaleDot;
 
     @Override
     protected int setView() {
@@ -58,6 +63,11 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
     @Override
     protected void init(View view) {
         super.init(view);
+        Bundle data = getArguments();
+        if (data != null) {
+            isEnbaleDot = data.getBoolean("enableDot");
+            viewModel.setPassword(data.getString(PASSWORD));
+        }
         mBinding.setViewModel(viewModel);
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.table.setMnemonicNumber(viewModel.getMnemonicCount().get());
@@ -99,13 +109,23 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                     if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
                         dialog.dismiss();
                     }
-                    Bundle data = new Bundle();
-                    data.putBoolean(IS_SETUP_VAULT, ((SetupVaultActivity) mActivity).isSetupVault);
-                    navigate(R.id.action_add_coin_type2, data);
+                    if (isEnbaleDot) {
+                        String coinCode = Objects.requireNonNull(getArguments()).getString("coinCode");
+                        viewModel.toggleCoin(coinCode);
+                        popBackStack(R.id.manageCoinFragment,false);
+                    } else {
+                        Bundle data = new Bundle();
+                        data.putBoolean(IS_SETUP_VAULT, ((SetupVaultActivity) mActivity).isSetupVault);
+                        navigate(R.id.action_add_coin_type2, data);
+                    }
                 };
 
                 List<CoinEntity> coins = PresetData.generateCoins(mActivity);
                 viewModel.presetData(coins, onComplete);
+            } else if (state == VAULT_STATE_CREATING_FAILED) {
+                if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
+                    dialog.dismiss();
+                }
             }
         });
     }
@@ -116,11 +136,24 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                 .map(ObservableField::get)
                 .reduce((s1, s2) -> s1 + " " + s2)
                 .orElse("");
-
-
         if (viewModel.validateMnemonic(mnemonic)) {
-            viewModel.writeMnemonic(mnemonic);
-            mBinding.table.getWordsList().clear();
+            if (isEnbaleDot) {
+                boolean match = new VerifyMnemonicCallable(mnemonic).call();
+                if (match) {
+                    viewModel.enableDot(mnemonic);
+                    mBinding.table.getWordsList().forEach(word->word.set(""));
+                } else {
+                    Utilities.alert(mActivity,
+                            getString(R.string.check_failed),
+                            getString(R.string.mnemonic_not_match),
+                            getString(R.string.confirm), ()-> {
+                                mBinding.table.getWordsList().forEach(word->word.set(""));
+                            });
+                }
+            } else {
+                viewModel.writeMnemonic(mnemonic);
+                mBinding.table.getWordsList().forEach(word->word.set(""));
+            }
         } else {
             Utilities.alert(mActivity,
                     getString(R.string.hint),
@@ -130,32 +163,36 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
     }
 
 
-    protected void showModal() {
+    void showModal() {
         CreateVaultModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.create_vault_modal, null, false);
         dialog = ModalDialog.newInstance();
         dialog.setBinding(binding);
         dialog.show(mActivity.getSupportFragmentManager(), "");
-        String[] steps = mActivity.getResources().getStringArray(R.array.create_vault_step);
-        binding.step.setText(steps[0]);
-        Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            int i = 0;
-
-            @Override
-            public void run() {
-                try {
-                    handler.postDelayed(this, 8000);
-                    binding.step.setText(steps[i]);
-                    i++;
-                    if (i > 4) {
-                        handler.removeCallbacks(this);
+        if (isEnbaleDot) {
+            String coinCode = Objects.requireNonNull(getArguments()).getString("coinCode");
+            binding.text.setText(getString(R.string.adding_dot_hint,coinCode));
+        } else {
+            String[] steps = mActivity.getResources().getStringArray(R.array.create_vault_step);
+            binding.step.setText(steps[0]);
+            Handler handler = new Handler();
+            Runnable runnable = new Runnable() {
+                int i = 0;
+                @Override
+                public void run() {
+                    try {
+                        handler.postDelayed(this, 4000);
+                        binding.step.setText(steps[i]);
+                        i++;
+                        if (i > 4) {
+                            handler.removeCallbacks(this);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
-        };
-        handler.post(runnable);
+            };
+            handler.post(runnable);
+        }
     }
 }

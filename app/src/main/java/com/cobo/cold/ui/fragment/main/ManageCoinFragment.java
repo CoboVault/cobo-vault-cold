@@ -22,7 +22,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,21 +32,26 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.MainApplication;
 import com.cobo.cold.R;
 import com.cobo.cold.config.FeatureFlags;
 import com.cobo.cold.databinding.ManageCoinFragmentBinding;
+import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.modal.ModalDialog;
+import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.viewmodel.CoinListViewModel;
 
 import java.util.List;
@@ -52,6 +59,7 @@ import java.util.Objects;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.Utilities.IS_SET_PASSPHRASE;
+import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 import static com.cobo.cold.viewmodel.CoinListViewModel.coinEntityComparator;
 
 public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> {
@@ -189,9 +197,36 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
         });
     }
 
-    private final CoinClickCallback mCoinClickCallback = coin ->
+    private final CoinClickCallback mCoinClickCallback = coin -> {
+        if (Coins.isPolkadotFamily(coin.getCoinCode()) && TextUtils.isEmpty(coin.getExPub())) {
+            ModalDialog dialog = new ModalDialog();
+            ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                    R.layout.modal_with_two_button,
+                    null,false);
+            binding.title.setText(R.string.notice1);
+            binding.subTitle.setText(getString(R.string.add_polkadot_hint, coin.getCoinCode()));
+            binding.left.setText(R.string.add_later);
+            binding.left.setOnClickListener(v -> dialog.dismiss());
+            binding.right.setText(R.string.comfirm_add);
+            binding.right.setOnClickListener(v -> {
+                dialog.dismiss();
+                AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), null, token -> {
+                    Bundle data = new Bundle();
+                    data.putBoolean("enableDot", true);
+                    data.putString("coinCode", coin.getCoinCode());
+                    data.putString(PASSWORD, token.password);
+                    navigate(R.id.action_to_selectMnomenicCountFragment, data);
+                },null);
+
+            });
+            dialog.setBinding(binding);
+            dialog.show(mActivity.getSupportFragmentManager(),"");
+        } else {
             AppExecutors.getInstance().diskIO()
                     .execute(() -> mViewModel.toggleCoin(coin));
+        }
+    };
+
 
     private void enterSearch() {
         isInSearch = true;

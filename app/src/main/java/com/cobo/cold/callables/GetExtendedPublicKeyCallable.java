@@ -35,16 +35,10 @@ public class GetExtendedPublicKeyCallable implements Callable<String> {
 
 
     public GetExtendedPublicKeyCallable(String pubKeyPath) {
-        this.pubKeyPath = pubKeyPath;
         this.curve = getCurveByPath(pubKeyPath);
+        this.pubKeyPath = curve == Coins.CURVE.SR25519 ? pubKeyPath : pubKeyPath.toUpperCase();
         isMainWallet = Utilities.getCurrentBelongTo(MainApplication.getApplication()).equals("main");
     }
-    public GetExtendedPublicKeyCallable(String pubKeyPath, Coins.CURVE curve) {
-        this.pubKeyPath = pubKeyPath;
-        this.curve = curve;
-        isMainWallet = Utilities.getCurrentBelongTo(MainApplication.getApplication()).equals("main");
-    }
-
 
     @Override
     public String call() {
@@ -52,7 +46,7 @@ public class GetExtendedPublicKeyCallable implements Callable<String> {
                 new Packet.Builder(CONSTANTS.METHODS.GET_EXTENDED_PUBLICKEY)
                         .addBytePayload(CONSTANTS.TAGS.CURVE, getCurveTag())
                         .addBytePayload(CONSTANTS.TAGS.WALLET_FLAG, isMainWallet? 0 : 0x50)
-                        .addTextPayload(CONSTANTS.TAGS.PATH, pubKeyPath.toUpperCase()).build());
+                        .addTextPayload(CONSTANTS.TAGS.PATH, pubKeyPath).build());
 
         final Packet result;
         try {
@@ -78,6 +72,9 @@ public class GetExtendedPublicKeyCallable implements Callable<String> {
                 break;
             case ED25519:
                 value = 2;
+                break;
+            case SR25519:
+                value = 3;
                 break;
         }
 

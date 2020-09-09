@@ -18,6 +18,7 @@
 package com.cobo.coinlib.v8;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -56,6 +57,12 @@ public class CoinImpl implements Coin {
         if (coinCode.equals(Coins.XTN.coinCode())) {
             this.v8 = ScriptLoader.sInstance.loadByCoinCode(Coins.BTC.coinCode());
             this.coin = v8.executeObjectScript("new " + Coins.BTC.coinCode() + "(\"testNet\")");
+        } else if(coinCode.equals("DOT")){
+            this.v8 = ScriptLoader.sInstance.loadByCoinCode(coinCode);
+            this.coin = v8.executeObjectScript("new DOT()");
+        } else if(coinCode.equals("KSM")){
+            this.v8 = ScriptLoader.sInstance.loadByCoinCode("DOT");
+            this.coin = v8.executeObjectScript("new DOT(\"Kusama\")");
         } else {
             this.v8 = ScriptLoader.sInstance.loadByCoinCode(coinCode);
             this.coin = v8.executeObjectScript("new " + coinCode + "()");
@@ -64,6 +71,9 @@ public class CoinImpl implements Coin {
         v8.registerResource(coin);
     }
 
+    public SignTxResult signTxImpl(String signFunc, Signer... signers) {
+        return this.signTxImpl(null,signFunc,signers);
+    }
     /**
      * sign a tx
      *
@@ -71,7 +81,7 @@ public class CoinImpl implements Coin {
      * @param signers signers,utxo coins transaction may need multi for 1 transaction
      * @return SignTxResult
      */
-    protected SignTxResult signTxImpl(V8Object txData, String signFunc, Signer... signers) {
+    public SignTxResult signTxImpl(V8Object txData, String signFunc, Signer... signers) {
         if (this.signTxFunction == null) {
             this.signTxFunction = (V8Function) coin.get(signFunc);
         }
