@@ -127,14 +127,38 @@ public class SetupVaultViewModel extends AndroidViewModel {
         return Bip39.validateMnemonic(mnemonic);
     }
 
+    public void enableDot(String mnemonic) {
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            vaultCreateState.postValue(VAULT_STATE_CREATING);
+            if (new WriteMnemonicCallable(mnemonic, password).call()) {
+                vaultId = new GetVaultIdCallable().call();
+                vaultCreateState.postValue(VAULT_STATE_CREATED);
+                password = null;
+            } else {
+                vaultCreateState.postValue(VAULT_STATE_CREATING_FAILED);
+            }
+        });
+    }
+
+    public void toggleCoin(String coinCode) {
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            CoinEntity entity = mRepository.loadCoinSync(Coins.coinIdFromCoinCode(coinCode));
+            entity.setShow(!entity.isShow());
+            mRepository.updateCoin(entity);
+        });
+    }
+
     public void writeMnemonic(String mnemonic) {
         AppExecutors.getInstance().diskIO().execute(() -> {
             vaultCreateState.postValue(VAULT_STATE_CREATING);
-            new WriteMnemonicCallable(mnemonic, password).call();
-            vaultId = new GetVaultIdCallable().call();
-            mRepository.clearDb();
-            vaultCreateState.postValue(VAULT_STATE_CREATED);
-            password = null;
+            if (new WriteMnemonicCallable(mnemonic, password).call()) {
+                vaultId = new GetVaultIdCallable().call();
+                mRepository.clearDb();
+                vaultCreateState.postValue(VAULT_STATE_CREATED);
+                password = null;
+            } else {
+                vaultCreateState.postValue(VAULT_STATE_CREATING_FAILED);
+            }
         });
     }
 
@@ -234,19 +258,29 @@ public class SetupVaultViewModel extends AndroidViewModel {
             for (CoinEntity coin : coins) {
                 CoinEntity coinEntity = mRepository.loadCoinSync(coin.getCoinId());
                 if (coinEntity != null) {
-                    continue;
+                    List<AccountEntity> accountEntities = mRepository.loadAccountsForCoin(coinEntity);
+                    if (accountEntities.size() != 0) {
+                        continue;
+                    }
                 }
                 String xPub = new GetExtendedPublicKeyCallable(coin.getAccounts().get(0).getHdPath()).call();
                 coin.setExPub(xPub);
-                long id = mRepository.insertCoin(coin);
-                coin.setId(id);
+                if (coinEntity == null) {
+                    long id = mRepository.insertCoin(coin);
+                    coin.setId(id);
+                } else {
+                    coin.setId(coinEntity.getId());
+                }
                 boolean isFirstAccount = true;
                 for (AccountEntity account : coin.getAccounts()) {
                     if (!isFirstAccount) {
                         xPub = new GetExtendedPublicKeyCallable(account.getHdPath()).call();
                     }
                     isFirstAccount = false;
-                    account.setCoinId(id);
+                    if (TextUtils.isEmpty(xPub)) {
+                        continue;
+                    }
+                    account.setCoinId(coin.getId());
                     account.setExPub(xPub);
                     mRepository.insertAccount(account);
                     if (!Coins.showPublicKey(coin.getCoinCode())) {

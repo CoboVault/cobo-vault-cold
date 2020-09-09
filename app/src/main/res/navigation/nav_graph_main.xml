@@ -119,6 +119,29 @@
             app:popUpTo="@id/assetListFragment"
             app:popUpToInclusive="false"
             app:launchSingleTop="true" />
+
+        <action
+            android:id="@+id/action_to_selectMnomenicCountFragment"
+            app:destination="@id/selectMnomenicCountFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/selectMnomenicCountFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.SelectMnomenicCountFragment"
+        android:label="SelectMnomenicCountFragment"
+        tools:layout="@layout/select_mnemonic_count">
+        <action
+            android:id="@+id/action_to_mnemonicInputFragment"
+            app:destination="@id/mnemonicInputFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/settingFragment"

@@ -35,6 +35,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.cobo.coinlib.utils.Coins.DOT;
+import static com.cobo.coinlib.utils.Coins.KSM;
+
 public class DataRepository {
     private static DataRepository sInstance;
 
@@ -115,6 +118,9 @@ public class DataRepository {
     }
 
     public AddressEntity loadAddressBypath(String path) {
+        if ( path.equals(DOT.getAccounts()[0])|| path.equals(KSM.getAccounts()[0])) {
+            return mDb.addressDao().loadAddress(path, getBelongTo());
+        }
         return mDb.addressDao().loadAddress(path.toUpperCase(), getBelongTo());
     }
 

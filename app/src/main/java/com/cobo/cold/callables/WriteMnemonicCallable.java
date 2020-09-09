@@ -19,12 +19,13 @@ package com.cobo.cold.callables;
 
 import androidx.annotation.NonNull;
 
+import com.cobo.coinlib.MnemonicUtils;
 import com.cobo.cold.encryption.interfaces.CONSTANTS;
 import com.cobo.cold.encryptioncore.base.Packet;
 
 import java.util.concurrent.Callable;
 
-public class WriteMnemonicCallable implements Callable<String> {
+public class WriteMnemonicCallable implements Callable<Boolean> {
 
     private final String mnemonic;
     private final String password;
@@ -35,17 +36,19 @@ public class WriteMnemonicCallable implements Callable<String> {
     }
 
     @Override
-    public String call() {
+    public Boolean call() {
         try {
             final Packet packet = new Packet.Builder(CONSTANTS.METHODS.WRITE_MNEMONIC)
                     .addTextPayload(CONSTANTS.TAGS.MNEMONIC, mnemonic)
+                    .addBytesPayload(CONSTANTS.TAGS.ENTROPY, MnemonicUtils.generateEntropy(mnemonic))
                     .addHexPayload(CONSTANTS.TAGS.CURRENT_PASSWORD, password)
                     .build();
             final Callable<Packet> callable = new BlockingCallable(packet);
             callable.call();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return false;
     }
 }

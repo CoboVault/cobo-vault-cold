@@ -21,6 +21,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.eclipsesource.v8.V8;
 
@@ -81,7 +82,7 @@ public class ScriptLoader {
         return null;
     }
 
-    private String readAsset(AssetManager am, String fileName) {
+    public static String readAsset(AssetManager am, String fileName) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             InputStream inputStream = am.open(fileName);

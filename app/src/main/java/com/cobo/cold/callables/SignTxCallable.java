@@ -71,7 +71,9 @@ public class SignTxCallable implements Callable<String> {
         final byte[] signS = Arrays.copyOfRange(signBytes, 32, 64);
 
         final BigInteger publicKeyInt = new BigInteger(publicKey, 16);
-        final int recId = Signature.getRecoverIdFromSignature(publicKeyInt, new BigInteger(1, signR), new BigInteger(1, signS), Hex.decode(hash));
+        final int recId = Signature.getRecoverIdFromSignature(publicKeyInt,
+                new BigInteger(1, signR),
+                new BigInteger(1, signS), Hex.decode(hash));
         final byte[] signBytesWithRecId = new byte[signBytes.length + 1];
 
         System.arraycopy(signBytes, 0, signBytesWithRecId, 0, signBytes.length);
@@ -108,14 +110,18 @@ public class SignTxCallable implements Callable<String> {
     }
 
     private Coins.CURVE getCurveByPath(String pubKeyPath) {
-        String[] strs = pubKeyPath.split("/");
-        int coinIndex;
-        if (strs[2].endsWith("'")) {
-            coinIndex = Integer.parseInt(strs[2].substring(0, strs[2].length() - 1));
-        } else {
-            coinIndex = Integer.parseInt(strs[2]);
+        try {
+            String[] strs = pubKeyPath.split("/");
+            int coinIndex;
+            if (strs[2].endsWith("'")) {
+                coinIndex = Integer.parseInt(strs[2].substring(0, strs[2].length() - 1));
+            } else {
+                coinIndex = Integer.parseInt(strs[2]);
+            }
+            return Coins.curveFromCoinCode(Coins.coinCodeOfIndex(coinIndex));
+        }catch (Exception e) {
+            return Coins.CURVE.SR25519;
         }
-        return Coins.curveFromCoinCode(Coins.coinCodeOfIndex(coinIndex));
     }
 
     private int getCurveTag() {
@@ -128,6 +134,9 @@ public class SignTxCallable implements Callable<String> {
                 break;
             case ED25519:
                 value = 2;
+                break;
+            case SR25519:
+                value = 3;
                 break;
         }
 

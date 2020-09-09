@@ -28,6 +28,7 @@ import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
 public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMnemonicCountBinding> {
 
     private boolean checkMnemonic;
+    private boolean enableDot;
 
     @Override
     protected int setView() {
@@ -43,14 +44,14 @@ public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMn
         Bundle bundle = getArguments();
         if (bundle != null) {
             checkMnemonic = bundle.getBoolean("checkMnemonic");
-
+            enableDot = bundle.getBoolean("enableDot");
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (checkMnemonic) {
+        if (checkMnemonic || enableDot) {
             viewModel.setMnemonicCount(24);
         }
     }
@@ -61,7 +62,10 @@ public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMn
             getArguments().putInt("mnemonicCount", viewModel.getMnemonicCount().get());
             navigate(R.id.action_to_verifyMnemonic, getArguments());
         } else {
-            navigate(R.id.action_to_mnemonicInputFragment);
+            if (enableDot) {
+                getArguments().putInt("mnemonicCount", viewModel.getMnemonicCount().get());
+            }
+            navigate(R.id.action_to_mnemonicInputFragment, getArguments());
         }
 
     }

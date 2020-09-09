@@ -95,11 +95,15 @@ public class ByteFormatter {
 
     @NonNull
     public static byte[] hex2bytes(@Nullable String str) {
-        final int length;
+        int length;
 
-        if (str == null || (length = str.length()) == 0) {
+        if (str == null || str.length() == 0) {
             return new byte[0];
-        } else if ((length & 0x01) == 1) {
+        }
+
+        str = str.replace("0x","");
+        length = str.length();
+        if ((length & 0x01) == 1) {
             throw new ByteFormatException("hex2bytes: the length of string must be even number");
         } else if (!HEX_PATTERN.matcher(str).matches()) {
             throw new ByteFormatException(String.format("hex2bytes: [%s] has illegal character", str));

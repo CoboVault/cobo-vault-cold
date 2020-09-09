@@ -19,6 +19,7 @@ package com.cobo.coinlib.utils;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -35,9 +36,13 @@ public class Coins {
     public static final Coin DCR = new Coin("dcr", "DCR", "Dcr", 42);
     public static final Coin XZC = new Coin("zcoin", "XZC", "Zcoin", 136);
     public static final Coin XRP = new Coin("ripple", "XRP", "Ripple", 144);
-    public static final Coin IOST = new Coin("iost", "IOST", "IOST", 291, CURVE.ED25519);
+    public static final Coin IOST = new Coin("iost", "IOST", "IOST", 291, CURVE.ED25519,new String[]{""});
     public static final Coin EOS = new Coin("eos", "EOS", "EOS", 194);
     public static final Coin XTN = new Coin("xtn", "XTN", "XTN", 1);
+    public static final Coin DOT = new Coin("polkadot", "DOT", "Polkadot", 354, CURVE.SR25519,
+            new String[]{"//polkadot"});
+    public static final Coin KSM = new Coin("kusama", "KSM", "Kusama", 434, CURVE.SR25519,
+            new String[]{"//kusama"});
 
     public static final List<Coin> SUPPORTED_COINS = Arrays.asList(
             BTC,
@@ -51,7 +56,9 @@ public class Coins {
             XZC,
             XRP,
             IOST,
-            EOS
+            EOS,
+            DOT,
+            KSM
     );
 
     public static boolean isCoinSupported(@NonNull String coinCode) {
@@ -112,18 +119,20 @@ public class Coins {
         private final String coinName;
         private final int coinIndex;
         private final CURVE curve;
+        private String[] accounts;
 
 
         public Coin(String coinId, String coinCode, String coinName, int coinIndex) {
-            this(coinId, coinCode, coinName, coinIndex, CURVE.SECP256K1);
+            this(coinId, coinCode, coinName, coinIndex, CURVE.SECP256K1, new String[]{});
         }
 
-        public Coin(String coinId, String coinCode, String coinName, int coinIndex, CURVE curve) {
+        public Coin(String coinId, String coinCode, String coinName, int coinIndex, CURVE curve, String[] accounts) {
             this.coinId = coinId;
             this.coinCode = coinCode;
             this.coinName = coinName;
             this.coinIndex = coinIndex;
             this.curve = curve;
+            this.accounts = accounts;
         }
 
         public String
@@ -146,12 +155,17 @@ public class Coins {
         public CURVE curve() {
             return curve;
         }
+
+        public String[] getAccounts() {
+            return accounts;
+        }
     }
 
     public enum CURVE {
         ED25519,
         SECP256K1,
-        SECP256R1
+        SECP256R1,
+        SR25519
     }
 
     public static int purposeNumber(String coinCode) {
@@ -173,6 +187,10 @@ public class Coins {
             default:
                 return false;
         }
+    }
+
+    public static boolean isPolkadotFamily(String coinCode) {
+        return coinCode.equals(DOT.coinCode) || coinCode.equals(KSM.coinCode);
     }
 
 }

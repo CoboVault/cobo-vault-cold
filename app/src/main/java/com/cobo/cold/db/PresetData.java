@@ -28,6 +28,9 @@ import com.cobo.cold.db.entity.CoinEntity;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.cobo.coinlib.utils.Coins.DOT;
+import static com.cobo.coinlib.utils.Coins.KSM;
+
 public class PresetData {
 
     public static List<CoinEntity> generateCoins(Context context) {
@@ -51,7 +54,9 @@ public class PresetData {
                 .account(0)
                 .toString();
 
-        if (Coins.CURVE.ED25519 == getCurveByPath(defaultHdPath)) {
+        if (Coins.isPolkadotFamily(coin.coinCode())) {
+            defaultHdPath = coin.getAccounts()[0];
+        } else if (Coins.CURVE.ED25519 == getCurveByPath(defaultHdPath)) {
             defaultHdPath += "/0'/0'";
         }
         account.setHdPath(defaultHdPath);
@@ -60,6 +65,10 @@ public class PresetData {
     }
 
     public static Coins.CURVE getCurveByPath(String pubKeyPath) {
+        if (pubKeyPath.equals(DOT.getAccounts()[0])
+                || pubKeyPath.equals(KSM.getAccounts()[0])) {
+            return Coins.CURVE.SR25519;
+        }
         String[] strs = pubKeyPath.split("/");
         int coinIndex;
         if (strs[2].endsWith("'")) {

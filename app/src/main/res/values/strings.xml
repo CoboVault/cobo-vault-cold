@@ -364,5 +364,10 @@
     <string name="notice1">Notice</string>
     <string name="default_vault_notice">You have successfully upgraded to the latest version. To protect your assets, the Vault automatically resets to the default vault every time the device is restarted. (Also when it upgrades, shuts down or is restarted.)</string>
     <string name="switching_to_main_vault">Entering the default vault, please keep screen on.</string>
+    <string name="add_polkadot_hint">You need to enter the recovery phrase of this vault when adding %s. For details, please visit: https://cobo.com/polkadot</string>
+    <string name="add_later">Not Add</string>
+    <string name="comfirm_add">Confirm Add</string>
+    <string name="mnemonic_not_match">The entered recovery phrase does not match the one in the Cobo Vault. Please try again.</string>
+    <string name="adding_dot_hint">Adding %s, please keep screen on</string>
 
 </resources>

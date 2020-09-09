@@ -46,6 +46,8 @@ public abstract class Signer {
             case "IOST":
             case "XZC":
             case "DCR":
+            case "DOT":
+            case "KSM":
                 return true;
             default:
                 return false;
