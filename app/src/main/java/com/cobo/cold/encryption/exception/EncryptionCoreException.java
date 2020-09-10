@@ -59,6 +59,8 @@ public class EncryptionCoreException extends RuntimeException {
         mDefineMap.put(0x030b,	"ERT_CKD_Fail");
         mDefineMap.put(0x030c,	"ERT_MnemonicNotMatch");
         mDefineMap.put(0x030d,	"ERT_CoinTypeInvalid");
+        mDefineMap.put(0x030e,	"ERT_SignFail");
+        mDefineMap.put(0x030f,	"ERT_VerifyFail");
         mDefineMap.put(0x0400,	"ERT_CMD_FAIL");
         mDefineMap.put(0x0401,	"ERT_NeedPreCMD");
         mDefineMap.put(0x0402,	"ERT_MsgNeedEncrypt");
