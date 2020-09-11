@@ -28,6 +28,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -50,8 +51,8 @@ public class WorkshopTest {
     @Test
     public void call() throws Exception {
         final byte[] outputBytes = new byte[]{
-                0x02, 0x00, 0x00, 0x0b, 0x00, 0x01, 0x00, 0x02, 0x01, 0x03,
-                0x00, 0x04, 0x00, 0x01, 0x00, 0x03, 0x0e
+                0x02, 0x00, 0x00, 0x06, 0x00, 0x01, 0x00, 0x02, 0x01, 0x03,
+                 0x03, 0x06
         };
 
         final byte[] inputBytes = new byte[]{

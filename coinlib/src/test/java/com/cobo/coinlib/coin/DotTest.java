@@ -34,6 +34,6 @@ public class DotTest {
         String expub = "xpub69XF3sp9ePvENHmDenwg9humjwqtKuZbZ8go4p8qTpQWn1SFzXTT8DhMtPX66T6sPpaZjtdQrB7cqu3mcrn7Dch85GVrc9grt3n3AvC9BVb";
         System.out.println(Hex.toHexString(Base58.decode("16iM7BVPSvuJnjMW5T7rGWv4PTvgybD5sUS1zZyQkEf7DMHY")));
         String addr = new Dot.Deriver().derive(expub);
-        assertEquals("11sHTseKbdeCgJRCNoioA6GbGGpTHnwbyffn3TGpmsiVryf",addr);
+        assertEquals("1vQAnWwUYeEnoF1yK51ZmHpaVRs6inHHEJhzJto3xgqe4pF",addr);
     }
 }
