@@ -53,7 +53,7 @@ import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING_F
 public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputFragmentBinding> {
 
     protected ModalDialog dialog;
-    private boolean isEnbaleDot;
+    private boolean isEnableDot;
 
     @Override
     protected int setView() {
@@ -65,7 +65,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
         super.init(view);
         Bundle data = getArguments();
         if (data != null) {
-            isEnbaleDot = data.getBoolean("enableDot");
+            isEnableDot = data.getBoolean("enableDot");
             viewModel.setPassword(data.getString(PASSWORD));
         }
         mBinding.setViewModel(viewModel);
@@ -109,7 +109,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                     if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
                         dialog.dismiss();
                     }
-                    if (isEnbaleDot) {
+                    if (isEnableDot) {
                         String coinCode = Objects.requireNonNull(getArguments()).getString("coinCode");
                         viewModel.toggleCoin(coinCode);
                         popBackStack(R.id.manageCoinFragment,false);
@@ -137,7 +137,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                 .reduce((s1, s2) -> s1 + " " + s2)
                 .orElse("");
         if (viewModel.validateMnemonic(mnemonic)) {
-            if (isEnbaleDot) {
+            if (isEnableDot) {
                 boolean match = new VerifyMnemonicCallable(mnemonic).call();
                 if (match) {
                     viewModel.enableDot(mnemonic);
@@ -169,7 +169,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
         dialog = ModalDialog.newInstance();
         dialog.setBinding(binding);
         dialog.show(mActivity.getSupportFragmentManager(), "");
-        if (isEnbaleDot) {
+        if (isEnableDot) {
             String coinCode = Objects.requireNonNull(getArguments()).getString("coinCode");
             binding.text.setText(getString(R.string.adding_dot_hint,coinCode));
         } else {
