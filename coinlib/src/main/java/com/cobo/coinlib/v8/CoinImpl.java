@@ -237,6 +237,7 @@ public class CoinImpl implements Coin {
 
     @Override
     public void generateTransaction(@NonNull AbsTx tx, SignCallback callback, Signer... signers) {
+        Log.w("Vault.generateTransaction","txData = " + tx.getMetaData());
         V8Object txData = constructTxData(tx.getMetaData());
         SignTxResult res = signTxImpl(txData, "generateTransactionSync", signers);
         if (res != null && res.isValid()) {

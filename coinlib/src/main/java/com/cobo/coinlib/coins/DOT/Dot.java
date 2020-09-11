@@ -50,7 +50,19 @@ public class Dot extends AbsCoin {
         protected void parseMetaData() throws JSONException {
             to = metaData.getString("dest");
             amount = metaData.getLong("value") / Math.pow(10, decimal);
-            fee = metaData.getLong("tip") / Math.pow(10, decimal);
+            fee = metaData.optLong("tip",0) / Math.pow(10, decimal);
+
+            if (!metaData.has("nonce")) {
+                metaData.put("nonce",0);
+            }
+            if (!metaData.has("implVersion")) {
+                metaData.put("implVersion",0);
+            }
+            if (!metaData.has("authoringVersion")) {
+                metaData.put("authoringVersion",0);
+            }
+            metaData.put("eraPeriod",4096);
+
         }
 
         @Override
