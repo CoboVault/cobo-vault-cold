@@ -79,7 +79,11 @@ public abstract class FilterableBaseBindingAdapter<M extends FilterableItem, B e
             @Override
             @SuppressWarnings("unchecked")
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                items = (ArrayList<M>) filterResults.values;
+                if (filterResults.values == null) {
+                    items = new ArrayList<>();
+                } else {
+                    items = (ArrayList<M>) filterResults.values;
+                }
                 notifyDataSetChanged();
             }
         };
