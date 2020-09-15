@@ -26,6 +26,7 @@ import android.view.View;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
+import androidx.lifecycle.MutableLiveData;
 
 import com.cobo.coinlib.WordList;
 import com.cobo.cold.R;
@@ -38,7 +39,6 @@ import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.util.Keyboard;
-import com.cobo.cold.viewmodel.SetupVaultViewModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +49,7 @@ import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATED;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING_FAILED;
+import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_NOT_CREATE;
 
 public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputFragmentBinding> {
 
@@ -69,7 +70,10 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
             viewModel.setPassword(data.getString(PASSWORD));
         }
         mBinding.setViewModel(viewModel);
-        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+        mBinding.toolbar.setNavigationOnClickListener(v -> {
+            Keyboard.hide(mActivity,mBinding.table);
+            navigateUp();
+        });
         mBinding.table.setMnemonicNumber(viewModel.getMnemonicCount().get());
         mBinding.importMnemonic.setOnClickListener(v -> {
             Keyboard.hide(mActivity, mBinding.importMnemonic);
@@ -88,18 +92,20 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                         }
                     }
                 }));
-        subscribeVaultState(viewModel);
+        subscribeVaultState(viewModel.getVaultCreateState());
     }
 
     public static boolean isValidWord(String s) {
         return !TextUtils.isEmpty(s) && Arrays.asList(WordList.words).indexOf(s) != -1;
     }
 
-    protected void subscribeVaultState(SetupVaultViewModel viewModel) {
-        viewModel.getVaultCreateState().observe(this, state -> {
+    protected void subscribeVaultState(MutableLiveData<Integer> stateLiveData) {
+        stateLiveData.observe(this, state -> {
             if (state == VAULT_STATE_CREATING) {
                 showModal();
             } else if (state == VAULT_STATE_CREATED) {
+                stateLiveData.setValue(VAULT_STATE_NOT_CREATE);
+                viewModel.getVaultCreateState().removeObservers(this);
                 Utilities.setVaultCreated(mActivity);
                 Utilities.setVaultId(mActivity, viewModel.getVaultId());
                 Utilities.setCurrentBelongTo(mActivity, "main");
@@ -123,6 +129,8 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                 List<CoinEntity> coins = PresetData.generateCoins(mActivity);
                 viewModel.presetData(coins, onComplete);
             } else if (state == VAULT_STATE_CREATING_FAILED) {
+                stateLiveData.setValue(VAULT_STATE_NOT_CREATE);
+                viewModel.getVaultCreateState().removeObservers(this);
                 if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
                     dialog.dismiss();
                 }

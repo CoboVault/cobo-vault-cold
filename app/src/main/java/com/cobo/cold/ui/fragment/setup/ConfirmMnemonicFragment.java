@@ -22,6 +22,7 @@ import android.view.Gravity;
 import android.view.View;
 
 import androidx.databinding.ObservableField;
+import androidx.lifecycle.MutableLiveData;
 
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
@@ -29,13 +30,14 @@ import com.cobo.cold.db.PresetData;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.util.Keyboard;
-import com.cobo.cold.viewmodel.SetupVaultViewModel;
 
 import java.util.List;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATED;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING;
+import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING_FAILED;
+import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_NOT_CREATE;
 
 public class ConfirmMnemonicFragment extends MnemonicInputFragment {
 
@@ -59,12 +61,14 @@ public class ConfirmMnemonicFragment extends MnemonicInputFragment {
     }
 
     @Override
-    protected void subscribeVaultState(SetupVaultViewModel viewModel) {
+    protected void subscribeVaultState(MutableLiveData<Integer> stateLiveData) {
         viewModel.getVaultCreateState().observe(this, state -> {
 
             if (state == VAULT_STATE_CREATING) {
                 showModal();
             } else if (state == VAULT_STATE_CREATED) {
+                stateLiveData.setValue(VAULT_STATE_NOT_CREATE);
+                viewModel.getVaultCreateState().removeObservers(this);
                 Utilities.setVaultCreated(mActivity);
                 Utilities.setVaultId(mActivity, viewModel.getVaultId());
                 Utilities.setCurrentBelongTo(mActivity, "main");
@@ -82,6 +86,12 @@ public class ConfirmMnemonicFragment extends MnemonicInputFragment {
 
                 List<CoinEntity> coins = PresetData.generateCoins(mActivity);
                 viewModel.presetData(coins, onComplete);
+            } else if (state == VAULT_STATE_CREATING_FAILED) {
+                stateLiveData.setValue(VAULT_STATE_NOT_CREATE);
+                viewModel.getVaultCreateState().removeObservers(this);
+                if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
+                    dialog.dismiss();
+                }
             }
         });
     }

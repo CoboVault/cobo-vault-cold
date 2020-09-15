@@ -338,9 +338,10 @@
     <string name="notice1">提示</string>
     <string name="default_vault_notice">您已升级到新版本，为了您的资产安全，设备每次重启后（包括升级、断电重启、关机重启等）将进入默认金库。</string>
     <string name="switching_to_main_vault">正在进入默认金库，请勿锁屏</string>
-    <string name="add_polkadot_hint">添加%s，您需要先输入当前金库的助记词。具体原因访问：https://cobo.com/polkadot</string>
+    <string name="add_polkadot_hint">添加%s，您需要再次输入当前金库的助记词。具体原因访问：https://cobo.com/%s</string>
     <string name="add_later">暂不添加</string>
     <string name="comfirm_add">确认添加</string>
     <string name="mnemonic_not_match">输入的助记词和当前金库的不一致，请重新输入。</string>
     <string name="adding_dot_hint">正在添加%s，请勿锁屏</string>
+    <string name="dot_tip">小费</string>
 </resources>

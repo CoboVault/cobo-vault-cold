@@ -52,7 +52,7 @@ import java.util.concurrent.Executors;
 
 public class SetupVaultViewModel extends AndroidViewModel {
 
-    private static final int VAULT_STATE_NOT_CREATE = 0;
+    public static final int VAULT_STATE_NOT_CREATE = 0;
     public static final int VAULT_STATE_CREATING = 1;
     public static final int VAULT_STATE_CREATED = 2;
     public static final int VAULT_STATE_CREATING_FAILED = 3;
