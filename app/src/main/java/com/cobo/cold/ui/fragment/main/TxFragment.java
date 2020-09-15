@@ -98,6 +98,8 @@ public class TxFragment extends BaseFragment<TxBinding> {
         if (txEntity.getCoinCode().equals(Coins.EOS.coinCode())
                 || txEntity.getCoinCode().equals(Coins.IOST.coinCode())) {
             mBinding.txDetail.feeInfo.setVisibility(View.GONE);
+        } else if (Coins.isPolkadotFamily(txEntity.getCoinCode())) {
+            mBinding.txDetail.feeLabel.setText(R.string.dot_tip);
         }
     }
 

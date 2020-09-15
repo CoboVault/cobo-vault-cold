@@ -30,6 +30,7 @@ import android.widget.EditText;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
+import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.Navigation;
 
 import com.cobo.cold.R;
@@ -44,7 +45,6 @@ import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.ui.fragment.setup.SetupVaultBaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.util.Keyboard;
-import com.cobo.cold.viewmodel.SetupVaultViewModel;
 
 import java.util.List;
 
@@ -55,6 +55,7 @@ import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.SIGNATURE;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATED;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING_FAILED;
+import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_NOT_CREATE;
 
 public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding> {
 
@@ -123,7 +124,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
     private void updatePassphrase() {
         viewModel.setPassword(getArguments().getString(PASSWORD));
         viewModel.setSignature(getArguments().getString(SIGNATURE));
-        subscribeVaultState(viewModel);
+        subscribeVaultState(viewModel.getVaultCreateState());
         viewModel.updatePassphrase(passphrase1.get());
     }
 
@@ -145,8 +146,8 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
 
     }
 
-    private void subscribeVaultState(SetupVaultViewModel viewModel) {
-        viewModel.getVaultCreateState().observe(this, state -> {
+    private void subscribeVaultState(MutableLiveData<Integer> stateLiveData) {
+        stateLiveData.observe(this, state -> {
             if (state == VAULT_STATE_CREATING) {
                 showModal();
             } else if (state == VAULT_STATE_CREATED) {
@@ -154,8 +155,8 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                 Utilities.setVaultId(mActivity, viewModel.getVaultId());
                 Utilities.setCurrentBelongTo(mActivity,
                         TextUtils.isEmpty(passphrase1.get()) ? "main" : "hidden");
+                stateLiveData.setValue(VAULT_STATE_NOT_CREATE);
                 viewModel.getVaultCreateState().removeObservers(this);
-
                 if (TextUtils.isEmpty(passphrase1.get())) {
                     if (dialog != null && dialog.getDialog() != null
                             && dialog.getDialog().isShowing()) {
@@ -180,6 +181,7 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                 }
 
             } else if (state == VAULT_STATE_CREATING_FAILED) {
+                stateLiveData.setValue(VAULT_STATE_NOT_CREATE);
                 viewModel.getVaultCreateState().removeObservers(this);
                 if (dialog != null && dialog.getDialog() != null
                         && dialog.getDialog().isShowing()) {

@@ -204,7 +204,7 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
                     R.layout.modal_with_two_button,
                     null,false);
             binding.title.setText(R.string.notice1);
-            binding.subTitle.setText(getString(R.string.add_polkadot_hint, coin.getCoinCode()));
+            binding.subTitle.setText(getString(R.string.add_polkadot_hint, coin.getCoinCode(),coin.getCoinCode().toLowerCase()));
             binding.left.setText(R.string.add_later);
             binding.left.setOnClickListener(v -> dialog.dismiss());
             binding.right.setText(R.string.comfirm_add);
