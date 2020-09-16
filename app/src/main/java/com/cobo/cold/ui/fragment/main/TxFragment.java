@@ -30,6 +30,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.cobo.coinlib.coins.BCH.Bch;
 import com.cobo.coinlib.coins.LTC.Ltc;
+import com.cobo.coinlib.utils.Arith;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.TxBinding;
@@ -133,6 +134,15 @@ public class TxFragment extends BaseFragment<TxBinding> {
 
     private void refreshReceiveList() {
         String to = txEntity.getTo();
+        if (Coins.isPolkadotFamily(txEntity.getCoinCode())) {
+            double amount = Double.parseDouble(txEntity.getAmount().split(" ")[0]);
+            double tip = Double.parseDouble(txEntity.getFee().split(" ")[0]);
+            double value = Arith.sub(amount, tip);
+            mBinding.txDetail.info.setText(value + " " +txEntity.getCoinCode() + "\n" + to);
+            return;
+        } else {
+            mBinding.txDetail.info.setText(to.replace(",","\n\n"));
+        }
         List<TransactionItem> items = new ArrayList<>();
         try {
             JSONArray outputs = new JSONArray(to);

@@ -212,7 +212,6 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginVertical="14dp"
                 android:layout_marginEnd="16dp"
-                android:text='@{tx.to.replaceAll(",","\n\n")}'
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 tools:text="19zhQ 2rKq Xm5r y1pj Co83 JbBK 5zUr bdKgc" />
