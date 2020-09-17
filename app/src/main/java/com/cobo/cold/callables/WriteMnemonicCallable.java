@@ -19,6 +19,7 @@ package com.cobo.cold.callables;
 
 import androidx.annotation.NonNull;
 
+import com.cobo.coinlib.MnemonicUtils;
 import com.cobo.cold.encryption.interfaces.CONSTANTS;
 import com.cobo.cold.encryptioncore.base.Packet;
 
@@ -39,6 +40,7 @@ public class WriteMnemonicCallable implements Callable<String> {
         try {
             final Packet packet = new Packet.Builder(CONSTANTS.METHODS.WRITE_MNEMONIC)
                     .addTextPayload(CONSTANTS.TAGS.MNEMONIC, mnemonic)
+                    .addBytesPayload(CONSTANTS.TAGS.ENTROPY, MnemonicUtils.generateEntropy(mnemonic))
                     .addHexPayload(CONSTANTS.TAGS.CURRENT_PASSWORD, password)
                     .build();
             final Callable<Packet> callable = new BlockingCallable(packet);
