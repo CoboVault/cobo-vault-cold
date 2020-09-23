@@ -84,6 +84,9 @@ public class Tcfx extends AbsCoin implements Coin {
                 if (!TextUtils.isEmpty(memo) && !enableMemo) {
                     metaData.put("memo", "");
                 }
+                if (!metaData.has("nonce")) {
+                    metaData.put("nonce", 0);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
