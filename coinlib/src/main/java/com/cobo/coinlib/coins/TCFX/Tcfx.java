@@ -50,7 +50,7 @@ public class Tcfx extends AbsCoin implements Coin {
 
     @Override
     public String coinCode() {
-        return Coins.ETH.coinCode();
+        return Coins.TCFX.coinCode();
     }
 
     public static class Tx extends AbsTx {
