@@ -36,6 +36,7 @@ import com.cobo.cold.callables.GetRandomEntropyCallable;
 import com.cobo.cold.callables.GetVaultIdCallable;
 import com.cobo.cold.callables.RestartSeCallable;
 import com.cobo.cold.callables.UpdatePassphraseCallable;
+import com.cobo.cold.callables.VerifyMnemonicCallable;
 import com.cobo.cold.callables.WebAuthCallable;
 import com.cobo.cold.callables.WriteMnemonicCallable;
 import com.cobo.cold.db.entity.AccountEntity;
@@ -44,14 +45,27 @@ import com.cobo.cold.util.HashUtil;
 
 import org.spongycastle.util.encoders.Hex;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import iton.slip.secret.Group;
+import iton.slip.secret.Share;
+import iton.slip.secret.SharedSecret;
+import iton.slip.secret.SharedSecretException;
+import iton.slip.secret.words.Mnemonic;
+
+import static com.cobo.cold.mnemonic.MnemonicInputTable.THIRTYTHREE;
+import static com.cobo.cold.mnemonic.MnemonicInputTable.TWEENTY;
+
 public class SetupVaultViewModel extends AndroidViewModel {
 
-    private static final int VAULT_STATE_NOT_CREATE = 0;
+    public static final int VAULT_STATE_NOT_CREATE = 0;
     public static final int VAULT_STATE_CREATING = 1;
     public static final int VAULT_STATE_CREATED = 2;
     public static final int VAULT_STATE_CREATING_FAILED = 3;
@@ -62,6 +76,10 @@ public class SetupVaultViewModel extends AndroidViewModel {
     private final ObservableField<Integer> mnemonicCount = new ObservableField<>(24);
     private final MutableLiveData<Integer> vaultCreateState = new MutableLiveData<>(VAULT_STATE_NOT_CREATE);
     private final MutableLiveData<String> mnemonic = new MutableLiveData<>("");
+    private List<String> shares;
+    private int sequence = 0;
+    public Share firstShare;
+    private boolean isShardingMnemonic;
     private String vaultId;
 
     private final DataRepository mRepository;
@@ -111,10 +129,12 @@ public class SetupVaultViewModel extends AndroidViewModel {
     }
 
     public void setMnemonicCount(int mnemonicCount) {
+        isShardingMnemonic = mnemonicCount == TWEENTY || mnemonicCount == THIRTYTHREE;
         this.mnemonicCount.set(mnemonicCount);
     }
 
     public void setPassword(String password) {
+        if (TextUtils.isEmpty(password)) return;
         this.password = password;
     }
 
@@ -123,18 +143,66 @@ public class SetupVaultViewModel extends AndroidViewModel {
     }
 
     public boolean validateMnemonic(String mnemonic) {
-        return Bip39.validateMnemonic(mnemonic);
+        if (isShardingMnemonic) {
+            try {
+                Mnemonic.INSTANCE.decode(mnemonic);
+            } catch (SharedSecretException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        } else {
+            return Bip39.validateMnemonic(mnemonic);
+        }
     }
 
     public void writeMnemonic(String mnemonic) {
         AppExecutors.getInstance().diskIO().execute(() -> {
             vaultCreateState.postValue(VAULT_STATE_CREATING);
-            new WriteMnemonicCallable(mnemonic, password).call();
-            vaultId = new GetVaultIdCallable().call();
-            mRepository.clearDb();
-            vaultCreateState.postValue(VAULT_STATE_CREATED);
-            password = null;
+            if (new WriteMnemonicCallable(mnemonic, password).call()) {
+                vaultId = new GetVaultIdCallable().call();
+                mRepository.clearDb();
+                vaultCreateState.postValue(VAULT_STATE_CREATED);
+                password = null;
+            } else {
+                vaultCreateState.postValue(VAULT_STATE_CREATING_FAILED);
+            }
         });
+    }
+
+    public void writeShardingMasterSeed() {
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            try {
+                byte[] masterSeed = new SharedSecret().combineWithoutDecrypt(shares.toArray(new String[0]));
+                vaultCreateState.postValue(VAULT_STATE_CREATING);
+                if(new WriteMnemonicCallable(masterSeed,
+                        firstShare.id, firstShare.iteration_exponent, password).call()) {
+                    vaultId = new GetVaultIdCallable().call();
+                    mRepository.clearDb();
+                    vaultCreateState.postValue(VAULT_STATE_CREATED);
+                    password = null;
+                } else {
+                    vaultCreateState.postValue(VAULT_STATE_CREATING_FAILED);
+                }
+            } catch (SharedSecretException | NoSuchAlgorithmException | InvalidKeyException e) {
+                e.printStackTrace();
+            } finally {
+                resetSharding();
+            }
+        });
+    }
+
+    public byte[] verifyShardingMnemonic() {
+        try {
+            byte[] masterSeed = new SharedSecret().combineWithoutDecrypt(shares.toArray(new String[0]));
+
+            if (new VerifyMnemonicCallable(null, masterSeed, firstShare.id).call()) {
+                return masterSeed;
+            }
+        } catch (SharedSecretException | NoSuchAlgorithmException | InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void updatePassphrase(String passphrase) {
@@ -197,6 +265,59 @@ public class SetupVaultViewModel extends AndroidViewModel {
             }
         }
         return hasDigit && hasLowerCase && hasUpperCase;
+    }
+
+    public void generateSlip39Mnemonic(int threshold, int total) {
+        String entropy = new GetRandomEntropyCallable(128).call();
+        SharedSecret sharedSecret = new SharedSecret();
+        try {
+            shares = sharedSecret.generateWithoutEncrypt(Hex.decode(entropy), (byte) 1,
+                    Collections.singletonList(new Group(threshold, total)));
+            firstShare = Mnemonic.INSTANCE.decode(shares.get(0));
+            sequence = 0;
+            if (!MnemonicUtils.isValidateEntropy(Hex.decode(entropy))) {
+                this.mnemonic.postValue("");
+            } else {
+                this.mnemonic.postValue(Bip39.generateMnemonic(entropy));
+            }
+            isShardingMnemonic = true;
+            mnemonicCount.set(TWEENTY);
+        } catch (SharedSecretException | NoSuchAlgorithmException | InvalidKeyException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void nextSequence() {
+        sequence++;
+    }
+
+    public int currentSequence() {
+        return sequence;
+    }
+
+    public int totalShares() {
+        return shares.size();
+    }
+
+    public void resetSharding() {
+        sequence = 0;
+        isShardingMnemonic = false;
+        if (shares!= null) {
+            shares.clear();
+        }
+        firstShare = null;
+    }
+
+    public boolean isShardingMnemonic() {
+        return isShardingMnemonic;
+    }
+
+    public String getShareByIndex(int i) {
+        return shares.get(i);
+    }
+
+    public List<String> getShares() {
+        return shares;
     }
 
     public void generateRandomMnemonic() {
@@ -273,11 +394,45 @@ public class SetupVaultViewModel extends AndroidViewModel {
         return mRepository.reloadCoins();
     }
 
+    public AddShareResult addShare(String share) throws SharedSecretException {
+        if (shares == null || shares.isEmpty()) {
+            shares = new ArrayList<>();
+            shares.add(share);
+            firstShare = Mnemonic.INSTANCE.decode(shares.get(0));
+        } else {
+            if (shares.indexOf(share) != -1) {
+                return AddShareResult.RESULT_REPEAT;
+            } else {
+                Share currentShare = Mnemonic.INSTANCE.decode(share);
+                if (firstShare.id != currentShare.id) {
+                    return AddShareResult.RESULT_NOT_MATCH;
+                } else {
+                    shares.add(share);
+                }
+            }
+        }
+        try {
+            new SharedSecret().combineWithoutDecrypt(shares.toArray(new String[0]));
+        } catch (SharedSecretException | NoSuchAlgorithmException | InvalidKeyException e) {
+            e.printStackTrace();
+            return AddShareResult.RESULT_NEED_MORE;
+        }
+
+        return AddShareResult.RESULT_OK;
+    }
+
     public enum PasswordValidationResult {
         RESULT_OK,
         RESULT_NOT_MATCH,
         RESULT_TOO_SHORT,
         RESULT_INPUT_WRONG,
+    }
+
+    public enum AddShareResult {
+        RESULT_OK,
+        RESULT_NEED_MORE,
+        RESULT_NOT_MATCH,
+        RESULT_REPEAT,
     }
 
 }

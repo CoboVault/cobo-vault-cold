@@ -31,22 +31,28 @@ import androidx.databinding.ObservableField;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cobo.coinlib.WordList;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.MnemonicInputItemBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import iton.slip.secret.words.Words;
+
 public class MnemonicInputTable extends RecyclerView {
 
     public static final int TWELVE = 12;
     public static final int EIGHTEEN = 18;
     public static final int TWEENTYFOUR = 24;
+    public static final int TWEENTY = 20;
+    public static final int THIRTYTHREE = 33;
     private final List<ObservableField<String>> wordsList = new ArrayList<>();
     private int mMnemonicCount = TWEENTYFOUR;
     private MnemonicAdapter mAdapter;
 
     private boolean editable = true;
+    private String[] mnemonicList;
 
     public MnemonicInputTable(@NonNull Context context) {
         this(context, null);
@@ -83,15 +89,24 @@ public class MnemonicInputTable extends RecyclerView {
         return wordsList;
     }
 
+    public String[] getMnemonicList() {
+        return mnemonicList;
+    }
+
     public void setMnemonicNumber(@MnemonicCount int mnemonicType) {
         mMnemonicCount = mnemonicType;
+        if (mnemonicType == TWEENTY || mnemonicType == THIRTYTHREE) {
+            mnemonicList = Words.words;
+        } else {
+            mnemonicList = WordList.words;
+        }
         wordsList.clear();
         fillWordlist();
         mAdapter.setMnemonicCount(mMnemonicCount);
         mAdapter.notifyDataSetChanged();
     }
 
-    @IntDef({TWELVE, EIGHTEEN, TWEENTYFOUR})
+    @IntDef({TWELVE, EIGHTEEN, TWEENTYFOUR,TWEENTY,THIRTYTHREE })
     public @interface MnemonicCount {
     }
 
@@ -116,6 +131,7 @@ public class MnemonicInputTable extends RecyclerView {
 
         @Override
         public void onBindViewHolder(@NonNull MnemonicHolder holder, int position) {
+            holder.binding.input.setWordList(mnemonicList);
             holder.binding.setIndex(position);
             holder.binding.setWord(wordsList.get(position));
 

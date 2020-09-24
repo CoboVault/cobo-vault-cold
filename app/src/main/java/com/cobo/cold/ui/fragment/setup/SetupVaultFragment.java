@@ -28,6 +28,7 @@ import com.cobo.cold.ui.fragment.BaseFragment;
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.ui.fragment.setting.LicenseFragment.KEY_TITLE;
 import static com.cobo.cold.ui.fragment.setting.LicenseFragment.KEY_URL;
+import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
 
 public class SetupVaultFragment extends BaseFragment<SetupVaultBinding> {
 
@@ -71,7 +72,9 @@ public class SetupVaultFragment extends BaseFragment<SetupVaultBinding> {
     }
 
     private void importVault(View view) {
-        navigate(R.id.action_to_selectMnomenicCountFragment);
+        Bundle data = new Bundle();
+        data.putString(ACTION,PreImportFragment.ACTION_IMPORT);
+        navigate(R.id.action_to_preImportFragment, data);
     }
 
     @Override

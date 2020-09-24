@@ -24,12 +24,23 @@ import com.cobo.cold.encryptioncore.base.Payload;
 import java.util.concurrent.Callable;
 
 public class GetRandomEntropyCallable implements Callable<String> {
+
+    private int bits;
+
+    public GetRandomEntropyCallable() {
+        this.bits = 256;
+    }
+
+    public GetRandomEntropyCallable(int bits) {
+        this.bits = bits;
+    }
+
     @Override
     public String call() {
         try {
             final Callable<Packet> callable = new BlockingCallable(
                     new Packet.Builder(CONSTANTS.METHODS.GET_RANDOM_ENTROPY)
-                            .addShortPayload(CONSTANTS.TAGS.ENTROPY_TYPE, 256)
+                            .addShortPayload(CONSTANTS.TAGS.ENTROPY_TYPE, bits)
                             .addBytePayload(CONSTANTS.TAGS.ENTROPY_CHECKSUM, 0).build());
             final Packet result = callable.call();
             final Payload payload = result.getPayload(CONSTANTS.TAGS.ENTROPY);

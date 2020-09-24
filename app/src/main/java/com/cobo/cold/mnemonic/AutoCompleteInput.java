@@ -44,7 +44,7 @@ import java.util.Set;
 
 public class AutoCompleteInput extends AppCompatAutoCompleteTextView {
 
-    private static final Set<String> sWordsSet = new ArraySet<>(Arrays.asList(WordList.words));
+    private static Set<String> sWordsSet = new ArraySet<>(Arrays.asList(WordList.words));
     @ColorInt
     private static int sNormalTextColor;
     @ColorInt
@@ -65,6 +65,11 @@ public class AutoCompleteInput extends AppCompatAutoCompleteTextView {
         setOnItemClickListener(mInputServant);
         setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
         setTransformationMethod(null);
+    }
+
+    public void setWordList(String[] wordList) {
+        setAdapter(new ArrayAdapter<>(getContext(), R.layout.mnemonic_dropdowm_item, wordList));
+        sWordsSet = new ArraySet<>(Arrays.asList(wordList));
     }
 
     @Override

@@ -23,8 +23,10 @@ import android.view.View;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.TabletQrcodeBinding;
+import com.cobo.cold.mnemonic.MnemonicInputTable;
+import com.cobo.cold.ui.fragment.setup.SetupVaultBaseFragment;
 
-public class TabletQrcodeFragment extends BaseFragment<TabletQrcodeBinding> {
+public class TabletQrcodeFragment extends SetupVaultBaseFragment<TabletQrcodeBinding> {
     @Override
     protected int setView() {
         return R.layout.tablet_qrcode;
@@ -32,8 +34,10 @@ public class TabletQrcodeFragment extends BaseFragment<TabletQrcodeBinding> {
 
     @Override
     protected void init(View view) {
+        super.init(view);
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.next.setOnClickListener(v -> next());
+        mBinding.createSharding.setOnClickListener(v->navigate(R.id.action_to_shardingSettingFragment));
         mBinding.tablet.setOnClickListener(new View.OnClickListener() {
             final int COUNTS = 3;
             final long DURATION = 3000L;
@@ -51,6 +55,7 @@ public class TabletQrcodeFragment extends BaseFragment<TabletQrcodeBinding> {
     }
 
     private void next() {
+        viewModel.setMnemonicCount(MnemonicInputTable.TWEENTYFOUR);
         navigate(R.id.action_to_generateMnemonicFragment);
     }
 

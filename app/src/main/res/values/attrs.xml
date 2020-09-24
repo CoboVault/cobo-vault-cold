@@ -56,10 +56,8 @@
         <attr name="cpv_background_circle_width" format="dimension" />
     </declare-styleable>
 
-
-    <declare-styleable name="MultiSigItem">
+    <declare-styleable name="SelectableItem">
         <attr name="title" format="string" />
         <attr name="remind_text" format="string" />
     </declare-styleable>
-
 </resources>

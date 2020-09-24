@@ -37,6 +37,7 @@ import com.cobo.cold.R;
 import com.cobo.cold.databinding.UpdateHintModalBinding;
 import com.cobo.cold.databinding.UpdatingBinding;
 import com.cobo.cold.encryptioncore.utils.Preconditions;
+import com.cobo.cold.ui.fragment.setup.PreImportFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.data.UpdateManifest;
 import com.cobo.cold.viewmodel.UpdatingViewModel;
@@ -44,7 +45,7 @@ import com.cobo.cold.viewmodel.UpdatingViewModel;
 import java.util.Objects;
 
 import static android.content.Context.BATTERY_SERVICE;
-import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
+import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
 
 public class UpdatingHelper implements OnBatteryChangeListener {
 
@@ -114,9 +115,9 @@ public class UpdatingHelper implements OnBatteryChangeListener {
                         },
                          () -> {
                             Bundle data = new Bundle();
-                            data.putInt(KEY_NAV_ID, R.id.action_to_setPasswordFragment1);
+                            data.putString(ACTION, PreImportFragment.ACTION_RESET_PWD);
                             Navigation.findNavController(mActivity, R.id.nav_host_fragment)
-                                    .navigate(R.id.action_to_verifyMnemonic, data);
+                                    .navigate(R.id.action_to_preImportFragment, data);
                         }
                         );
             });

@@ -51,13 +51,13 @@
         </androidx.appcompat.widget.Toolbar>
 
         <include layout="@layout/divider" />
-        <com.cobo.cold.ui.views.MultiSigItem
+        <com.cobo.cold.ui.views.SelectableItem
             android:id="@+id/sign_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{()->clickHandler.onClick((int)@id/action_to_txList)}"
             app:title="@string/signing_history"/>
-        <com.cobo.cold.ui.views.MultiSigItem
+        <com.cobo.cold.ui.views.SelectableItem
             android:id="@+id/export_wallet_to_cosigner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:onClick="@{()->clickHandler.onClick((int)@id/action_export_wallet_to_electrum)}"
             app:title="@string/export_wallet_to_electrum"/-->
-        <com.cobo.cold.ui.views.MultiSigItem
+        <com.cobo.cold.ui.views.SelectableItem
             android:id="@+id/wallet_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

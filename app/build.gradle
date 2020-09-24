@@ -171,6 +171,7 @@ dependencies {
     implementation 'com.wei.android.lib:fingerprintidentify:1.2.6'
     implementation 'com.github.donkingliang:ConsecutiveScroller:2.5.0'
     implementation 'com.github.CoboVault:bc32-java:v0.0.6-alpha'
+    implementation 'com.github.CoboVault:shamir-secret:0.03-alpha'
     annotationProcessor 'androidx.room:room-compiler:2.1.0'
 
     implementation project(':encryption-core')

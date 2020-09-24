@@ -17,6 +17,8 @@
 
 package com.cobo.cold.callables;
 
+import android.text.TextUtils;
+
 import com.cobo.cold.encryption.interfaces.CONSTANTS;
 import com.cobo.cold.encryptioncore.base.Packet;
 
@@ -25,18 +27,26 @@ import java.util.concurrent.Callable;
 public class VerifyMnemonicCallable implements Callable<Boolean> {
 
     private final String mnemonic;
+    private final byte[] slip39MasterSeed;
+    private final int slip39Id;
 
-    public VerifyMnemonicCallable(String mnemonic) {
+    public VerifyMnemonicCallable(String mnemonic, byte[] slip39MasterSeed, int slip39Id) {
         this.mnemonic = mnemonic;
+        this.slip39MasterSeed = slip39MasterSeed;
+        this.slip39Id = slip39Id;
     }
 
     @Override
     public Boolean call() {
         try {
-            final Packet packet = new Packet.Builder(CONSTANTS.METHODS.VERIFY_MNEMONIC)
-                    .addTextPayload(CONSTANTS.TAGS.MNEMONIC, mnemonic)
-                    .build();
-            final Callable<Packet> callable = new BlockingCallable(packet);
+            final Packet.Builder builder = new Packet.Builder(CONSTANTS.METHODS.VERIFY_MNEMONIC);
+            if (!TextUtils.isEmpty(mnemonic)) {
+                builder.addTextPayload(CONSTANTS.TAGS.MNEMONIC, mnemonic);
+            } else {
+                builder.addBytesPayload(CONSTANTS.TAGS.SLIP39_MASTER_SEED, slip39MasterSeed)
+                        .addShortPayload(CONSTANTS.TAGS.SLIP39_ID, slip39Id);
+            }
+            final Callable<Packet> callable = new BlockingCallable(builder.build());
             callable.call();
             return true;
         } catch (Exception e) {

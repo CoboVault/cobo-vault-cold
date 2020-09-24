@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~
   ~ Copyright (c) 2020 Cobo
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -13,16 +15,20 @@
   ~
   ~ You should have received a copy of the GNU General Public License
   ~ in the file COPYING.  If not, see <http://www.gnu.org/licenses/>.
+  ~
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+    </data>
+
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -37,29 +43,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/create_multisig_wallet"
+                android:text="@string/shamir_backup"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
-        <com.cobo.cold.ui.views.SelectableItem
-            android:id="@+id/total"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:title="@string/select_key_number"
-            app:remind_text="3"/>
-        <com.cobo.cold.ui.views.SelectableItem
-            android:id="@+id/threshold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:title="@string/select_threshold"
-            app:remind_text="2"/>
-        <com.cobo.cold.ui.views.SelectableItem
-            android:id="@+id/address_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:title="@string/select_address_type"/>
 
-        <androidx.legacy.widget.Space
+        <include layout="@layout/divider" />
+
+
+        <com.cobo.cold.ui.views.SpanedTextView
+            android:id="@+id/guide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/shading_guide"
+            android:layout_margin="16dp"
+            android:textColor="@color/white"/>
+
+        <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>

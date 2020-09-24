@@ -47,8 +47,6 @@ import com.cobo.cold.viewmodel.SetupVaultViewModel;
 
 import java.util.List;
 
-import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
-import static com.cobo.cold.Utilities.IS_SET_PASSPHRASE;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.SIGNATURE;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATED;

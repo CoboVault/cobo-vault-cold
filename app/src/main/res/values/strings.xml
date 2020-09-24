@@ -686,5 +686,47 @@
     <string name="notice1">Notice</string>
     <string name="default_vault_notice"> You have successfully upgraded to the latest version. To protect your assets, the Vault automatically resets to the default vault every time the device is restarted. (Also when it upgrades, shuts down or is restarted.)</string>
     <string name="switching_to_main_vault">Entering the default vault, please keep screen on.</string>
+    <string name="shading_guide"><![CDATA[
+    1. Allow reconstruction with <font color="#00cdc3">%d<font/> of <font color="#00cdc3">%d<font/> shares.<br><br>
+    2. Next the split recovery phrase will be displayed each share and should be confirmed. Please confirm the identities of the administrators of each share to ensure that the operation is performed by himself.<br> <br>
+    3. Do not take photos of recovery phrase or store on a device connected to the Internet. Do not share the recovery phrase with others.
+    ]]></string>
+    <string name="generate_sharding_sequence">share #%d(Total %d)</string>
+    <string name="generate_shading_hint">Please confirm you are the custodian of the share %d</string>
+    <string name="cancel_create_sharding">Cancel</string>
+    <string name="input_sharding_mnemonic_hint"><![CDATA[Please enter the recovery phrase for <font color="#00cdc3">share #%d<font/> in the form below]]></string>
+    <string name="verify_pass">Verify Successful</string>
+    <string name="verify_sharding_pass_hint">The recovery phrase of this share is verified correctly, and will show the next share. After touch confirm button, please give the machine to the custodian who keeps share #%d.</string>
+    <string name="sharding_no">share #%d</string>
+    <string name="reset_password">Password Reset</string>
+    <string name="first_sharding_hint">The first share enter successfully, %d more shares needed to enter.</string>
+    <string name="cancel_import_sharding">Cancel Import</string>
+    <string name="continue_import_sharding">Continue to import</string>
+    <string name="sharding_repeat">Share already entered, please enter a different share.</string>
+    <string name="sharding_id_not_match">You have entered a share from another Shamir Backup.</string>
+    <string name="confirm_cancel_import_sharding">Confirm to cancel</string>
+    <string name="continue_create_sharding">Continue to create</string>
+    <string name="invalid_shard">Recovery phrase incorrect, please check.</string>
+    <string name="ask_confirm_cancel_import_sharding">Cancel import vault？</string>
+    <string name="cancel_import_sharding_notice">The confirmed share will be lost after canceling. Are you sure to cancel the creation?</string>
+    <string name="next_sharding">Next share</string>
+    <string name="not_support_multi_group_sharding">You have entered  Super Shamir (two-level configuration of Shamir Backup), Cobo Vault doesn’t currently support importing it.</string>
+    <string name="total_sharding_count">Number of shares</string>
+    <string name="sharding_threshold">Threshold</string>
+    <string name="confirm_cancel_create_sharding_title">Cancel creation of vault？</string>
+    <string name="confirm_cancel_create_sharding">The confirmed share will be lost after canceling. Are you sure to cancel the creation?</string>
+    <string name="choose_check_type">Select Way of Checking</string>
+    <string name="choose_import_type">Select Way of Importing</string>
+    <string name="check_bip39_phrase">Check Generic Recovery Phrase</string>
+    <string name="check_slip39_phrase">Check Split Recovery Phrase</string>
+    <string name="import_bip39_phrase">Import Generic Recovery Phrase</string>
+    <string name="import_slip39_phrase">Import Split Recovery Phrase</string>
+    <string name="enter_bip39_phrase">Enter Generic Recovery Phrase</string>
+    <string name="enter_slip39_phrase">Enter Split Recovery Phrase</string>
+    <string name="reset_password_by_phrase">Reset password via recovery phrase</string>
+    <string name="shamir_backup">Shamir Backup</string>
+    <string name="generate_slip39_phrase">Create a Vault with Shamir Backup</string>
+    <string name="generate_bip39_phrase">Create a Vault with Single Backup</string>
+    <string name="shard_setting">Setting</string>
 
 </resources>

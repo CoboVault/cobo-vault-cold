@@ -36,8 +36,6 @@ import com.wei.android.lib.fingerprintidentify.base.BaseFingerprint;
 import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.IS_FORCE;
-import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
-import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
 import static com.cobo.cold.ui.fragment.PasswordLockFragment.MAX_PWD_RETRY_TIMES;
 import static com.cobo.cold.ui.fragment.PatternLockFragment.MAX_PATTERN_RETRY_TIMES;
 
@@ -76,7 +74,7 @@ public class UnlockActivity extends FullScreenActivity {
         NavInflater inflater = Objects.requireNonNull(navHostFragment).getNavController().getNavInflater();
         NavGraph graph = inflater.inflate(R.navigation.nav_graph_unlock);
 
-        int startDestination;
+        int startDestination = R.id.passwordLockFragment;
         Bundle data = new Bundle();
 
         if (isFingerprintLockEnable) {
@@ -87,11 +85,6 @@ public class UnlockActivity extends FullScreenActivity {
         } else if (Utilities.getPasswordRetryTimes(this) < MAX_PWD_RETRY_TIMES) {
             data.putBoolean(IS_FORCE, true);
             startDestination = R.id.passwordLockFragment;
-        } else {
-            data.putBoolean(IS_FORCE, true);
-            data.putInt(KEY_NAV_ID, R.id.action_verifyMnemonic_to_setPassword);
-            data.putString(KEY_TITLE, getString(R.string.verify_mnemonic));
-            startDestination = R.id.verifyMnemonicFragment;
         }
 
         graph.setStartDestination(startDestination);
