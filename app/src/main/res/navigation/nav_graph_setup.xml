@@ -50,13 +50,25 @@
         tools:layout="@layout/setup_vault">
         <action
             android:id="@+id/action_to_licenseFragment"
-            app:destination="@id/licenseFragment" />
+            app:destination="@id/licenseFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
         <action
             android:id="@+id/action_to_tabletQrcodeFragment"
-            app:destination="@id/tabletQrcodeFragment" />
+            app:destination="@id/tabletQrcodeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
         <action
-            android:id="@+id/action_to_selectMnomenicCountFragment"
-            app:destination="@id/selectMnomenicCountFragment" />
+            android:id="@+id/action_to_preImportFragment"
+            app:destination="@id/preImportFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@id/licenseFragment"
@@ -98,7 +110,11 @@
         tools:layout="@layout/tablet_qrcode">
         <action
             android:id="@+id/action_to_generateMnemonicFragment"
-            app:destination="@id/generateMnemonicFragment" />
+            app:destination="@id/generateMnemonicFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
         <action
             android:id="@+id/action_to_rollingDiceGuideFragment"
             app:destination="@id/rollingDiceGuideFragment"
@@ -106,7 +122,71 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_to_shardingSettingFragment"
+            app:destination="@id/shardingSettingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
+    <fragment
+        android:id="@+id/shardingSettingFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.sharding.ShardingSettingFragment"
+        android:label="ShardingSettingFragment"
+        tools:layout="@layout/sharding_setting">
+        <action
+            android:id="@+id/action_to_shardingGuideFragment"
+            app:destination="@id/shardingGuideFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/preCreateShardingFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.sharding.PreCreateShardingFragment"
+        android:label="PreCreateShardingFragment"
+        tools:layout="@layout/pre_create_sharding">
+        <action
+            android:id="@id/action_to_generateMnemonicFragment"
+            app:destination="@id/generateMnemonicFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/preImportFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.PreImportFragment"
+        android:label="PreImportShardingFragment"
+        tools:layout="@layout/pre_import_sharding">
+        <action
+            android:id="@+id/action_to_selectMnomenicCountFragment"
+            app:destination="@id/selectMnomenicCountFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/shardingGuideFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.sharding.ShardingGuideFragment"
+        android:label="ShardingGuideFragment"
+        tools:layout="@layout/sharding_setting">
+        <action
+            android:id="@+id/action_to_preCreateShardingFragment"
+            app:destination="@id/preCreateShardingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+
+
+
     <fragment
         android:id="@+id/generateMnemonicFragment"
         android:name="com.cobo.cold.ui.fragment.setup.GenerateMnemonicFragment"
@@ -114,7 +194,11 @@
         tools:layout="@layout/generate_mnemonic">
         <action
             android:id="@+id/action_to_confirmMnemonicFragment"
-            app:destination="@id/confirmMnemonicFragment" />
+            app:destination="@id/confirmMnemonicFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/confirmMnemonicFragment"

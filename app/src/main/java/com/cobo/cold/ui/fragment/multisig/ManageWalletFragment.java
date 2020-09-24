@@ -25,7 +25,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.navigation.Navigation;
 
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
@@ -35,14 +34,14 @@ import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
 import com.cobo.cold.databinding.MultisigWalletItemBinding;
 import com.cobo.cold.db.entity.MultiSigWalletEntity;
 import com.cobo.cold.ui.common.BaseBindingAdapter;
+import com.cobo.cold.ui.fragment.setup.PreImportFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
+import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
 
 public class ManageWalletFragment extends MultiSigBaseFragment<ManageWalletBinding> {
 
@@ -104,10 +103,9 @@ public class ManageWalletFragment extends MultiSigBaseFragment<ManageWalletBindi
         binding.right.setOnClickListener(v -> {
             dialog.dismiss();
             final Runnable forgetPassword = () -> {
-                Bundle data = new Bundle();
-                data.putInt(KEY_NAV_ID, R.id.action_to_setPasswordFragment1);
-                Navigation.findNavController(Objects.requireNonNull(getView()))
-                        .navigate(R.id.action_to_verifyMnemonic, data);
+                Bundle bundle = new Bundle();
+                bundle.putString(ACTION, PreImportFragment.ACTION_RESET_PWD);
+                navigate(R.id.action_to_preImportFragment, bundle);
             };
 
             AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), "",

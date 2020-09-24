@@ -37,6 +37,8 @@ import org.spongycastle.util.encoders.Hex;
 import java.util.List;
 
 import static com.cobo.cold.ui.fragment.Constants.IS_FORCE;
+import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
+import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION_RESET_PWD;
 
 public class PatternLockFragment extends BaseFragment<PatternLockFragmentBinding> {
 
@@ -48,6 +50,7 @@ public class PatternLockFragment extends BaseFragment<PatternLockFragmentBinding
             v -> {
                 Bundle data = new Bundle();
                 data.putBoolean(IS_FORCE, false);
+                data.putString(ACTION, ACTION_RESET_PWD);
                 navigate(R.id.action_to_passwordLockFragment, data);
             };
 
@@ -104,6 +107,7 @@ public class PatternLockFragment extends BaseFragment<PatternLockFragmentBinding
                 if (attemptTimes >= MAX_PATTERN_RETRY_TIMES) {
                     Bundle data = new Bundle();
                     data.putBoolean(IS_FORCE, true);
+                    data.putString(ACTION, ACTION_RESET_PWD);
                     navigate(R.id.action_to_passwordLockFragment, data);
                 }
             }

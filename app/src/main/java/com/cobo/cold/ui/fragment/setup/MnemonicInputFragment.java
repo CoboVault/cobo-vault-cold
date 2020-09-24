@@ -18,21 +18,27 @@
 package com.cobo.cold.ui.fragment.setup;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
+import androidx.lifecycle.MutableLiveData;
 
-import com.cobo.coinlib.WordList;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.CreateVaultModalBinding;
 import com.cobo.cold.databinding.MnemonicInputFragmentBinding;
+import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
 import com.cobo.cold.db.PresetData;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.ui.MainActivity;
@@ -41,16 +47,30 @@ import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.util.Keyboard;
 import com.cobo.cold.viewmodel.SetupVaultViewModel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import iton.slip.secret.Share;
+import iton.slip.secret.SharedSecretException;
+import iton.slip.secret.words.Mnemonic;
+
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
+import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATED;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING;
+import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING_FAILED;
 
 public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputFragmentBinding> {
 
     protected ModalDialog dialog;
+
+    private List<Observable.OnPropertyChangedCallback> callbacks = new ArrayList<>();
+    private boolean notMatch;
+
+    public static boolean isValidWord(String s, String[] list) {
+        return !TextUtils.isEmpty(s) && Arrays.asList(list).indexOf(s) != -1;
+    }
 
     @Override
     protected int setView() {
@@ -60,43 +80,176 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
     @Override
     protected void init(View view) {
         super.init(view);
-        mBinding.setViewModel(viewModel);
-        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+        mBinding.hint.setText(getString(R.string.input_mnemonic_hint,viewModel.getMnemonicCount().get()));
+
+        Bundle data = getArguments();
+        if (data != null) {
+            viewModel.setPassword(data.getString(PASSWORD));
+        }
+        if (viewModel.isShardingMnemonic()) {
+            initImportSharding();
+        } else {
+            mBinding.toolbar.setNavigationOnClickListener(v -> {
+                Keyboard.hide(mActivity, mBinding.table);
+                navigateUp();
+            });
+        }
+
         mBinding.table.setMnemonicNumber(viewModel.getMnemonicCount().get());
         mBinding.importMnemonic.setOnClickListener(v -> {
             Keyboard.hide(mActivity, mBinding.importMnemonic);
             validateMnemonic(v);
         });
-        mBinding.table.getWordsList().forEach(o -> o.addOnPropertyChangedCallback(
-                new Observable.OnPropertyChangedCallback() {
-                    @Override
-                    public void onPropertyChanged(Observable sender, int propertyId) {
-                        if (mBinding.table.getWordsList()
-                                .stream()
-                                .allMatch(s -> isValidWord(s.get()))) {
-                            mBinding.importMnemonic.setEnabled(true);
-                        } else {
-                            mBinding.importMnemonic.setEnabled(false);
+        addMnemonicChangeCallback();
+        subscribeVaultState(viewModel.getVaultCreateState());
+    }
+
+
+    protected void addMnemonicChangeCallback() {
+        mBinding.table.getWordsList().forEach(o -> {
+            Observable.OnPropertyChangedCallback callback = new Observable.OnPropertyChangedCallback() {
+                @Override
+                public void onPropertyChanged(Observable sender, int propertyId) {
+                    if (mBinding.table.getWordsList()
+                            .stream()
+                            .allMatch(s -> isValidWord(s.get(), mBinding.table.getMnemonicList()))) {
+                        mBinding.importMnemonic.setEnabled(true);
+                    } else {
+                        mBinding.importMnemonic.setEnabled(false);
+                    }
+
+                    if (viewModel.currentSequence() > 0) {
+                        @SuppressWarnings("unchecked")
+                        ObservableField<String> observableField = (ObservableField<String>) sender;
+                        String word = observableField.get();
+                        if (TextUtils.isEmpty(word)) {
+                            return;
+                        }
+                        View view = mBinding.table.findFocus();
+                        if (view != null) {
+                            FrameLayout parent = (FrameLayout) view.getParent();
+                            TextView textView = (TextView) parent.getChildAt(0);
+                            int index = Integer.parseInt(textView.getText().toString()) - 1;
+                            isInputMatchFirstSharding(index, word);
                         }
                     }
-                }));
-        subscribeVaultState(viewModel);
+                }
+            };
+
+            o.addOnPropertyChangedCallback(callback);
+            callbacks.add(callback);
+        });
     }
 
-    public static boolean isValidWord(String s) {
-        return !TextUtils.isEmpty(s) && Arrays.asList(WordList.words).indexOf(s) != -1;
+    private void isInputMatchFirstSharding(int index, String word) {
+        if (notMatch) {
+            return;
+        }
+
+        Share share = viewModel.firstShare;
+        int threshold = share.group_threshold;
+        if (index > 2) return;
+        if (threshold == 1 && index > 1) {
+            return;
+        }
+
+        String[] firstShardingWords = viewModel.getShareByIndex(0).split(" ");
+
+        if (!firstShardingWords[index].startsWith(word)) {
+            notMatch = true;
+            showDialog(mActivity,getString(R.string.notice),
+                    getString(R.string.sharding_id_not_match),
+                    getString(R.string.cancel_import_sharding),
+                    getString(R.string.confirm),
+                    this::cancelImportSharding,
+                    () -> {
+                        mBinding.table.getWordsList().get(index).set("");
+                        mBinding.table.getChildAt(index).requestFocus();
+                        notMatch = false;
+                    });
+        }
     }
 
-    protected void subscribeVaultState(SetupVaultViewModel viewModel) {
-        viewModel.getVaultCreateState().observe(this, state -> {
+    private void clearInput() {
+        removeMnemonicChangeCallback();
+        mBinding.table.getWordsList().forEach(word -> word.set(""));
+        mBinding.importMnemonic.setEnabled(false);
+        notMatch = false;
+        mBinding.table.postDelayed(this::addMnemonicChangeCallback, 1000);
+    }
+
+    private void removeMnemonicChangeCallback() {
+        for (int i = 0; i < mBinding.table.getWordsList().size(); i++) {
+            mBinding.table.getWordsList().get(i).removeOnPropertyChangedCallback(callbacks.get(i));
+        }
+    }
+
+    private void initImportSharding() {
+        mBinding.shardingHint.setText(getString(R.string.sharding_no, viewModel.currentSequence() + 1));
+        mBinding.shardingHint.setVisibility(View.VISIBLE);
+        mBinding.importMnemonic.setText(R.string.next_sharding);
+        mBinding.toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
+        mBinding.toolbar.setNavigationOnClickListener(null);
+        mBinding.toolbar.inflateMenu(R.menu.cancel);
+        mBinding.toolbar.setOnMenuItemClickListener(item -> {
+            cancelImportSharding();
+            return true;
+        });
+    }
+
+    protected void cancelImportSharding() {
+        showDialog(mActivity,getString(R.string.ask_confirm_cancel_import_sharding),
+                getString(R.string.cancel_import_sharding_notice),
+                getString(R.string.confirm_cancel_import_sharding),
+                getString(R.string.continue_import_sharding),
+                () -> {
+                    viewModel.resetSharding();
+                    navBack();
+                }, null);
+    }
+
+    protected void navBack() {
+        navigateUp();
+    }
+
+    protected static void showDialog(AppCompatActivity activity, String title,
+                                     String text,
+                                     String left,
+                                     String right,
+                                     Runnable leftAction,
+                                     Runnable rightAction) {
+        ModalDialog dialog = new ModalDialog();
+        ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity),
+                R.layout.modal_with_two_button,
+                null, false);
+        binding.title.setText(title);
+        binding.subTitle.setText(text);
+        binding.left.setText(left);
+        binding.left.setOnClickListener(v -> {
+            dialog.dismiss();
+            if (leftAction != null) {
+                leftAction.run();
+            }
+        });
+        binding.right.setText(right);
+        binding.right.setOnClickListener(v -> {
+            dialog.dismiss();
+            if (rightAction != null) {
+                rightAction.run();
+            }
+        });
+        dialog.setBinding(binding);
+        dialog.show(activity.getSupportFragmentManager(), "");
+    }
+
+    void subscribeVaultState(MutableLiveData<Integer> vaultState) {
+        vaultState.observe(this, state -> {
             if (state == VAULT_STATE_CREATING) {
                 showModal();
             } else if (state == VAULT_STATE_CREATED) {
                 Utilities.setVaultCreated(mActivity);
                 Utilities.setVaultId(mActivity, viewModel.getVaultId());
                 Utilities.setCurrentBelongTo(mActivity, "main");
-                Utilities.setMnemonicCount(mActivity, viewModel.getMnemonicCount().get());
-
                 Runnable onComplete = () -> {
                     if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
                         dialog.dismiss();
@@ -115,6 +268,12 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
 
                 List<CoinEntity> coins = PresetData.generateCoins(mActivity);
                 viewModel.presetData(coins, onComplete);
+            } else if (state == VAULT_STATE_CREATING_FAILED) {
+                viewModel.getVaultCreateState().removeObservers(this);
+                if (dialog != null && dialog.getDialog() != null
+                        && dialog.getDialog().isShowing()) {
+                    dialog.dismiss();
+                }
             }
         });
     }
@@ -128,8 +287,18 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
 
 
         if (viewModel.validateMnemonic(mnemonic)) {
-            viewModel.writeMnemonic(mnemonic);
-            mBinding.table.getWordsList().clear();
+                if (viewModel.isShardingMnemonic()) {
+                    if (viewModel.getShares() == null || viewModel.getShares().size() == 0) {
+                        addFirstShard(mnemonic);
+                    } else {
+                        addSharding(mnemonic);
+                    }
+                } else {
+                    viewModel.writeMnemonic(mnemonic);
+                    mBinding.table.getWordsList().forEach(word -> word.set(""));
+                }
+
+
         } else {
             Utilities.alert(mActivity,
                     getString(R.string.hint),
@@ -138,8 +307,73 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
         }
     }
 
+    private void addFirstShard(String mnemonic) {
 
-    protected void showModal() {
+        try {
+            Share share = Mnemonic.INSTANCE.decode(mnemonic);
+            if (share.group_count == 1) {
+                int remainCount = share.member_threshold - 1;
+                showDialog(mActivity,getString(R.string.verify_pass),
+                        getString(R.string.first_sharding_hint,remainCount),
+                        getString(R.string.cancel_import_sharding),
+                        getString(R.string.continue_import_sharding),
+                        this::cancelImportSharding,
+                        () -> addSharding(mnemonic));
+            } else {
+                //current not support group_count > 1
+                showDialog(mActivity,getString(R.string.notice),
+                        getString(R.string.not_support_multi_group_sharding),
+                        getString(R.string.cancel_import_sharding),
+                        getString(R.string.confirm),
+                        this::cancelImportSharding,
+                        this::clearInput);
+            }
+        } catch (SharedSecretException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void addSharding(String mnemonic) {
+        try {
+            String title = getString(R.string.notice);
+            String text;
+            String left = getString(R.string.cancel_import_sharding);
+            String right = getString(R.string.confirm);
+            Runnable leftAction = this::cancelImportSharding;
+            Runnable rightAction = this::clearInput;
+            SetupVaultViewModel.AddShareResult result = viewModel.addShare(mnemonic);
+            switch (result) {
+                case RESULT_NEED_MORE:
+                    viewModel.nextSequence();
+                    mBinding.shardingHint.setText(getString(R.string.sharding_no, viewModel.currentSequence() + 1));
+                    rightAction.run();
+                    if (viewModel.currentSequence() + 1 == viewModel.firstShare.member_threshold) {
+                        mBinding.importMnemonic.setText(R.string.complete);
+                    }
+                    break;
+                case RESULT_OK:
+                    onAllShardsCollect();
+                    break;
+                case RESULT_REPEAT:
+                    text = getString(R.string.sharding_repeat);
+                    showDialog(mActivity,title, text, left, right, leftAction, rightAction);
+                    break;
+                case RESULT_NOT_MATCH:
+                    text = getString(R.string.sharding_id_not_match);
+                    showDialog(mActivity,title, text, left, right, leftAction, rightAction);
+            }
+        } catch (SharedSecretException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void onAllShardsCollect() {
+        viewModel.writeShardingMasterSeed();
+        mBinding.table.getWordsList().forEach(word -> word.set(""));
+    }
+
+
+    private void showModal() {
         CreateVaultModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.create_vault_modal, null, false);
         dialog = ModalDialog.newInstance();
@@ -154,7 +388,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
             @Override
             public void run() {
                 try {
-                    handler.postDelayed(this, 8000);
+                    handler.postDelayed(this, 4000);
                     binding.step.setText(steps[i]);
                     i++;
                     if (i > 4) {

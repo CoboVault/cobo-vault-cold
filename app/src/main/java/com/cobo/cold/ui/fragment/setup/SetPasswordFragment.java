@@ -58,13 +58,14 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
     private boolean inputValid;
 
     private String mnemonic; // mnemonic to reset password
+    private String masterSeed; // masterSeed to reset password
 
     private String currentPassword; //old password hash
 
     public static final String PASSWORD = "password";
     public static final String SIGNATURE = "signature";
-
     public static final String MNEMONIC = "mnemonic";
+    public static final String SLIP39_SEED = "slip39_seed";
 
     private boolean paused;
 
@@ -81,6 +82,7 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
         isSetupVault = bundle != null && bundle.getBoolean(IS_SETUP_VAULT);
         currentPassword = bundle != null ? bundle.getString(PASSWORD): null;
         mnemonic = bundle != null ? bundle.getString(MNEMONIC): null;
+        masterSeed = bundle != null ? bundle.getString(SLIP39_SEED): null;
         mBinding.pwd1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(64)});
         mBinding.pwd2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(64)});
 
@@ -146,7 +148,12 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
             mBinding.step.setVisibility(View.GONE);
             mBinding.toolbar.setNavigationOnClickListener(v -> {
                 Keyboard.hide(mActivity, mBinding.pwd1);
-                navigateUp();
+                // change pwd by old pwd
+                if (!TextUtils.isEmpty(currentPassword)) {
+                    navigateUp();
+                } else {
+                    popBackStack(R.id.preImportFragment, false);
+                }
             });
         }
         mBinding.confirm.setOnClickListener(v -> validatePassword());
@@ -190,7 +197,7 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
                 String passwordHash = Hex.toHexString(Objects.requireNonNull(HashUtil.twiceSha256(password)));
                 Runnable action;
                 if (mActivity instanceof UnlockActivity) {
-                    new ResetPasswordCallable(passwordHash, mnemonic).call();
+                    new ResetPasswordCallable(passwordHash, mnemonic, masterSeed).call();
                     action = () -> {
                         Utilities.setPatternRetryTimes(mActivity,0);
                         mActivity.finish();
@@ -198,12 +205,13 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
                 } else if(!isSetupVault) {
                     if (!TextUtils.isEmpty(currentPassword)) {
                         new ChangePasswordCallable(passwordHash, currentPassword).call();
-                    } else if(!TextUtils.isEmpty(mnemonic)) {
-                        new ResetPasswordCallable(passwordHash, mnemonic).call();
+                        action = this::navigateUp;
+                    } else {
+                        new ResetPasswordCallable(passwordHash, mnemonic, masterSeed).call();
+                        action = () -> popBackStack(R.id.preImportFragment, true);
                     }
-                    action = () -> Navigation.findNavController(Objects.requireNonNull(getView())).navigateUp();
                 } else {
-                    new ResetPasswordCallable(passwordHash, mnemonic).call();
+                    new ResetPasswordCallable(passwordHash, mnemonic, masterSeed).call();
                     viewModel.setPassword(passwordHash);
                     action = () -> {
                         Bundle data = new Bundle();

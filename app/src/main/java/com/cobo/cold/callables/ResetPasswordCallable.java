@@ -31,10 +31,13 @@ public class ResetPasswordCallable implements Callable<Boolean> {
 
     private final String newPassword;
     private final String mnemonic;
+    private final String slip39MasterSeed;
 
-    public ResetPasswordCallable(@NonNull String newPassword, @Nullable String mnemonic) {
+    public ResetPasswordCallable(@NonNull String newPassword, @Nullable String mnemonic,
+                                 @Nullable String slip39MasterSeed) {
         this.newPassword = newPassword;
         this.mnemonic = mnemonic;
+        this.slip39MasterSeed = slip39MasterSeed;
     }
 
     @Override
@@ -43,6 +46,8 @@ public class ResetPasswordCallable implements Callable<Boolean> {
                 .addHexPayload(CONSTANTS.TAGS.NEW_PASSWORD, newPassword);
         if (!TextUtils.isEmpty(mnemonic)) {
             builder.addTextPayload(CONSTANTS.TAGS.MNEMONIC, mnemonic);
+        } else if (!TextUtils.isEmpty(slip39MasterSeed)) {
+            builder.addHexPayload(CONSTANTS.TAGS.SLIP39_MASTER_SEED, slip39MasterSeed);
         }
 
         final Callable<Packet> callable = new BlockingCallable(builder.build());

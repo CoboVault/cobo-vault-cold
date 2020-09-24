@@ -44,6 +44,7 @@ import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.fragment.main.FeeAttackChecking;
 import com.cobo.cold.ui.fragment.main.TransactionItem;
 import com.cobo.cold.ui.fragment.main.TransactionItemAdapter;
+import com.cobo.cold.ui.fragment.setup.PreImportFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
@@ -65,24 +66,22 @@ import org.spongycastle.util.encoders.Hex;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
-import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
 import static com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment.showExportPsbtDialog;
+import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
 import static com.cobo.cold.viewmodel.TxConfirmViewModel.STATE_NONE;
 
 public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBinding> {
 
     private final Runnable forgetPassword = () -> {
-        Bundle data = new Bundle();
-        data.putInt(KEY_NAV_ID, R.id.action_to_setPasswordFragment1);
-        Navigation.findNavController(Objects.requireNonNull(getView()))
-                .navigate(R.id.action_to_verifyMnemonic, data);
+        Bundle bundle = new Bundle();
+        bundle.putString(ACTION, PreImportFragment.ACTION_RESET_PWD);
+        navigate(R.id.action_to_preImportFragment, bundle);
     };
     protected TxConfirmViewModel viewModel;
     private SigningDialog signingDialog;

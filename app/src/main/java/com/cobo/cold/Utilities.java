@@ -44,12 +44,10 @@ public class Utilities {
     public static final String SHARED_PREFERENCES_KEY = "com.cobo.cold.prefs";
 
     public static final String IS_SETUP_VAULT = "is_setup_vault";
-    public static final String IS_SET_PASSPHRASE = "is_set_passphrase";
     private static final String PREFERENCE_KEY_BELONG_TO = "belong_to_v2";
     private static final String PREFERENCE_KEY_LEGACY_BELONG_TO = "belong_to";
     private static final String PREFERENCE_KEY_PWD_RETRY = "pwd_retry_times";
     private static final String PREFERENCE_KEY_PATTERN_RETRY = "pattern_retry_times";
-    private static final String PREFERENCE_KEY_MNEMONIC_COUNT = "mnemonic_count";
     private static final String FINGERPRINT_CLICKED = "fingerprint_clicked";
     private static final String PATTERN_LOCK_CLICKED = "pattern_lock_clicked";
     private static final String FINGERPRINT_PASSWORD = "fingerprint_password";
@@ -158,16 +156,6 @@ public class Utilities {
     public static int getPatternRetryTimes(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
         return sp.getInt(PREFERENCE_KEY_PATTERN_RETRY, 0);
-    }
-
-    public static int getMnemonicCount(Context context) {
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
-        return sp.getInt(PREFERENCE_KEY_MNEMONIC_COUNT, 24);
-    }
-
-    public static void setMnemonicCount(Context context, int count) {
-        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
-        sp.edit().putInt(PREFERENCE_KEY_MNEMONIC_COUNT, count).apply();
     }
 
     public static boolean isFingerprintUnlockEnable(Context context) {

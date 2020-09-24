@@ -637,4 +637,46 @@
     <string name="notice1">提示</string>
     <string name="default_vault_notice">您已升级到新版本，为了您的资产安全，设备每次重启后（包括升级、断电重启、关机重启等）将进入默认金库。</string>
     <string name="switching_to_main_vault">正在进入默认金库，请勿锁屏</string>
+    <string name="shading_guide"><![CDATA[
+    1. 已将助记词分为<font color="#00cdc3">%d<font/>片，恢复助记词最少需要<font color="#00cdc3">%d<font/>片。 <br><br>
+    2. 接下来展示和确认每一分片的助记词，若分片由多个管理员分别保管，请确认各片管理员的身份，确保是由本人进行操作。<br> <br>
+    3. 请勿将助记词拍照、存储在联网设备上，或泄露给他人！
+    ]]></string>
+    <string name="generate_sharding_sequence">第%d分片(共%d片)</string>
+    <string name="generate_shading_hint">请确认您是第%d分片的保管员</string>
+    <string name="cancel_create_sharding">取消创建</string>
+    <string name="input_sharding_mnemonic_hint"><![CDATA[请在下方表格中输入<font color="#00cdc3">第%d分片<font/>的助记词]]></string>
+    <string name="verify_pass">验证通过</string>
+    <string name="verify_sharding_pass_hint">该分片助记词验证正确，将展示下一分片助记词，点击确定后请将机器给到保管第%d分片的保管员。</string>
+    <string name="sharding_no">第%d分片</string>
+    <string name="reset_password">重置密码</string>
+    <string name="first_sharding_hint">第1分片信息输入正确，您还需要输入%d片。</string>
+    <string name="cancel_import_sharding">取消导入</string>
+    <string name="continue_import_sharding">继续输入</string>
+    <string name="sharding_repeat">该分片助记词已存在，请输入其他分片的助记词。</string>
+    <string name="sharding_id_not_match">您输入了其他助记词的分片助记词，请重新输入。</string>
+    <string name="confirm_cancel_import_sharding">确认取消</string>
+    <string name="continue_create_sharding">继续创建</string>
+    <string name="invalid_shard">该分片助记词错误，请逐字检查</string>
+    <string name="ask_confirm_cancel_import_sharding">取消导入金库?</string>
+    <string name="cancel_import_sharding_notice">取消导入金库后，已输入的分片信息将会丢失，确认是否取消导入？</string>
+    <string name="next_sharding">下一分片</string>
+    <string name="not_support_multi_group_sharding">您输入的是超级分片，Cobo 金库暂不支持导入该分片。</string>
+    <string name="total_sharding_count">分片总数</string>
+    <string name="sharding_threshold">恢复助记词需要的最少片数</string>
+    <string name="confirm_cancel_create_sharding_title">取消创建金库?</string>
+    <string name="confirm_cancel_create_sharding">取消创建金库后，已确认的分片信息将会丢失，确认是否取消创建？</string>
+    <string name="choose_check_type">选择检查方式</string>
+    <string name="choose_import_type">选择导入方式</string>
+    <string name="check_bip39_phrase">检查常规助记词</string>
+    <string name="check_slip39_phrase">检查分片助记词</string>
+    <string name="import_bip39_phrase">导入常规助记词</string>
+    <string name="import_slip39_phrase">导入分片助记词</string>
+    <string name="enter_bip39_phrase">输入常规助记词</string>
+    <string name="enter_slip39_phrase">输入分片助记词</string>
+    <string name="reset_password_by_phrase">通过输入本金库助记词重置密码</string>
+    <string name="shamir_backup">分片助记词</string>
+    <string name="generate_slip39_phrase">生成分片助记词</string>
+    <string name="generate_bip39_phrase">生成助记词</string>
+    <string name="shard_setting">助记词分片设置</string>
 </resources>

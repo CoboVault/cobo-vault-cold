@@ -17,6 +17,8 @@
 
 package com.cobo.cold.callables;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.cobo.coinlib.MnemonicUtils;
@@ -25,29 +27,55 @@ import com.cobo.cold.encryptioncore.base.Packet;
 
 import java.util.concurrent.Callable;
 
-public class WriteMnemonicCallable implements Callable<String> {
+public class WriteMnemonicCallable implements Callable<Boolean> {
 
     private final String mnemonic;
     private final String password;
+    private final byte[] slip39MasterSeed;
+    private final int slip39Id;
+    private final int slip39Exponent;
 
     public WriteMnemonicCallable(@NonNull String mnemonic, @NonNull String password) {
         this.mnemonic = mnemonic;
         this.password = password;
+        this.slip39MasterSeed = null;
+        this.slip39Id = 0;
+        this.slip39Exponent = 0;
+    }
+
+    public WriteMnemonicCallable(@NonNull byte[] slip39MasterSeed,
+                                 int slip39Id,
+                                 int slip39Exponent,
+                                 @NonNull String password) {
+        this.mnemonic = null;
+        this.password = password;
+        this.slip39MasterSeed = slip39MasterSeed;
+        this.slip39Id = slip39Id;
+        this.slip39Exponent = slip39Exponent;
     }
 
     @Override
-    public String call() {
+    public Boolean call() {
         try {
-            final Packet packet = new Packet.Builder(CONSTANTS.METHODS.WRITE_MNEMONIC)
-                    .addTextPayload(CONSTANTS.TAGS.MNEMONIC, mnemonic)
-                    .addBytesPayload(CONSTANTS.TAGS.ENTROPY, MnemonicUtils.generateEntropy(mnemonic))
-                    .addHexPayload(CONSTANTS.TAGS.CURRENT_PASSWORD, password)
-                    .build();
-            final Callable<Packet> callable = new BlockingCallable(packet);
+            final Packet.Builder builder = new Packet.Builder(CONSTANTS.METHODS.WRITE_MNEMONIC);
+
+            if (!TextUtils.isEmpty(mnemonic)) {
+                builder.addTextPayload(CONSTANTS.TAGS.MNEMONIC, mnemonic)
+                        .addBytesPayload(CONSTANTS.TAGS.ENTROPY, MnemonicUtils.generateEntropy(mnemonic));
+            } else if(slip39MasterSeed != null) {
+                builder.addBytesPayload(CONSTANTS.TAGS.SLIP39_MASTER_SEED, slip39MasterSeed)
+                        .addShortPayload(CONSTANTS.TAGS.SLIP39_ID, slip39Id)
+                        .addBytePayload(CONSTANTS.TAGS.SLIP39_EXPONENT, slip39Exponent);
+            }
+
+            builder.addHexPayload(CONSTANTS.TAGS.CURRENT_PASSWORD, password)
+            .build();
+            final Callable<Packet> callable = new BlockingCallable(builder.build());
             callable.call();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return false;
     }
 }
