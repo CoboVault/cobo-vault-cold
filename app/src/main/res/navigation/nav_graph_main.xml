@@ -58,8 +58,8 @@
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
         <action
-            android:id="@id/action_to_verifyMnemonic"
-            app:destination="@id/verifyMnemonicFragment1"
+            android:id="@id/action_to_preImportFragment"
+            app:destination="@id/preImportFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -121,7 +121,7 @@
             app:launchSingleTop="true" />
 
         <action
-            android:id="@+id/action_to_selectMnomenicCountFragment"
+            android:id="@id/action_to_selectMnomenicCountFragment"
             app:destination="@id/selectMnomenicCountFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
@@ -215,8 +215,8 @@
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
         <action
-            android:id="@id/action_to_verifyMnemonic"
-            app:destination="@id/verifyMnemonicFragment1"
+            android:id="@id/action_to_preImportFragment"
+            app:destination="@id/preImportFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -231,8 +231,8 @@
             app:popExitAnim="@android:anim/slide_out_right" />
 
         <action
-            android:id="@+id/action_select_mnemonic_count"
-            app:destination="@id/selectMnemonicCount"
+            android:id="@+id/action_to_preImportFragment"
+            app:destination="@id/preImportFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -332,8 +332,8 @@
             app:popUpToInclusive="false"
             app:launchSingleTop="true" />
         <action
-            android:id="@+id/action_to_verifyMnemonic"
-            app:destination="@id/verifyMnemonicFragment1"
+            android:id="@id/action_to_preImportFragment"
+            app:destination="@id/preImportFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -366,8 +366,8 @@
             app:popUpToInclusive="false"
             app:launchSingleTop="true" />
         <action
-            android:id="@+id/action_to_verifyMnemonic"
-            app:destination="@id/verifyMnemonicFragment1"
+            android:id="@id/action_to_preImportFragment"
+            app:destination="@id/preImportFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -422,18 +422,18 @@
         android:name="com.cobo.cold.ui.fragment.setting.VersionFragment"
         android:label="VersionFragment" />
     <fragment
-        android:id="@+id/verifyMnemonicFragment1"
+        android:id="@+id/verifyMnemonicFragment"
         tools:layout="@layout/verify_mnemonic"
         android:name="com.cobo.cold.ui.fragment.unlock.VerifyMnemonicFragment"
         android:label="VerifyMnemonicFragment">
         <action
-            android:id="@+id/action_to_setPasswordFragment1"
+            android:id="@+id/action_to_setPasswordFragment"
             app:destination="@id/setPasswordFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"
-            app:popUpTo="@id/verifyMnemonicFragment1"
+            app:popUpTo="@id/verifyMnemonicFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -588,14 +588,29 @@
             app:popUpToInclusive="false" />
     </fragment>
 
+
+    <fragment
+        android:id="@+id/preImportFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.PreImportFragment"
+        android:label="PreImportShardingFragment"
+        tools:layout="@layout/pre_import_sharding">
+        <action
+            android:id="@+id/action_to_selectMnomenicCountFragment"
+            app:destination="@id/selectMnemonicCount"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+
     <fragment
         android:id="@+id/selectMnemonicCount"
         android:name="com.cobo.cold.ui.fragment.setup.SelectMnomenicCountFragment"
         android:label="SelectMnomenicCountFragment"
         tools:layout="@layout/select_mnemonic_count">
         <action
-            android:id="@id/action_to_verifyMnemonic"
-            app:destination="@id/verifyMnemonicFragment1"
+            android:id="@+id/action_to_verifyMnemonic"
+            app:destination="@id/verifyMnemonicFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"

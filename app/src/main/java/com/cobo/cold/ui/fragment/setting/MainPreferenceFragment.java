@@ -53,6 +53,7 @@ import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.fingerprint.FingerprintKit;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
+import com.cobo.cold.ui.fragment.setup.PreImportFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.ui.preference.SimplePreference;
@@ -76,9 +77,9 @@ import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.Utilities.SHARED_PREFERENCES_KEY;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_PASSPHRASE;
-import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.setting.LicenseFragment.KEY_TITLE;
 import static com.cobo.cold.ui.fragment.setting.LicenseFragment.KEY_URL;
+import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.SIGNATURE;
 
@@ -280,9 +281,9 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                 AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), "",
                         token -> {
                             Bundle bundle1 = new Bundle();
-                            bundle1.putBoolean("checkMnemonic", true);
+                            bundle1.putString(ACTION, PreImportFragment.ACTION_CHECK);
                             Navigation.findNavController(Objects.requireNonNull(getView()))
-                                    .navigate(R.id.action_select_mnemonic_count, bundle1);
+                                    .navigate(R.id.action_to_preImportFragment, bundle1);
                         }, forgetPassword);
             default:
                 break;
@@ -291,10 +292,10 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     }
 
     private final Runnable forgetPassword = () -> {
-        Bundle data = new Bundle();
-        data.putInt(KEY_NAV_ID, R.id.action_to_setPasswordFragment1);
+        Bundle bundle = new Bundle();
+        bundle.putString(ACTION, PreImportFragment.ACTION_RESET_PWD);
         Navigation.findNavController(Objects.requireNonNull(getView()))
-                .navigate(R.id.action_to_verifyMnemonic, data);
+                .navigate(R.id.action_to_preImportFragment, bundle);
     };
 
     private void handlePassphrase() {

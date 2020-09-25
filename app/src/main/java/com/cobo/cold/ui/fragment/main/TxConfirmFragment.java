@@ -28,7 +28,6 @@ import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.Navigation;
 
 import com.cobo.coinlib.coins.BCH.Bch;
 import com.cobo.coinlib.coins.LTC.Ltc;
@@ -44,6 +43,7 @@ import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
 import com.cobo.cold.ui.BindingAdapters;
 import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.fragment.setup.PreImportFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
@@ -61,19 +61,18 @@ import java.util.Objects;
 
 import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
-import static com.cobo.cold.ui.fragment.Constants.KEY_NAV_ID;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
+import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
 
 public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
 
     public static final String KEY_TX_DATA = "tx_data";
     private final Runnable forgetPassword = () -> {
-        Bundle data = new Bundle();
-        data.putInt(KEY_NAV_ID, R.id.action_to_setPasswordFragment1);
-        Navigation.findNavController(Objects.requireNonNull(getView()))
-                .navigate(R.id.action_to_verifyMnemonic, data);
+        Bundle bundle = new Bundle();
+        bundle.putString(ACTION, PreImportFragment.ACTION_RESET_PWD);
+        navigate(R.id.action_to_preImportFragment, bundle);
     };
     private String data;
     private TxConfirmViewModel viewModel;

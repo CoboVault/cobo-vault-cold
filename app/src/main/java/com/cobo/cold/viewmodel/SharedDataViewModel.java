@@ -42,6 +42,6 @@ public class SharedDataViewModel extends AndroidViewModel {
     }
 
     public boolean verifyMnemonic(String mnemonic) {
-        return new VerifyMnemonicCallable(mnemonic).call();
+        return new VerifyMnemonicCallable(mnemonic, null, 0).call();
     }
 }

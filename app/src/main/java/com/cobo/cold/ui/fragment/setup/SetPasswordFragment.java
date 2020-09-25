@@ -27,7 +27,6 @@ import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
-import androidx.navigation.Navigation;
 
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
@@ -58,13 +57,16 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
     private boolean inputValid;
 
     private String mnemonic; // mnemonic to reset password
+    private String slip39MasterSeed; // masterSeed to reset password
+    private int slip39Id;
 
     private String currentPassword; //old password hash
 
     public static final String PASSWORD = "password";
     public static final String SIGNATURE = "signature";
-
     public static final String MNEMONIC = "mnemonic";
+    public static final String SLIP39_SEED = "slip39_seed";
+    public static final String SLIP39_ID = "slip39_id";
 
     private boolean paused;
 
@@ -81,6 +83,8 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
         isSetupVault = bundle != null && bundle.getBoolean(IS_SETUP_VAULT);
         currentPassword = bundle != null ? bundle.getString(PASSWORD): null;
         mnemonic = bundle != null ? bundle.getString(MNEMONIC): null;
+        slip39MasterSeed = bundle != null ? bundle.getString(SLIP39_SEED): null;
+        slip39Id = bundle != null ? bundle.getInt(SLIP39_ID): 0;
         mBinding.pwd1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(64)});
         mBinding.pwd2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(64)});
 
@@ -146,7 +150,12 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
             mBinding.step.setVisibility(View.GONE);
             mBinding.toolbar.setNavigationOnClickListener(v -> {
                 Keyboard.hide(mActivity, mBinding.pwd1);
-                navigateUp();
+                // change pwd by old pwd
+                if (!TextUtils.isEmpty(currentPassword)) {
+                    navigateUp();
+                } else {
+                    popBackStack(R.id.preImportFragment, false);
+                }
             });
         }
         mBinding.confirm.setOnClickListener(v -> validatePassword());
@@ -190,7 +199,7 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
                 String passwordHash = Hex.toHexString(Objects.requireNonNull(HashUtil.twiceSha256(password)));
                 Runnable action;
                 if (mActivity instanceof UnlockActivity) {
-                    new ResetPasswordCallable(passwordHash, mnemonic).call();
+                    new ResetPasswordCallable(passwordHash, mnemonic, slip39MasterSeed, slip39Id).call();
                     action = () -> {
                         Utilities.setPatternRetryTimes(mActivity,0);
                         mActivity.finish();
@@ -198,12 +207,13 @@ public class SetPasswordFragment extends SetupVaultBaseFragment<SetPasswordBindi
                 } else if(!isSetupVault) {
                     if (!TextUtils.isEmpty(currentPassword)) {
                         new ChangePasswordCallable(passwordHash, currentPassword).call();
-                    } else if(!TextUtils.isEmpty(mnemonic)) {
-                        new ResetPasswordCallable(passwordHash, mnemonic).call();
+                        action = this::navigateUp;
+                    } else {
+                        new ResetPasswordCallable(passwordHash, mnemonic, slip39MasterSeed, slip39Id).call();
+                        action = () -> popBackStack(R.id.preImportFragment, true);
                     }
-                    action = () -> Navigation.findNavController(Objects.requireNonNull(getView())).navigateUp();
                 } else {
-                    new ResetPasswordCallable(passwordHash, mnemonic).call();
+                    new ResetPasswordCallable(passwordHash, mnemonic, slip39MasterSeed, slip39Id).call();
                     viewModel.setPassword(passwordHash);
                     action = () -> {
                         Bundle data = new Bundle();

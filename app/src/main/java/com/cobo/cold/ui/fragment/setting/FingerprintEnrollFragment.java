@@ -30,7 +30,6 @@ import androidx.databinding.ObservableField;
 import com.cobo.coinlib.Util;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
-import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.callables.RegisterPublicKeyCallable;
 import com.cobo.cold.databinding.FingerprintEnrollBinding;
 import com.cobo.cold.databinding.InputModalBinding;
@@ -55,10 +54,6 @@ import java.security.spec.ECPoint;
 import java.util.List;
 import java.util.Objects;
 
-import static com.cobo.cold.callables.FingerprintPolicyCallable.ON;
-import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_PASSPHRASE;
-import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
-import static com.cobo.cold.callables.FingerprintPolicyCallable.WRITE;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 import static com.cobo.cold.util.KeyStoreUtil.KEYSTORE_PROVIDER_NAME;
 

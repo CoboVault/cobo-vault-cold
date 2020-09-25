@@ -84,7 +84,7 @@ public class WhiteListModel extends AndroidViewModel {
 
     public void verifyMnemonic(String mnemonic) {
         AppExecutors.getInstance().diskIO().execute(() -> {
-            boolean match = new VerifyMnemonicCallable(mnemonic).call();
+            boolean match = new VerifyMnemonicCallable(mnemonic, null, 0).call();
             verifyMnemonic.postValue(match);
         });
     }

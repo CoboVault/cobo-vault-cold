@@ -28,8 +28,6 @@ import android.view.View;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.cobo.coinlib.coins.BCH.Bch;
-import com.cobo.coinlib.coins.LTC.Ltc;
 import com.cobo.coinlib.utils.Arith;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;

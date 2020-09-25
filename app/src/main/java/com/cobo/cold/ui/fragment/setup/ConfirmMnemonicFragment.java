@@ -18,11 +18,11 @@
 package com.cobo.cold.ui.fragment.setup;
 
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
@@ -30,6 +30,7 @@ import com.cobo.cold.db.PresetData;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.util.Keyboard;
+import com.cobo.cold.viewmodel.SetupVaultViewModel;
 
 import java.util.List;
 
@@ -41,6 +42,7 @@ import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_NOT_CREATE
 
 public class ConfirmMnemonicFragment extends MnemonicInputFragment {
 
+    private int shardingSequence;
     @Override
     protected int setView() {
         return R.layout.mnemonic_input_fragment;
@@ -48,16 +50,34 @@ public class ConfirmMnemonicFragment extends MnemonicInputFragment {
 
     @Override
     protected void init(View view) {
-        super.init(view);
+        viewModel = ViewModelProviders.of(mActivity).get(SetupVaultViewModel.class);
+        mBinding.toolbar.setNavigationOnClickListener(v -> {
+            Keyboard.hide(mActivity, mBinding.table);
+            navigateUp();
+        });
         mBinding.toolbarTitle.setText(R.string.confirm_mnemonic);
-        mBinding.hint.setText(getString(R.string.confirm_input_mnemonic_hint,
-                viewModel.getMnemonicCount().get()));
-        mBinding.hint.setGravity(Gravity.CENTER);
-        mBinding.importMnemonic.setText(R.string.complete);
+        mBinding.table.setMnemonicNumber(viewModel.getMnemonicCount().get());
+
+        if (viewModel.isShardingMnemonic()) {
+            mBinding.hint.setText(getString(R.string.input_sharding_mnemonic_hint,
+                    viewModel.currentSequence() +1));
+            shardingSequence = viewModel.currentSequence();
+        } else {
+            mBinding.hint.setText(getString(R.string.confirm_input_mnemonic_hint,
+                    viewModel.getMnemonicCount().get()));
+        }
+
+        mBinding.importMnemonic.setText(R.string.confirm);
         mBinding.importMnemonic.setOnClickListener(v -> {
             Keyboard.hide(mActivity, mBinding.importMnemonic);
             verifyMnemonic();
         });
+        addMnemonicChangeCallback();
+        subscribeVaultState(viewModel.getVaultCreateState());
+    }
+
+    protected void navBack() {
+        popBackStack(R.id.tabletQrcodeFragment,false);
     }
 
     @Override
@@ -72,7 +92,6 @@ public class ConfirmMnemonicFragment extends MnemonicInputFragment {
                 Utilities.setVaultCreated(mActivity);
                 Utilities.setVaultId(mActivity, viewModel.getVaultId());
                 Utilities.setCurrentBelongTo(mActivity, "main");
-                Utilities.setMnemonicCount(mActivity, viewModel.getMnemonicCount().get());
 
                 Runnable onComplete = () -> {
                     if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
@@ -102,12 +121,34 @@ public class ConfirmMnemonicFragment extends MnemonicInputFragment {
                 .map(ObservableField::get)
                 .reduce((s1, s2) -> s1 + " " + s2)
                 .orElse("");
-        if (mnemonic.equals(viewModel.getMnemonic().getValue())) {
-            viewModel.writeMnemonic(mnemonic);
-            mBinding.table.getWordsList().clear();
+
+        if (viewModel.isShardingMnemonic()) {
+            if (mnemonic.equals(viewModel.getShareByIndex(shardingSequence))) {
+                if (shardingSequence == viewModel.totalShares() - 1) {
+                    viewModel.writeShardingMasterSeed();
+                    mBinding.table.getWordsList().clear();
+                } else {
+                    Utilities.alert(mActivity, getString(R.string.verify_pass),
+                            getString(R.string.verify_sharding_pass_hint, shardingSequence + 2),
+                            getString(R.string.confirm),() -> {
+                                mBinding.table.getWordsList().clear();
+                                viewModel.nextSequence();
+                                popBackStack(R.id.preCreateShardingFragment,false);
+                            });
+                }
+            } else {
+                Utilities.alert(mActivity, getString(R.string.check_failed),
+                        getString(R.string.invalid_shard),
+                        getString(R.string.confirm), null);
+            }
         } else {
-            Utilities.alert(mActivity, getString(R.string.hint), getString(R.string.invalid_mnemonic),
-                    getString(R.string.confirm), null);
+            if (mnemonic.equals(viewModel.getMnemonic().getValue())) {
+                viewModel.writeMnemonic(mnemonic);
+                mBinding.table.getWordsList().clear();
+            } else {
+                Utilities.alert(mActivity, getString(R.string.hint), getString(R.string.invalid_mnemonic),
+                        getString(R.string.confirm), null);
+            }
         }
 
     }

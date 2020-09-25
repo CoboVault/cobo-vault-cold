@@ -18,7 +18,6 @@
 package com.cobo.cold.viewmodel;
 
 import android.app.Application;
-import android.content.res.AssetManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -78,7 +77,6 @@ import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 import static com.cobo.coinlib.coins.BTC.Electrum.TxUtils.isMasterPublicKeyMatch;
-import static com.cobo.coinlib.v8.ScriptLoader.readAsset;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.DUPLICATE_TX;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.NORMAL;
 import static com.cobo.cold.ui.fragment.main.FeeAttackChecking.FeeAttackCheckingResult.SAME_OUTPUTS;
@@ -439,8 +437,6 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 TxEntity tx = observableTx.getValue();
                 Objects.requireNonNull(tx).setTxId(txId);
                 tx.setSignedHex(rawTx);
-                Log.w("kkk","txId = " + txId);
-                Log.w("kkk","rawTx = " + rawTx);
                 mRepository.insertTx(tx);
                 signState.postValue(STATE_SIGN_SUCCESS);
                 if (Coins.showPublicKey(tx.getCoinCode())) {

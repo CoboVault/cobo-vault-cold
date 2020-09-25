@@ -28,7 +28,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.GenerateMnemonicBinding;
-import com.cobo.cold.mnemonic.MnemonicInputTable;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.SecretModalDialog;
 
@@ -47,11 +46,17 @@ public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMne
     protected void init(View view) {
         super.init(view);
         mBinding.toolbar.setNavigationOnClickListener(v -> onBackPress());
-        viewModel.setMnemonicCount(MnemonicInputTable.TWEENTYFOUR);
-        mBinding.table.setMnemonicNumber(MnemonicInputTable.TWEENTYFOUR);
+        mBinding.table.setMnemonicNumber(viewModel.getMnemonicCount().get());
         mBinding.table.setEditable(false);
+        if (viewModel.isShardingMnemonic()) {
+            initSharding();
+        } else {
+            generateRandomMnemonic();
+        }
         mBinding.confirmSaved.setOnClickListener(v -> confirmInput());
+    }
 
+    private void generateRandomMnemonic() {
         Bundle bundle = getArguments();
         if (bundle != null) {
             useDice = bundle.getBoolean("use_dice");
@@ -63,6 +68,18 @@ public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMne
             viewModel.generateRandomMnemonic();
         }
         observeMnemonic();
+    }
+
+    private void initSharding() {
+        int shardingSequence = viewModel.currentSequence();
+        mBinding.shardingHint.setVisibility(View.VISIBLE);
+        mBinding.shardingHint.setText(getString(R.string.generate_sharding_sequence,
+                shardingSequence + 1, viewModel.totalShares()));
+        String[] words = viewModel.getShareByIndex(shardingSequence).split(" ");
+        for (int i = 0; i < words.length; i++) {
+            mBinding.table.getWordsList().get(i).set(words[i]);
+        }
+        mBinding.confirmSaved.setEnabled(true);
     }
 
     private void onBackPress() {
