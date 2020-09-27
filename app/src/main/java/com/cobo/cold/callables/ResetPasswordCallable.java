@@ -32,12 +32,15 @@ public class ResetPasswordCallable implements Callable<Boolean> {
     private final String newPassword;
     private final String mnemonic;
     private final String slip39MasterSeed;
+    private final int slip39Id;
 
     public ResetPasswordCallable(@NonNull String newPassword, @Nullable String mnemonic,
-                                 @Nullable String slip39MasterSeed) {
+                                 @Nullable String slip39MasterSeed,
+                                 int slip39Id) {
         this.newPassword = newPassword;
         this.mnemonic = mnemonic;
         this.slip39MasterSeed = slip39MasterSeed;
+        this.slip39Id = slip39Id;
     }
 
     @Override
@@ -47,7 +50,8 @@ public class ResetPasswordCallable implements Callable<Boolean> {
         if (!TextUtils.isEmpty(mnemonic)) {
             builder.addTextPayload(CONSTANTS.TAGS.MNEMONIC, mnemonic);
         } else if (!TextUtils.isEmpty(slip39MasterSeed)) {
-            builder.addHexPayload(CONSTANTS.TAGS.SLIP39_MASTER_SEED, slip39MasterSeed);
+            builder.addHexPayload(CONSTANTS.TAGS.SLIP39_MASTER_SEED, slip39MasterSeed)
+                    .addShortPayload(CONSTANTS.TAGS.SLIP39_ID, slip39Id);
         }
 
         final Callable<Packet> callable = new BlockingCallable(builder.build());
