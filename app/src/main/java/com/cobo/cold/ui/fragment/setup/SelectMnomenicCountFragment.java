@@ -64,6 +64,7 @@ public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMn
     public void onResume() {
         super.onResume();
         if (isSharding) {
+            viewModel.resetSharding();
             viewModel.setMnemonicCount(20);
         } else {
             viewModel.setMnemonicCount(24);

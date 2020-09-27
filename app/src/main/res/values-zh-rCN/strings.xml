@@ -638,7 +638,7 @@
     <string name="default_vault_notice">您已升级到新版本，为了您的资产安全，设备每次重启后（包括升级、断电重启、关机重启等）将进入默认金库。</string>
     <string name="switching_to_main_vault">正在进入默认金库，请勿锁屏</string>
     <string name="shading_guide"><![CDATA[
-    1. 您创建的是<font color="#00cdc3">%1$d<font/>/<font color="#00cdc3">%2$d<font/>的分片助记词；总片数为<font color="#00cdc3">%3$d<font/>片，恢复助记词时最少需要<font color="#00cdc3">%4$d<font/>片<br> <br>。
+    1. 您创建的是<font color="#00cdc3">%1$d<font/>/<font color="#00cdc3">%2$d<font/>的分片助记词；总片数为<font color="#00cdc3">%3$d<font/>片，恢复助记词时最少需要<font color="#00cdc3">%4$d<font/>片。<br> <br>
     2. 接下来展示和确认每一分片的助记词，若分片由多个管理员分别保管，请确认各片管理员的身份，确保是由本人进行操作。<br> <br>
     3. 请勿将助记词拍照、存储在联网设备上，或泄露给他人！
     ]]></string>

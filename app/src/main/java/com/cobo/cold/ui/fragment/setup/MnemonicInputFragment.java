@@ -26,6 +26,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -148,9 +149,10 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
         }
 
         Share share = viewModel.firstShare;
-        int threshold = share.group_threshold;
-        if (index > 2) return;
-        if (threshold == 1 && index > 1) {
+        int group_count = share.group_count;
+        if (group_count == 1 && index > 2) {
+            return;
+        } else if(index > 1){
             return;
         }
 
@@ -370,6 +372,11 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                     if (viewModel.currentSequence() + 1 == viewModel.firstShare.member_threshold) {
                         mBinding.importMnemonic.setText(R.string.complete);
                     }
+                    mBinding.scroll.post(() -> {
+                        mBinding.scroll.fullScroll(ScrollView.FOCUS_UP);
+                        mBinding.table.scrollToPosition(0);
+                        mBinding.table.getChildAt(0).requestFocus();
+                    });
                     break;
                 case RESULT_OK:
                     onAllShardsCollect();
@@ -390,6 +397,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
     protected void onAllShardsCollect() {
         viewModel.writeShardingMasterSeed();
         mBinding.table.getWordsList().forEach(word -> word.set(""));
+        mBinding.getRoot().setVisibility(View.INVISIBLE);
     }
 
 

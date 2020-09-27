@@ -105,7 +105,6 @@ public class PasswordLockFragment extends BaseFragment<PasswordUnlockBinding> {
         });
 
         Bundle bundle = new Bundle();
-        bundle.putInt(KEY_NAV_ID, R.id.action_verifyMnemonic_to_setPassword);
         bundle.putString(KEY_TITLE, getString(R.string.verify_mnemonic));
         bundle.putString(ACTION, PreImportFragment.ACTION_RESET_PWD);
         mBinding.forget.setOnClickListener(v -> navigate(R.id.action_resetpassword_verifyMnemonic, bundle));
