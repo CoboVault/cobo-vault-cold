@@ -32,6 +32,9 @@ public interface AddressDao {
     @Query("SELECT * FROM addresses WHERE coinId = :coinId AND belongTo =:belongTo")
     LiveData<List<AddressEntity>> loadAddressForCoin(String coinId, String belongTo);
 
+    @Query("SELECT * FROM addresses WHERE belongTo =:belongTo")
+    LiveData<List<AddressEntity>> loadAllAddress(String belongTo);
+
     @Query("SELECT * FROM addresses WHERE coinId = :coinId AND belongTo =:belongTo")
     List<AddressEntity> loadAddressSync(String coinId, String belongTo);
 

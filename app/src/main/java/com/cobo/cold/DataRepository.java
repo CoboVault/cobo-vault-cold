@@ -119,6 +119,10 @@ public class DataRepository {
         return mDb.addressDao().loadAddressForCoin(coinId, getBelongTo());
     }
 
+    public LiveData<List<AddressEntity>> loadAllAddress() {
+        return mDb.addressDao().loadAllAddress(getBelongTo());
+    }
+
     public List<AddressEntity> loadAddressSync(String coinId) {
         return mDb.addressDao().loadAddressSync(coinId, getBelongTo());
     }
