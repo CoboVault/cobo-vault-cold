@@ -224,9 +224,9 @@
     <string name="signing_history">Signatures</string>
     <string name="add_coins">Add Cryptocurrency</string>
     <string name="not_in_whitelist_reject">Receiving address unauthorized, transaction declined!</string>
-    <string name="invalid_mnemonic">recovery phrase incorrect, please check</string>
+    <string name="invalid_mnemonic">Recovery phrase is incorrect, please try again.</string>
     <string name="scan_permission_denied">Scan Permission denied</string>
-    <string name="wrong_mnemonic">recovery phrase incorrect</string>
+    <string name="wrong_mnemonic">Recovery phrase incorrect</string>
     <string name="too_many_passphrase">Can only have up to 5 passphrase</string>
     <string name="about_message">Cobo Vault is an air-gapped hardware wallet that uses completely transparent QR code data transmissions so you can verify what goes in and out of it. Our Secure Element performs true random number generation (TRNG) to ensure your private keys come from real, physical sources of entropy. All transaction signing occurs entirely within the Secure Element, which has state of the art defenses to protect you in the event that an attacker has physical access to your device. </string>
     <string name="amount_hint">Set Amount</string>
@@ -687,42 +687,45 @@
     <string name="default_vault_notice"> You have successfully upgraded to the latest version. To protect your assets, the Vault automatically resets to the default vault every time the device is restarted. (Also when it upgrades, shuts down or is restarted.)</string>
     <string name="switching_to_main_vault">Entering the default vault, please keep screen on.</string>
     <string name="shading_guide"><![CDATA[
-    1. Allow reconstruction with <font color="#00cdc3">%d<font/> of <font color="#00cdc3">%d<font/> shares.<br><br>
-    2. Next the split recovery phrase will be displayed each share and should be confirmed. Please confirm the identities of the administrators of each share to ensure that the operation is performed by himself.<br> <br>
-    3. Do not take photos of recovery phrase or store on a device connected to the Internet. Do not share the recovery phrase with others.
+    1. You have built <font color="#00cdc3">%1$d<font/>/<font color="#00cdc3">%2$d<font/> Shamir Backup. It\'s a Shamir Backup with <font color="#00cdc3">%3$d<font/> shares and you need <font color="#00cdc3">%4$d<font/> shares at least to recovery your wallet.<br><br>
+    2. Next you will need to confirm each share. If all the shares are kept by a different person, please confirm that each confirmation is performed by the specific person.<br> <br>
+    3. Please don\'t take photos of the shares, or store it online. Don\'t share it to anyone else or you risk losing your funds.
     ]]></string>
     <string name="generate_sharding_sequence">share #%d(Total %d)</string>
-    <string name="generate_shading_hint">Please confirm you are the custodian of the share %d</string>
+    <string name="generate_shading_hint">Please confirm you are the custodian of the share #%d</string>
     <string name="cancel_create_sharding">Cancel</string>
     <string name="input_sharding_mnemonic_hint"><![CDATA[Please enter the recovery phrase for <font color="#00cdc3">share #%d<font/> in the form below]]></string>
     <string name="verify_pass">Verify Successful</string>
-    <string name="verify_sharding_pass_hint">The recovery phrase of this share is verified correctly, and will show the next share. After touch confirm button, please give the machine to the custodian who keeps share #%d.</string>
+    <string name="verify_sharding_pass_hint">The recovery phrase of this share was verified successfully, now proceed to the next share. Touch confirm and hand over to the second share custodian who keeps share number #%d.</string>
     <string name="sharding_no">share #%d</string>
     <string name="reset_password">Password Reset</string>
     <string name="first_sharding_hint">The first share enter successfully, %d more shares needed to enter.</string>
-    <string name="cancel_import_sharding">Cancel Import</string>
-    <string name="continue_import_sharding">Continue to import</string>
+    <string name="cancel_import_sharding">Cancel Enter</string>
+    <string name="continue_import_sharding">Keep Entering</string>
     <string name="sharding_repeat">Share already entered, please enter a different share.</string>
     <string name="sharding_id_not_match">You have entered a share from another Shamir Backup.</string>
-    <string name="confirm_cancel_import_sharding">Confirm to cancel</string>
-    <string name="continue_create_sharding">Continue to create</string>
+    <string name="confirm_cancel_import_sharding">Confirm Cancel</string>
+    <string name="continue_create_sharding">Keep Entering</string>
     <string name="invalid_shard">Recovery phrase incorrect, please check.</string>
     <string name="ask_confirm_cancel_import_sharding">Cancel import vault？</string>
-    <string name="cancel_import_sharding_notice">The confirmed share will be lost after canceling. Are you sure to cancel the creation?</string>
+    <string name="ask_confirm_cancel_create_sharding">Cancel create vault？</string>
+    <string name="ask_confirm_cancel_check_sharding">Cancel recovery phrase check?</string>
+    <string name="ask_confirm_cancel_enter_sharding">Cancel recovery phrase enter?</string>
+    <string name="cancel_import_sharding_notice">The confirmed share will be lost after cancelling. Are you sure you want to cancel?</string>
     <string name="next_sharding">Next share</string>
-    <string name="not_support_multi_group_sharding">You have entered  Super Shamir (two-level configuration of Shamir Backup), Cobo Vault doesn’t currently support importing it.</string>
+    <string name="not_support_multi_group_sharding">You have entered  Super Shamir (two-level configuration of Shamir Backup), Cobo Vault doesn’t support it currently.</string>
     <string name="total_sharding_count">Number of shares</string>
     <string name="sharding_threshold">Threshold</string>
-    <string name="confirm_cancel_create_sharding_title">Cancel creation of vault？</string>
-    <string name="confirm_cancel_create_sharding">The confirmed share will be lost after canceling. Are you sure to cancel the creation?</string>
+    <string name="confirm_cancel_create_sharding_title">Cancel create vault？</string>
+    <string name="confirm_cancel_create_sharding">The confirmed share will be lost after cancelling. Are you sure you want to cancel?</string>
     <string name="choose_check_type">Select Way of Checking</string>
     <string name="choose_import_type">Select Way of Importing</string>
-    <string name="check_bip39_phrase">Check Generic Recovery Phrase</string>
-    <string name="check_slip39_phrase">Check Split Recovery Phrase</string>
-    <string name="import_bip39_phrase">Import Generic Recovery Phrase</string>
-    <string name="import_slip39_phrase">Import Split Recovery Phrase</string>
+    <string name="check_bip39_phrase">Check the Vault with Single Backup</string>
+    <string name="check_slip39_phrase">Check the Vault with Shamir Backup</string>
+    <string name="import_bip39_phrase">Import a Vault with Single Backup</string>
+    <string name="import_slip39_phrase">Import a Vault with Shamir Backup</string>
     <string name="enter_bip39_phrase">Enter Generic Recovery Phrase</string>
-    <string name="enter_slip39_phrase">Enter Split Recovery Phrase</string>
+    <string name="enter_slip39_phrase">Enter Shamir Backup</string>
     <string name="reset_password_by_phrase">Reset password via recovery phrase</string>
     <string name="shamir_backup">Shamir Backup</string>
     <string name="generate_slip39_phrase">Create a Vault with Shamir Backup</string>

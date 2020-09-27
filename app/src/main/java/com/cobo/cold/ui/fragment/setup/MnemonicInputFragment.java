@@ -43,6 +43,7 @@ import com.cobo.cold.db.PresetData;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
+import com.cobo.cold.ui.fragment.unlock.VerifyMnemonicFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.util.Keyboard;
 import com.cobo.cold.viewmodel.SetupVaultViewModel;
@@ -64,7 +65,7 @@ import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATING_F
 public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputFragmentBinding> {
 
     protected ModalDialog dialog;
-
+    protected String action;
     private List<Observable.OnPropertyChangedCallback> callbacks = new ArrayList<>();
     private boolean notMatch;
 
@@ -161,7 +162,12 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                     getString(R.string.sharding_id_not_match),
                     getString(R.string.cancel_import_sharding),
                     getString(R.string.confirm),
-                    this::cancelImportSharding,
+                    () -> {
+                        mBinding.table.getWordsList().get(index).set("");
+                        mBinding.table.getChildAt(index).requestFocus();
+                        notMatch = false;
+                        cancelImportSharding();
+                    },
                     () -> {
                         mBinding.table.getWordsList().get(index).set("");
                         mBinding.table.getChildAt(index).requestFocus();
@@ -170,7 +176,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
         }
     }
 
-    private void clearInput() {
+    protected void clearInput() {
         removeMnemonicChangeCallback();
         mBinding.table.getWordsList().forEach(word -> word.set(""));
         mBinding.importMnemonic.setEnabled(false);
@@ -198,12 +204,26 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
     }
 
     protected void cancelImportSharding() {
-        showDialog(mActivity,getString(R.string.ask_confirm_cancel_import_sharding),
+        String title;
+        if (this instanceof ConfirmMnemonicFragment) {
+            title = getString(R.string.ask_confirm_cancel_import_sharding);
+        } else if (this instanceof VerifyMnemonicFragment) {
+            if (PreImportFragment.ACTION_CHECK.equals(action)) {
+                title = getString(R.string.ask_confirm_cancel_check_sharding);
+            } else {
+                title = getString(R.string.ask_confirm_cancel_enter_sharding);
+            }
+        } else {
+            title = getString(R.string.ask_confirm_cancel_import_sharding);
+        }
+
+        showDialog(mActivity, title,
                 getString(R.string.cancel_import_sharding_notice),
                 getString(R.string.confirm_cancel_import_sharding),
                 getString(R.string.continue_import_sharding),
                 () -> {
                     viewModel.resetSharding();
+                    Keyboard.hide(mActivity, getView());
                     navBack();
                 }, null);
     }
@@ -321,7 +341,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                         () -> addSharding(mnemonic));
             } else {
                 //current not support group_count > 1
-                showDialog(mActivity,getString(R.string.notice),
+                showDialog(mActivity,getString(R.string.notice1),
                         getString(R.string.not_support_multi_group_sharding),
                         getString(R.string.cancel_import_sharding),
                         getString(R.string.confirm),
