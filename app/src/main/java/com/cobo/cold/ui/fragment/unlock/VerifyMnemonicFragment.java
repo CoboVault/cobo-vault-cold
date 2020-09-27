@@ -49,6 +49,7 @@ import iton.slip.secret.words.Mnemonic;
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
 import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.MNEMONIC;
+import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.SLIP39_ID;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.SLIP39_SEED;
 
 public class VerifyMnemonicFragment extends MnemonicInputFragment {
@@ -164,10 +165,12 @@ public class VerifyMnemonicFragment extends MnemonicInputFragment {
     @Override
     protected void onAllShardsCollect() {
         byte[] seed = viewModel.verifyShardingMnemonic();
+        int id = viewModel.firstShare.id;
         viewModel.resetSharding();
         Bundle bundle = new Bundle();
         if (seed != null) {
             bundle.putString(SLIP39_SEED, Hex.toHexString(seed));
+            bundle.putInt(SLIP39_ID, id);
             handleVerifyResult(bundle, true);
         } else {
             handleVerifyResult(bundle, false);

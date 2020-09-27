@@ -75,8 +75,7 @@ public class CoinViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<AddressEntity>> getAddress() {
-        return mRepository.loadAddress(Utilities.isMainNet(getApplication()) ?
-                        Coins.BTC.coinId() : Coins.XTN.coinId());
+        return mRepository.loadAllAddress();
     }
 
     public void updateAddress(AddressEntity addr) {
