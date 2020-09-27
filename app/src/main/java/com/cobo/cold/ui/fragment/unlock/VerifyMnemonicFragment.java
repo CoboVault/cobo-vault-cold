@@ -55,7 +55,6 @@ import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.SLIP39_SEED;
 public class VerifyMnemonicFragment extends MnemonicInputFragment {
 
     public static final String TAG = "VerifyMnemonicFragment";
-    private String action;
     private boolean isSharding;
 
     @Override
@@ -121,8 +120,16 @@ public class VerifyMnemonicFragment extends MnemonicInputFragment {
                 int remainCount = 0;
                 try {
                     Share share = Mnemonic.INSTANCE.decode(mnemonic);
-                    if (share.group_threshold == 1) {
+                    if (share.group_count == 1) {
                         remainCount = share.member_threshold - 1;
+                    } else {
+                        showDialog(mActivity,getString(R.string.notice),
+                                getString(R.string.not_support_multi_group_sharding),
+                                getString(R.string.cancel_import_sharding),
+                                getString(R.string.confirm),
+                                this::cancelImportSharding,
+                                this::clearInput);
+                        return;
                     }
                 } catch (SharedSecretException e) {
                     e.printStackTrace();

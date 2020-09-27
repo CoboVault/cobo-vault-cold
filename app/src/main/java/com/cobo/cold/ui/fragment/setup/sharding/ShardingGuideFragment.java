@@ -22,16 +22,11 @@ package com.cobo.cold.ui.fragment.setup.sharding;
 import android.os.Bundle;
 import android.view.View;
 
-import com.cobo.cold.MainApplication;
 import com.cobo.cold.R;
-import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.ShardingGuideBinding;
 import com.cobo.cold.ui.fragment.setup.SetupVaultBaseFragment;
 
 import java.util.Objects;
-
-import static com.cobo.cold.setting.LanguageHelper.SIMPLIFIED_CHINESE;
-import static com.cobo.cold.ui.fragment.setting.SystemPreferenceFragment.SETTING_LANGUAGE;
 
 public class ShardingGuideFragment extends SetupVaultBaseFragment<ShardingGuideBinding> {
 
@@ -50,13 +45,7 @@ public class ShardingGuideFragment extends SetupVaultBaseFragment<ShardingGuideB
         Bundle data = Objects.requireNonNull(getArguments());
         total = data.getInt("total");
         threshold = data.getInt("threshold");
-        String language = Utilities.getPrefs(MainApplication.getApplication())
-                .getString(SETTING_LANGUAGE, "zh_rCN");
-        if (language.equals(SIMPLIFIED_CHINESE)) {
-            mBinding.guide.setText(getString(R.string.shading_guide, total, threshold));
-        } else {
-            mBinding.guide.setText(getString(R.string.shading_guide, threshold, total));
-        }
+        mBinding.guide.setText(getString(R.string.shading_guide, threshold, total, total, threshold));
         mBinding.confirm.setOnClickListener(v-> {
             viewModel.generateSlip39Mnemonic(threshold,total);
             navigate(R.id.action_to_preCreateShardingFragment);
