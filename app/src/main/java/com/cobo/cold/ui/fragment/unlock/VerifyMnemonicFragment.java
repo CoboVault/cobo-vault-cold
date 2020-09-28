@@ -165,7 +165,7 @@ public class VerifyMnemonicFragment extends MnemonicInputFragment {
         } else {
             Utilities.alert(mActivity, getString(R.string.check_failed),
                     getString(R.string.check_mnemonic_failed),
-                    getString(R.string.confirm), () -> popBackStack(R.id.settingFragment, false));
+                    getString(R.string.confirm), () -> popBackStack(R.id.preImportFragment, false));
         }
     }
 

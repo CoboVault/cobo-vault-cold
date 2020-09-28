@@ -46,8 +46,14 @@
         tools:layout="@layout/verify_mnemonic"
         android:label="VerifyMnemonicFragment">
         <action
-            android:id="@+id/action_verifyMnemonic_to_setPassword"
-            app:destination="@id/setPasswordUnlockFragment" />
+            android:id="@+id/action_to_setPasswordFragment"
+            app:destination="@id/setPasswordFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/verifyMnemonicFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
 
@@ -80,10 +86,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/setPasswordUnlockFragment"
+        android:id="@+id/setPasswordFragment"
         android:name="com.cobo.cold.ui.fragment.setup.SetPasswordFragment"
         tools:layout="@layout/set_password"
-        android:label="SetPasswordUnlockFragment"/>
+        android:label="SetPasswordFragment"/>
     <fragment
         android:id="@+id/fingerprintLockFragment"
         android:name="com.cobo.cold.ui.fragment.FingerprintLockFragment"
