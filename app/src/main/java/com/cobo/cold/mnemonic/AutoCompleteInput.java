@@ -23,6 +23,7 @@ import android.graphics.Rect;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -161,6 +162,11 @@ public class AutoCompleteInput extends AppCompatAutoCompleteTextView {
                     v.requestFocus();
                 } else {
                     mHost.onInputComplete();
+                    try {
+                        ViewGroup vg = (ViewGroup) mHost.getParent().getParent().getParent();
+                        vg.findViewById(R.id.t).requestFocus();
+                    } catch (Exception ignore){}
+
                     final InputMethodManager imm = (InputMethodManager) mHost.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(mHost.getWindowToken(), 0);
