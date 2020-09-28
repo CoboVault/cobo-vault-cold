@@ -150,10 +150,10 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
 
         Share share = viewModel.firstShare;
         int group_count = share.group_count;
-        if (group_count == 1 && index > 2) {
-            return;
-        } else if(index > 1){
-            return;
+        if (group_count == 1) {
+            if (index > 2) return;
+        } else {
+            if (index > 1) return;
         }
 
         String[] firstShardingWords = viewModel.getShareByIndex(0).split(" ");
@@ -208,7 +208,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
     protected void cancelImportSharding() {
         String title;
         if (this instanceof ConfirmMnemonicFragment) {
-            title = getString(R.string.ask_confirm_cancel_import_sharding);
+            title = getString(R.string.ask_confirm_cancel_create_sharding);
         } else if (this instanceof VerifyMnemonicFragment) {
             if (PreImportFragment.ACTION_CHECK.equals(action)) {
                 title = getString(R.string.ask_confirm_cancel_check_sharding);

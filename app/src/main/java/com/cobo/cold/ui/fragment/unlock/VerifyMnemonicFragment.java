@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ScrollView;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ObservableField;
@@ -99,6 +100,11 @@ public class VerifyMnemonicFragment extends MnemonicInputFragment {
     }
 
     private void validateMnemonic(View view) {
+        mBinding.scroll.post(() -> {
+            mBinding.scroll.fullScroll(ScrollView.FOCUS_UP);
+            mBinding.table.scrollToPosition(0);
+            Keyboard.hide(mActivity, mBinding.scroll);
+        });
         String mnemonic = mBinding.table.getWordsList()
                 .stream()
                 .map(ObservableField::get)
@@ -109,6 +115,7 @@ public class VerifyMnemonicFragment extends MnemonicInputFragment {
             Utilities.alert(mActivity, getString(R.string.notice),
                     getString(R.string.invalid_mnemonic_hint),
                     getString(R.string.confirm), null);
+            mBinding.t.requestFocus();
             return;
         }
         if (!isSharding) {
