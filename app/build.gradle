@@ -220,7 +220,7 @@ def getVersionProperties() {
     }
 
     def versionMajor = 1
-    def versionMinor = 6
+    def versionMinor = 7
     def versionPatch = versionProps.getProperty('patch', '0').toInteger()
     def isVaultRelease = false
 
