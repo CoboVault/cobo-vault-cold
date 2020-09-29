@@ -126,7 +126,7 @@ public class ConfirmMnemonicFragment extends MnemonicInputFragment {
             if (mnemonic.equals(viewModel.getShareByIndex(shardingSequence))) {
                 if (shardingSequence == viewModel.totalShares() - 1) {
                     viewModel.writeShardingMasterSeed();
-                    mBinding.table.getWordsList().clear();
+                    mBinding.getRoot().setVisibility(View.INVISIBLE);
                 } else {
                     Utilities.alert(mActivity, getString(R.string.verify_pass),
                             getString(R.string.verify_sharding_pass_hint, shardingSequence + 2),
