@@ -23,12 +23,18 @@ import android.view.View;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.SelectMnemonicCountBinding;
 
+import java.util.Objects;
+
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
+import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
+import static com.cobo.cold.ui.fragment.setup.PreImportFragment.IS_SHARDING;
 
 public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMnemonicCountBinding> {
 
     private boolean checkMnemonic;
-    private boolean enableDot;
+    private boolean isSharding;
+    private String action;
+    private Bundle bundle;
 
     @Override
     protected int setView() {
@@ -41,30 +47,38 @@ public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMn
         mBinding.setViewModel(viewModel);
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.next.setOnClickListener(this::next);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            checkMnemonic = bundle.getBoolean("checkMnemonic");
-            enableDot = bundle.getBoolean("enableDot");
+        bundle = Objects.requireNonNull(getArguments());
+        action = bundle.getString(ACTION);
+
+        isSharding = bundle.getBoolean(IS_SHARDING);
+        checkMnemonic = PreImportFragment.ACTION_CHECK.equals(action);
+
+        if (isSharding) {
+            mBinding.normalMnemonicCount.setVisibility(View.GONE);
+        } else {
+            mBinding.shardingMnemonicCount.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (checkMnemonic || enableDot) {
+        if (isSharding) {
+            viewModel.resetSharding();
+            viewModel.setMnemonicCount(20);
+        } else {
             viewModel.setMnemonicCount(24);
         }
     }
 
     private void next(View view) {
         if (checkMnemonic) {
-            getArguments().putString(KEY_TITLE, getString(R.string.check_mnemonic));
-            getArguments().putInt("mnemonicCount", viewModel.getMnemonicCount().get());
-            navigate(R.id.action_to_verifyMnemonic, getArguments());
+            bundle.putString(KEY_TITLE, getString(R.string.check_mnemonic));
+            navigate(R.id.action_to_verifyMnemonic, bundle);
+        } else if(action.equals(PreImportFragment.ACTION_RESET_PWD)) {
+            bundle.putString(KEY_TITLE, getString(R.string.input_mnemonic));
+            navigate(R.id.action_to_verifyMnemonic, bundle);
         } else {
-            if (enableDot) {
-                getArguments().putInt("mnemonicCount", viewModel.getMnemonicCount().get());
-            }
             navigate(R.id.action_to_mnemonicInputFragment, getArguments());
         }
 

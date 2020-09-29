@@ -30,8 +30,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.cobo.coinlib.coins.AbsDeriver;
-import com.cobo.coinlib.exception.InvalidPathException;
-import com.cobo.coinlib.path.Account;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;

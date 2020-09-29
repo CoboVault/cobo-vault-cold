@@ -20,14 +20,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.cobo.cold.viewmodel.SetupVaultViewModel" />
-    </data>
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -55,6 +47,7 @@
         <include layout="@layout/divider" />
 
         <ScrollView
+            android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
@@ -66,16 +59,24 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true">
 
-                <TextView
+                <com.cobo.cold.ui.views.SpanedTextView
                     android:id="@+id/hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="16dp"
-                    android:text="@{@string/input_mnemonic_hint(viewModel.getMnemonicCount())}"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
 
+                <TextView
+                    android:id="@+id/sharding_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="12sp"
+                    android:visibility="gone"/>
 
                 <com.cobo.cold.mnemonic.MnemonicInputTable
                     android:id="@+id/table"
@@ -85,7 +86,13 @@
                     android:layout_marginTop="16dp"
                     android:minHeight="203dp"
                     tools:itemCount="12"
-                    tools:listitem="@layout/mnemonic_input_item" />
+                    tools:listitem="@layout/mnemonic_input_item"
+                    android:nextFocusDown="@id/t"/>
+                <EditText
+                    android:id="@+id/t"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:focusable="true"/>
 
                 <androidx.legacy.widget.Space
                     android:layout_width="match_parent"
@@ -100,8 +107,6 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginBottom="20dp"
                     android:enabled="false"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
                     android:text="@string/import_vault" />
 
                 <Space

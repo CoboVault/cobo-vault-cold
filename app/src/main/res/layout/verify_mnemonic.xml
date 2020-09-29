@@ -72,7 +72,14 @@
                     android:text="@{@string/verify_mnemonic_hint(count)}"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
-
+                <TextView
+                    android:id="@+id/sharding_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="12sp" />
 
                 <com.cobo.cold.mnemonic.MnemonicInputTable
                     android:id="@+id/table"

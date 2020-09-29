@@ -93,6 +93,9 @@ public abstract class BASECONSTANTS {
         int FINGERPRINT_POLICY_TYPE = 0x0408;
         int FINGERPRINT_POLICY_VALUE = 0x0409;
         int WALLET_FLAG = 0x0210;
+        int SLIP39_MASTER_SEED = 0x080B;
+        int SLIP39_ID = 0x080C;
+        int SLIP39_EXPONENT = 0x080D;
     }
 
     public interface VALS {

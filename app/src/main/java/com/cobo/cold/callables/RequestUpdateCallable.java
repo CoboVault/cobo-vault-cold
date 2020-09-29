@@ -26,9 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
 
-import static com.cobo.cold.callables.UpdateCallable.TYPE_PACKAGE_END;
 import static com.cobo.cold.callables.UpdateCallable.TYPE_PACKAGE_HEADER;
-import static com.cobo.cold.callables.UpdateCallable.calculateChecksum;
 import static com.cobo.cold.callables.UpdateCallable.calculatePackageType;
 import static com.cobo.cold.callables.UpdateCallable.fitBuffer;
 

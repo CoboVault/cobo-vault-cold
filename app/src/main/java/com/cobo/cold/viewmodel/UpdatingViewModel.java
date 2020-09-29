@@ -29,9 +29,7 @@ import com.cobo.cold.update.Checking;
 import com.cobo.cold.update.Updating;
 import com.cobo.cold.update.data.UpdateManifest;
 import com.cobo.cold.update.utils.Digest;
-import com.cobo.cold.update.utils.FileUtils;
 import com.cobo.cold.update.utils.Storage;
-import com.cobo.cold.util.HashUtil;
 
 import org.spongycastle.util.encoders.Hex;
 
