@@ -87,6 +87,13 @@
                         android:text="@string/use_wallet_to_broadcast"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
+                    <ImageView
+                        android:id="@+id/info"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/info"
+                        android:visibility="invisible"/>
                 </LinearLayout>
 
                 <TextView

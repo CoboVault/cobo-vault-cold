@@ -486,6 +486,13 @@
     <string name="already_signed">检测到您已对该笔交易签名，您可直接广播该交易</string>
     <string name="scan_with_blue_wallet">请用 BlueWallet 扫描二维码</string>
     <string name="blue_wallet_broadcast_guide">BlueWallet 广播交易引导</string>
+    <string name="btc_pay_broadcast_guide">BTCPay Server 广播交易引导</string>
+    <string name="btc_pay_broadcast_guide_content"><![CDATA[
+        1. 前往【BTCPay--PSBT】，扫描已签名交易的二维码<br>
+        2. 点击“Decode”<br>
+        3. 点击“Other Actions” 选择“Review”<br>
+        4. 检查交易无误后点击“Broadcast”<br>
+    ]]></string>
     <string name="blue_wallet_broadcast_guide1">在BlueWallet侧打开该观察钱包，进入钱包详情，点击广播交易后，扫描 Cobo 金库的二维码</string>
     <string name="no_signatures">暂无签名记录</string>
     <string name="scan_blue_hint">请扫描 BlueWallet 待签交易的动态二维码（Animated QR Code）</string>
@@ -686,4 +693,5 @@
     <string name="previous_qr">上一个</string>
     <string name="abnormal_state_hint">建议您将设备恢复出厂（擦除设备的所有信息）后重新设置。多次重试未果，您可邮件联系客服：support@cobo.com\n状态码:%s</string>
     <string name="abnormal_state_title">设备状态异常</string>
+    <string name="scan_xpub_qrcode_with_btc_pay">请用 BTCPay Serve 扫描二维码</string>
 </resources>

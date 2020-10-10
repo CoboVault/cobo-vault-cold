@@ -537,6 +537,13 @@
     <string name="already_signed">You have signed the transaction,  can broadcast the transaction directly</string>
     <string name="scan_with_blue_wallet">Scan QR code using BlueWallet</string>
     <string name="blue_wallet_broadcast_guide">How to broadcast using BlueWallet</string>
+    <string name="btc_pay_broadcast_guide">How to broadcast using BTCPay Server</string>
+    <string name="btc_pay_broadcast_guide_content"><![CDATA[
+        1. In BTCPay, go to PSBT tab of the wallet and scan the QR code<br>
+        2. Click "Decode"<br>
+        3. Click "Other Actions" and select "Review"<br>
+        4. Review your transactions and click "Broadcast" to broadcast it on the network<br>
+    ]]></string>
     <string name="blue_wallet_broadcast_guide1">Open the Watch-only wallet in BlueWallet,  enter wallet information, touch "Broadcast transaction" and scan the QR code of Cobo Vault</string>
     <string name="no_signatures">No Signatures</string>
     <string name="scan_blue_hint">Please scan Animated QR Code of BlueWallet.</string>
@@ -735,5 +742,6 @@
     <string name="previous_qr">Previous</string>
     <string name="abnormal_state_hint">It is recommended that you wipe the device and then reset it.Repeated retries failed, you can contact us：support@cobo.com\n  Status Code:%s</string>
     <string name="abnormal_state_title">Abnormal State</string>
+    <string name="scan_xpub_qrcode_with_btc_pay">Please scan the QR code with BTCPay Server</string>
 
 </resources>

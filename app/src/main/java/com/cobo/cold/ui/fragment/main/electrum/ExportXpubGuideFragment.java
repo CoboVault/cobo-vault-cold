@@ -79,6 +79,8 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
                 navigate(R.id.export_xpub_cobo);
                 break;
             case BTCPAY:
+                navigate(R.id.action_to_export_xpub_generic);
+                break;
             case WASABI:
                 exportXpub(watchWallet);
                 break;
@@ -132,10 +134,10 @@ public class ExportXpubGuideFragment extends BaseFragment<ExportXpubGuideBinding
         switch (watchWallet) {
             case ELECTRUM:
                 return R.string.show_master_public_key_qrcode;
-            case BTCPAY:
             case WASABI:
                 return R.string.export_wallet;
             case COBO:
+            case BTCPAY:
             case BLUE:
                 return R.string.show_qrcode;
         }

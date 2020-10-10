@@ -134,7 +134,7 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
 
     protected void onSignSuccess() {
         WatchWallet wallet = WatchWallet.getWatchWallet(mActivity);
-        if (multisig || wallet == WatchWallet.BLUE || wallet == WatchWallet.GENERIC) {
+        if (multisig || wallet == WatchWallet.BTCPAY||wallet == WatchWallet.BLUE || wallet == WatchWallet.GENERIC) {
             Bundle data = new Bundle();
             data.putString(KEY_TXID, viewModel.getTxId());
             navigate(R.id.action_to_psbt_broadcast, data);
