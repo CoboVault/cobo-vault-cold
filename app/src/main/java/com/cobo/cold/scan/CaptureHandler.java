@@ -19,6 +19,7 @@ package com.cobo.cold.scan;
 import android.os.Handler;
 import android.os.Message;
 
+import com.cobo.bcUniformResource.Workload;
 import com.cobo.cold.scan.camera.CameraManager;
 import com.cobo.cold.scan.common.Constant;
 import com.cobo.cold.scan.decode.DecodeThread;
@@ -64,34 +65,20 @@ public final class CaptureHandler extends Handler {
                 restartPreviewAndDecode();
                 break;
             case Constant.DECODE_SUCCEEDED:
-                String text = ((Result) message.obj).getText();
-                try {
-                    JSONObject obj = new JSONObject(text);
-                    ScannedData data = ScannedData.fromJson(obj);
-                    if (mScannedDatas == null) {
-                        mScannedDatas = new ScannedData[data.total];
-                    }
-                    if (mScannedDatas[data.index] == null) {
-                        mScannedDatas[data.index] = data;
-                    }
-                    publishProgress();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    //not json return
-                    state = State.SUCCESS;
-                    host.handleDecode(text);
-                    return;
+                Result result = (Result) message.obj;
+                String text = result.getText();
+
+                ScannedData data = tryDecodeCoboDynamicQrCode(text);
+                if (data == null) {
+                    data = tryDecodeBc32QrCode(text);
                 }
 
-                if (Arrays.stream(mScannedDatas).anyMatch(Objects::isNull)) {
-                    state = State.PREVIEW;
-                    cameraManager.requestPreviewFrame(decodeThread.getHandler(),
-                            Constant.DECODE);
+                if (data != null) {
+                    handleMultipartQrCode(data);
                 } else {
                     state = State.SUCCESS;
-                    host.handleDecode(mScannedDatas);
+                    host.handleDecode(text);
                 }
-
                 break;
             case Constant.DECODE_FAILED:
                 state = State.PREVIEW;
@@ -103,12 +90,53 @@ public final class CaptureHandler extends Handler {
         }
     }
 
+    private void handleMultipartQrCode(ScannedData data) {
+        if (mScannedDatas == null) {
+            mScannedDatas = new ScannedData[data.total];
+        }
+        if (mScannedDatas[data.index] == null) {
+            mScannedDatas[data.index] = data;
+            publishProgress();
+            if (Arrays.stream(mScannedDatas).anyMatch(Objects::isNull)) {
+                state = State.PREVIEW;
+                cameraManager.requestPreviewFrame(decodeThread.getHandler(),
+                        Constant.DECODE);
+            } else {
+                state = State.SUCCESS;
+                host.handleDecode(mScannedDatas);
+            }
+        }
+
+    }
+
+    private ScannedData tryDecodeBc32QrCode(String text) {
+        try {
+            Workload workload = Workload.fromString(text.toLowerCase());
+            return new ScannedData(workload.index - 1,
+                    workload.total,
+                    workload.checksum, workload.value, false, text, workload.type);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private ScannedData tryDecodeCoboDynamicQrCode(String text) {
+        try {
+            JSONObject obj = new JSONObject(text);
+            return ScannedData.fromJson(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
     private void publishProgress() {
         int scan;
         scan = (int) Arrays.stream(mScannedDatas).filter(Objects::nonNull).count();
         host.handleProgress(mScannedDatas.length, scan);
     }
-
 
     public void quitSynchronously() {
         state = State.DONE;
