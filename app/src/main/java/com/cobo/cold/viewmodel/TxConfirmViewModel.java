@@ -148,25 +148,9 @@ public class TxConfirmViewModel extends AndroidViewModel {
                     }
                 }
                 if (transaction instanceof UtxoTx) {
-                    if (isMultisig) {
-                        if(!checkMultisigChangeAddress(transaction)) {
-                            observableTx.postValue(null);
-                            parseTxException.postValue(new InvalidTransactionException("invalid change address"));
-                            return;
-                        }
-                    } else if (!checkChangeAddress(transaction)) {
-                        observableTx.postValue(null);
-                        parseTxException.postValue(new InvalidTransactionException("invalid change address"));
-                        return;
-                    }
+                    if (!checkUtxoChangeAddress()) return;
                 }
-                TxEntity tx;
-                if (isMultisig) {
-                    tx = generateMultisigTxEntity(object, walletFingerprint);
-                } else {
-                    tx = generateTxEntity(object);
-                }
-
+                TxEntity tx = isMultisig ? generateMultisigTxEntity(object, walletFingerprint) : generateTxEntity(object);
                 observableTx.postValue(tx);
                 if (Coins.BTC.coinCode().equals(transaction.getCoinCode())
                     || Coins.XTN.coinCode().equals(transaction.getCoinCode())) {
@@ -176,6 +160,21 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 e.printStackTrace();
             }
         });
+    }
+
+    private boolean checkUtxoChangeAddress() {
+        if (transaction.isMultisig()) {
+            if(!checkMultisigChangeAddress(transaction)) {
+                observableTx.postValue(null);
+                parseTxException.postValue(new InvalidTransactionException("invalid change address"));
+                return false;
+            }
+        } else if (!checkChangeAddress(transaction)) {
+            observableTx.postValue(null);
+            parseTxException.postValue(new InvalidTransactionException("invalid change address"));
+            return false;
+        }
+        return true;
     }
 
     private void feeAttackChecking(TxEntity txEntity) {
@@ -375,7 +374,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
                 if (index.length != 2) return false;
                 String expectedAddress = wallet.deriveAddress(
-                        new int[]{Integer.valueOf(index[0]), Integer.valueOf(index[1])},
+                        new int[]{Integer.parseInt(index[0]), Integer.parseInt(index[1])},
                         Utilities.isMainNet(getApplication()));
 
                 if (!expectedAddress.equals(address)) {
@@ -419,7 +418,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
                     hdpath = hdpath.replace(wallet.getExPubPath() + "/","");
                     String[] index = hdpath.split("/");
                     String from = wallet.deriveAddress(
-                            new int[] {Integer.valueOf(index[0]), Integer.valueOf(index[1])},
+                            new int[] {Integer.parseInt(index[0]), Integer.parseInt(index[1])},
                             Utilities.isMainNet(getApplication()));
                     inputsClone.put(new JSONObject().put("value", value)
                             .put("address",from));
@@ -632,7 +631,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         String[] splits = hdPath.split("/");
         try {
             if (splits.length > 1) {
-                return Integer.valueOf(splits[splits.length - 1]);
+                return Integer.parseInt(splits[splits.length - 1]);
             }
         }catch (NumberFormatException ignore){}
         return 0;
@@ -781,7 +780,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 String expub = new GetExtendedPublicKeyCallable(wallet.getExPubPath()).call();
                 String pubKey = Util.getPublicKeyHex(
                         ExtendPubkeyFormat.convertExtendPubkey(expub,ExtendPubkeyFormat.xpub),
-                        Integer.valueOf(index[0]),Integer.valueOf(index[1]));
+                        Integer.parseInt(index[0]),Integer.parseInt(index[1]));
                 signer[i] = new ChipSigner(distinctPaths[i].toLowerCase(), authToken, pubKey);
             }
         } else {
@@ -863,7 +862,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         this.isMultisig = multisig;
     }
 
-    class PsbtTxAdapter {
+    static class PsbtTxAdapter {
         JSONObject adapt(JSONObject psbt) throws JSONException, WatchWalletNotMatchException {
             JSONObject object = new JSONObject();
             JSONArray inputs = new JSONArray();
@@ -998,8 +997,8 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
                 if (i == 0) {
                     String[] signStatus = psbtInput.getString("signStatus").split("-");
-                    threshold = Integer.valueOf(signStatus[1]);
-                    total = Integer.valueOf(signStatus[2]);
+                    threshold = Integer.parseInt(signStatus[1]);
+                    total = Integer.parseInt(signStatus[2]);
                     object.put("signStatus", psbtInput.getString("signStatus"));
                 }
 

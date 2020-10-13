@@ -50,7 +50,6 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
                     : getString(R.string.export_multisig_tx_hint));
             //show bc32 animated qr code
             mBinding.txDetail.dynamicQrcodeLayout.qrcode.setVisibility(View.VISIBLE);
-            mBinding.txDetail.dynamicQrcodeLayout.qrcode.setEncodingScheme(DynamicQrCodeView.EncodingScheme.Bc32);
             mBinding.txDetail.dynamicQrcodeLayout.qrcode.setData(Hex.toHexString(Base64.decode(txEntity.getSignedHex())));
             mBinding.txDetail.dynamicQrcodeLayout.hint.setVisibility(View.GONE);
 
@@ -70,8 +69,6 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
             mBinding.txDetail.scanHint.setText(mActivity.getString(R.string.use_wallet_to_broadcast,
                     watchWallet.getWalletName(mActivity)));
             if (watchWallet.supportBc32QrCode()) {
-                mBinding.txDetail.dynamicQrcodeLayout.qrcode
-                        .setEncodingScheme(DynamicQrCodeView.EncodingScheme.Bc32);
                 mBinding.txDetail.dynamicQrcodeLayout.qrcode
                         .setData(Hex.toHexString(Base64.decode(txEntity.getSignedHex())));
             }

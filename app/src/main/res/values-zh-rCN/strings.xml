@@ -682,4 +682,6 @@
     <string name="generate_slip39_phrase">生成分片助记词</string>
     <string name="generate_bip39_phrase">生成助记词</string>
     <string name="shard_setting">助记词分片设置</string>
+    <string name="next_qr">下一个</string>
+    <string name="previous_qr">上一个</string>
 </resources>

@@ -63,7 +63,7 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
     private final Cache mCache = Cache.getInstance();
     private ProgressBar progressBar;
     private ImageView img;
-    private EncodingScheme scheme = EncodingScheme.Cobo;
+    private EncodingScheme scheme = EncodingScheme.Bc32;
     private Handler handler = new Handler();
     private Runnable runnable;
 

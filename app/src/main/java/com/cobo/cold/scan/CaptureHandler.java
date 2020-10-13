@@ -66,33 +66,16 @@ public final class CaptureHandler extends Handler {
                 break;
             case Constant.DECODE_SUCCEEDED:
                 String text = ((Result) message.obj).getText();
-
                 ScannedData data = tryDecodeCoboDynamicQrCode(text);
                 if (data == null) {
                     data = tryDecodeBc32qrcode(text);
                 }
 
                 if (data != null) {
-                    if (mScannedDatas == null) {
-                        mScannedDatas = new ScannedData[data.total];
-                    }
-                    if (mScannedDatas[data.index] == null) {
-                        mScannedDatas[data.index] = data;
-                    }
-                    publishProgress();
+                    handleMultipartQrCode(data);
                 } else {
                     state = State.SUCCESS;
                     host.handleDecode(text);
-                    return;
-                }
-
-                if (Arrays.stream(mScannedDatas).anyMatch(Objects::isNull)) {
-                    state = State.PREVIEW;
-                    cameraManager.requestPreviewFrame(decodeThread.getHandler(),
-                            Constant.DECODE);
-                } else {
-                    state = State.SUCCESS;
-                    host.handleDecode(mScannedDatas);
                 }
 
                 break;
@@ -103,6 +86,24 @@ public final class CaptureHandler extends Handler {
                 break;
             case Constant.RETURN_SCAN_RESULT:
                 break;
+        }
+    }
+
+    private void handleMultipartQrCode(ScannedData data) {
+        if (mScannedDatas == null) {
+            mScannedDatas = new ScannedData[data.total];
+        }
+        if (mScannedDatas[data.index] == null) {
+            mScannedDatas[data.index] = data;
+        }
+        publishProgress();
+        if (Arrays.stream(mScannedDatas).anyMatch(Objects::isNull)) {
+            state = State.PREVIEW;
+            cameraManager.requestPreviewFrame(decodeThread.getHandler(),
+                    Constant.DECODE);
+        } else {
+            state = State.SUCCESS;
+            host.handleDecode(mScannedDatas);
         }
     }
 

@@ -58,7 +58,6 @@ public class PsbtBroadcastTxFragment extends BaseFragment<BroadcastPsbtTxFragmen
             this.txEntity = txEntity;
             isMultisig = txEntity.getSignId().equals(PSBT_MULTISIG_SIGN_ID);
             mBinding.setCoinCode(txEntity.getCoinCode());
-            mBinding.qrcodeLayout.qrcode.setEncodingScheme(DynamicQrCodeView.EncodingScheme.Bc32);
             mBinding.qrcodeLayout.qrcode.setData(Hex.toHexString(Base64.decode(txEntity.getSignedHex())));
             updateUI();
         });
