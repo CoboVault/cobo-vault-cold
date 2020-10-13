@@ -30,8 +30,6 @@ import org.bitcoinj.crypto.DeterministicKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.math.BigDecimal;
-
 import static com.cobo.coinlib.coins.ETH.Eth.Deriver.getAddress;
 
 public class Tron extends AbsCoin {
@@ -46,8 +44,6 @@ public class Tron extends AbsCoin {
 
     public static class Tx extends AbsTx {
 
-        private int tokenDecimals;
-
         public Tx(JSONObject object, String coinCode) throws JSONException, InvalidTransactionException {
             super(object, coinCode);
         }
@@ -57,6 +53,7 @@ public class Tron extends AbsCoin {
             from = metaData.getString("from");
             to = metaData.getString("to");
             fee = metaData.getInt("fee") / Math.pow(10, decimal);
+            amount = metaData.getLong("value") / Math.pow(10, decimal);
             memo = metaData.optString("memo");
             if ((metaData.has("token") || metaData.has("contractAddress"))
                     && metaData.has("override")) {
@@ -64,17 +61,9 @@ public class Tron extends AbsCoin {
                 JSONObject override = metaData.getJSONObject("override");
                 tokenName = override.optString("tokenShortName",
                         metaData.optString("tokenFullName", coinCode));
-                tokenDecimals = override.optInt("decimals");
+                int tokenDecimals = override.optInt("decimals");
+                amount = metaData.getLong("value") / Math.pow(10, tokenDecimals);
             }
-
-            amount = calculateDisplayAmount();
-        }
-
-        private double calculateDisplayAmount() throws JSONException {
-            int decimal = isToken ? tokenDecimals : this.decimal;
-            String amount = metaData.getString("value");
-            BigDecimal value = new BigDecimal(amount);
-            return value.divide(BigDecimal.TEN.pow(decimal), Math.min(decimal, 8), BigDecimal.ROUND_HALF_UP).doubleValue();
         }
 
         @Override
