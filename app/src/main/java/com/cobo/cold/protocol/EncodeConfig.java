@@ -33,7 +33,7 @@ public class EncodeConfig {
     }
 
     public static final EncodeConfig DEFAULT
-            = new EncodeConfig(true, Encoding.BASE64, Format.PROTOBUF);
+            = new EncodeConfig(true, Encoding.Hex, Format.PROTOBUF);
 
     public enum Encoding {
         BASE64,

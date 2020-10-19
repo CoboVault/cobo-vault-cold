@@ -114,7 +114,7 @@
                 android:layout_weight="1"
                 android:background="#EBF0F5"
                 android:textColor="@color/colorAccent"
-                android:text="上一个"
+                android:text="@string/previous_qr"
                 android:textStyle="bold" />
 
             <ImageButton
@@ -138,7 +138,7 @@
                 android:layout_weight="1"
                 android:background="#EBF0F5"
                 android:textColor="@color/colorAccent"
-                android:text="下一个"
+                android:text="@string/next_qr"
                 android:textStyle="bold" />
         </LinearLayout>
 

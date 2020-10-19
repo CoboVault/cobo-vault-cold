@@ -104,7 +104,7 @@ public class QrScanViewModel extends AndroidViewModel {
                     throw new UnknowQrCodeException("unknow bc32 qrcode");
                 } else {
                     if (wallet.supportBc32QrCode()) {
-                        handleBc32Qrcode(hex);
+                        handleBc32QrCode(hex);
                     } else {
                         throw new UnknowQrCodeException("not support bc32 qrcode in current wallet mode");
                     }
@@ -127,13 +127,20 @@ public class QrScanViewModel extends AndroidViewModel {
         }
     }
 
-    private void handleBc32Qrcode(String hex) throws UnknowQrCodeException {
+    private void handleBc32QrCode(String hex) throws UnknowQrCodeException, UuidNotMatchException,
+            WatchWalletNotMatchException, InvalidTransactionException, JSONException, CoinNotFindException {
         if (hex.startsWith(Hex.toHexString("psbt".getBytes()))) {
+            //decode as psbt
             WatchWallet watchWallet = WatchWallet.getWatchWallet(getApplication());
             if (watchWallet.supportPsbt()) {
                 handleSignPsbt(hex);
                 return;
             }
+        } else {
+            hex =ZipUtil.unzip(hex);
+            JSONObject object = new ProtoParser(Hex.decode(hex)).parseToJson();
+            decodeAndProcess(object);
+            return;
         }
         throw new UnknowQrCodeException("unknow bc32 qrcode");
     }

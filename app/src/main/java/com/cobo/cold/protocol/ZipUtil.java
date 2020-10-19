@@ -17,6 +17,8 @@
 
 package com.cobo.cold.protocol;
 
+import org.spongycastle.util.encoders.Hex;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,5 +57,9 @@ public class ZipUtil {
         }
 
         return out.toByteArray();
+    }
+
+    public static String unzip(String hex) {
+        return Hex.toHexString(unzip(Hex.decode(hex)));
     }
 }

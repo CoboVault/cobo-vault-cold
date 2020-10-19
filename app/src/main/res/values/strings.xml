@@ -731,5 +731,7 @@
     <string name="generate_slip39_phrase">Create a Vault with Shamir Backup</string>
     <string name="generate_bip39_phrase">Create a Vault with Single Backup</string>
     <string name="shard_setting">Setting</string>
+    <string name="next_qr">Next</string>
+    <string name="previous_qr">Previous</string>
 
 </resources>

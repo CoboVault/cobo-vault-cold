@@ -78,7 +78,6 @@ public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportW
         mBinding.qrcodeLayout.hint.setVisibility(View.GONE);
         viewModel.exportWalletToCosigner(walletFingerprint).observe(this, s -> {
             walletFileContent = s;
-            mBinding.qrcodeLayout.qrcode.setEncodingScheme(DynamicQrCodeView.EncodingScheme.Bc32);
             mBinding.qrcodeLayout.qrcode.setData(Hex.toHexString(s.getBytes(StandardCharsets.UTF_8)));
         });
 
