@@ -19,6 +19,7 @@ package com.cobo.cold.viewmodel;
 
 import android.app.Application;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.cobo.bcUniformResource.UniformResource;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Coins;
@@ -49,7 +51,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.DecoderException;
+import org.spongycastle.util.encoders.Hex;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
@@ -71,16 +75,46 @@ public class QrScanViewModel extends AndroidViewModel {
         repository.loadCoins();
     }
 
-    public void handleDecode(QRCodeScanFragment owner, ScannedData[] res)
+    public void handleDecode(QRCodeScanFragment owner, ScannedData[] data)
             throws InvalidTransactionException, JSONException, CoinNotFindException,
             UuidNotMatchException, UnknowQrCodeException {
         this.fragment = owner;
-        String valueType = res[0].valueType;
-        JSONObject object = parseToJson(res, valueType);
-        if (object == null) {
-            throw new JSONException("object null");
+        String valueType = data[0].valueType;
+
+        if("bytes".equals(valueType)) {
+            String[] workload = Arrays.stream(data)
+                    .map(d -> d.rawString.toLowerCase())
+                    .toArray(String[]::new);
+            String hex = null;
+            try {
+                hex = UniformResource.Decoder.decode(workload);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (!TextUtils.isEmpty(hex)) {
+                handleBc32QrCode(hex);
+            } else {
+                throw new UnknowQrCodeException("unknow qrcode");
+            }
+        } else {
+            JSONObject object = parseToJson(data, valueType);
+            if (object == null) {
+                throw new JSONException("object null");
+            }
+            decodeAndProcess(object);
         }
-        decodeAndProcess(object);
+    }
+
+    private void handleBc32QrCode(String hex) throws UnknowQrCodeException, UuidNotMatchException,
+             InvalidTransactionException, JSONException, CoinNotFindException {
+        //decode as protobuf
+        hex =ZipUtil.unzip(hex);
+        JSONObject object = new ProtoParser(Hex.decode(hex)).parseToJson();
+        if (object != null) {
+            decodeAndProcess(object);
+        } else {
+            throw new UnknowQrCodeException("unknow bc32 qrcode");
+        }
     }
 
     private void decodeAndProcess(JSONObject object)
