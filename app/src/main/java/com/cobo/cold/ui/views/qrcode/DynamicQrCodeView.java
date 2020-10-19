@@ -91,19 +91,23 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
             checksum = checksum(data);
             count = (int) Math.ceil(data.length() / (float) CAPACITY);
             splitData();
+            showQrCode();
         } else if(scheme == EncodingScheme.Bc32) {
-            try {
-                String[] workloads = UniformResource.Encoder.encode(data.toUpperCase(),900);
-                count = workloads.length;
-                splitData.clear();
-                for (int i = 0; i < count; i++) {
-                    splitData.add(workloads[i].toUpperCase());
+            AppExecutors.getInstance().networkIO().execute(()-> {
+                try {
+                    String[] workloads = UniformResource.Encoder.encode(data.toUpperCase(),900);
+                    count = workloads.length;
+                    splitData.clear();
+                    for (int i = 0; i < count; i++) {
+                        splitData.add(workloads[i].toUpperCase());
+                    }
+                    this.post(this::showQrCode);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            });
         }
-        showQrCode();
+
     }
 
     public void disableModal() {
