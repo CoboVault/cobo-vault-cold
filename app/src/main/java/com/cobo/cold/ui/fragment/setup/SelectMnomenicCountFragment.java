@@ -72,7 +72,9 @@ public class SelectMnomenicCountFragment extends SetupVaultBaseFragment<SelectMn
     }
 
     private void next(View view) {
-        if (checkMnemonic) {
+        if (bundle.getBoolean("enableDot")) {
+            navigate(R.id.action_to_mnemonicInputFragment, bundle);
+        } else if (checkMnemonic) {
             bundle.putString(KEY_TITLE, getString(R.string.check_mnemonic));
             navigate(R.id.action_to_verifyMnemonic, bundle);
         } else if(action.equals(PreImportFragment.ACTION_RESET_PWD)) {
