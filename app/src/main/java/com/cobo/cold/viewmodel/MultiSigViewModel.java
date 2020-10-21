@@ -546,6 +546,21 @@ public class MultiSigViewModel extends AndroidViewModel {
             if (!isValidMultisigPolicy(total,threshold) || xpubs.length() != total) {
                 throw new InvalidMultisigWalletException("invalid wallet file ");
             }
+            String derivation = object.getString("Derivation");
+            String format = object.getString("Format");
+
+            boolean validDerivation = false;
+            for (MultiSig.Account account : MultiSig.Account.values()) {
+                if (account.getPath().equals(derivation) && account.getFormat().equals(format)) {
+                    validDerivation = true;
+                    break;
+                }
+            }
+
+            if (!validDerivation) {
+                throw new InvalidMultisigWalletException("invalid wallet file ");
+            }
+
             object.put("Xpubs",xpubs);
 
         } catch (IOException | JSONException | NumberFormatException e) {
