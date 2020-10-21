@@ -124,7 +124,8 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
     }
 
     private boolean shouldShow(TxEntity tx) {
-        return Utilities.getCurrentBelongTo(mActivity).equals(tx.getBelongTo());
+        return Utilities.getCurrentBelongTo(mActivity).equals(tx.getBelongTo())
+                && !tx.getSignId().contains("_sign_id");
     }
 
     @Override

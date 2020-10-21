@@ -80,7 +80,7 @@ public class BroadcastTxFragment extends BaseFragment<BroadcastTxFragmentBinding
 
     }
 
-    private String getSignTxJson(TxEntity txEntity) {
+    protected String getSignTxJson(TxEntity txEntity) {
         SignTxResultBuilder signTxResult = new SignTxResultBuilder();
         signTxResult.setRawTx(txEntity.getSignedHex())
                 .setSignId(txEntity.getSignId())

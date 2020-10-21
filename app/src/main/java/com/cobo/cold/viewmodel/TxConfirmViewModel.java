@@ -90,14 +90,14 @@ public class TxConfirmViewModel extends AndroidViewModel {
     public static final String STATE_SIGN_FAIL = "signing_fail";
     public static final String STATE_SIGN_SUCCESS = "signing_success";
     public static final String TAG = "Vault.TxConfirm";
-    private final DataRepository mRepository;
-    private final MutableLiveData<TxEntity> observableTx = new MutableLiveData<>();
-    private final MutableLiveData<Exception> parseTxException = new MutableLiveData<>();
+    protected final DataRepository mRepository;
+    protected final MutableLiveData<TxEntity> observableTx = new MutableLiveData<>();
+    protected final MutableLiveData<Exception> parseTxException = new MutableLiveData<>();
     private final MutableLiveData<Boolean> addingAddress = new MutableLiveData<>();
     private final MutableLiveData<Integer> feeAttachCheckingResult = new MutableLiveData<>();
     private AbsTx transaction;
-    private String coinCode;
-    private final MutableLiveData<String> signState = new MutableLiveData<>();
+    protected String coinCode;
+    protected final MutableLiveData<String> signState = new MutableLiveData<>();
     private AuthenticateModal.OnVerify.VerifyToken token;
     private TxEntity previousSignedTx;
 
@@ -419,7 +419,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
     }
 
-    private SignCallback initSignCallback() {
+    protected SignCallback initSignCallback() {
         return new SignCallback() {
             @Override
             public void startSign() {
@@ -434,10 +434,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
             @Override
             public void onSuccess(String txId, String rawTx) {
-                TxEntity tx = observableTx.getValue();
-                Objects.requireNonNull(tx).setTxId(txId);
-                tx.setSignedHex(rawTx);
-                mRepository.insertTx(tx);
+                TxEntity tx = onSignSuccess(txId, rawTx);
                 signState.postValue(STATE_SIGN_SUCCESS);
                 if (Coins.showPublicKey(tx.getCoinCode())) {
                     persistAddress(tx.getCoinCode(), tx.getCoinId(), tx.getFrom());
@@ -450,6 +447,14 @@ public class TxConfirmViewModel extends AndroidViewModel {
 
             }
         };
+    }
+
+    protected TxEntity onSignSuccess(String txId, String rawTx) {
+        TxEntity tx = observableTx.getValue();
+        Objects.requireNonNull(tx).setTxId(txId);
+        tx.setSignedHex(rawTx);
+        mRepository.insertTx(tx);
+        return tx;
     }
 
     private void persistAddress(String coinCode, String coinId, String address) {
@@ -526,7 +531,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         return signer;
     }
 
-    private String getAuthToken() {
+    protected String getAuthToken() {
         String authToken = null;
         if (!TextUtils.isEmpty(token.password)) {
             authToken = new GetPasswordTokenCallable(token.password).call();

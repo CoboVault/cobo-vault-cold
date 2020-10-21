@@ -94,6 +94,15 @@ android {
             proguardFiles 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/ASL-2.0.txt'
+        pickFirst 'draftv4/schema'
+        pickFirst 'draftv3/schema'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LGPL-3.0.txt'
+        pickFirst 'com/github/fge/jackson/jsonpointer.properties'
+        pickFirst 'com/github/fge/jackson/jsonNodeReader.properties'
+    }
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'

@@ -56,6 +56,10 @@ dependencies {
     }
     implementation 'com.madgag.spongycastle:core:1.58.0.0@jar'
     implementation 'com.eclipsesource.j2v8:j2v8:6.2.0@aar'
+    dependencies {
+        compile(group: "com.networknt", name: "json-schema-validator", version: "1.0.43");
+    }
+
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20180813'
     testImplementation 'com.google.guava:guava:27.1-android'

@@ -107,9 +107,15 @@ public class QrScanViewModel extends AndroidViewModel {
 
     private void handleBc32QrCode(String hex) throws UnknowQrCodeException, UuidNotMatchException,
              InvalidTransactionException, JSONException, CoinNotFindException {
-        //decode as protobuf
-        hex =ZipUtil.unzip(hex);
-        JSONObject object = new ProtoParser(Hex.decode(hex)).parseToJson();
+        JSONObject object = new JSONObject(new String(Hex.decode(hex)));
+
+        if (object == null) {
+            //decode as protobuf
+            hex =ZipUtil.unzip(hex);
+            // try decode as protobuf
+            object = new ProtoParser(Hex.decode(hex)).parseToJson();
+        }
+
         if (object != null) {
             decodeAndProcess(object);
         } else {
@@ -125,20 +131,30 @@ public class QrScanViewModel extends AndroidViewModel {
             UnknowQrCodeException {
         logObject(object);
 
-        String type = object.getString("type");
-        switch (type) {
-            case "webAuth":
-                handleWebAuth(object);
-                break;
-            case "TYPE_SIGN_TX":
-                handleSign(object);
-                break;
-            case "TYPE_SYNC":
-                handleSync(object);
-                break;
-            default:
-                throw new UnknowQrCodeException("unknow qrcode type " + type);
+        if (object.has("TransactionType")) {
+            handleSignXrpTx(object);
+        } else {
+            String type = object.getString("type");
+            switch (type) {
+                case "webAuth":
+                    handleWebAuth(object);
+                    break;
+                case "TYPE_SIGN_TX":
+                    handleSign(object);
+                    break;
+                case "TYPE_SYNC":
+                    handleSync(object);
+                    break;
+                default:
+                    throw new UnknowQrCodeException("unknow qrcode type " + type);
+            }
         }
+    }
+
+    private void handleSignXrpTx(JSONObject object) {
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_TX_DATA, object.toString());
+        fragment.navigate(R.id.action_to_xrpTxConfirmFragment, bundle);
     }
 
     private void logObject(JSONObject object) {

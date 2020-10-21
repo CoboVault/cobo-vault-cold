@@ -91,9 +91,55 @@
             app:popUpToInclusive="false" />
 
         <action
+            android:id="@+id/action_to_xrpTxConfirmFragment"
+            app:destination="@id/xummTxConfirmFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/assetListFragment"
+            app:popUpToInclusive="false" />
+
+        <action
             android:id="@+id/action_QRCodeScan_to_result"
             app:destination="@id/webAuthResultFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/xummTxConfirmFragment"
+        android:name="com.cobo.cold.ui.fragment.main.xumm.XummTxConfirmFragment"
+        android:label="XrpTxConfirmFragment"
+        tools:layout="@layout/pattern_lock_fragment">
+        <action
+            android:id="@id/action_to_preImportFragment"
+            app:destination="@id/preImportFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_to_broadcastXummTxFragment"
+            app:destination="@id/broadcastXummTxFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/broadcastXummTxFragment"
+        tools:layout="@layout/broadcast_tx_fragment"
+        android:name="com.cobo.cold.ui.fragment.main.xumm.XummBroadcastTxFragment"
+        android:label="XummBroadcastTxFragment">
+        <action
+            android:id="@+id/action_to_home"
+            app:destination="@id/assetListFragment"
+            app:popUpTo="@id/assetListFragment"
+            app:popUpToInclusive="false"
+            app:launchSingleTop="true" />
+    </fragment>
+
+
     <fragment
         android:id="@+id/patternLockFragment"
         android:name="com.cobo.cold.ui.fragment.PatternLockFragment"
