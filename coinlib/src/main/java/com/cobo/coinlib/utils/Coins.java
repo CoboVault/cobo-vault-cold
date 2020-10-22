@@ -17,6 +17,8 @@
 
 package com.cobo.coinlib.utils;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import java.util.Arrays;
@@ -87,10 +89,19 @@ public class Coins {
     }
 
     public static String coinIdFromCoinCode(String coinCode) {
+        if (TextUtils.isEmpty(coinCode)) return "";
         Optional<Coin> coin = SUPPORTED_COINS.stream()
                 .filter(c -> coinCode.equals(c.coinCode))
                 .findFirst();
         return coin.isPresent() ? coin.get().coinId : "";
+    }
+
+    public static String coinNameFromCoinCode(String coinCode) {
+        if (TextUtils.isEmpty(coinCode)) return "";
+        Optional<Coin> coin = SUPPORTED_COINS.stream()
+                .filter(c -> coinCode.equals(c.coinCode))
+                .findFirst();
+        return coin.isPresent() ? coin.get().coinName : "";
     }
 
     public static CURVE curveFromCoinCode(String coinCode) {

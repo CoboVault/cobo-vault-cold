@@ -20,9 +20,10 @@
 package com.cobo.cold.viewmodel;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.cobo.coinlib.Util;
 import com.cobo.coinlib.coins.XRP.Xrp;
@@ -34,7 +35,7 @@ import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
-import com.cobo.cold.callables.ClearTokenCallable;
+import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryption.ChipSigner;
 
@@ -47,30 +48,40 @@ import java.util.Objects;
 public class XummTxConfirmViewModel extends TxConfirmViewModel{
 
     private JSONObject xummTxObj;
+
+    private final MutableLiveData<JSONObject> displayJson = new MutableLiveData<>();
     public XummTxConfirmViewModel(@NonNull Application application) {
         super(application);
         coinCode = Coins.XRP.coinCode();
     }
 
-    public void parseXummTxData(JSONObject object) {
-        try {
-            XrpTransaction xrpTransaction = SupportTransactions.get(object.getString("TransactionType"));
+    public MutableLiveData<JSONObject> getDisplayJson() {
+        return displayJson;
+    }
 
-//            if (xrpTransaction == null || !xrpTransaction.isValid(object)) {
-//                parseTxException.postValue(new InvalidTransactionException("invalid xrp exception"));
-//            }
-            xummTxObj = object;
-            TxEntity tx = new TxEntity();
-            NumberFormat nf = NumberFormat.getInstance();
-            nf.setMaximumFractionDigits(20);
-            tx.setCoinCode(coinCode);
-            tx.setSignId("xumm_sign_id");
-            tx.setCoinId(Coins.XRP.coinId());
-            tx.setBelongTo(mRepository.getBelongTo());
-            observableTx.postValue(tx);
-        }  catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public void parseXummTxData(JSONObject object) {
+        AppExecutors.getInstance().networkIO().execute(() -> {
+            try {
+                XrpTransaction xrpTransaction = SupportTransactions.get(object.getString("TransactionType"));
+
+                if (xrpTransaction == null || !xrpTransaction.isValid(object)) {
+                    parseTxException.postValue(new InvalidTransactionException("invalid xrp exception"));
+                }
+                displayJson.postValue(xrpTransaction.flatTransactionDetail(object));
+                xummTxObj = object;
+                TxEntity tx = new TxEntity();
+                NumberFormat nf = NumberFormat.getInstance();
+                nf.setMaximumFractionDigits(20);
+                tx.setCoinCode(coinCode);
+                tx.setSignId("xumm_sign_id");
+                tx.setCoinId(Coins.XRP.coinId());
+                tx.setBelongTo(mRepository.getBelongTo());
+                observableTx.postValue(tx);
+            }  catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     public void handleSignXummTransaction() {
@@ -85,6 +96,9 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
         });
     }
 
+    public LiveData<CoinEntity> loadXrpCoinEntity() {
+        return mRepository.loadCoin(Coins.XRP.coinId());
+    }
     @Override
     protected TxEntity onSignSuccess(String txId, String rawTx) {
         TxEntity tx = observableTx.getValue();

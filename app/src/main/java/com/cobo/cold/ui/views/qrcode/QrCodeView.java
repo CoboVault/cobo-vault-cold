@@ -23,9 +23,10 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
@@ -36,7 +37,7 @@ import com.cobo.cold.R;
 import com.cobo.cold.databinding.QrcodeModalBinding;
 import com.cobo.cold.ui.modal.FullScreenModal;
 
-public class QrCodeView extends FrameLayout implements QrCodeHolder {
+public class QrCodeView extends LinearLayout implements QrCodeHolder, QrCode {
 
     private String data;
     private final Cache mCache = Cache.getInstance();
@@ -51,6 +52,7 @@ public class QrCodeView extends FrameLayout implements QrCodeHolder {
         super(context, attrs, 0);
     }
 
+    @Override
     public void setData(String s) {
         data = s;
         showQrCode();
@@ -94,7 +96,32 @@ public class QrCodeView extends FrameLayout implements QrCodeHolder {
         binding.close.setOnClickListener(v -> dialog.dismiss());
         binding.qrcodeLayout.qrcode.setData(data);
         binding.qrcodeLayout.qrcode.disableModal();
+        setupSeekbar(binding);
         dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "");
+    }
+
+    private void setupSeekbar(QrcodeModalBinding binding) {
+        float min = 0.5f;
+        float max = 1.15f;
+        float step = (max - min) / 100;
+        binding.seekbar.setProgress((int) ((1 - min) / step));
+        binding.seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                float scale = 0.5f + step * i;
+                binding.qrcodeLayout.qrcode.setScaleX(scale);
+                binding.qrcodeLayout.qrcode.setScaleY(scale);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     private void setImageBitmap(Bitmap bm) {

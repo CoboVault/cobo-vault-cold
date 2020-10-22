@@ -46,7 +46,7 @@ public class XummBroadcastTxFragment extends BroadcastTxFragment {
     }
 
     @Override
-    protected String getSignTxJson(TxEntity txEntity) {
+    public String getSignedTxData() {
         try {
             JSONObject object = new JSONObject(txEntity.getSignedHex());
             return object.getString("txHex");

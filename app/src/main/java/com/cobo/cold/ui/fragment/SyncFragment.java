@@ -17,25 +17,34 @@
 
 package com.cobo.cold.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 
-import androidx.lifecycle.LiveData;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
+import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.SyncFragmentBinding;
-import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.ui.MainActivity;
-import com.cobo.cold.viewmodel.CoinListViewModel;
+import com.cobo.cold.ui.modal.ModalDialog;
+import com.cobo.cold.viewmodel.SyncViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
-import java.util.List;
+import static com.cobo.cold.ui.fragment.setup.SyncWatchWalletGuide.getSyncWatchWalletGuide;
+import static com.cobo.cold.ui.fragment.setup.SyncWatchWalletGuide.getSyncWatchWalletGuideTitle;
 
 public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
 
     public static final String TAG = "SyncFragment";
-    private CoinListViewModel viewModel;
+    private SyncViewModel viewModel;
+    private WatchWallet watchWallet;
+    private String coinCode;
 
     @Override
     protected int setView() {
@@ -44,23 +53,108 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
 
     @Override
     protected void init(View view) {
+        watchWallet = WatchWallet.getWatchWallet(mActivity);
         mActivity.setSupportActionBar(mBinding.toolbar);
-        mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
+        Bundle data = getArguments();
+        if (data != null) {
+            coinCode = data.getString("coinCode");
+        }
+        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.toolbar.setTitle("");
-        viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
-        subscribe(viewModel.getCoins());
-    }
-
-    private void subscribe(LiveData<List<CoinEntity>> coins) {
-        coins.observe(this, this::generateSyncData);
-    }
-
-    private void generateSyncData(List<CoinEntity> coinEntities) {
-        viewModel.generateSync(coinEntities).observe(this, sync -> {
-            if (!TextUtils.isEmpty(sync)) {
-                mBinding.sync.qrcodeLayout.qrcode.setData(sync);
+        mBinding.complete.setOnClickListener(v -> {
+            if (mActivity instanceof MainActivity) {
+                if (!getArguments().getBoolean("fromSyncGuide")) {
+                    navigateUp();
+                } else if (watchWallet == WatchWallet.POLKADOT_JS && coinCode.equals(Coins.DOT.coinCode())) {
+                    Bundle bundle = getArguments();
+                    bundle.putString("coinCode", Coins.KSM.coinCode());
+                    navigate(R.id.action_to_syncWatchWalletGuide, bundle);
+                } else {
+                    startActivity(new Intent(mActivity, MainActivity.class));
+                    mActivity.finish();
+                }
+            } else {
+                if (watchWallet == WatchWallet.POLKADOT_JS && coinCode.equals(Coins.DOT.coinCode())) {
+                    Bundle bundle = getArguments();
+                    bundle.putString("coinCode", Coins.KSM.coinCode());
+                    navigate(R.id.action_to_syncWatchWalletGuide, bundle);
+                } else {
+                    navigate(R.id.action_to_setupCompleteFragment);
+                }
             }
         });
+        setupUIWithWatchWallet();
+        viewModel = ViewModelProviders.of(mActivity).get(SyncViewModel.class);
+        generateSyncData();
+    }
+
+    private void setupUIWithWatchWallet() {
+        mBinding.info.setOnClickListener(v -> showHint());
+        switch (watchWallet) {
+            case COBO:
+                mBinding.hint.setText(R.string.sync_with_cobo_vault);
+                break;
+            case POLKADOT_JS:
+                mBinding.hint.setText(R.string.sync_with_polkadot_js);
+                mBinding.chain.setVisibility(View.VISIBLE);
+                if (coinCode.equals(Coins.DOT.coinCode())) {
+                    mBinding.chain.setText(Coins.DOT.coinName());
+                } else if(coinCode.equals(Coins.KSM.coinCode())) {
+                    mBinding.chain.setText(Coins.KSM.coinName());
+                }
+                break;
+            case XUMM:
+                mBinding.hint.setText(R.string.sync_with_xumm);
+                mBinding.address.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    private void showHint() {
+        ModalDialog modalDialog = ModalDialog.newInstance();
+        CommonModalBinding binding = DataBindingUtil.inflate(
+                LayoutInflater.from(mActivity), R.layout.common_modal,
+                null, false);
+        binding.title.setText(getString(getSyncWatchWalletGuideTitle(watchWallet), coinCode));
+        binding.subTitle.setText(getString(getSyncWatchWalletGuide(watchWallet),
+                Coins.coinNameFromCoinCode(coinCode), coinCode));
+        binding.subTitle.setGravity(Gravity.START);
+        binding.close.setVisibility(View.GONE);
+        binding.confirm.setText(R.string.know);
+        binding.confirm.setOnClickListener(vv -> modalDialog.dismiss());
+        modalDialog.setBinding(binding);
+        modalDialog.show(mActivity.getSupportFragmentManager(), "");
+    }
+
+    private void generateSyncData() {
+        switch (watchWallet) {
+            case COBO:
+                viewModel.generateSyncCobo().observe(SyncFragment.this, sync -> {
+                    if (!TextUtils.isEmpty(sync)) {
+                        mBinding.dynamicQrcodeLayout.qrcode.setData(sync);
+                    }
+                });
+                break;
+            case XUMM:
+                viewModel.generateSyncXumm().observe(SyncFragment.this, addressEntity -> {
+                    if (addressEntity != null) {
+                        mBinding.dynamicQrcodeLayout.qrcode.disableMultipart();
+                        mBinding.dynamicQrcodeLayout.qrcode.setData(addressEntity.getAddressString());
+                        mBinding.addressName.setText(addressEntity.getName());
+                        mBinding.addressInfo.setText(String.format("%s\n(%s)",
+                                addressEntity.getAddressString(), addressEntity.getPath()));
+                    }
+                });
+                break;
+            case POLKADOT_JS:
+                viewModel.generateSyncPolkadotjs(coinCode).observe(SyncFragment.this, s -> {
+                    if (!TextUtils.isEmpty(s)) {
+                        mBinding.dynamicQrcodeLayout.qrcode.disableMultipart();
+                        mBinding.dynamicQrcodeLayout.qrcode.setData(s);
+                    }
+                });
+                break;
+        }
     }
 
     @Override

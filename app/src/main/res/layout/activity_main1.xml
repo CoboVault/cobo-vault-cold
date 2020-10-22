@@ -49,31 +49,30 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/menu_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/drawer_bg"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="36dp"
             android:layout_marginEnd="57dp"
             android:layout_gravity="start"
-            android:background="@drawable/drawer_bg"
             android:orientation="vertical">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/menu"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="36dp"
                 android:overScrollMode="never"
                 tools:itemCount="5"
                 tools:listitem="@layout/drawer_item" />
-
+            
             <TextView
-                android:id="@+id/mfp"
-                android:layout_width="wrap_content"
+                android:id="@+id/master_fingerprint"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="adadadad"
+                android:gravity="center"
                 android:textColor="@color/white40"
-                android:text="text"
-                android:layout_gravity="bottom|center_horizontal"
                 android:layout_marginBottom="20dp"/>
         </LinearLayout>
 

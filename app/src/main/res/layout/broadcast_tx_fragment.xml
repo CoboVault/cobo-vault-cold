@@ -71,17 +71,37 @@
                     tools:src="@drawable/coin_btc"
                     tools:ignore="ContentDescription" />
 
-                <TextView
-                    android:id="@+id/broadcast_hint"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="16dp"
-                    android:gravity="center"
-                    android:text="@string/please_broadcast_with_hot"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp">
+
+                    <View
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/broadcast_hint"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/please_broadcast_with_hot"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/info"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/info" />
+
+                </LinearLayout>
 
                 <include
                     android:id="@+id/qrcode_layout"

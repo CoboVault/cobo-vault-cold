@@ -17,6 +17,7 @@
 
 package com.cobo.cold.ui;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -37,6 +38,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -44,6 +46,7 @@ import com.cobo.cold.AppExecutors;
 import com.cobo.cold.MainApplication;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.callables.UpdatePassphraseCallable;
 import com.cobo.cold.databinding.ActivityMainBinding;
 import com.cobo.cold.databinding.CommonModalBinding;
@@ -51,17 +54,17 @@ import com.cobo.cold.databinding.CreateVaultModalBinding;
 import com.cobo.cold.fingerprint.FingerprintKit;
 import com.cobo.cold.ui.common.FullScreenActivity;
 import com.cobo.cold.ui.fragment.AboutFragment;
-import com.cobo.cold.ui.fragment.SyncFragment;
+import com.cobo.cold.ui.fragment.main.AssetFragment;
 import com.cobo.cold.ui.fragment.main.AssetListFragment;
-import com.cobo.cold.ui.fragment.main.ManageCoinFragment;
-import com.cobo.cold.ui.fragment.main.electrum.ElectrumTxnListFragment;
 import com.cobo.cold.ui.fragment.setting.SettingFragment;
+import com.cobo.cold.ui.fragment.setup.ChooseWatchWalletFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.ui.views.DrawerAdapter;
 import com.cobo.cold.ui.views.FullScreenDrawer;
 import com.cobo.cold.ui.views.UpdatingHelper;
 import com.cobo.cold.viewmodel.ElectrumViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -86,10 +89,12 @@ public class MainActivity extends FullScreenActivity {
     int currentFragmentIndex = R.id.drawer_wallet;
     private DrawerAdapter drawerAdapter;
     private ElectrumViewModel viewModel;
+    private WatchWallet watchWallet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        watchWallet = WatchWallet.getWatchWallet(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         if (savedInstanceState != null) {
@@ -110,15 +115,22 @@ public class MainActivity extends FullScreenActivity {
             }
             ViewModelProviders.of(this).get(ElectrumViewModel.class);
         }
+        AppExecutors.getInstance().diskIO().execute(()->{
+            String mfp = new GetMasterFingerprintCallable().call();
+            runOnUiThread(() -> mBinding.mfp.setText(String.format("Master Key Fingerprint：%s",mfp)));
+        });
     }
 
     private void initNavController() {
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         mNavController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             String label = Objects.requireNonNull(destination.getLabel()).toString();
-
             int index = getFragmentIndexByLabel(label);
-            if (index != -1) {
+            if ((watchWallet == WatchWallet.XUMM && label.equals(AssetFragment.TAG))) {
+                index = 0;
+            }
+
+            if (index != -1 ) {
                 mBinding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 currentFragmentIndex = index;
                 if (drawerAdapter != null) {
@@ -163,7 +175,7 @@ public class MainActivity extends FullScreenActivity {
         mBinding.drawer.addDrawerListener(new FullScreenDrawer.DrawerListenerAdapter() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-                mBinding.drawer.getChildAt(0).setX(mBinding.menu.getWidth() + mBinding.menu.getX());
+                mBinding.drawer.getChildAt(0).setX(mBinding.menuContainer.getWidth() + mBinding.menuContainer.getX());
             }
         });
     }
@@ -184,36 +196,37 @@ public class MainActivity extends FullScreenActivity {
 
     public class DrawerClickListener implements DrawerAdapter.OnItemClickListener {
 
+        @SuppressLint("NonConstantResourceId")
         @Override
         public void itemClick(int position) {
             if (currentFragmentIndex == position) {
                 mBinding.drawer.closeDrawer(GravityCompat.START);
                 return;
             }
+            watchWallet = WatchWallet.getWatchWallet(MainActivity.this);
 
             switch (position) {
                 case R.id.drawer_wallet:
-                    mNavController.navigateUp();
-                    break;
-                case R.id.drawer_manage:
-                    mNavController.navigateUp();
-                    mNavController.navigate(R.id.action_to_manageCoinFragment);
+                    if (watchWallet == WatchWallet.XUMM) {
+                        NavOptions navOptions = new NavOptions.Builder()
+                                .setPopUpTo(R.id.assetListFragment, false)
+                                .build();
+                        mNavController.navigate(R.id.assetFragment,null, navOptions);
+                    } else {
+                        mNavController.popBackStack(R.id.assetListFragment,false);
+                    }
                     break;
                 case R.id.drawer_sync:
                     mNavController.navigateUp();
-                    mNavController.navigate(R.id.action_to_syncFragment);
-                    break;
-                case R.id.drawer_sdcard:
-                    mNavController.navigateUp();
-                    mNavController.navigate(R.id.action_to_txnListFragment);
+                    mNavController.navigate(R.id.chooseWatchWalletFragment);
                     break;
                 case R.id.drawer_settings:
                     mNavController.navigateUp();
-                    mNavController.navigate(R.id.action_to_settingFragment);
+                    mNavController.navigate(R.id.settingFragment);
                     break;
                 case R.id.drawer_about:
                     mNavController.navigateUp();
-                    mNavController.navigate(R.id.action_to_aboutFragment);
+                    mNavController.navigate(R.id.aboutFragment);
                     break;
 
             }
@@ -310,9 +323,7 @@ public class MainActivity extends FullScreenActivity {
 
     static {
         mMainFragments.put(R.id.drawer_wallet, AssetListFragment.TAG);
-        mMainFragments.put(R.id.drawer_manage, ManageCoinFragment.TAG);
-        mMainFragments.put(R.id.drawer_sync, SyncFragment.TAG);
-        mMainFragments.put(R.id.drawer_sdcard, ElectrumTxnListFragment.TAG);
+        mMainFragments.put(R.id.drawer_sync, ChooseWatchWalletFragment.TAG);
         mMainFragments.put(R.id.drawer_settings, SettingFragment.TAG);
         mMainFragments.put(R.id.drawer_about, AboutFragment.TAG);
     }

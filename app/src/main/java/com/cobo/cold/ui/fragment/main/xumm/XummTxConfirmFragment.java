@@ -71,24 +71,16 @@ public class XummTxConfirmFragment extends BaseFragment<XummTxConfirmBinding> {
         viewModel = ViewModelProviders.of(this).get(XummTxConfirmViewModel.class);
         try {
             tx = new JSONObject(bundle.getString(KEY_TX_DATA));
-            mBinding.details.setText(tx.toString(4));
-            viewModel.parseTxException().observe(this, ex -> {
-                if (ex != null) {
-                    ex.printStackTrace();
-                    ModalDialog.showCommonModal(mActivity,
-                            getString(R.string.scan_failed),
-                            getString(R.string.incorrect_tx_data),
-                            getString(R.string.confirm),
-                            null);
-                    navigateUp();
-                }
-            });
+            viewModel.parseTxException().observe(this, this::handleParseException);
             viewModel.parseXummTxData(tx);
+            viewModel.getDisplayJson().observe(this, tx -> mBinding.container.setData(tx));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         mBinding.sign.setOnClickListener( v -> handleSign());
     }
+
+
 
     private void handleSign() {
         boolean fingerprintSignEnable = new FingerprintPolicyCallable(READ, TYPE_SIGN_TX).call();
@@ -99,6 +91,18 @@ public class XummTxConfirmFragment extends BaseFragment<XummTxConfirmBinding> {
                     viewModel.handleSignXummTransaction();
                     subscribeSignState();
                 }, forgetPassword);
+    }
+
+    private void handleParseException(Exception ex) {
+        if (ex != null) {
+            ex.printStackTrace();
+            ModalDialog.showCommonModal(mActivity,
+                    getString(R.string.scan_failed),
+                    getString(R.string.incorrect_tx_data),
+                    getString(R.string.confirm),
+                    null);
+            navigateUp();
+        }
     }
 
     private void subscribeSignState() {

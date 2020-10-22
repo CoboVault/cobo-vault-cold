@@ -49,6 +49,7 @@ import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.util.KeyStoreUtil;
+import com.cobo.cold.viewmodel.PolkadotJsTxConfirmViewModel;
 import com.cobo.cold.viewmodel.TxConfirmViewModel;
 
 import org.json.JSONArray;
@@ -56,6 +57,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -82,6 +84,7 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
     private ModalDialog addingAddressDialog;
     private int feeAttackCheckingState;
     private FeeAttackChecking feeAttackChecking;
+    private boolean isSubstrate;
 
     @Override
     protected int setView() {
@@ -94,7 +97,12 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.txDetail.txIdInfo.setVisibility(View.GONE);
         data = bundle.getString(KEY_TX_DATA);
-        viewModel = ViewModelProviders.of(this).get(TxConfirmViewModel.class);
+        isSubstrate = bundle.getBoolean("substrateTx");
+        if (isSubstrate) {
+            viewModel = ViewModelProviders.of(this).get(PolkadotJsTxConfirmViewModel.class);
+        } else {
+            viewModel = ViewModelProviders.of(this).get(TxConfirmViewModel.class);
+        }
         mBinding.setViewModel(viewModel);
         subscribeTxEntityState();
 
@@ -248,13 +256,15 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
         }
     }
 
+    private final DecimalFormat decimalFormat = new DecimalFormat("###################.##########");
+
     private void refreshReceiveList() {
         String to = txEntity.getTo();
         if (Coins.isPolkadotFamily(txEntity.getCoinCode())) {
             double amount = Double.parseDouble(txEntity.getAmount().split(" ")[0]);
             double tip = Double.parseDouble(txEntity.getFee().split(" ")[0]);
             double value = Arith.sub(amount, tip);
-            mBinding.txDetail.info.setText(value + " " +txEntity.getCoinCode() +"\n" + to);
+            mBinding.txDetail.info.setText(decimalFormat.format(value) + " " +txEntity.getCoinCode() +"\n" + to);
             return;
         } else {
             mBinding.txDetail.info.setText(to.replace(",","\n\n"));

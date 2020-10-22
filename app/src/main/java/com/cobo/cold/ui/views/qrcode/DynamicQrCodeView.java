@@ -48,7 +48,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
+public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder, QrCode{
 
     public enum EncodingScheme {
         Cobo,
@@ -64,12 +64,14 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
     private ProgressBar progressBar;
     private ImageView img;
     private EncodingScheme scheme = EncodingScheme.Bc32;
-    private Handler handler = new Handler();
-    private Runnable runnable;
+    private final Handler handler = new Handler();
+    private final Runnable runnable;
 
     private int currentIndex = 0;
 
     private boolean autoAnimate = true;
+
+    private boolean multiPart = true;
 
     public DynamicQrCodeView(Context context) {
         this(context, null);
@@ -85,23 +87,32 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
         this.scheme = scheme;
     }
 
+    public void disableMultipart() {
+        multiPart = false;
+    }
+
+    @Override
     public void setData(String s) {
         data = s;
-        if (scheme == EncodingScheme.Cobo) {
-            checksum = checksum(data);
-            count = (int) Math.ceil(data.length() / (float) CAPACITY);
-            splitData();
-        } else if(scheme == EncodingScheme.Bc32) {
-            try {
-                String[] workloads = UniformResource.Encoder.encode(data.toUpperCase(),900);
-                count = workloads.length;
-                splitData.clear();
-                for (int i = 0; i < count; i++) {
-                    splitData.add(workloads[i].toUpperCase());
+        if (multiPart) {
+            if (scheme == EncodingScheme.Cobo) {
+                checksum = checksum(data);
+                count = (int) Math.ceil(data.length() / (float) CAPACITY);
+                splitData();
+            } else if (scheme == EncodingScheme.Bc32) {
+                try {
+                    String[] workloads = UniformResource.Encoder.encode(data.toUpperCase(), 900);
+                    count = workloads.length;
+                    splitData.clear();
+                    for (int i = 0; i < count; i++) {
+                        splitData.add(workloads[i].toUpperCase());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } else {
+            count = 1;
         }
         showQrCode();
     }
@@ -144,6 +155,9 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
         dialog.setBinding(binding);
         binding.close.setOnClickListener(v -> dialog.dismiss());
         binding.qrcodeLayout.qrcode.setEncodingScheme(scheme);
+        if (!multiPart) {
+            binding.qrcodeLayout.qrcode.disableMultipart();
+        }
         binding.qrcodeLayout.qrcode.setData(data);
         binding.qrcodeLayout.qrcode.disableModal();
         setupSeekbar(binding);
@@ -179,7 +193,6 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
                 }
             });
         }
-
     }
 
     private void setupSeekbar(DynamicQrcodeModalBinding binding) {
@@ -207,20 +220,24 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
     }
 
     private void showQrCode() {
-        if (ViewCompat.isLaidOut(this)) {
-            mCache.offer(splitData.get(currentIndex), this);
+        if (multiPart) {
+            if (ViewCompat.isLaidOut(this)) {
+                mCache.offer(splitData.get(currentIndex), this);
+            } else {
+                getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        mCache.offer(splitData.get(currentIndex), DynamicQrCodeView.this);
+                    }
+                });
+            }
+            if (count > 1 && autoAnimate) {
+                currentIndex = ++currentIndex % count;
+                handler.postDelayed(this::showQrCode, DURATION);
+            }
         } else {
-            getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    mCache.offer(splitData.get(currentIndex), DynamicQrCodeView.this);
-                }
-            });
-        }
-        if (count > 1 && autoAnimate) {
-            currentIndex = ++currentIndex % count;
-            handler.postDelayed(this::showQrCode, DURATION);
+            mCache.offer(data, this);
         }
     }
 

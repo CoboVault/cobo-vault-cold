@@ -20,5 +20,72 @@
 
 package com.cobo.cold.ui.fragment.main.xumm;
 
-public class XummTxDetailsView {
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
+import com.cobo.coinlib.coins.XRP.xumm.SupportTransactions;
+import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.cold.R;
+import com.cobo.cold.databinding.XrpTxItemBinding;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+public class XummTxDetailsView extends LinearLayout {
+    private AppCompatActivity context;
+    public XummTxDetailsView(Context context) {
+        this(context, null);
+    }
+
+    public XummTxDetailsView(Context context, AttributeSet attributeSet) {
+        this(context, attributeSet, 0);
+    }
+
+    public XummTxDetailsView(Context context, AttributeSet attributeSet, int i) {
+        this(context, attributeSet, i, 0);
+    }
+
+    public XummTxDetailsView(Context context, AttributeSet attributeSet, int i, int i1) {
+        super(context, attributeSet, i, i1);
+    }
+
+    public void setData(JSONObject object) {
+        showTransactionDetails(object);
+    }
+
+    private void showTransactionDetails(JSONObject tx) {
+        Map<String, String> map = toMap(tx);
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            XrpTxItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.xrp_tx_item,null,false);
+            binding.title.setText(entry.getKey()+":");
+            binding.content.setText(entry.getValue());
+            addView(binding.getRoot());
+        }
+    }
+
+    public static Map<String, String> toMap(JSONObject jsonObj) {
+        Map<String, String> map = new HashMap<>();
+        Iterator<String> keys = jsonObj.keys();
+        try {
+            while(keys.hasNext()) {
+                String key = keys.next();
+                Object value = jsonObj.get(key);
+                map.put(key, value.toString());
+            }
+            return map;
+        } catch (JSONException ignored) {
+
+        }
+        return null;
+    }
 }

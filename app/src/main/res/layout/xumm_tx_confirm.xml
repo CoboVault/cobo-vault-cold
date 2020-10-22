@@ -20,7 +20,8 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -49,15 +50,61 @@
 
         <include layout="@layout/divider" />
 
-        <TextView
-            android:id="@+id/details"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:layout_marginHorizontal="10dp"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/coin_xrp"/>
+            <TextView
+                android:id="@+id/coinCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_toEndOf="@id/icon"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:text="XRP" />
+            <TextView
+                android:id="@+id/coinId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/coinCode"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="2dp"
+                android:layout_toEndOf="@id/icon"
+                android:textColor="@color/white40"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:text="Ripple" />
+
+            <include
+                layout="@layout/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true" />
+        </RelativeLayout>
+
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:textColor="@color/white"
-            android:textSize="14sp"/>
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            android:fadingEdge="vertical">
+        <com.cobo.cold.ui.fragment.main.xumm.XummTxDetailsView
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+        </ScrollView>
 
         <Button
             android:id="@+id/sign"

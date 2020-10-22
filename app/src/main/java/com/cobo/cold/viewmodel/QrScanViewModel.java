@@ -31,14 +31,11 @@ import com.cobo.bcUniformResource.UniformResource;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Coins;
-import com.cobo.cold.AppExecutors;
 import com.cobo.cold.BuildConfig;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
 import com.cobo.cold.R;
 import com.cobo.cold.callables.GetUuidCallable;
-import com.cobo.cold.db.entity.AccountEntity;
-import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
 import com.cobo.cold.protocol.ZipUtil;
 import com.cobo.cold.protocol.parser.ProtoParser;
@@ -46,7 +43,6 @@ import com.cobo.cold.scan.ScannedData;
 import com.cobo.cold.ui.fragment.main.QRCodeScanFragment;
 import com.cobo.cold.update.utils.Digest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Base64;
@@ -54,7 +50,6 @@ import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.KEY_TX_DATA;
@@ -66,12 +61,10 @@ public class QrScanViewModel extends AndroidViewModel {
 
     private final boolean isSetupVault;
     private QRCodeScanFragment fragment;
-    private final DataRepository repository;
 
     private QrScanViewModel(@NonNull Application application, DataRepository repository, boolean isSetupVault) {
         super(application);
         this.isSetupVault = isSetupVault;
-        this.repository = repository;
         repository.loadCoins();
     }
 
@@ -142,9 +135,6 @@ public class QrScanViewModel extends AndroidViewModel {
                 case "TYPE_SIGN_TX":
                     handleSign(object);
                     break;
-                case "TYPE_SYNC":
-                    handleSync(object);
-                    break;
                 default:
                     throw new UnknowQrCodeException("unknow qrcode type " + type);
             }
@@ -167,69 +157,6 @@ public class QrScanViewModel extends AndroidViewModel {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private void handleSync(JSONObject object) throws JSONException, UuidNotMatchException {
-        checkUuid(object);
-        JSONObject sync = object.getJSONObject("sync");
-        JSONArray coins = sync.getJSONArray("coins");
-
-        AppExecutors.getInstance().diskIO().execute(() -> {
-            List<CoinEntity> coinEntities = repository.loadCoinsSync();
-            for (int i = 0; i < coins.length(); i++) {
-                try {
-                    JSONObject coinObj = coins.getJSONObject(i);
-                    CoinEntity coinEntity = matchCoinEntity(coinEntities, coinObj.getString("id"));
-                    if (coinEntity == null) {
-                        continue;
-                    }
-                    sync(coinObj, coinEntity);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            AppExecutors.getInstance().mainThread().execute(() -> fragment.navigateUp());
-        });
-    }
-
-    private void sync(JSONObject coinObj, CoinEntity coinEntity) throws JSONException {
-        List<AccountEntity> accountEntities = repository.loadAccountsForCoin(coinEntity);
-        JSONArray accountObjs = coinObj.getJSONArray("accounts");
-        for (int i = 0; i < accountObjs.length(); i++) {
-            JSONObject accountObj = accountObjs.getJSONObject(i);
-            AccountEntity accountEntity = matchAccountEntity(accountEntities, accountObj.getString("hdPath"));
-            if (accountEntity == null) {
-                continue;
-            }
-            int addressLengthNew = accountObj.getInt("addressLength");
-            int addressLengthCurrent = accountEntity.getAddressLength();
-            if (addressLengthNew > addressLengthCurrent) {
-                String[] names = new String[addressLengthNew - addressLengthCurrent];
-                int index = 0;
-                for (int j = addressLengthCurrent; j < addressLengthNew; j++) {
-                    names[index++] = coinEntity.getCoinCode() + "-" + (j + 1);
-                }
-                new AddAddressViewModel.AddAddressTask(coinEntity, repository, null).execute(names);
-            }
-        }
-    }
-
-    private AccountEntity matchAccountEntity(List<AccountEntity> accounts, String hdPath) {
-        for (AccountEntity a : accounts) {
-            if (a.getHdPath().equals(hdPath)) {
-                return a;
-            }
-        }
-        return null;
-    }
-
-    private CoinEntity matchCoinEntity(List<CoinEntity> coins, String code) {
-        for (CoinEntity c : coins) {
-            if (code.equals(c.getCoinCode()) || code.equals(c.getCoinId())) {
-                return c;
-            }
-        }
-        return null;
     }
 
     private void handleWebAuth(JSONObject object) throws JSONException {

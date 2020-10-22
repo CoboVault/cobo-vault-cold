@@ -37,11 +37,13 @@ import com.cobo.cold.protocol.builder.SignTxResultBuilder;
 import com.cobo.cold.ui.BindingAdapters;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.viewmodel.CoinListViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -54,6 +56,7 @@ public class TxFragment extends BaseFragment<TxBinding> {
 
     public static final String KEY_TX_ID = "txid";
     private TxEntity txEntity;
+    private WatchWallet watchWallet;
 
     @Override
     protected int setView() {
@@ -63,6 +66,7 @@ public class TxFragment extends BaseFragment<TxBinding> {
     @Override
     protected void init(View view) {
         Bundle data = Objects.requireNonNull(getArguments());
+        watchWallet = WatchWallet.getWatchWallet(mActivity);
         mBinding.toolbar.setNavigationOnClickListener(v -> {
             if (data.getBoolean(KEY_DUPLICATE_TX)) {
                 NavHostFragment.findNavController(this)
@@ -75,7 +79,12 @@ public class TxFragment extends BaseFragment<TxBinding> {
         viewModel.loadTx(data.getString(KEY_TX_ID)).observe(this, txEntity -> {
             mBinding.setTx(txEntity);
             this.txEntity = txEntity;
-            new Handler().postDelayed(() -> mBinding.qrcodeLayout.qrcode.setData(getSignTxJson(txEntity)), 500);
+            new Handler().postDelayed(() ->  {
+                if (watchWallet == WatchWallet.POLKADOT_JS) {
+                    mBinding.qrcodeLayout.qrcode.disableMultipart();
+                }
+                mBinding.qrcodeLayout.qrcode.setData(getSignedTxData());
+            }, 500);
             refreshAmount();
             refreshFromList();
             refreshReceiveList();
@@ -130,13 +139,15 @@ public class TxFragment extends BaseFragment<TxBinding> {
         }
     }
 
+    private final DecimalFormat decimalFormat = new DecimalFormat("###################.##########");
+
     private void refreshReceiveList() {
         String to = txEntity.getTo();
         if (Coins.isPolkadotFamily(txEntity.getCoinCode())) {
             double amount = Double.parseDouble(txEntity.getAmount().split(" ")[0]);
             double tip = Double.parseDouble(txEntity.getFee().split(" ")[0]);
             double value = Arith.sub(amount, tip);
-            mBinding.txDetail.info.setText(value + " " +txEntity.getCoinCode() + "\n" + to);
+            mBinding.txDetail.info.setText(decimalFormat.format(value) + " " +txEntity.getCoinCode() + "\n" + to);
             return;
         } else {
             mBinding.txDetail.info.setText(to.replace(",","\n\n"));
@@ -203,7 +214,16 @@ public class TxFragment extends BaseFragment<TxBinding> {
 
     }
 
-    private String getSignTxJson(TxEntity txEntity) {
+    public String getSignedTxData() {
+        if (watchWallet == WatchWallet.COBO) {
+            return getSignTxJson(txEntity);
+        } else if(watchWallet == WatchWallet.POLKADOT_JS) {
+            return txEntity.getSignedHex();
+        }
+        return "";
+    }
+
+    protected String getSignTxJson(TxEntity txEntity) {
         SignTxResultBuilder signTxResult = new SignTxResultBuilder();
         signTxResult.setRawTx(txEntity.getSignedHex())
                 .setSignId(txEntity.getSignId())

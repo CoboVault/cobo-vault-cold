@@ -25,14 +25,4 @@
         android:title="@string/action_scan_qr_code"
         android:icon="@drawable/scan_qr_code"
         app:showAsAction="always" />
-
-    <item
-        android:id="@+id/action_more"
-        android:orderInCategory="100"
-        android:title="More"
-        android:icon="@drawable/more"
-        android:iconTint="@color/white"
-        app:showAsAction="always" />
-
-
 </menu>

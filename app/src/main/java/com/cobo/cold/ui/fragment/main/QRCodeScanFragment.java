@@ -30,8 +30,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
+import com.cobo.coinlib.coins.DOT.UOSDecoder;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
+import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.CommonModalBinding;
@@ -59,6 +61,7 @@ import org.spongycastle.util.encoders.Hex;
 import java.io.IOException;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
+import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.KEY_TX_DATA;
 
 public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         implements SurfaceHolder.Callback, Host {
@@ -185,6 +188,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             try {
                 if (tryParseElecturmTx(res) != null) {
                     handleElectrumTx(res);
+                } else if(tryDecodePolkadotjsTx(res) != null) {
+                    handlePolkadotJsTx(res);
                 } else {
                     alert(getString(R.string.unsupported_qrcode));
                 }
@@ -202,6 +207,13 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         navigate(R.id.action_to_ElectrumTxConfirmFragment, bundle);
     }
 
+    private void handlePolkadotJsTx(String res) {
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_TX_DATA, res);
+        bundle.putBoolean("substrateTx", true);
+        navigate(R.id.action_to_txConfirmFragment, bundle);
+    }
+
     private ElectrumTx tryParseElecturmTx(String res) throws XpubNotMatchException {
         try {
             byte[] data = Base43.decode(res);
@@ -211,6 +223,16 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             }
             return tx;
         } catch (ElectrumTx.SerializationException | IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private UOSDecoder.UOSDecodeResult tryDecodePolkadotjsTx(String res) {
+        try {
+            UOSDecoder decoder = new UOSDecoder();
+            return decoder.decodeUOSRawData(res,false);
+        } catch (InvalidUOSException e) {
             e.printStackTrace();
         }
         return null;

@@ -287,7 +287,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                     } else {
                         Bundle data = new Bundle();
                         data.putBoolean(IS_SETUP_VAULT, ((SetupVaultActivity) mActivity).isSetupVault);
-                        navigate(R.id.action_add_coin_type2, data);
+                        navigate(R.id.action_to_setupSyncFragment, data);
                     }
                 };
 

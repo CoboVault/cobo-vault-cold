@@ -38,7 +38,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="45dp"
+
         android:background="?attr/selectableItemBackground"
         android:onClick="@{()->callback.onSelect(index)}">
 
@@ -50,6 +50,7 @@
             android:layout_marginTop="10dp"
             android:textColor="@color/white"
             android:textSize="15sp"
+            android:textStyle="bold"
             tools:text="title"/>
 
         <com.cobo.cold.ui.views.SpanedTextView
@@ -60,10 +61,9 @@
             android:layout_marginStart="16dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="5dp"
-            android:textColor="@color/white"
+            android:textColor="@color/white40"
             android:textSize="12sp"
             android:text="summary"
-            android:visibility="gone"
             tools:text="summary" />
 
         <ImageView

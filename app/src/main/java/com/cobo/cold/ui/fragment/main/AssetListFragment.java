@@ -17,10 +17,13 @@
 
 package com.cobo.cold.ui.fragment.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,12 +31,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
+import com.cobo.cold.databinding.AssetListBottomMenuBinding;
 import com.cobo.cold.databinding.AssetListFragmentBinding;
 import com.cobo.cold.db.PresetData;
 import com.cobo.cold.db.entity.CoinEntity;
@@ -41,11 +46,15 @@ import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.viewmodel.CoinListViewModel;
 import com.cobo.cold.viewmodel.SetupVaultViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
@@ -56,9 +65,8 @@ public class AssetListFragment extends BaseFragment<AssetListFragmentBinding> {
 
     public static final String TAG = "AssetListFragment";
 
-    private long startTime;
-    public static final int REQUEST_CODE_SCAN = 1000;
     private CoinAdapter mCoinAdapter;
+    private WatchWallet watchWallet;
 
 
     @Override
@@ -67,10 +75,19 @@ public class AssetListFragment extends BaseFragment<AssetListFragmentBinding> {
     }
 
     @Override
+    public void onAttach(@NonNull Context activity) {
+        super.onAttach(activity);
+        if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XUMM) {
+            navigate(R.id.assetFragment);
+        }
+    }
+
+    @Override
     protected void init(View view) {
+        watchWallet = WatchWallet.getWatchWallet(mActivity);
         mActivity.setSupportActionBar(mBinding.toolbar);
         mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
-        mBinding.toolbar.setTitle("");
+        mBinding.toolbar.setTitle(watchWallet.getWalletName(mActivity));
         mCoinAdapter = new CoinAdapter(mActivity, mCoinClickCallback, false);
         mBinding.assetList.setAdapter(mCoinAdapter);
     }
@@ -94,11 +111,10 @@ public class AssetListFragment extends BaseFragment<AssetListFragmentBinding> {
     private void subscribeUi(LiveData<List<CoinEntity>> coins) {
         coins.observe(this, coinEntities -> {
             if (coinEntities != null) {
-                List<CoinEntity> toShow = coinEntities
-                        .stream()
-                        .filter(CoinEntity::isShow)
-                        .filter(coinEntity -> Coins.isCoinSupported(coinEntity.getCoinCode()))
-                        .collect(Collectors.toList());
+                List<CoinEntity> toShow = filterDisplayCoins(coinEntities);
+                for (CoinEntity coinEntity : coinEntities) {
+                    Log.w("kkk",coinEntity.toString() );
+                }
                 if (toShow.isEmpty()) {
                     mBinding.setIsEmpty(true);
                 } else {
@@ -114,9 +130,29 @@ public class AssetListFragment extends BaseFragment<AssetListFragmentBinding> {
         });
     }
 
+    private List<CoinEntity> filterDisplayCoins(List<CoinEntity> coinEntities) {
+        Stream<CoinEntity> filterStream = filterSupportedCoin(coinEntities, watchWallet);
+        if (watchWallet == WatchWallet.COBO) {
+            filterStream = filterStream.filter(CoinEntity::isShow);
+        }
+        return filterStream.collect(Collectors.toList());
+    }
+
+    public static Stream<CoinEntity> filterSupportedCoin(List<CoinEntity> coinEntities, WatchWallet watchWallet) {
+        Coins.Coin[] supportedCoins = watchWallet.getSupportedCoins();
+        return coinEntities.stream()
+                .filter(c -> Arrays.stream(supportedCoins)
+                        .anyMatch(coin -> coin.coinCode().equals(c.getCoinCode()))
+                );
+    }
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
+        if (watchWallet != WatchWallet.COBO) {
+            MenuItem item = menu.findItem(R.id.action_more);
+            item.setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -126,12 +162,7 @@ public class AssetListFragment extends BaseFragment<AssetListFragmentBinding> {
         if (id == R.id.action_scan) {
             AndPermission.with(this)
                     .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE)
-                    .onGranted(permissions -> {
-                        startTime = System.currentTimeMillis();
-                        Bundle bundle = new Bundle();
-                        bundle.putLong("starttime", startTime);
-                        navigate(R.id.action_to_scan, bundle);
-                    })
+                    .onGranted(permissions -> navigate(R.id.action_to_scan))
                     .onDenied(permissions -> {
                         Uri packageURI = Uri.parse("package:" + mActivity.getPackageName());
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
@@ -142,7 +173,30 @@ public class AssetListFragment extends BaseFragment<AssetListFragmentBinding> {
             return true;
         }
 
+        if (id == R.id.action_more) {
+            showBottomSheetMenu();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showBottomSheetMenu() {
+        BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
+        AssetListBottomMenuBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                R.layout.asset_list_bottom_menu,null,false);
+        binding.addHideAsset.setOnClickListener(v-> {
+            navigate(R.id.action_to_manageCoinFragment);
+            dialog.dismiss();
+
+        });
+        binding.sync.setOnClickListener(v-> {
+            navigate(R.id.action_to_syncFragment);
+            dialog.dismiss();
+
+        });
+        dialog.setContentView(binding.getRoot());
+        dialog.show();
     }
 
     private final CoinClickCallback mCoinClickCallback = coin -> {

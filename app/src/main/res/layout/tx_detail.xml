@@ -170,6 +170,7 @@
                 android:textStyle="bold"
                 tools:text="19zhQ 2rKq Xm5r y1pj Co83 JbBK 5zUr bdKgc" />
         </RelativeLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/from_list"
             android:layout_width="match_parent"

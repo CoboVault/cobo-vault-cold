@@ -26,7 +26,7 @@
 
     <string name="drawer_menu_my_vault">我的 Cobo 金库</string>
     <string name="drawer_menu_add_remove">添加 / 隐藏币种</string>
-    <string name="drawer_menu_sync">同步移动端</string>
+    <string name="drawer_menu_sync">选择观察钱包</string>
     <string name="drawer_menu_setting">设置</string>
     <string name="drawer_menu_about">关于 Cobo 金库</string>
     <string name="title_about">关于 Cobo 金库</string>
@@ -167,7 +167,7 @@
     <string name="create_new_address">创建新地址</string>
     <string name="screen_brightness_hint">滑动调整屏幕亮度</string>
     <string name="broadcast_tx">广播交易</string>
-    <string name="please_broadcast_with_hot">请使用 Cobo 金库移动端扫描二维码，并广播交易至区块链</string>
+    <string name="please_broadcast_with_hot">请使用 %s 扫描二维码，并广播交易至区块链</string>
     <string name="please_confirm">请确认</string>
     <string name="mnemonic_save_hint">请确认您已妥善保管好助记词，一旦助记词丢失，资产将无法找回！（金库生成后，无法再次查看助记词）</string>
     <string name="know">我知道了</string>
@@ -227,7 +227,7 @@
     <string name="incorrect_tx_data">非法交易数据</string>
     <string name="invalid_webauth_qrcode_hint">二维码非法，请按照指引扫码正确的二维码完成设备验证</string>
     <string name="hint">提示</string>
-    <string name="enlarge_qrcode">扫码困难？点击放大</string>
+    <string name="enlarge_qrcode">扫码困难？点击二维码进行调整</string>
     <string name="enroll_fingerprint">指纹录入</string>
     <string name="enroll_fingerprint_hint">将您的手指放在指纹传感器区，感受到震动后离开，重复此步骤直至指纹 100% 录入。</string>
     <string name="complete_enroll">完成</string>
@@ -397,4 +397,51 @@
     <string name="next_one">下一个</string>
     <string name="abnormal_state_hint">建议您将设备恢复出厂（擦除设备的所有信息）后重新设置。多次重试未果，您可邮件联系客服：support@cobo.com\n状态码:%s</string>
     <string name="abnormal_state_title">设备状态异常</string>
+
+    <string-array name="watch_wallet_list">
+        <item>Cobo 金库移动端</item>
+        <item>Polkadot.js</item>
+        <item>XUMM</item>
+    </string-array>
+    <string-array name="watch_wallet_summury" >
+        <item>BTC、ETH、TRX、EOS等15条主链</item>
+        <item>DOT、KSM</item>
+        <item>XRP</item>
+    </string-array>
+    <string name="choose_watch_only_wallet">选择观察钱包</string>
+    <string name="sync_later">暂不同步</string>
+    <string name="sync_watch_wallet">同步观察钱包</string>
+    <string name="sync_cobo_wallet_guide_title">Cobo Vault App绑定指引：</string>
+    <string name="sync_xumm_guide_title">XUMM 导入观察账户指引：</string>
+    <string name="sync_polkadotjs_wallet_guide_title">创建%s观察钱包指引：</string>
+
+    <string name="sync_cobo_wallet_guide_text"><![CDATA[
+        1. 打开Cobo Vault App，添加新钱包<br>
+        2. 选择“硬件钱包”，点击绑定按钮<br>
+        3. 勾选隐私协议和服务条款后，点击确定按钮，扫描钱包二维码（点击下方按钮查看）<br><br>
+        <font color="#535353">Cobo Vault App可在 Cobo 官网下载：<font/><br>
+        <font color="#00cdc3">https://cobo.com/hardware-wallet/downloads<font/>
+    ]]></string>
+
+    <string name="sync_polkadot_js_guide_text"><![CDATA[
+        1. 打开Polkadot.js，选择<font color="#00cdc3">%s<font/><br>
+        2. 点击“<font color="#00cdc3">账户<font/>”，选择“<font color="#00cdc3">账户<font/>”<br>
+        3. 点击“<font color="#00cdc3">通过二维码添加<font/>”<br>
+        4. 扫描%s的二维码<br>
+    ]]></string>
+    <string name="sync_xumm_guide_text"><![CDATA[
+        1. 打开XUMM，新建账户<br>
+        2. 选择“导入已有账户”<br>
+        3. 选择“只读”后点击“下一步”<br>
+        4. 扫描地址二维码<br>
+        <font color="#00cdc3">默认生成第一个地址（m/44\'/144\’/0\’/0/0），若您想同步其他地址，可进入钱包后新增其他地址后用XUMM扫描该地址。<font/><br>
+        5. 点击“下一个”进入该账户<br>
+    ]]></string>
+    <string name="sync_cobo_guide_button_text">查看钱包二维码</string>
+    <string name="sync_xumm_guide_button_text">查看地址二维码</string>
+    <string name="sync_polkadot_js_guide_button_text">查看%s二维码</string>
+    <string name="sync_polkadot_hint">请注意：\n在Polkadot.js上，需分别创建DOT、KSM的观察钱包。</string>
+    <string name="sync_with_cobo_vault">请使用Cobo Vault App扫描二维码</string>
+    <string name="sync_with_xumm">请使用XUMM扫描地址二维码</string>
+    <string name="sync_with_polkadot_js">请使用Polkadot.js扫描二维码</string>
 </resources>

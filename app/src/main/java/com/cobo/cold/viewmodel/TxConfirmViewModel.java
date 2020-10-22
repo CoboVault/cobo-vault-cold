@@ -18,6 +18,7 @@
 package com.cobo.cold.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -100,10 +101,12 @@ public class TxConfirmViewModel extends AndroidViewModel {
     protected final MutableLiveData<String> signState = new MutableLiveData<>();
     private AuthenticateModal.OnVerify.VerifyToken token;
     private TxEntity previousSignedTx;
+    protected WatchWallet watchWallet;
 
 
     public TxConfirmViewModel(@NonNull Application application) {
         super(application);
+        watchWallet = WatchWallet.getWatchWallet(application);
         observableTx.setValue(null);
         mRepository = MainApplication.getApplication().getRepository();
     }
@@ -414,7 +417,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
             SignCallback callback = initSignCallback();
             callback.startSign();
             Signer[] signer = initSigners();
-            signTransaction(transaction, callback, signer);
+            signTransaction(callback, signer);
         });
 
     }
@@ -479,7 +482,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         mRepository.insertAddress(addressEntity);
     }
 
-    private void signTransaction(@NonNull AbsTx transaction, @NonNull SignCallback callback, Signer... signer) {
+    private void signTransaction(@NonNull SignCallback callback, Signer... signer) {
         if (signer == null) {
             callback.onFail();
             return;
@@ -571,5 +574,20 @@ public class TxConfirmViewModel extends AndroidViewModel {
             e.printStackTrace();
         }
         return false;
+    }
+
+    protected byte getSubstrateAddressPrefix(String coinCode) {
+        if (coinCode.equals(Coins.DOT.coinCode())) {
+            return 0;
+        } else if (coinCode.equals(Coins.KSM.coinCode())) {
+            return 2;
+        }
+        return 0;
+    }
+
+    protected long getUniversalSignIndex(Context context) {
+        long current =  Utilities.getPrefs(context).getLong("universal_sign_index",0);
+        Utilities.getPrefs(context).edit().putLong("universal_sign_index", current + 1).apply();
+        return current;
     }
 }

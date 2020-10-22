@@ -17,6 +17,7 @@
 
 package com.cobo.cold.ui.fragment.main;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -47,12 +48,14 @@ import com.cobo.cold.config.FeatureFlags;
 import com.cobo.cold.databinding.ManageCoinFragmentBinding;
 import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
 import com.cobo.cold.db.entity.CoinEntity;
+import com.cobo.cold.model.Coin;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.viewmodel.CoinListViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.List;
 import java.util.Objects;
@@ -60,6 +63,8 @@ import java.util.stream.Collectors;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.Utilities.IS_SET_PASSPHRASE;
+import static com.cobo.cold.Utilities.IS_SWITCH_WATCH_WALLET;
+import static com.cobo.cold.ui.fragment.main.AssetListFragment.filterSupportedCoin;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 import static com.cobo.cold.viewmodel.CoinListViewModel.coinEntityComparator;
 
@@ -74,6 +79,8 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
 
     private boolean isInSearch;
 
+    private WatchWallet watchWallet;
+
     @Override
     protected int setView() {
         return R.layout.manage_coin_fragment;
@@ -81,9 +88,8 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
 
     @Override
     protected void init(View view) {
-
+        watchWallet = WatchWallet.getWatchWallet(mActivity);
         mActivity.setSupportActionBar(mBinding.toolbar);
-
         Bundle data = getArguments();
         if (data != null && data.getBoolean(IS_SET_PASSPHRASE)) {
             mBinding.toolbarTitle.setText(R.string.add_coins);
@@ -92,11 +98,16 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
             hideConfirmAction = false;
         } else if (mActivity instanceof SetupVaultActivity) {
             mBinding.toolbarTitle.setText(R.string.add_coins);
-            mBinding.toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
-            mBinding.toolbar.setNavigationOnClickListener(null);
+            mBinding.toolbar.setNavigationIcon(R.drawable.arrow_left);
+            mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
             hideConfirmAction = false;
         } else {
-            mBinding.toolbar.setNavigationOnClickListener(((MainActivity) mActivity)::toggleDrawer);
+            mBinding.toolbar.setNavigationIcon(R.drawable.arrow_left);
+            mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+            if (data != null && data.getBoolean(IS_SWITCH_WATCH_WALLET)) {
+                mBinding.toolbarTitle.setText(R.string.add_coins);
+                hideConfirmAction = false;
+            }
         }
 
         mBinding.toolbar.setTitle("");
@@ -150,9 +161,14 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
         if (hideConfirmAction) {
             menu.findItem(R.id.action_confirm).setVisible(false);
         }
+
+        if (watchWallet == WatchWallet.POLKADOT_JS) {
+            menu.findItem(R.id.action_search).setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -162,11 +178,13 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
                     if (FeatureFlags.ENABLE_WHITE_LIST) {
                         navigate(R.id.action_manageCoin_to_manageWhiteList, data);
                     } else {
-                        navigate(R.id.action_manageCoinFragment_to_setupSyncFragment, data);
+                        navigate(R.id.action_to_syncWatchWalletGuide, data);
                     }
-
+                } else if(data.getBoolean(IS_SWITCH_WATCH_WALLET)){
+                    navigate(R.id.action_to_syncWatchWalletGuide, data);
                 } else {
                     startActivity(new Intent(mActivity, MainActivity.class));
+                    mActivity.finish();
                 }
                 break;
             case R.id.action_search:
@@ -191,10 +209,8 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
     private void subscribeUi(LiveData<List<CoinEntity>> coins) {
         coins.observe(this, coinEntities -> {
             if (coinEntities != null) {
-                coinEntities = coinEntities.stream()
-                        .filter(coinEntity -> Coins.isCoinSupported(coinEntity.getCoinCode()))
-                        .sorted(coinEntityComparator)
-                        .collect(Collectors.toList());
+                coinEntities = filterSupportedCoin(coinEntities, watchWallet).collect(Collectors.toList());
+                coinEntities.sort(coinEntityComparator);
                 mCoinAdapter.setItems(coinEntities);
             }
             mBinding.executePendingBindings();
@@ -203,33 +219,39 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
 
     private final CoinClickCallback mCoinClickCallback = coin -> {
         if (Coins.isPolkadotFamily(coin.getCoinCode()) && TextUtils.isEmpty(coin.getExPub())) {
-            ModalDialog dialog = new ModalDialog();
-            ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
-                    R.layout.modal_with_two_button,
-                    null,false);
-            binding.title.setText(R.string.notice1);
-            binding.subTitle.setText(getString(R.string.add_polkadot_hint, coin.getCoinCode(),coin.getCoinCode().toLowerCase()));
-            binding.left.setText(R.string.add_later);
-            binding.left.setOnClickListener(v -> dialog.dismiss());
-            binding.right.setText(R.string.comfirm_add);
-            binding.right.setOnClickListener(v -> {
-                dialog.dismiss();
-                AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), null, token -> {
-                    Bundle data = new Bundle();
-                    data.putBoolean("enableDot", true);
-                    data.putString("coinCode", coin.getCoinCode());
-                    data.putString(PASSWORD, token.password);
-                    navigate(R.id.action_to_selectMnomenicCountFragment, data);
-                },null);
-
-            });
-            dialog.setBinding(binding);
-            dialog.show(mActivity.getSupportFragmentManager(),"");
+            enableDot(coin);
         } else {
-            AppExecutors.getInstance().diskIO()
-                    .execute(() -> mViewModel.toggleCoin(coin));
+            if (watchWallet == WatchWallet.COBO) {
+                AppExecutors.getInstance().diskIO()
+                        .execute(() -> mViewModel.toggleCoin(coin));
+            }
         }
     };
+
+    public void enableDot(Coin coin) {
+        ModalDialog dialog = new ModalDialog();
+        ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                R.layout.modal_with_two_button,
+                null,false);
+        binding.title.setText(R.string.notice1);
+        binding.subTitle.setText(getString(R.string.add_polkadot_hint, coin.getCoinCode(),coin.getCoinCode().toLowerCase()));
+        binding.left.setText(R.string.add_later);
+        binding.left.setOnClickListener(v -> dialog.dismiss());
+        binding.right.setText(R.string.comfirm_add);
+        binding.right.setOnClickListener(v -> {
+            dialog.dismiss();
+            AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), null, token -> {
+                Bundle data = new Bundle();
+                data.putBoolean("enableDot", true);
+                data.putString("coinCode", coin.getCoinCode());
+                data.putString(PASSWORD, token.password);
+                navigate(R.id.action_to_selectMnomenicCountFragment, data);
+            },null);
+
+        });
+        dialog.setBinding(binding);
+        dialog.show(mActivity.getSupportFragmentManager(),"");
+    }
 
 
     private void enterSearch() {
