@@ -18,10 +18,31 @@
 package com.cobo.coinlib.coin;
 
 import com.cobo.coinlib.coins.XRP.Xrp;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.AccountDelete;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.AccountSet;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.CheckCancel;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.CheckCash;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.CheckCreate;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.DepositPreauth;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.EscrowCancel;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.EscrowCreate;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.EscrowFinish;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.OfferCancel;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.OfferCreate;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.Payment;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.PaymentChannelClaim;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.PaymentChannelCreate;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.PaymentChannelFund;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.SetRegularKey;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.SignerListSet;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.TrustSet;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("ALL")
 public class XrpTest {
@@ -45,6 +66,348 @@ public class XrpTest {
             String address = new Xrp.Deriver().derive(pubKey,0,i);
             assertEquals(address,addr[i]);
         }
+    }
+
+    @Test
+    public void testAccountSet() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"TransactionType\": \"AccountSet\",\n" +
+                "    \"Account\" : \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
+                "    \"Fee\": \"12\",\n" +
+                "    \"Sequence\": 5,\n" +
+                "    \"Domain\": \"6578616D706C652E636F6D\",\n" +
+                "    \"SetFlag\": 5,\n" +
+                "    \"MessageKey\": \"03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB\"\n" +
+                "}");
+        assertTrue(new AccountSet().isValid(tx));
+        System.out.println(new AccountSet().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testAccountDelete() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"TransactionType\": \"AccountDelete\",\n" +
+                "    \"Account\": \"rWYkbWkCeg8dP6rXALnjgZSjjLyih5NXm\",\n" +
+                "    \"Destination\": \"rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe\",\n" +
+                "    \"DestinationTag\": 13,\n" +
+                "    \"Fee\": \"5000000\",\n" +
+                "    \"Sequence\": 2470665,\n" +
+                "    \"Flags\": 2147483648\n" +
+                "}");
+        assertTrue(new AccountDelete().isValid(tx));
+        System.out.println(new AccountDelete().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testCheckCancel() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"Account\": \"rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo\",\n" +
+                "    \"TransactionType\": \"CheckCancel\",\n" +
+                "    \"CheckID\": \"49647F0D748DC3FE26BDACBC57F251AADEFFF391403EC9BF87C97F67E9977FB0\",\n" +
+                "    \"Fee\": \"12\"\n" +
+                "}");
+        assertTrue(new CheckCancel().isValid(tx));
+        System.out.println(new CheckCancel().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testCheckCash() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"Account\": \"rfkE1aSy9G8Upk4JssnwBxhEv5p4mn2KTy\",\n" +
+                "    \"TransactionType\": \"CheckCash\",\n" +
+                "    \"Amount\": \"100000000\",\n" +
+                "    \"CheckID\": \"838766BA2B995C00744175F69A1B11E32C3DBC40E64801A4056FCBD657F57334\",\n" +
+                "    \"Fee\": \"12\"\n" +
+                "}");
+
+        JSONObject tx2 = new JSONObject("{\n" +
+                "    \"Account\": \"rfkE1aSy9G8Upk4JssnwBxhEv5p4mn2KTy\",\n" +
+                "    \"TransactionType\": \"CheckCash\",\n" +
+                "    \"Amount\": {\n" +
+                "    \t\"value\": \"13.1\",\n" +
+                "    \t\"currency\": \"FOO\",\n" +
+                "    \t\"issuer\": \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\"\n" +
+                "\t},\n" +
+                "    \"CheckID\": \"838766BA2B995C00744175F69A1B11E32C3DBC40E64801A4056FCBD657F57334\",\n" +
+                "    \"Fee\": \"12\"\n" +
+                "}");
+
+        assertTrue(new CheckCash().isValid(tx));
+        System.out.println(new CheckCash().flatTransactionDetail(tx));
+        assertTrue(new CheckCash().isValid(tx2));
+        System.out.println(new CheckCash().flatTransactionDetail(tx2));
+    }
+
+    @Test
+    public void testCheckCreate() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "  \"TransactionType\": \"CheckCreate\",\n" +
+                "  \"Account\": \"rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo\",\n" +
+                "  \"Destination\": \"rfkE1aSy9G8Upk4JssnwBxhEv5p4mn2KTy\",\n" +
+                "  \"SendMax\": \"100000000\",\n" +
+                "  \"Expiration\": 570113521,\n" +
+                "  \"InvoiceID\": \"6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B\",\n" +
+                "  \"DestinationTag\": 1,\n" +
+                "  \"Fee\": \"12\"\n" +
+                "}");
+
+        JSONObject tx2 = new JSONObject("{\n" +
+                "  \"TransactionType\": \"CheckCreate\",\n" +
+                "  \"Account\": \"rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo\",\n" +
+                "  \"Destination\": \"rfkE1aSy9G8Upk4JssnwBxhEv5p4mn2KTy\",\n" +
+                "  \"SendMax\": {\n" +
+                "    \t\"value\": \"500000\",\n" +
+                "    \t\"currency\": \"FOO\",\n" +
+                "    \t\"issuer\": \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\"\n" +
+                "  \t},\n" +
+                "  \"Expiration\": 570113521,\n" +
+                "  \"InvoiceID\": \"6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B\",\n" +
+                "  \"DestinationTag\": 1,\n" +
+                "  \"Fee\": \"12\"\n" +
+                "}");
+
+        assertTrue(new CheckCreate().isValid(tx));
+        System.out.println(new CheckCreate().flatTransactionDetail(tx));
+        assertTrue(new CheckCreate().isValid(tx2));
+        System.out.println(new CheckCreate().flatTransactionDetail(tx2));
+    }
+
+    @Test
+    public void testDepositPreauth() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "  \"TransactionType\" : \"DepositPreauth\",\n" +
+                "  \"Account\" : \"rsUiUMpnrgxQp24dJYZDhmV4bE3aBtQyt8\",\n" +
+                "  \"Authorize\" : \"rEhxGqkqPPSxQ3P25J66ft5TwpzV14k2de\",\n" +
+                "  \"Fee\" : \"10\",\n" +
+                "  \"Flags\" : 2147483648,\n" +
+                "  \"Sequence\" : 2\n" +
+                "}");
+        assertTrue(new DepositPreauth().isValid(tx));
+        System.out.println(new DepositPreauth().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testEscrowCancel() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "  \"Account\": \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
+                "  \"TransactionType\": \"EscrowCancel\",\n" +
+                "  \"Owner\": \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
+                "  \"OfferSequence\": 7\n" +
+                "}");
+        assertTrue(new EscrowCancel().isValid(tx));
+        System.out.println(new EscrowCancel().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testEscrowCreate() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"Account\": \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
+                "    \"TransactionType\": \"EscrowCreate\",\n" +
+                "    \"Amount\": \"10000\",\n" +
+                "    \"Destination\": \"rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW\",\n" +
+                "    \"CancelAfter\": 533257958,\n" +
+                "    \"FinishAfter\": 533171558,\n" +
+                "    \"Condition\": \"A0258020E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855810100\",\n" +
+                "    \"DestinationTag\": 23480,\n" +
+                "    \"SourceTag\": 11747\n" +
+                "}\n");
+        assertTrue(new EscrowCreate().isValid(tx));
+        System.out.println(new EscrowCreate().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testEscrowFinish() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"Account\": \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
+                "    \"TransactionType\": \"EscrowFinish\",\n" +
+                "    \"Owner\": \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
+                "    \"OfferSequence\": 7,\n" +
+                "    \"Condition\": \"A0258020E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855810100\",\n" +
+                "    \"Fulfillment\": \"A0028000\"\n" +
+                "}");
+        assertTrue(new EscrowFinish().isValid(tx));
+        System.out.println(new EscrowFinish().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testOfferCancel() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"TransactionType\": \"OfferCancel\",\n" +
+                "    \"Account\": \"ra5nK24KXen9AHvsdFTKHSANinZseWnPcX\",\n" +
+                "    \"Fee\": \"12\",\n" +
+                "    \"Flags\": 0,\n" +
+                "    \"LastLedgerSequence\": 7108629,\n" +
+                "    \"OfferSequence\": 6,\n" +
+                "    \"Sequence\": 7\n" +
+                "}");
+        assertTrue(new OfferCancel().isValid(tx));
+        System.out.println(new OfferCancel().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testOfferCreate() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"TransactionType\": \"OfferCreate\",\n" +
+                "    \"Account\": \"ra5nK24KXen9AHvsdFTKHSANinZseWnPcX\",\n" +
+                "    \"Fee\": \"12\",\n" +
+                "    \"Flags\": 0,\n" +
+                "    \"LastLedgerSequence\": 7108682,\n" +
+                "    \"Sequence\": 8,\n" +
+                "    \"TakerGets\": \"6000000\",\n" +
+                "    \"TakerPays\": {\n" +
+                "      \"currency\": \"GKO\",\n" +
+                "      \"issuer\": \"ruazs5h1qEsqpke88pcqnaseXdm6od2xc\",\n" +
+                "      \"value\": \"2\"\n" +
+                "    }\n" +
+                "}");
+
+        JSONObject tx2 = new JSONObject("{\n" +
+                "    \"TransactionType\": \"OfferCreate\",\n" +
+                "    \"Account\": \"ra5nK24KXen9AHvsdFTKHSANinZseWnPcX\",\n" +
+                "    \"Fee\": \"12\",\n" +
+                "    \"Flags\": 0,\n" +
+                "    \"LastLedgerSequence\": 7108682,\n" +
+                "    \"Sequence\": 8,\n" +
+                "    \"TakerPays\": \"6000000\",\n" +
+                "    \"TakerGets\": {\n" +
+                "      \"currency\": \"GKO\",\n" +
+                "      \"issuer\": \"ruazs5h1qEsqpke88pcqnaseXdm6od2xc\",\n" +
+                "      \"value\": \"2\"\n" +
+                "    }\n" +
+                "}");
+        assertTrue(new OfferCreate().isValid(tx));
+        System.out.println(new OfferCreate().flatTransactionDetail(tx));
+        assertTrue(new OfferCreate().isValid(tx2));
+        System.out.println(new OfferCreate().flatTransactionDetail(tx2));
+    }
+
+    @Test
+    public void testPayment() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "  \"TransactionType\" : \"Payment\",\n" +
+                "  \"Account\" : \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
+                "  \"Destination\" : \"ra5nK24KXen9AHvsdFTKHSANinZseWnPcX\",\n" +
+                "  \"Amount\" : {\n" +
+                "     \"currency\" : \"USD\",\n" +
+                "     \"value\" : \"1\",\n" +
+                "     \"issuer\" : \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\"\n" +
+                "  },\n" +
+                "  \"Fee\": \"12\",\n" +
+                "  \"Flags\": 2147483648,\n" +
+                "  \"Sequence\": 2,\n" +
+                "}");
+        assertTrue(new Payment().isValid(tx));
+        System.out.println(new Payment().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testPaymentChannelClaim() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "  \"TransactionType\": \"PaymentChannelClaim\",\n" +
+                "  \"Channel\": \"C1AE6DDDEEC05CF2978C0BAD6FE302948E9533691DC749DCDD3B9E5992CA6198\",\n" +
+                "  \"Balance\": \"1000000\",\n" +
+                "  \"Amount\": \"1000000\",\n" +
+                "  \"Signature\": \"30440220718D264EF05CAED7C781FF6DE298DCAC68D002562C9BF3A07C1E721B420C0DAB02203A5A4779EF4D2CCC7BC3EF886676D803A9981B928D3B8ACA483B80ECA3CD7B9B\",\n" +
+                "  \"PublicKey\": \"32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A\"\n" +
+                "}");
+        assertTrue(new PaymentChannelClaim().isValid(tx));
+        System.out.println(new PaymentChannelClaim().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testPaymentChannelCreate() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"Account\": \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
+                "    \"TransactionType\": \"PaymentChannelCreate\",\n" +
+                "    \"Amount\": \"10000\",\n" +
+                "    \"Destination\": \"rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW\",\n" +
+                "    \"SettleDelay\": 86400,\n" +
+                "    \"PublicKey\": \"32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A\",\n" +
+                "    \"CancelAfter\": 533171558,\n" +
+                "    \"DestinationTag\": 23480,\n" +
+                "    \"SourceTag\": 11747\n" +
+                "}");
+        assertTrue(new PaymentChannelCreate().isValid(tx));
+        System.out.println(new PaymentChannelCreate().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testPaymentChannelFund() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"Account\": \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
+                "    \"TransactionType\": \"PaymentChannelFund\",\n" +
+                "    \"Channel\": \"C1AE6DDDEEC05CF2978C0BAD6FE302948E9533691DC749DCDD3B9E5992CA6198\",\n" +
+                "    \"Amount\": \"200000\",\n" +
+                "    \"Expiration\": 543171558\n" +
+                "}");
+        assertTrue(new PaymentChannelFund().isValid(tx));
+        System.out.println(new PaymentChannelFund().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testSetRegularKey() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"Flags\": 0,\n" +
+                "    \"TransactionType\": \"SetRegularKey\",\n" +
+                "    \"Account\": \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
+                "    \"Fee\": \"12\",\n" +
+                "    \"RegularKey\": \"rAR8rR8sUkBoCZFawhkWzY4Y5YoyuznwD\"\n" +
+                "}");
+        assertTrue(new SetRegularKey().isValid(tx));
+        System.out.println(new SetRegularKey().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testSignerListSet() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"Flags\": 0,\n" +
+                "    \"TransactionType\": \"SignerListSet\",\n" +
+                "    \"Account\": \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
+                "    \"Fee\": \"12\",\n" +
+                "    \"SignerQuorum\": 3,\n" +
+                "    \"SignerEntries\": [\n" +
+                "        {\n" +
+                "            \"SignerEntry\": {\n" +
+                "                \"Account\": \"rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW\",\n" +
+                "                \"SignerWeight\": 2\n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"SignerEntry\": {\n" +
+                "                \"Account\": \"rUpy3eEg8rqjqfUoLeBnZkscbKbFsKXC3v\",\n" +
+                "                \"SignerWeight\": 1\n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"SignerEntry\": {\n" +
+                "                \"Account\": \"raKEEVSGnKSD9Zyvxu4z6Pqpm4ABH8FS6n\",\n" +
+                "                \"SignerWeight\": 1\n" +
+                "            }\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}");
+        assertTrue(new SignerListSet().isValid(tx));
+        System.out.println(new SignerListSet().flatTransactionDetail(tx));
+    }
+
+    @Test
+    public void testTrustSet() throws JSONException {
+        JSONObject tx = new JSONObject("{\n" +
+                "    \"TransactionType\": \"TrustSet\",\n" +
+                "    \"Account\": \"ra5nK24KXen9AHvsdFTKHSANinZseWnPcX\",\n" +
+                "    \"Fee\": \"12\",\n" +
+                "    \"Flags\": 262144,\n" +
+                "    \"LastLedgerSequence\": 8007750,\n" +
+                "    \"LimitAmount\": {\n" +
+                "      \"currency\": \"USD\",\n" +
+                "      \"issuer\": \"rsP3mgGb2tcYUrxiLFiHJiQXhsziegtwBc\",\n" +
+                "      \"value\": \"100\"\n" +
+                "    },\n" +
+                "    \"Sequence\": 12\n" +
+                "}");
+
+        assertTrue(new TrustSet().isValid(tx));
+        System.out.println(new TrustSet().flatTransactionDetail(tx));
     }
 
 }

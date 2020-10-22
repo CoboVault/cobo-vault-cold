@@ -17,19 +17,31 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm;
+package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
 
+import com.cobo.coinlib.coins.XRP.xumm.Schemas;
+import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
-public class TrustSet extends XrpTransaction {
+public class OfferCancel extends XrpTransaction {
 
-    public TrustSet() {
-        super(Schemas.TrustSet);
+    public OfferCancel() {
+        super(Schemas.OfferCancel);
     }
 
     @Override
-    public JSONObject flatTransactionDetail(JSONObject object) {
+    public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
+        try {
+            result.put("TransactionType", tx.getString("TransactionType"));
+            result.put("Account", tx.getString("Account"));
+            result.put("Fee", tx.getString("Fee") + " drops");
+            result.put("OfferSequence", tx.getInt("OfferSequence"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return  result;
     }
 }

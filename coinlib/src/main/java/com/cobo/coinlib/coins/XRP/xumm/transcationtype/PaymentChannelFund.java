@@ -17,32 +17,32 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm;
+package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+
+import com.cobo.coinlib.coins.XRP.xumm.Schemas;
+import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public abstract class XrpTransaction {
+public class PaymentChannelFund extends XrpTransaction {
 
-    protected String schema;
+    public PaymentChannelFund() { super(Schemas.PaymentChannelFund); }
 
-    protected XrpTransaction(String schema) {
-        this.schema = schema;
-    }
-
-    public String getTransactionType() {
-        return getClass().getSimpleName();
-    }
-
-    public abstract JSONObject flatTransactionDetail(JSONObject tx);
-
-    public boolean isValid(JSONObject tx) {
+    @Override
+    public JSONObject flatTransactionDetail(JSONObject tx) {
+        JSONObject result = new JSONObject();
         try {
-            return getTransactionType().equals(tx.getString("TransactionType"))
-                    && new JsonSchemaValidator().isStateValid(schema, tx.toString());
+            result.put("TransactionType", tx.getString("TransactionType"));
+            result.put("Account", tx.getString("Account"));
+            result.put("Amount", tx.getString("Amount") + " drops");
+            result.put("Channel", tx.getString("Channel"));
+            if(tx.has("Expiration")) {
+                result.put("Expiration", tx.getInt("Expiration"));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return false;
+        return  result;
     }
 }

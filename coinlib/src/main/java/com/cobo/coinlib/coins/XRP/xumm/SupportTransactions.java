@@ -19,9 +19,27 @@
 
 package com.cobo.coinlib.coins.XRP.xumm;
 
-import android.util.Log;
-
 import androidx.annotation.Nullable;
+
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.AccountDelete;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.AccountSet;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.CheckCancel;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.CheckCash;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.CheckCreate;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.DepositPreauth;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.EscrowCancel;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.EscrowCreate;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.EscrowFinish;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.OfferCancel;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.OfferCreate;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.Payment;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.PaymentChannelClaim;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.PaymentChannelCreate;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.PaymentChannelFund;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.SetRegularKey;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.SignerListSet;
+import com.cobo.coinlib.coins.XRP.xumm.transcationtype.TrustSet;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +49,23 @@ public class SupportTransactions {
 
     static {
         sMap = new HashMap<>();
+        register(new AccountSet());
+        register(new AccountDelete());
+        register(new CheckCancel());
+        register(new CheckCash());
+        register(new CheckCreate());
+        register(new DepositPreauth());
+        register(new EscrowCancel());
+        register(new EscrowCreate());
+        register(new EscrowFinish());
+        register(new OfferCancel());
+        register(new OfferCreate());
+        register(new Payment());
+        register(new PaymentChannelClaim());
+        register(new PaymentChannelCreate());
+        register(new PaymentChannelFund());
+        register(new SetRegularKey());
+        register(new SignerListSet());
         register(new TrustSet());
     }
 
