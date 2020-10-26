@@ -90,7 +90,7 @@ public class TxFragment extends BaseFragment<TxBinding> {
         if (txEntity.getCoinCode().equals(Coins.EOS.coinCode())
                 || txEntity.getCoinCode().equals(Coins.IOST.coinCode())) {
             mBinding.txDetail.memoLabel.setText(R.string.tag);
-        } else if (Coins.isPolkadotFamily(txEntity.getCoinCode()) || txEntity.getCoinCode().equals(Coins.TCFX.coinCode())) {
+        } else if (Coins.isPolkadotFamily(txEntity.getCoinCode()) || txEntity.getCoinCode().equals(Coins.CFX.coinCode())) {
             mBinding.txDetail.memoInfo.setVisibility(View.GONE);
         }
     }

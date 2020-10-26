@@ -17,14 +17,14 @@
 
 package com.cobo.coinlib.coin;
 
-import com.cobo.coinlib.coins.TCFX.Tcfx;
+import com.cobo.coinlib.coins.CFX.Cfx;
 
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ALL")
-public class TcfxTest {
+public class CfxTest {
     @Test
     public void deriveAddress() {
         String[] addr = new String[] {
@@ -42,7 +42,7 @@ public class TcfxTest {
                 };
         String pubKey = "xpub6BfuP8AaZEqdkesFsnYKR3XrmiLM3ovccFMKnrGoTfL3EY7x2LTDFChFPEY9aixnrgWmLDLJUxQ57dFmiYH2g6PVWPX2boBTQ7PhUu8ARUb";
         for (int i = 0 ; i < addr.length; i++) {
-            String address = new Tcfx.Deriver().derive(pubKey,0,i);
+            String address = new Cfx.Deriver().derive(pubKey,0,i);
             assertEquals(address,addr[i]);
         }
     }
