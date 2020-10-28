@@ -17,6 +17,7 @@
 
 package com.cobo.cold.ui.fragment.main.electrum;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Spannable;
@@ -32,6 +33,7 @@ import androidx.navigation.Navigation;
 
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Base43;
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.callables.FingerprintPolicyCallable;
@@ -194,6 +196,17 @@ public class UnsignedTxFragment extends BaseFragment<ElectrumTxConfirmFragmentBi
         refreshFromList();
         refreshReceiveList();
         refreshSignStatus();
+        checkBtcFee();
+
+    }
+
+    private void checkBtcFee() {
+        if (txEntity.getCoinCode().equals(Coins.BTC.coinCode())) {
+            float fee = Float.parseFloat(txEntity.getFee().split(" ")[0]);
+            if (fee > 0.01) {
+                mBinding.txDetail.fee.setTextColor(Color.RED);
+            }
+        }
     }
 
     private void refreshSignStatus() {
