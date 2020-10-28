@@ -56,6 +56,7 @@ import com.cobo.cold.viewmodel.CoinListViewModel;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.Utilities.IS_SET_PASSPHRASE;
@@ -190,7 +191,10 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
     private void subscribeUi(LiveData<List<CoinEntity>> coins) {
         coins.observe(this, coinEntities -> {
             if (coinEntities != null) {
-                coinEntities.sort(coinEntityComparator);
+                coinEntities = coinEntities.stream()
+                        .filter(coinEntity -> Coins.isCoinSupported(coinEntity.getCoinCode()))
+                        .sorted(coinEntityComparator)
+                        .collect(Collectors.toList());
                 mCoinAdapter.setItems(coinEntities);
             }
             mBinding.executePendingBindings();
