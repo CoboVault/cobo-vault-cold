@@ -19,7 +19,6 @@ package com.cobo.coinlib.utils;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +31,7 @@ public class Coins {
     public static final Coin LTC = new Coin("litecoin", "LTC", "Litecoin", 2);
     public static final Coin ETH = new Coin("ethereum", "ETH", "Ethereum", 60);
     public static final Coin ETC = new Coin("ethereum_classic", "ETC", "Ethereum Classic", 61);
-    public static final Coin TCFX = new Coin("conflux", "TCFX", "Conflux", 503);
+    public static final Coin CFX = new Coin("conflux", "CFX", "Conflux", 503);
     public static final Coin TRON = new Coin("tron", "TRON", "Tron", 195);
     public static final Coin DCR = new Coin("dcr", "DCR", "Dcr", 42);
     public static final Coin XZC = new Coin("zcoin", "XZC", "Zcoin", 136);
@@ -60,7 +59,7 @@ public class Coins {
             EOS,
             DOT,
             KSM,
-            TCFX
+            CFX
     );
 
     public static boolean isCoinSupported(@NonNull String coinCode) {

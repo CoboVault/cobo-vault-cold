@@ -31,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.AssetListFragmentBinding;
@@ -96,6 +97,7 @@ public class AssetListFragment extends BaseFragment<AssetListFragmentBinding> {
                 List<CoinEntity> toShow = coinEntities
                         .stream()
                         .filter(CoinEntity::isShow)
+                        .filter(coinEntity -> Coins.isCoinSupported(coinEntity.getCoinCode()))
                         .collect(Collectors.toList());
                 if (toShow.isEmpty()) {
                     mBinding.setIsEmpty(true);

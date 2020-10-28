@@ -1,4 +1,4 @@
-package com.cobo.coinlib.coins.TCFX;
+package com.cobo.coinlib.coins.CFX;
 import android.text.TextUtils;
 import com.cobo.coinlib.coins.AbsCoin;
 import com.cobo.coinlib.coins.AbsDeriver;
@@ -42,15 +42,15 @@ import static com.cobo.coinlib.Util.sha3String;
 
 
 
-public class Tcfx extends AbsCoin implements Coin {
+public class Cfx extends AbsCoin implements Coin {
 
-    public Tcfx(Coin impl) {
+    public Cfx(Coin impl) {
         super(impl);
     }
 
     @Override
     public String coinCode() {
-        return Coins.TCFX.coinCode();
+        return Coins.CFX.coinCode();
     }
 
     public static class Tx extends AbsTx {
