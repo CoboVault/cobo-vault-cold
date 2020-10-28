@@ -17,6 +17,7 @@
 
 package com.cobo.cold.ui.fragment.main;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Spannable;
@@ -156,6 +157,7 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
                 refreshFromList();
                 refreshReceiveList();
                 refreshTokenUI();
+                checkBtcFee();
             }
         });
 
@@ -193,6 +195,15 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
                 feeAttackChecking = new FeeAttackChecking(this);
             }
         });
+    }
+
+    private void checkBtcFee() {
+        if (txEntity.getCoinCode().equals(Coins.BTC.coinCode())) {
+            float fee = Float.parseFloat(txEntity.getFee().split(" ")[0]);
+            if (fee > 0.01) {
+                mBinding.txDetail.fee.setTextColor(Color.RED);
+            }
+        }
     }
 
     private void refreshAmount() {
