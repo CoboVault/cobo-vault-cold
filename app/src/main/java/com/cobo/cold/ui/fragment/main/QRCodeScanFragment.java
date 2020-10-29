@@ -235,11 +235,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             alert(getString(R.string.incorrect_qrcode));
         } catch (CoinNotFindException e) {
             e.printStackTrace();
-            alert(null,getString(R.string.version_not_match), () -> {
-                navigateUp();
-                ((MainActivity) mActivity).getNavController().navigateUp();
-                ((MainActivity) mActivity).getNavController().navigate(R.id.action_to_settingFragment);
-            });
+            alert(null,getString(R.string.version_not_match), null);
         } catch (UuidNotMatchException e) {
             e.printStackTrace();
             alert(getString(R.string.uuid_not_match));

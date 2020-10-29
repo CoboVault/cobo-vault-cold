@@ -275,7 +275,7 @@
     <string name="receive_address">To %d</string>
     <string name="sync_in_progress">Sync in Progress</string>
     <string name="scan_failed">Scan Failed</string>
-    <string name="version_not_match">Mobile app version does not match. Please update your Cobo Vault firmware.</string>
+    <string name="version_not_match">Mobile app version does not match. Please update firmware and mobile app to the latest.</string>
     <string name="reset_hint">Wrong Password. This device will be wiped.</string>
     <string name="set_passphrase">Passphrase Vault</string>
     <string name="tx_list_empty">No Result\nPlease input the keywords of Signature</string>

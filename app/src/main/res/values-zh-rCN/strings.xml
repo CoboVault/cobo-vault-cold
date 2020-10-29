@@ -250,7 +250,7 @@
     <string name="receive_address">收款地址%d</string>
     <string name="sync_in_progress">信息同步中</string>
     <string name="scan_failed">扫描失败</string>
-    <string name="version_not_match">和移动端版本不匹配，请升级金库固件</string>
+    <string name="version_not_match">固件版本和移动端版本不匹配，请升级双方版本至最新。</string>
     <string name="reset_hint">密码错误，机器将恢复出厂设置</string>
     <string name="set_passphrase">密语️(Passphrase)金库</string>
     <string name="tx_list_empty">没有您搜索的结果\n请输入已签名交易或消息的相关信息</string>
