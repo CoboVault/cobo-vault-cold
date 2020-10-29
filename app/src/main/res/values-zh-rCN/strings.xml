@@ -684,4 +684,6 @@
     <string name="shard_setting">助记词分片设置</string>
     <string name="next_qr">下一个</string>
     <string name="previous_qr">上一个</string>
+    <string name="abnormal_state_hint">建议您将设备恢复出厂（擦除设备的所有信息）后重新设置。多次重试未果，您可邮件联系客服：support@cobo.com\n状态码:%s</string>
+    <string name="abnormal_state_title">设备状态异常</string>
 </resources>

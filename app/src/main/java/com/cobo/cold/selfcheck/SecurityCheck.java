@@ -53,6 +53,7 @@ public class SecurityCheck {
     private static final int CODE_FW_STATUS_ATTACKED = 0x0300;
     private static final int CODE_FW_ERT_ATTACKED = 0x0400;
     public static final int CODE_FW_IN_BOOTMODE = 0x0500;
+    public static final int CODE_STATUS_MIS_MATCH = 0x0600;
 
     public CheckResult doSelfCheck(AppCompatActivity context) {
         Log.i(TAG, "start self checking...");
@@ -117,12 +118,8 @@ public class SecurityCheck {
                 int status = payload.toInt() & 0xFF;
                 if (status == 0xA0){
                     return (CODE_FW_STATUS_ATTACKED | status);
-                } else if(status == 0xCB) {
-                    if (Utilities.hasVaultCreated(context)) {
-                        AppExecutors.getInstance().mainThread().execute(
-                                ()->MainPreferenceFragment.reset(context));
-                    }
-                    return (CODE_FW_OK | status);
+                } else if(!isWalletStatusMatch(status, context)) {
+                    return (CODE_STATUS_MIS_MATCH | status);
                 } else {
                     return (CODE_FW_OK | status);
                 }
@@ -140,6 +137,12 @@ public class SecurityCheck {
             Log.e(TAG, e.toString());
             return CODE_FW_GET_STATUS_FAILED;
         }
+    }
+
+    private boolean isWalletStatusMatch(int status, Context context) {
+        return ((status == 0xCB || status == 0) && !Utilities.hasVaultCreated(context))
+                ||
+                (status == 0x88 && Utilities.hasVaultCreated(context));
     }
 
     private int checkFirmwareStatus() {
