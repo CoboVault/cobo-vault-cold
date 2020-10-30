@@ -36,8 +36,8 @@ allprojects {
         maven {
             url 'https://dl.bintray.com/novacrypto/BIP/'
         }
+        maven { url  "https://dl.bintray.com/emerald/polkaj" }
         maven { url 'https://jitpack.io' }
-
     }
 
     gradle.projectsEvaluated {
