@@ -37,7 +37,6 @@ allprojects {
             url 'https://dl.bintray.com/novacrypto/BIP/'
         }
         maven { url 'https://jitpack.io' }
-
     }
 
     gradle.projectsEvaluated {
