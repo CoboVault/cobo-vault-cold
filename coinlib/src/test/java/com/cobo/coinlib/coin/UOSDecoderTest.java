@@ -40,10 +40,10 @@ public class UOSDecoderTest {
         UOSDecoder.UOSDecodedTransaction decodedTransaction = result.getDecodedTransaction();
         assertEquals(decodedTransaction.getPalletId(), "0503");
         assertEquals(decodedTransaction.getDestination(), "14BX2fAup13B79jAJhHDfrkNitWBXV6Fc6dYKjrsNmb8Fo7F");
-        assertEquals(decodedTransaction.getAmount(), "10000000000");
+        assertEquals(decodedTransaction.getAmount(), "1");
         assertEquals(decodedTransaction.getEra(), "d500");
         assertEquals(decodedTransaction.getNonce(), "9");
-        assertEquals(decodedTransaction.getTip(), "100000000");
+        assertEquals(decodedTransaction.getTip(), "0.01");
         assertEquals(decodedTransaction.getSpecVersion(), 25);
         assertEquals(decodedTransaction.getTransactionVersion(), 5);
         assertEquals(decodedTransaction.getGenesisHash(), "91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3");
