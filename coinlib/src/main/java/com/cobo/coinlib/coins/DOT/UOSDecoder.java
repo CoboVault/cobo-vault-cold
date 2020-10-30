@@ -67,7 +67,7 @@ public class UOSDecoder {
         public String getAmount() {
             return new BigDecimal(amount)
                     .divide(BigDecimal.TEN.pow(network.decimals), Math.min(network.decimals, 8), BigDecimal.ROUND_HALF_UP)
-                    .stripTrailingZeros().toString();
+                    .stripTrailingZeros().toPlainString();
         }
 
         public String getEra() {
@@ -81,7 +81,7 @@ public class UOSDecoder {
         public String getTip() {
             return new BigDecimal(tip)
                     .divide(BigDecimal.TEN.pow(network.decimals), Math.min(network.decimals, 8), BigDecimal.ROUND_HALF_UP)
-                    .stripTrailingZeros().toString();
+                    .stripTrailingZeros().toPlainString();
         }
 
         public long getSpecVersion() {
