@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UOSDecoder {
-    private static class Network {
+    public static class Network {
         public String name;
         public byte SS58Prefix;
         public String genesisHash;
@@ -28,7 +28,7 @@ public class UOSDecoder {
 //        palletMap.put("0500", "transfer");
 //    }
 
-    public class DecodedTransaction {
+    public class UOSDecodedTransaction {
         private byte[] destinationPublicKey;
         private String palletId;
         private BigInteger amount;
@@ -39,8 +39,10 @@ public class UOSDecoder {
         private long transactionVersion;
         private String genesisHash;
         private String blockHash;
+        private Network network;
 
-        public DecodedTransaction(byte[] destinationPublicKey, String palletId, BigInteger amount, String era, BigInteger nonce, BigInteger tip, long specVersion, long transactionVersion, String genesisHash, String blockHash) {
+        public UOSDecodedTransaction(byte[] destinationPublicKey, String palletId, BigInteger amount, String era, BigInteger nonce, BigInteger tip, long specVersion, long transactionVersion, String genesisHash, String blockHash) {
+            this.network = networks.stream().filter(n -> n.genesisHash.equals(genesisHash)).findFirst().orElse(networks.get(0));
             this.destinationPublicKey = destinationPublicKey;
             this.palletId = palletId;
             this.amount = amount;
@@ -52,22 +54,62 @@ public class UOSDecoder {
             this.genesisHash = genesisHash;
             this.blockHash = blockHash;
         }
+
+        public String getDestination() {
+            return AddressCodec.encodeAddress(destinationPublicKey, network.SS58Prefix);
+        }
+
+        public String getPalletId() {
+            return palletId;
+        }
+
+        public String getAmount() {
+            return amount.toString();
+        }
+
+        public String getEra() {
+            return era;
+        }
+
+        public String getNonce() {
+            return nonce.toString();
+        }
+
+        public String getTip() {
+            return tip.toString();
+        }
+
+        public long getSpecVersion() {
+            return specVersion;
+        }
+
+        public long getTransactionVersion() {
+            return transactionVersion;
+        }
+
+        public String getGenesisHash() {
+            return genesisHash;
+        }
+
+        public String getBlockHash() {
+            return blockHash;
+        }
     }
 
     public class UOSDecodeResult {
         public UOSDecodeResult(String curve, byte[] accountPublicKey, String genesisHash, boolean isOversize) {
-            network = UOSDecoder.networks.stream().filter(n -> n.genesisHash == genesisHash).findAny().get();
-            curve = curve;
-            accountPublicKey = accountPublicKey;
-            isOversize = isOversize;
-            decodedTransaction = null;
+            this.network = UOSDecoder.networks.stream().filter(n -> n.genesisHash.equals(genesisHash)).findFirst().orElse(networks.get(0));
+            this.curve = curve;
+            this.accountPublicKey = accountPublicKey;
+            this.isOversize = isOversize;
+            this.decodedTransaction = null;
         }
 
         public void setRawSigningPayload(byte[] rawSigngingPayload) {
             this.rawSigningPayload = rawSigngingPayload;
         }
 
-        public void setDecodedTransaction(DecodedTransaction decodedTransaction) {
+        public void setDecodedTransaction(UOSDecodedTransaction decodedTransaction) {
             this.decodedTransaction = decodedTransaction;
         }
 
@@ -81,7 +123,7 @@ public class UOSDecoder {
         private byte[] rawSigningPayload;
         private boolean isOversize;
         private boolean isHash;
-        private DecodedTransaction decodedTransaction;
+        private UOSDecodedTransaction decodedTransaction;
 
         public String getCurve() {
             return curve;
@@ -103,7 +145,7 @@ public class UOSDecoder {
             return isHash;
         }
 
-        public DecodedTransaction getDecodedTransaction() {
+        public UOSDecodedTransaction getDecodedTransaction() {
             return isHash ? null : decodedTransaction;
         }
     }
@@ -121,7 +163,7 @@ public class UOSDecoder {
             throw new InvalidUOSException("Frames number is too big, the QR seems not to be a recognized extrinsic raw data");
         }
         int currentFrame = Utils.tryParseInt(frameInfo.substring(6, 10));
-        String uosAfterFrame = rawData.substring(10);
+        String uosAfterFrame = UOSRawData.substring(10);
         if (isMultiPart && !multipartComplete) {
             return null;
         }
@@ -168,6 +210,7 @@ public class UOSDecoder {
 
                 String pallet = txReader.readString(2);
                 byte[] destinationPublicKey = txReader.readByteArray(32);
+
                 BigInteger amount = txReader.readCompact();
                 String encodedEra = txReader.readString(2);
                 BigInteger nonce = txReader.readCompact();
@@ -177,7 +220,7 @@ public class UOSDecoder {
                 String chainGenesisHash = txReader.readString(32);
                 String blockHash = txReader.readString(32);
 
-                DecodedTransaction decodedTransaction = new DecodedTransaction(
+                UOSDecodedTransaction decodedTransaction = new UOSDecodedTransaction(
                         destinationPublicKey,
                         pallet,
                         amount,
@@ -206,7 +249,7 @@ public class UOSDecoder {
     }
 
     /* 400c0000001000053010228b9ffce010cff941262f1b5fa5a884a65b2f7324854082abd68aa3d93b0827fa005038cba3d59242abc565c99a47c3afaf23668f2e1b1a76a38ab71868ae2dafca9630700e40b5402d500240284d717190000000500000091b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3cec018d65a9ed1edc74c6f5f9caedac4818c65251f46047668eed3d350e692fb91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c30ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec */
-    public String extractUOSRawData(String QRRawData) throws InvalidUOSException {
+    private String extractUOSRawData(String QRRawData) throws InvalidUOSException {
         if (QRRawData.length() == 0) {
             throw new InvalidUOSException("QRCode raw data is none");
         }
