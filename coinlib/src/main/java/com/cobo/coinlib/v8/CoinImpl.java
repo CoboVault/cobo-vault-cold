@@ -96,9 +96,7 @@ public class CoinImpl implements Coin {
         } else {
             return null;
         }
-        V8Object option = new V8Object(v8);
-        v8.registerResource(option);
-        params.push(option);
+        params.push(false);
         SignTxResult result;
         try {
             V8Object res = (V8Object) signTxFunction.call(coin, params);
