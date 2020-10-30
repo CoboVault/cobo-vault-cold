@@ -4,6 +4,7 @@ import com.cobo.coinlib.exception.InvalidUOSException;
 
 import org.bouncycastle.util.encoders.Hex;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
@@ -13,33 +14,33 @@ public class UOSDecoder {
         public String name;
         public byte SS58Prefix;
         public String genesisHash;
+        public int decimals;
 
-        public Network(String name, byte SS58Prefix, String genesisHash) {
+        public Network(String name, byte SS58Prefix, String genesisHash, int decimals) {
             this.name = name;
             this.SS58Prefix = SS58Prefix;
             this.genesisHash = genesisHash;
+            this.decimals = decimals;
         }
     }
 
-    private static List<Network> networks = Arrays.asList(new Network("Polkadot", (byte) 0, "91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3"), new Network("Kusama", (byte) 2, "b0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe"));
-//    private static Map<String, String> palletMap = new HashMap<>();
-//    static {
-//        palletMap.put("0503", "transferKeepAlive");
-//        palletMap.put("0500", "transfer");
-//    }
+    private static final List<Network> networks = Arrays.asList(
+            new Network("Polkadot", (byte) 0, "91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3", 10),
+            new Network("Kusama", (byte) 2, "b0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe", 12)
+    );
 
-    public class UOSDecodedTransaction {
-        private byte[] destinationPublicKey;
-        private String palletId;
-        private BigInteger amount;
-        private String era;
-        private BigInteger nonce;
-        private BigInteger tip;
-        private long specVersion;
-        private long transactionVersion;
-        private String genesisHash;
-        private String blockHash;
-        private Network network;
+    public static class UOSDecodedTransaction {
+        private final byte[] destinationPublicKey;
+        private final String palletId;
+        private final BigInteger amount;
+        private final String era;
+        private final BigInteger nonce;
+        private final BigInteger tip;
+        private final long specVersion;
+        private final long transactionVersion;
+        private final String genesisHash;
+        private final String blockHash;
+        private final Network network;
 
         public UOSDecodedTransaction(byte[] destinationPublicKey, String palletId, BigInteger amount, String era, BigInteger nonce, BigInteger tip, long specVersion, long transactionVersion, String genesisHash, String blockHash) {
             this.network = networks.stream().filter(n -> n.genesisHash.equals(genesisHash)).findFirst().orElse(networks.get(0));
@@ -64,7 +65,9 @@ public class UOSDecoder {
         }
 
         public String getAmount() {
-            return amount.toString();
+            return new BigDecimal(amount)
+                    .divide(BigDecimal.TEN.pow(network.decimals), Math.min(network.decimals, 8), BigDecimal.ROUND_HALF_UP)
+                    .stripTrailingZeros().toString();
         }
 
         public String getEra() {
@@ -76,7 +79,9 @@ public class UOSDecoder {
         }
 
         public String getTip() {
-            return tip.toString();
+            return new BigDecimal(tip)
+                    .divide(BigDecimal.TEN.pow(network.decimals), Math.min(network.decimals, 8), BigDecimal.ROUND_HALF_UP)
+                    .stripTrailingZeros().toString();
         }
 
         public long getSpecVersion() {
@@ -96,7 +101,7 @@ public class UOSDecoder {
         }
     }
 
-    public class UOSDecodeResult {
+    public static class UOSDecodeResult {
         public UOSDecodeResult(String curve, byte[] accountPublicKey, String genesisHash, boolean isOversize) {
             this.network = UOSDecoder.networks.stream().filter(n -> n.genesisHash.equals(genesisHash)).findFirst().orElse(networks.get(0));
             this.curve = curve;
@@ -117,11 +122,11 @@ public class UOSDecoder {
             isHash = isHash;
         }
 
-        private String curve;
-        private byte[] accountPublicKey;
-        private Network network;
+        private final String curve;
+        private final byte[] accountPublicKey;
+        private final Network network;
         private byte[] rawSigningPayload;
-        private boolean isOversize;
+        private final boolean isOversize;
         private boolean isHash;
         private UOSDecodedTransaction decodedTransaction;
 
@@ -153,7 +158,6 @@ public class UOSDecoder {
     public UOSDecoder() {
     }
 
-    /* 000001000053010228b9ffce010cff941262f1b5fa5a884a65b2f7324854082abd68aa3d93b0827fa005038cba3d59242abc565c99a47c3afaf23668f2e1b1a76a38ab71868ae2dafca9630700e40b5402d500240284d717190000000500000091b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3cec018d65a9ed1edc74c6f5f9caedac4818c65251f46047668eed3d350e692fb91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3 */
     public UOSDecodeResult decodeUOSRawData(String rawData, boolean multipartComplete) throws InvalidUOSException {
         String UOSRawData = this.extractUOSRawData(rawData);
         String frameInfo = UOSRawData.substring(0, 10);
