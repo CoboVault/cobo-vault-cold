@@ -53,4 +53,34 @@ public class AddressCodec {
         int digestLength = digest.doFinal(keyedHash, 0);
         return Arrays.copyOfRange(keyedHash, 0, digestLength);
     }
+
+    public static byte[] decodeAddress(String address) throws Exception {
+        byte[] decoded = Base58.decode(address);
+        int publicKeyLength = checkChecksum(decoded);
+        if(publicKeyLength == -1) {
+            throw new Exception("invalid address");
+        }
+        else {
+            byte[] publicKey = new byte[publicKeyLength -1];
+            System.arraycopy(decoded, 1, publicKey, 0, publicKeyLength-1);
+            return publicKey;
+        }
+    }
+
+    private static int checkChecksum(byte[] decoded) {
+        boolean isPublicKey = decoded.length == 35 || decoded.length == 36;
+        int length = decoded.length - (isPublicKey ? 2 : 1);
+        byte[] sub = new byte[length];
+        System.arraycopy(decoded, 0, sub, 0, length);
+        byte[] hash = sshash(sub);
+        boolean isValid = isPublicKey
+                ? decoded[decoded.length - 2] == hash[0] && decoded[decoded.length - 1] == hash[1]
+                : decoded[decoded.length - 1] == hash[0];
+
+        if (isValid) {
+            return length;
+        } else {
+            return -1;
+        }
+    }
 }
