@@ -1,10 +1,12 @@
 package com.cobo.coinlib.coins.DOT.scale;
 
+import androidx.annotation.NonNull;
+
 import com.cobo.coinlib.coins.DOT.scale.writer.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.Optional;
 
@@ -19,10 +21,22 @@ public class ScaleCodecWriter implements Closeable {
     public static final BoolWriter BOOL = new BoolWriter();
     public static final BoolOptionalWriter BOOL_OPT = new BoolOptionalWriter();
 
-    private final OutputStream out;
+    private final ByteArrayOutputStream out;
 
-    public ScaleCodecWriter(OutputStream out) {
+    public ScaleCodecWriter(ByteArrayOutputStream out) {
         this.out = out;
+    }
+    
+    public byte[] toByteArray() {
+        return out.toByteArray();
+    }
+
+    public void writeBIntCompact(BigInteger value) throws IOException {
+        COMPACT_BIGINT.write(this, value);
+    }
+
+    public void writeLIntCompact(Long value) throws IOException {
+        this.writeBIntCompact(BigInteger.valueOf(value));
     }
 
     public void writeUint256(byte[] value) throws IOException {
