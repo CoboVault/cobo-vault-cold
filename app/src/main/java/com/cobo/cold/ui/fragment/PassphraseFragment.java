@@ -45,6 +45,7 @@ import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.ui.fragment.setup.SetupVaultBaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.util.Keyboard;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.List;
 
@@ -173,11 +174,21 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                                 && dialog.getDialog().isShowing()) {
                             dialog.dismiss();
                         }
-                        Navigation.findNavController(mActivity, R.id.nav_host_fragment)
-                                .navigate(R.id.action_to_manageCoinFragment, data);
+                        if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.COBO) {
+                            Navigation.findNavController(mActivity, R.id.nav_host_fragment)
+                                    .navigate(R.id.action_to_manageCoinFragment, data);
+                        } else {
+                            startActivity(new Intent(mActivity, MainActivity.class));
+                            mActivity.finish();
+                        }
                     };
-                    List<CoinEntity> coins = PresetData.generateCoins(mActivity);
-                    viewModel.presetData(coins, onComplete);
+
+                    if (TextUtils.isEmpty(passphrase1.get())) {
+                        onComplete.run();
+                    } else {
+                        List<CoinEntity> coins = PresetData.generateCoins(mActivity);
+                        viewModel.presetData(coins, onComplete);
+                    }
                 }
 
             } else if (state == VAULT_STATE_CREATING_FAILED) {

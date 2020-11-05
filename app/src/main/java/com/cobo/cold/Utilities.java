@@ -44,6 +44,7 @@ public class Utilities {
     public static final String SHARED_PREFERENCES_KEY = "com.cobo.cold.prefs";
 
     public static final String IS_SETUP_VAULT = "is_setup_vault";
+    public static final String IS_SWITCH_WATCH_WALLET = "is_switch_wallet";
     public static final String IS_SET_PASSPHRASE = "is_set_passphrase";
     public static final String PREFERENCE_KEY_BELONG_TO = "belong_to_v2";
     public static final String PREFERENCE_KEY_LEGACY_BELONG_TO = "belong_to";

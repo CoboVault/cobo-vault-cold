@@ -91,8 +91,11 @@
         android:label="MnemonicInputFragment"
         tools:layout="@layout/mnemonic_input_fragment">
         <action
-            android:id="@+id/action_add_coin_type2"
+            android:id="@id/action_to_manageCoinFragment"
             app:destination="@id/manageCoinFragment" />
+        <action
+            android:id="@id/action_to_setupSyncFragment"
+            app:destination="@id/SetupWatchWalletFragment" />
     </fragment>
     <fragment
         android:id="@+id/setPasswordFragment"
@@ -206,8 +209,11 @@
         android:label="ConfirmMnemonicFragment"
         tools:layout="@layout/mnemonic_input_fragment">
         <action
-            android:id="@+id/action_add_coin_type1"
+            android:id="@id/action_to_manageCoinFragment"
             app:destination="@id/manageCoinFragment" />
+        <action
+            android:id="@+id/action_to_setupSyncFragment"
+            app:destination="@id/SetupWatchWalletFragment" />
     </fragment>
     <fragment
         android:id="@+id/setupSyncFragment"
@@ -215,7 +221,7 @@
         android:name="com.cobo.cold.ui.fragment.setup.SetupSyncFragment"
         android:label="SetupSyncFragment">
         <action
-            android:id="@+id/action_to_setupCompleteFragment"
+            android:id="@id/action_to_setupCompleteFragment"
             app:destination="@id/setupCompleteFragment" />
     </fragment>
     <fragment
@@ -246,6 +252,7 @@
         <action
             android:id="@+id/action_manageCoinFragment_to_setupSyncFragment"
             app:destination="@id/setupSyncFragment" />
+
     </fragment>
 
     <fragment
@@ -305,4 +312,58 @@
             app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/SetupWatchWalletFragment"
+        tools:layout="@layout/setup_watch_wallet"
+        android:name="com.cobo.cold.ui.fragment.setup.SetupWatchWalletFragment"
+        android:label="SetupWatchWalletFragment">
+        <action
+            android:id="@+id/action_to_manageCoinFragment"
+            app:destination="@id/manageCoinFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/syncWatchWalletGuide"
+        android:name="com.cobo.cold.ui.fragment.setup.SyncWatchWalletGuide"
+        tools:layout="@layout/sync_watch_wallet_guide"
+        android:label="SyncWatchWalletGuide">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/syncFragment"
+        android:name="com.cobo.cold.ui.fragment.SyncFragment"
+        tools:layout="@layout/sync_fragment"
+        android:label="SyncFragment" />
+
+    <!--global actions-->
+
+    <action
+        android:id="@+id/action_to_setupCompleteFragment"
+        app:destination="@id/setupCompleteFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@android:anim/slide_in_left"
+        app:popExitAnim="@android:anim/slide_out_right"/>
+
+    <action
+        android:id="@+id/action_to_syncWatchWalletGuide"
+        app:destination="@id/syncWatchWalletGuide"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@android:anim/slide_in_left"
+        app:popExitAnim="@android:anim/slide_out_right"
+        />
+
+    <action
+        android:id="@+id/action_to_syncFragment"
+        app:destination="@id/syncFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@android:anim/slide_in_left"
+        app:popExitAnim="@android:anim/slide_out_right"/>
 </navigation>

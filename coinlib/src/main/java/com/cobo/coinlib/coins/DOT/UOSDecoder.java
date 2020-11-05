@@ -79,6 +79,7 @@ public class UOSDecoder {
         }
 
         public String getTip() {
+            if (tip.equals(BigInteger.ZERO)) return "0";
             return new BigDecimal(tip)
                     .divide(BigDecimal.TEN.pow(network.decimals), Math.min(network.decimals, 8), BigDecimal.ROUND_HALF_UP)
                     .stripTrailingZeros().toPlainString();

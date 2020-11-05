@@ -17,6 +17,7 @@
 
 package com.cobo.cold.ui.fragment.main;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,6 +35,7 @@ import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.coinlib.utils.Coins;
@@ -42,11 +44,14 @@ import com.cobo.cold.R;
 import com.cobo.cold.databinding.AssetFragmentBinding;
 import com.cobo.cold.databinding.DialogBottomSheetBinding;
 import com.cobo.cold.db.entity.CoinEntity;
+import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.viewmodel.AddAddressViewModel;
 import com.cobo.cold.viewmodel.CoinViewModel;
 import com.cobo.cold.viewmodel.PublicKeyViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
+import com.cobo.cold.viewmodel.XummTxConfirmViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
@@ -61,6 +66,8 @@ import static com.cobo.cold.ui.fragment.Constants.KEY_ID;
 public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         implements Toolbar.OnMenuItemClickListener, NumberPickerCallback {
 
+    public static final String TAG = "AssetFragment";
+
     private final ObservableField<String> query = new ObservableField<>();
 
     private boolean isInSearch;
@@ -71,6 +78,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     private long id;
     private AddressNumberPicker mAddressNumberPicker;
     private boolean hasAddress;
+    private WatchWallet watchWallet;
 
     @Override
     protected int setView() {
@@ -79,19 +87,63 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
 
     @Override
     protected void init(View view) {
-        Bundle data = Objects.requireNonNull(getArguments());
-        coinId = data.getString(KEY_COIN_ID);
-        coinCode = data.getString(KEY_COIN_CODE);
-        id = data.getLong(KEY_ID);
-        showPublicKey = Coins.showPublicKey(coinCode);
-        mBinding.toolbar.inflateMenu(getMenuResId());
+        watchWallet = WatchWallet.getWatchWallet(mActivity);
+        if (watchWallet == WatchWallet.XUMM) {
+            mBinding.toolbar.setNavigationIcon(R.drawable.menu);
+            mBinding.toolbar.setTitle(watchWallet.getWalletName(mActivity));
+            coinId = Coins.XRP.coinId();
+            coinCode = Coins.XRP.coinCode();
+            LiveData<CoinEntity> coinEntityLiveData = ViewModelProviders.of(this)
+                    .get(XummTxConfirmViewModel.class)
+                    .loadXrpCoinEntity();
+
+            coinEntityLiveData.observe(this, coinEntity -> {
+                id = coinEntity.getId();
+                updateUI();
+                coinEntityLiveData.removeObservers(this);
+            });
+        } else {
+            Bundle data = Objects.requireNonNull(getArguments());
+            coinId = data.getString(KEY_COIN_ID);
+            coinCode = data.getString(KEY_COIN_CODE);
+            id = data.getLong(KEY_ID);
+            showPublicKey = Coins.showPublicKey(coinCode);
+            updateUI();
+        }
+    }
+
+    private void updateUI() {
+        if (watchWallet == WatchWallet.POLKADOT_JS) {
+            mBinding.button.setVisibility(View.VISIBLE);
+            mBinding.button.setOnClickListener(v -> syncPolkadot());
+        } else {
+            mBinding.toolbar.inflateMenu(getMenuResId());
+            mBinding.button.setVisibility(View.GONE);
+        }
         mBinding.toolbar.setOnMenuItemClickListener(this);
-        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+        mBinding.toolbar.setNavigationOnClickListener(v -> {
+            if (watchWallet == WatchWallet.XUMM) {
+                ((MainActivity) mActivity).toggleDrawer(v);
+            } else {
+                navigateUp();
+            }
+        });
         initSearchView();
         initTabs();
     }
 
+    private void syncPolkadot() {
+        Bundle bundle = new Bundle();
+        bundle.putString("coinCode", coinCode);
+        navigate(R.id.action_to_syncFragment,bundle);
+    }
+
     private int getMenuResId() {
+
+        if (watchWallet == WatchWallet.XUMM) {
+            return R.menu.scan;
+        }
+
         if (Coins.BTC.coinCode().equals(coinCode)) {
             return R.menu.asset_hasmore;
         }
@@ -109,7 +161,6 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 String address = viewModel.getAddress(coinId);
                 hasAddress = !TextUtils.isEmpty(address);
                 handler.post(this::initViewPager);
-
             });
         }
 
@@ -196,6 +247,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         viewModel.getObservableCoin().observe(this, viewModel::setCoin);
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
@@ -208,6 +260,11 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 break;
             case R.id.action_more:
                 showBottomSheetMenu();
+                break;
+            case R.id.action_scan:
+                Bundle data = new Bundle();
+                data.putString("purpose", "xrpTransaction");
+                navigate(R.id.action_to_QRCodeScanFragment, data);
                 break;
             default:
                 break;
@@ -238,7 +295,6 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         binding.exportXpubToElectrum.setOnClickListener(v-> {
             navigate(R.id.action_to_electrum_guide);
             dialog.dismiss();
-
         });
         dialog.setContentView(binding.getRoot());
         dialog.show();
@@ -286,7 +342,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 int addrCount = coinEntity.getAddressCount();
                 List<String> observableAddressNames = new ArrayList<>();
                 for (int i = addrCount; i < value + addrCount; i++) {
-                    String name = coinEntity.getCoinCode() + "-" + (i + 1);
+                    String name = coinEntity.getCoinCode() + "-" + i ;
                     observableAddressNames.add(name);
                 }
                 viewModel.addAddress(observableAddressNames);

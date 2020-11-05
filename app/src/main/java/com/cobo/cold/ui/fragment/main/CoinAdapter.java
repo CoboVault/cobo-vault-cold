@@ -27,6 +27,7 @@ import com.cobo.cold.R;
 import com.cobo.cold.databinding.AssetItemBinding;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.ui.common.FilterableBaseBindingAdapter;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 public class CoinAdapter extends FilterableBaseBindingAdapter<CoinEntity, AssetItemBinding> {
 
@@ -46,7 +47,9 @@ public class CoinAdapter extends FilterableBaseBindingAdapter<CoinEntity, AssetI
 
     @Override
     protected void onBindItem(AssetItemBinding binding, CoinEntity item) {
-        binding.setIsManage(isManageCoin);
+        if (WatchWallet.getWatchWallet(context) != WatchWallet.POLKADOT_JS) {
+            binding.setIsManage(isManageCoin);
+        }
         binding.setCallback(mCoinClickCallback);
         binding.setCoin(item);
         if (isManageCoin || Coins.showPublicKey(item.getCoinCode())) {

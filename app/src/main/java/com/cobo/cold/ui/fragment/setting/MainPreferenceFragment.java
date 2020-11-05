@@ -98,6 +98,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
     private static final String SETTING_FINGERPRINT = "setting_fingerprint";
     private static final String SETTING_PASSPHRASE = "setting_passphrase";
     public static final String SETTING_CHECK_MNEMONIC = "setting_check_mnemonic";
+    public static final String SETTING_CHOOSE_WATCH_WALLET = "choose_watch_wallet";
 
     private SwitchPreference switchPreference;
     private SimplePreference versionPreference;

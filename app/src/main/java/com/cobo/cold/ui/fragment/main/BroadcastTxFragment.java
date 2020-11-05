@@ -29,7 +29,9 @@ import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.protocol.builder.SignTxResultBuilder;
 import com.cobo.cold.ui.BindingAdapters;
 import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.CoinListViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.Objects;
 
@@ -37,7 +39,9 @@ public class BroadcastTxFragment extends BaseFragment<BroadcastTxFragmentBinding
 
     public static final String KEY_TXID = "txId";
 
-    private TxEntity txEntity;
+    private WatchWallet watchWallet;
+
+    protected TxEntity txEntity;
 
     private final View.OnClickListener goHome = v -> navigate(R.id.action_to_home);
 
@@ -49,6 +53,7 @@ public class BroadcastTxFragment extends BaseFragment<BroadcastTxFragmentBinding
     @Override
     protected void init(View view) {
         Bundle data = Objects.requireNonNull(getArguments());
+        watchWallet = WatchWallet.getWatchWallet(mActivity);
         mBinding.toolbar.setNavigationOnClickListener(goHome);
         mBinding.complete.setOnClickListener(goHome);
 
@@ -56,9 +61,23 @@ public class BroadcastTxFragment extends BaseFragment<BroadcastTxFragmentBinding
         viewModel.loadTx(data.getString(KEY_TXID)).observe(this, txEntity -> {
             mBinding.setCoinCode(txEntity.getCoinCode());
             this.txEntity = txEntity;
-            refreshTokenUI();
-            mBinding.qrcodeLayout.qrcode.setData(getSignTxJson(txEntity));
+            refreshUI();
+            mBinding.qrcodeLayout.qrcode.setData(getSignedTxData());
         });
+    }
+
+    private void refreshUI() {
+        mBinding.broadcastHint.setText(getString(R.string.please_broadcast_with_hot,
+                watchWallet.getWalletName(mActivity)));
+        mBinding.info.setOnClickListener(v -> showBroadcastHint());
+        if (watchWallet == WatchWallet.POLKADOT_JS) {
+            mBinding.qrcodeLayout.qrcode.disableMultipart();
+        }
+        refreshTokenUI();
+    }
+
+    private void showBroadcastHint() {
+        ModalDialog.showCommonModal(mActivity,"广播指引","广播指引", getString(R.string.know), null);
     }
 
     private void refreshTokenUI() {
@@ -80,7 +99,16 @@ public class BroadcastTxFragment extends BaseFragment<BroadcastTxFragmentBinding
 
     }
 
-    private String getSignTxJson(TxEntity txEntity) {
+    public String getSignedTxData() {
+        if (watchWallet == WatchWallet.COBO) {
+            return getSignTxJson(txEntity);
+        } else if(watchWallet == WatchWallet.POLKADOT_JS) {
+            return txEntity.getSignedHex();
+        }
+        return "";
+    }
+
+    protected String getSignTxJson(TxEntity txEntity) {
         SignTxResultBuilder signTxResult = new SignTxResultBuilder();
         signTxResult.setRawTx(txEntity.getSignedHex())
                 .setSignId(txEntity.getSignId())

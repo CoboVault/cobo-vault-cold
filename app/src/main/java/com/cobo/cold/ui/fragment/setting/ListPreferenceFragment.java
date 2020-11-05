@@ -34,18 +34,18 @@ import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.fragment.BaseFragment;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_TITLE;
 
-public abstract class ListPreferenceFragment extends BaseFragment<ListPreferenceBinding>
-        implements ListPreferenceCallback {
+public abstract class ListPreferenceFragment
+        extends BaseFragment<ListPreferenceBinding> implements ListPreferenceCallback {
 
     protected Adapter adapter;
     protected SharedPreferences prefs;
     protected CharSequence[] values;
     protected String value;
-    private CharSequence[] entries;
+    protected CharSequence[] entries;
+    protected CharSequence[] subTitles;
 
     @Override
     protected int setView() {
@@ -62,9 +62,13 @@ public abstract class ListPreferenceFragment extends BaseFragment<ListPreference
 
     @Override
     protected void init(View view) {
-        Objects.requireNonNull(getArguments());
-        mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
-        mBinding.toolbarTitle.setText(getArguments().getInt(KEY_TITLE));
+        Bundle data = getArguments();
+        if (data != null) {
+            mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+            mBinding.toolbarTitle.setText(data.getInt(KEY_TITLE));
+        } else {
+            mBinding.toolbar.setVisibility(View.GONE);
+        }
         prefs = Utilities.getPrefs(mActivity);
         entries = getResources().getStringArray(getEntries());
         values = getResources().getStringArray(getValues());
@@ -94,6 +98,12 @@ public abstract class ListPreferenceFragment extends BaseFragment<ListPreference
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             SettingItemSelectableBinding binding = DataBindingUtil.getBinding(holder.itemView);
             binding.title.setText(entries[position]);
+            if (subTitles == null) {
+                binding.subTitle.setVisibility(View.GONE);
+            } else {
+                binding.subTitle.setVisibility(View.VISIBLE);
+                binding.subTitle.setText(subTitles[position]);
+            }
             binding.setIndex(position);
             binding.setCallback(ListPreferenceFragment.this);
             if (values[position].equals(value)) {

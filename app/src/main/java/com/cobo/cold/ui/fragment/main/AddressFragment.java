@@ -33,6 +33,7 @@ import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.util.Keyboard;
 import com.cobo.cold.viewmodel.CoinViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.List;
 import java.util.Objects;
@@ -126,7 +127,13 @@ public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
     }
 
     private void subscribeUi(LiveData<List<AddressEntity>> address) {
-        address.observe(this, entities -> mAddressAdapter.setItems(entities));
+        address.observe(this, entities -> {
+            if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XUMM) {
+                mAddressAdapter.setItems(entities.subList(0,1));
+            } else {
+                mAddressAdapter.setItems(entities);
+            }
+        });
     }
 
     public void setQuery(String s) {

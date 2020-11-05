@@ -43,9 +43,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.Holder> {
     public OnItemClickListener listener;
     private final List<DrawerItem> dataList = Arrays.asList(
             new DrawerItem(R.id.drawer_wallet, R.drawable.drawer_wallet, R.string.drawer_menu_my_vault),
-            new DrawerItem(R.id.drawer_manage, R.drawable.drawer_asset_manager, R.string.drawer_menu_add_remove),
             new DrawerItem(R.id.drawer_sync, R.drawable.drawer_asset_observation, R.string.drawer_menu_sync),
-            new DrawerItem(R.id.drawer_sdcard, R.drawable.drawer_sdcard, R.string.read_sdcard),
             new DrawerItem(R.id.drawer_settings, R.drawable.drawer_setting, R.string.drawer_menu_setting),
             new DrawerItem(R.id.drawer_about, R.drawable.drawer_about, R.string.drawer_menu_about)
     );
@@ -114,11 +112,15 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.Holder> {
         for (DrawerItem item : dataList) {
             item.select = false;
         }
-        dataList.forEach(drawerItem -> {
-            if (drawerItem.index == index) {
-                drawerItem.select = true;
-            }
-        });
+        if (index == 0) {
+            dataList.get(0).select = true;
+        } else {
+            dataList.forEach(drawerItem -> {
+                if (drawerItem.index == index) {
+                    drawerItem.select = true;
+                }
+            });
+        }
         notifyDataSetChanged();
     }
 
@@ -126,7 +128,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.Holder> {
         void itemClick(int position);
     }
 
-    public class DrawerItem {
+    public static class DrawerItem {
         public final int index;
         public final int iconRes;
         public final int titleRes;
@@ -139,7 +141,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.Holder> {
         }
     }
 
-    class Holder extends RecyclerView.ViewHolder {
+    static class Holder extends RecyclerView.ViewHolder {
         final DrawerItemBinding binding;
 
         Holder(DrawerItemBinding binding) {

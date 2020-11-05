@@ -59,6 +59,7 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+        resConfigs "en", "zh-rCN"
     }
 
 
@@ -93,6 +94,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt')
             proguardFiles 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'META-INF/ASL-2.0.txt'
+        pickFirst 'draftv4/schema'
+        pickFirst 'draftv3/schema'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LGPL-3.0.txt'
+        exclude 'tables/**'
+        exclude '**/*.proto'
+        exclude 'org/**'
+        exclude '**/*.txt'
     }
     compileOptions {
         sourceCompatibility = '1.8'
@@ -218,8 +230,8 @@ def getVersionProperties() {
         }
     }
 
-    def versionMajor = 1
-    def versionMinor = 8
+    def versionMajor = versionProps.getProperty('major', '0').toInteger()
+    def versionMinor = versionProps.getProperty('minor', '0').toInteger()
     def versionPatch = versionProps.getProperty('patch', '0').toInteger()
     def isVaultRelease = false
 

@@ -36,6 +36,7 @@ import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.ui.common.FilterableBaseBindingAdapter;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.viewmodel.CoinListViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -85,6 +86,9 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
             if (ELECTRUM_SIGN_ID.equals(tx.getSignId())) {
                 Navigation.findNavController(Objects.requireNonNull(getView()))
                         .navigate(R.id.action_to_electrumTxFragment, bundle);
+            } else if(WatchWallet.XUMM_SIGN_ID.equals(tx.getSignId())){
+                Navigation.findNavController(Objects.requireNonNull(getView()))
+                        .navigate(R.id.action_to_xummTxFragment, bundle);
             } else {
                 Navigation.findNavController(Objects.requireNonNull(getView()))
                         .navigate(R.id.action_to_txFragment, bundle);
@@ -124,7 +128,14 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
     }
 
     private boolean shouldShow(TxEntity tx) {
-        return Utilities.getCurrentBelongTo(mActivity).equals(tx.getBelongTo());
+        boolean shouldShow;
+        WatchWallet watchWallet = WatchWallet.getWatchWallet(mActivity);
+        if (watchWallet.equals(WatchWallet.COBO)) {
+             shouldShow = !tx.getSignId().contains("_sign_id");
+        } else {
+            shouldShow = tx.getSignId().equals(watchWallet.getSignId());
+        }
+        return shouldShow && Utilities.getCurrentBelongTo(mActivity).equals(tx.getBelongTo());
     }
 
     @Override
@@ -153,41 +164,6 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         protected void onBindItem(TxListItemBinding binding, TxEntity item) {
             binding.setTx(item);
             binding.setTxCallback(txCallback);
-            if (ELECTRUM_SIGN_ID.equals(item.getSignId())) {
-                binding.fromWallet.setText(R.string.from_electrum);
-                binding.fromWallet.setVisibility(View.VISIBLE);
-                binding.amount.setVisibility(View.GONE);
-            } else {
-                binding.fromWallet.setVisibility(View.GONE);
-            }
-            updateFrom(binding, item);
-            updateTo(binding, item);
-        }
-
-        private void updateTo(TxListItemBinding binding, TxEntity item) {
-            String to = item.getTo();
-            binding.to.setText(item.getTo());
-            try {
-                JSONArray outputs = new JSONArray(to);
-                binding.to.setText(outputs.getJSONObject(0).getString("address"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private void updateFrom(TxListItemBinding binding, TxEntity item) {
-            String from = item.getFrom();
-            from = convertLegacyAddress(item, from);
-            binding.from.setText(from);
-            try {
-                JSONArray inputs = new JSONArray(from);
-                String address = inputs.getJSONObject(0).getString("address");
-                address = convertLegacyAddress(item, address);
-                binding.from.setText(address);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
         }
     }
 

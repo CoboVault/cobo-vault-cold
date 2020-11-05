@@ -51,6 +51,7 @@ public abstract class BASECONSTANTS {
         int VERIFY_FINGERPRINT = 0x0907;
         int CLEAR_TOKEN = 0x0908;
         int RESTART_SE = 0x0108;
+        int GET_MASTER_FINGERPRINT = 0x0308;
     }
 
     public interface TAGS {
@@ -96,6 +97,7 @@ public abstract class BASECONSTANTS {
         int SLIP39_MASTER_SEED = 0x080B;
         int SLIP39_ID = 0x080C;
         int SLIP39_EXPONENT = 0x080D;
+        int MASTER_FINGERPRINT = 0x020B;
     }
 
     public interface VALS {

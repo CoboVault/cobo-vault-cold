@@ -17,11 +17,17 @@
 
 package com.cobo.coinlib.coins.XRP;
 
+import androidx.annotation.NonNull;
+
 import com.cobo.coinlib.coins.AbsCoin;
 import com.cobo.coinlib.coins.AbsDeriver;
 import com.cobo.coinlib.coins.AbsTx;
+import com.cobo.coinlib.coins.BTC.BtcImpl;
+import com.cobo.coinlib.coins.SignTxResult;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.Coin;
+import com.cobo.coinlib.interfaces.SignCallback;
+import com.cobo.coinlib.interfaces.Signer;
 import com.cobo.coinlib.utils.B58;
 import com.cobo.coinlib.utils.Coins;
 
@@ -39,6 +45,19 @@ public class Xrp extends AbsCoin implements Coin {
     @Override
     public String coinCode() {
         return Coins.XRP.coinCode();
+    }
+
+    public void signTx(@NonNull JSONObject txObj, SignCallback callback, Signer signer) {
+        if (signer == null) {
+            callback.onFail();
+            return;
+        }
+        SignTxResult result = ((XrpImpl)impl).signTx(txObj, signer);
+        if (result != null && result.isValid()) {
+            callback.onSuccess(result.txId, result.txHex);
+        } else {
+            callback.onFail();
+        }
     }
 
     public static class Tx extends AbsTx {

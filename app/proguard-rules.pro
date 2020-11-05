@@ -174,6 +174,7 @@
 -keep class com.eclipsesource.v8.** { *; }
 -keep class com.cobo.cold.protobuf.** { *; }
 -keep class com.cobo.coinlib.coins.** { *; }
+-keep class com.networknt.schema.**  { *; }
 
 -useuniqueclassmembernames
 
