@@ -1,30 +1,38 @@
 package com.cobo.coinlib.coin;
 
+
+import com.cobo.coinlib.coins.DOT.ChainProperty;
 import com.cobo.coinlib.coins.DOT.DotImpl;
+import com.cobo.coinlib.coins.DOT.TransactionEncoder;
+import com.cobo.coinlib.coins.DOT.TransactionEncoderBuilder;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 public class DotImplTest {
+
+
 
     @Test
     public void testConstructTransaction() {
         DotImpl dot = new DotImpl("DOT");
-        DotImpl.SubstrateTransactionInfo substrateTransactionInfo = new DotImpl.SubstrateTransactionInfo();
-        substrateTransactionInfo.setAmount(10000000000L);
-        substrateTransactionInfo.setBlockNumber(1517092);
-        substrateTransactionInfo.setValidityPeriod(4096);
-        substrateTransactionInfo.setSpecVersion(19);
-        substrateTransactionInfo.setTransactionVersion(5);
-        substrateTransactionInfo.setTip(100000000L);
-        substrateTransactionInfo.setNonce(19);
-        substrateTransactionInfo.setDest("14BX2fAup13B79jAJhHDfrkNitWBXV6Fc6dYKjrsNmb8Fo7F");
-        substrateTransactionInfo.setBlockHash("cec018d65a9ed1edc74c6f5f9caedac4818c65251f46047668eed3d350e692fb");
+        TransactionEncoder substrateTransactionInfo = new TransactionEncoderBuilder()
+                .setChainProperty(ChainProperty.Polkadot)
+                .setAmount(10000000000L)
+                .setBlockNumber(1517092)
+                .setValidityPeriod(4096)
+                .setSpecVersion(19)
+                .setTransactionVersion(5)
+                .setTip(100000000L)
+                .setNonce(19)
+                .setDest("14BX2fAup13B79jAJhHDfrkNitWBXV6Fc6dYKjrsNmb8Fo7F")
+                .setBlockHash("cec018d65a9ed1edc74c6f5f9caedac4818c65251f46047668eed3d350e692fb")
+                .createSubstrateTransactionInfo();
+
         try {
-            byte[] result = dot.constructTransaction(substrateTransactionInfo);
+            byte[] result = substrateTransactionInfo.encode();
             assertArrayEquals(result, Hex.decode(
                     "0503" +
                             "8cba3d59242abc565c99a47c3afaf23668f2e1b1a76a38ab71868ae2dafca963" +

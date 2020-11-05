@@ -59,8 +59,7 @@ public class AddressCodec {
         int publicKeyLength = checkChecksum(decoded);
         if(publicKeyLength == -1) {
             throw new Exception("invalid address");
-        }
-        else {
+        } else {
             byte[] publicKey = new byte[publicKeyLength -1];
             System.arraycopy(decoded, 1, publicKey, 0, publicKeyLength-1);
             return publicKey;
