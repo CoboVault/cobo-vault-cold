@@ -1,13 +1,10 @@
 package com.cobo.coinlib.coin;
 
-import com.cobo.coinlib.coins.DOT.ScaleCodecReader;
 import com.cobo.coinlib.coins.DOT.UOSDecoder;
 import com.cobo.coinlib.exception.InvalidUOSException;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
-
-import java.math.BigInteger;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
