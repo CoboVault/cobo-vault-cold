@@ -39,6 +39,9 @@ You can also build with IDEs, such as `Android Studio`,`intelliJ`.
 ## Test
     ./gradlew test
 
+## Integration Guide
+if you like to integrate with Cobo Vault, checout this guide https://github.com/CoboVault/cobo-vault-docs/blob/master/Integration_guide.md
+
 ## Code Structure
 Modules
 
