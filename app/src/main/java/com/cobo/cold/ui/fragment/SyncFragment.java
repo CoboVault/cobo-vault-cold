@@ -54,7 +54,6 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
     @Override
     protected void init(View view) {
         watchWallet = WatchWallet.getWatchWallet(mActivity);
-        mActivity.setSupportActionBar(mBinding.toolbar);
         Bundle data = getArguments();
         if (data != null) {
             coinCode = data.getString("coinCode");
@@ -103,8 +102,8 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
                     mBinding.chain.setText(Coins.KSM.coinName());
                 }
                 break;
-            case XUMM:
-                mBinding.hint.setText(R.string.sync_with_xumm);
+            case XRP_TOOLKIT:
+                mBinding.hint.setText(R.string.sync_with_xrp_toolkit);
                 mBinding.address.setVisibility(View.VISIBLE);
                 break;
         }
@@ -135,7 +134,7 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
                     }
                 });
                 break;
-            case XUMM:
+            case XRP_TOOLKIT:
                 viewModel.generateSyncXumm().observe(SyncFragment.this, addressEntity -> {
                     if (addressEntity != null) {
                         mBinding.dynamicQrcodeLayout.qrcode.disableMultipart();

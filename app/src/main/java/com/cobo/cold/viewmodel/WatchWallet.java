@@ -30,9 +30,9 @@ import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_C
 public enum WatchWallet {
     COBO("0"),
     POLKADOT_JS("1"),
-    XUMM("2");
+    XRP_TOOLKIT("2");
 
-    public static final String XUMM_SIGN_ID = "xumm_sign_id";
+    public static final String XRP_TOOLKIT_SIGN_ID = "xrp_toolkit_sign_id";
     public static final String POLKADOT_JS_SIGN_ID = "polkadot_js_sign_id";
 
     private final String walletId;
@@ -55,7 +55,7 @@ public enum WatchWallet {
                 return Coins.SUPPORTED_COINS.toArray(new Coins.Coin[0]);
             case POLKADOT_JS:
                 return new Coins.Coin[] {Coins.DOT, Coins.KSM };
-            case XUMM:
+            case XRP_TOOLKIT:
                 return new Coins.Coin[] { Coins.XRP };
         }
         return null;
@@ -65,8 +65,8 @@ public enum WatchWallet {
         switch (this) {
             case POLKADOT_JS:
                 return POLKADOT_JS_SIGN_ID;
-            case XUMM:
-                return XUMM_SIGN_ID;
+            case XRP_TOOLKIT:
+                return XRP_TOOLKIT_SIGN_ID;
         }
         return null;
     }

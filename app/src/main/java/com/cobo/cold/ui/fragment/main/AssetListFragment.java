@@ -77,7 +77,7 @@ public class AssetListFragment extends BaseFragment<AssetListFragmentBinding> {
     @Override
     public void onAttach(@NonNull Context activity) {
         super.onAttach(activity);
-        if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XUMM) {
+        if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XRP_TOOLKIT) {
             navigate(R.id.assetFragment);
         }
     }

@@ -401,7 +401,7 @@
     <string-array name="watch_wallet_list">
         <item>Cobo 金库移动端</item>
         <item>Polkadot.js</item>
-        <item>XUMM</item>
+        <item>Xrp Toolkit</item>
     </string-array>
     <string-array name="watch_wallet_summury" >
         <item>BTC、ETH、TRX、EOS等15条主链</item>
@@ -413,6 +413,7 @@
     <string name="sync_watch_wallet">同步观察钱包</string>
     <string name="sync_cobo_wallet_guide_title">Cobo Vault App绑定指引：</string>
     <string name="sync_xumm_guide_title">XUMM 导入观察账户指引：</string>
+    <string name="sync_xrp_toolkit_guide_title">XRP Toolkit导入观察账户指引：</string>
     <string name="sync_polkadotjs_wallet_guide_title">创建%s观察钱包指引：</string>
 
     <string name="sync_cobo_wallet_guide_text"><![CDATA[
@@ -437,11 +438,21 @@
         <font color="#00cdc3">默认生成第一个地址（m/44\'/144\’/0\’/0/0），若您想同步其他地址，可进入钱包后新增其他地址后用XUMM扫描该地址。<font/><br>
         5. 点击“下一个”进入该账户<br>
     ]]></string>
+
+    <string name="sync_xrp_toolkit_guide_text"><![CDATA[
+        1. 打开XRP Toolkit，点击“Get Wallet”后新建账户<br>
+        2. 选择“Cobo Vault”<br>
+        3. 扫描地址二维码（点击下方按钮查看）<br>
+        4. 点击“Add account”后进入该账户<br>
+    ]]></string>
     <string name="sync_cobo_guide_button_text">查看钱包二维码</string>
     <string name="sync_xumm_guide_button_text">查看地址二维码</string>
+    <string name="sync_xrp_toolkit_guide_button_text">查看地址二维码</string>
     <string name="sync_polkadot_js_guide_button_text">查看%s二维码</string>
     <string name="sync_polkadot_hint">请注意：\n在Polkadot.js上，需分别创建DOT、KSM的观察钱包。</string>
     <string name="sync_with_cobo_vault">请使用Cobo Vault App扫描二维码</string>
     <string name="sync_with_xumm">请使用XUMM扫描地址二维码</string>
+    <string name="sync_with_xrp_toolkit">请使用XRP Toolkit扫描地址二维码</string>
     <string name="sync_with_polkadot_js">请使用Polkadot.js扫描二维码</string>
+    <string name="broadcast_xrp_toolkit_hint">请使用XRP Toolkit扫描二维码,广播到区块链网络</string>
 </resources>

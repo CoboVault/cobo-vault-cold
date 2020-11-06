@@ -66,7 +66,7 @@ public class SyncWatchWalletGuide extends BaseFragment<SyncWatchWalletGuideBindi
     private void export() {
         switch (watchWallet) {
             case COBO:
-            case XUMM:
+            case XRP_TOOLKIT:
             case POLKADOT_JS:
                 Bundle bundle = getArguments();
                 bundle.putBoolean("fromSyncGuide", true);
@@ -81,8 +81,8 @@ public class SyncWatchWalletGuide extends BaseFragment<SyncWatchWalletGuideBindi
             case COBO:
                 id = R.string.sync_cobo_guide_button_text;
                 break;
-            case XUMM:
-                id = R.string.sync_xumm_guide_button_text;
+            case XRP_TOOLKIT:
+                id = R.string.sync_xrp_toolkit_guide_button_text;
                 break;
             case POLKADOT_JS:
                 id = R.string.sync_polkadot_js_guide_button_text;
@@ -95,8 +95,8 @@ public class SyncWatchWalletGuide extends BaseFragment<SyncWatchWalletGuideBindi
         switch (watchWallet) {
             case COBO:
                 return R.string.sync_cobo_wallet_guide_title;
-            case XUMM:
-                return R.string.sync_xumm_guide_title;
+            case XRP_TOOLKIT:
+                return R.string.sync_xrp_toolkit_guide_title;
             case POLKADOT_JS:
                 return R.string.sync_polkadotjs_wallet_guide_title;
         }
@@ -107,8 +107,8 @@ public class SyncWatchWalletGuide extends BaseFragment<SyncWatchWalletGuideBindi
         switch (watchWallet) {
             case COBO:
                 return R.string.sync_cobo_wallet_guide_text;
-            case XUMM:
-                return R.string.sync_xumm_guide_text;
+            case XRP_TOOLKIT:
+                return R.string.sync_xrp_toolkit_guide_text;
             case POLKADOT_JS:
                 return R.string.sync_polkadot_js_guide_text;
         }

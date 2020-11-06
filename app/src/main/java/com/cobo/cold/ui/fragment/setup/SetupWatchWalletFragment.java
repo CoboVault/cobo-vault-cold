@@ -49,7 +49,7 @@ public class SetupWatchWalletFragment extends SetupVaultBaseFragment<SetupWatchW
             case COBO:
                 navigate(R.id.action_to_manageCoinFragment, data);
                 break;
-            case XUMM:
+            case XRP_TOOLKIT:
                 navigate(R.id.action_to_syncWatchWalletGuide, data);
                 break;
             case POLKADOT_JS:

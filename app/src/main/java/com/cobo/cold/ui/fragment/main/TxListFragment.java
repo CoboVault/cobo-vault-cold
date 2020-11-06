@@ -38,16 +38,12 @@ import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.viewmodel.CoinListViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
-import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.convertLegacyAddress;
 import static com.cobo.cold.ui.fragment.main.TxFragment.KEY_TX_ID;
 import static com.cobo.cold.viewmodel.ElectrumViewModel.ELECTRUM_SIGN_ID;
 
@@ -84,14 +80,11 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_TX_ID, tx.getTxId());
             if (ELECTRUM_SIGN_ID.equals(tx.getSignId())) {
-                Navigation.findNavController(Objects.requireNonNull(getView()))
-                        .navigate(R.id.action_to_electrumTxFragment, bundle);
-            } else if(WatchWallet.XUMM_SIGN_ID.equals(tx.getSignId())){
-                Navigation.findNavController(Objects.requireNonNull(getView()))
-                        .navigate(R.id.action_to_xummTxFragment, bundle);
+                navigate(R.id.action_to_electrumTxFragment, bundle);
+            } else if(WatchWallet.XRP_TOOLKIT_SIGN_ID.equals(tx.getSignId())){
+                navigate(R.id.action_to_xummTxFragment, bundle);
             } else {
-                Navigation.findNavController(Objects.requireNonNull(getView()))
-                        .navigate(R.id.action_to_txFragment, bundle);
+                navigate(R.id.action_to_txFragment, bundle);
             }
         };
 

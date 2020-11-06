@@ -91,7 +91,7 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
             case COBO:
                 navigate(R.id.action_to_manageCoinFragment, bundle);
                 break;
-            case XUMM:
+            case XRP_TOOLKIT:
                 navigate(R.id.action_to_syncWatchWalletGuide, bundle);
                 break;
         }

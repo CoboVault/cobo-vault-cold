@@ -128,7 +128,7 @@ public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
 
     private void subscribeUi(LiveData<List<AddressEntity>> address) {
         address.observe(this, entities -> {
-            if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XUMM) {
+            if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XRP_TOOLKIT) {
                 mAddressAdapter.setItems(entities.subList(0,1));
             } else {
                 mAddressAdapter.setItems(entities);

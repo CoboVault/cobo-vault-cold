@@ -64,7 +64,7 @@ public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
         mBinding.setAddressName(data.getString(KEY_ADDRESS_NAME));
         mBinding.setPath(data.getString(KEY_ADDRESS_PATH));
         mBinding.qrcode.setData(data.getString(KEY_ADDRESS));
-        if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XUMM) {
+        if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XRP_TOOLKIT) {
             mBinding.button.setVisibility(View.VISIBLE);
             mBinding.button.setOnClickListener(v -> showXummSyncGuide());
         }
@@ -74,8 +74,8 @@ public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
         ModalDialog dialog = new ModalDialog();
         CommonModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.common_modal, null, false);
-        binding.title.setText(R.string.sync_xumm_guide_title);
-        binding.subTitle.setText(R.string.sync_xumm_guide_text);
+        binding.title.setText(R.string.sync_xrp_toolkit_guide_title);
+        binding.subTitle.setText(R.string.sync_xrp_toolkit_guide_text);
         binding.subTitle.setGravity(Gravity.START);
         binding.close.setVisibility(View.GONE);
         binding.confirm.setText(R.string.know);

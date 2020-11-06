@@ -73,7 +73,7 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
                 NumberFormat nf = NumberFormat.getInstance();
                 nf.setMaximumFractionDigits(20);
                 tx.setCoinCode(coinCode);
-                tx.setSignId("xumm_sign_id");
+                tx.setSignId(watchWallet.getSignId());
                 tx.setCoinId(Coins.XRP.coinId());
                 tx.setBelongTo(mRepository.getBelongTo());
                 observableTx.postValue(tx);
