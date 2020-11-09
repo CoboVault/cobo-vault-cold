@@ -18,30 +18,26 @@
 package com.cobo.cold.ui.fragment.main;
 
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-
-import androidx.databinding.DataBindingUtil;
 
 import com.cobo.coinlib.coins.BCH.Bch;
 import com.cobo.coinlib.coins.LTC.Ltc;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
-import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.ReceiveFragmentBinding;
 import com.cobo.cold.ui.fragment.BaseFragment;
-import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS;
+import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_INDEX;
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_NAME;
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_PATH;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 
 public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
+    private int index;
     @Override
     protected int setView() {
         return R.layout.receive_fragment;
@@ -60,28 +56,21 @@ public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
         } else if (coinCode.equals(Coins.LTC.coinCode())) {
             address = Ltc.convertAddress(address);
         }
+        index = data.getInt(KEY_ADDRESS_INDEX);
         mBinding.setAddress(address);
         mBinding.setAddressName(data.getString(KEY_ADDRESS_NAME));
         mBinding.setPath(data.getString(KEY_ADDRESS_PATH));
         mBinding.qrcode.setData(data.getString(KEY_ADDRESS));
-        if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XUMM) {
+        if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XRP_TOOLKIT) {
             mBinding.button.setVisibility(View.VISIBLE);
-            mBinding.button.setOnClickListener(v -> showXummSyncGuide());
+            mBinding.button.setOnClickListener(v -> syncXrp());
         }
     }
 
-    private void showXummSyncGuide() {
-        ModalDialog dialog = new ModalDialog();
-        CommonModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
-                R.layout.common_modal, null, false);
-        binding.title.setText(R.string.sync_xumm_guide_title);
-        binding.subTitle.setText(R.string.sync_xumm_guide_text);
-        binding.subTitle.setGravity(Gravity.START);
-        binding.close.setVisibility(View.GONE);
-        binding.confirm.setText(R.string.know);
-        binding.confirm.setOnClickListener(v -> dialog.dismiss());
-        dialog.setBinding(binding);
-        dialog.show(mActivity.getSupportFragmentManager(), "");
+    public void syncXrp() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("index", index);
+        navigate(R.id.action_to_syncFragment, bundle);
     }
 
     @Override

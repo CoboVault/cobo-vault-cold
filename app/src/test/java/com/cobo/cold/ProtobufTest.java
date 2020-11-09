@@ -17,6 +17,7 @@
 
 package com.cobo.cold;
 
+import com.cobo.bcUniformResource.UniformResource;
 import com.cobo.cold.protobuf.BaseProtoc;
 import com.cobo.cold.protobuf.MessageProtoc;
 import com.cobo.cold.protobuf.PayloadProtoc;
@@ -99,6 +100,12 @@ public class ProtobufTest {
         assertEquals("CAESGmNvYm8gdmFsdXQgcXJjb2RlIHByb3RvY29sGsQBCAMSoAE0NjRjZTdkZWMxOWIwNTU3OTZmNWE2ODY2MzBkNDc3YjA2ZWQxZWIxYWQ1NzlkMjM3NzQxMjcxYTU3MjllMjQxZDFiZDdlMGY2MTM1NzlkY2JiZDI5ODI0MTU1MWFlYjMxOTZjMjZmMDg1ZjMzZDE5MWE1NWRhMmVmNmZjNjVkMGU3Y2JlN2VlYzIxNzVhZGQyMjFlNzU4Y2ZhOTMxZWI2Kh0KA0JUQxIPTS80OScvMC8nMCcvMC8wGgVoZWxsbyjyTw==",
                 Base64.toBase64String(base.build().toByteArray()));
 
+    }
+
+    @Test
+    public void test() throws Exception {
+        String s = UniformResource.Decoder.decode(new String[] {"UR:BYTES/TZMPYQQQY2QQQQQQYSQTSEYZV9QQQQQQP04UYQRGGQQQQQQQQQQQCUEPQV55UAN06KZVJ5UFZXPGA6VPCJNNMC8244D0PRPH0P5U8PRH6FSC7AZXXPZQYGRXAQ45WLCRP9UU0LJA85UZW627XSLY2HVKA4MUYK82FAMMQCAG2CPZQ7VQP25MHGZES5QPWZYNJXE64PE9Y4QSV5WMQ4Y5EDUU4PCZ9QDQSY2R94Y6Q6NM6HKSRHGF38NC84ZP6908NZYGX9X63FQ78CDAGWYCK0XRGAJCMHL62RR7W2CZCPS9A".toLowerCase()});
+        System.out.println(s);
     }
 
 }

@@ -25,6 +25,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.cobo.coinlib.Util;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
@@ -87,16 +88,28 @@ public class SyncViewModel extends AndroidViewModel {
         return sync;
     }
 
-    public LiveData<AddressEntity> generateSyncXumm() {
-        MutableLiveData<AddressEntity> result = new MutableLiveData<>();
+    public LiveData<XrpSyncData> generateSyncXumm(final int index) {
+        MutableLiveData<XrpSyncData> result = new MutableLiveData<>();
         AppExecutors.getInstance().diskIO().execute(()->{
+            CoinEntity xrp = mRepository.loadCoinSync(Coins.XRP.coinId());
+            String pubkey = Util.getPublicKeyHex(xrp.getExPub(), 0, index);
             for (AddressEntity addressEntity : mRepository.loadAddressSync(Coins.XRP.coinId())) {
-                if (addressEntity.getIndex() == 0) {
-                    result.postValue(addressEntity);
+                if (addressEntity.getIndex() == index) {
+                    result.postValue(new XrpSyncData(addressEntity, pubkey));
                 }
             }
         });
         return result;
+    }
+
+    public static class XrpSyncData {
+        public AddressEntity addressEntity;
+        public String pubkey;
+
+        public XrpSyncData(AddressEntity addressEntity, String pubkey) {
+            this.addressEntity = addressEntity;
+            this.pubkey = pubkey;
+        }
     }
 
     public LiveData<String> generateSyncPolkadotjs(String coinCode) {

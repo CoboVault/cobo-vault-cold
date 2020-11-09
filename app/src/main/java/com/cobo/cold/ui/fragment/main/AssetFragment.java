@@ -88,7 +88,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     @Override
     protected void init(View view) {
         watchWallet = WatchWallet.getWatchWallet(mActivity);
-        if (watchWallet == WatchWallet.XUMM) {
+        if (watchWallet == WatchWallet.XRP_TOOLKIT) {
             mBinding.toolbar.setNavigationIcon(R.drawable.menu);
             mBinding.toolbar.setTitle(watchWallet.getWalletName(mActivity));
             coinId = Coins.XRP.coinId();
@@ -122,7 +122,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         }
         mBinding.toolbar.setOnMenuItemClickListener(this);
         mBinding.toolbar.setNavigationOnClickListener(v -> {
-            if (watchWallet == WatchWallet.XUMM) {
+            if (watchWallet == WatchWallet.XRP_TOOLKIT) {
                 ((MainActivity) mActivity).toggleDrawer(v);
             } else {
                 navigateUp();
@@ -139,11 +139,6 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     }
 
     private int getMenuResId() {
-
-        if (watchWallet == WatchWallet.XUMM) {
-            return R.menu.scan;
-        }
-
         if (Coins.BTC.coinCode().equals(coinCode)) {
             return R.menu.asset_hasmore;
         }

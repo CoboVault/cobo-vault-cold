@@ -138,7 +138,7 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment {
     public void navigate(@IdRes int id) {
         try {
             NavHostFragment.findNavController(this).navigate(id);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException|IllegalStateException e) {
             e.printStackTrace();
         }
 
@@ -147,7 +147,7 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment {
     public void popBackStack(@IdRes int id, boolean inclusive) {
         try {
             NavHostFragment.findNavController(this).popBackStack(id, inclusive);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException|IllegalStateException e) {
             e.printStackTrace();
         }
     }
@@ -155,7 +155,7 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment {
     public void navigate(@IdRes int id, Bundle data) {
         try {
             NavHostFragment.findNavController(this).navigate(id, data);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException|IllegalStateException e) {
             e.printStackTrace();
         }
     }

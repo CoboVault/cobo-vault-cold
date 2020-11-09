@@ -21,6 +21,7 @@ package com.cobo.cold.viewmodel;
 
 import android.content.Context;
 
+import com.cobo.coinlib.coins.XRP.Xrp;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
@@ -30,9 +31,9 @@ import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_C
 public enum WatchWallet {
     COBO("0"),
     POLKADOT_JS("1"),
-    XUMM("2");
+    XRP_TOOLKIT("2");
 
-    public static final String XUMM_SIGN_ID = "xumm_sign_id";
+    public static final String XRP_TOOLKIT_SIGN_ID = "xrp_toolkit_sign_id";
     public static final String POLKADOT_JS_SIGN_ID = "polkadot_js_sign_id";
 
     private final String walletId;
@@ -46,7 +47,9 @@ public enum WatchWallet {
 
     public String getWalletName(Context context) {
         String[] wallets = context.getResources().getStringArray(R.array.watch_wallet_list);
-        return wallets[Integer.parseInt(walletId)];
+        if (walletId.equals(COBO.walletId)) return wallets[0];
+        else if (walletId.equals(XRP_TOOLKIT.walletId)) return wallets[1];
+        return wallets[0];
     }
 
     public Coins.Coin[] getSupportedCoins() {
@@ -55,7 +58,7 @@ public enum WatchWallet {
                 return Coins.SUPPORTED_COINS.toArray(new Coins.Coin[0]);
             case POLKADOT_JS:
                 return new Coins.Coin[] {Coins.DOT, Coins.KSM };
-            case XUMM:
+            case XRP_TOOLKIT:
                 return new Coins.Coin[] { Coins.XRP };
         }
         return null;
@@ -65,8 +68,8 @@ public enum WatchWallet {
         switch (this) {
             case POLKADOT_JS:
                 return POLKADOT_JS_SIGN_ID;
-            case XUMM:
-                return XUMM_SIGN_ID;
+            case XRP_TOOLKIT:
+                return XRP_TOOLKIT_SIGN_ID;
         }
         return null;
     }

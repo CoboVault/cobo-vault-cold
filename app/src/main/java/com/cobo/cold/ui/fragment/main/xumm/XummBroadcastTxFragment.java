@@ -37,7 +37,7 @@ public class XummBroadcastTxFragment extends BroadcastTxFragment {
     @Override
     protected void init(View view) {
         super.init(view);
-        mBinding.broadcastHint.setText("Scan QR code with XUMM to broadcast the transaction to the blockchain");
+        mBinding.broadcastHint.setText(R.string.broadcast_xrp_toolkit_hint);
     }
 
     @Override
