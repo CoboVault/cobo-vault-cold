@@ -101,7 +101,7 @@ public class XummTxConfirmFragment extends BaseFragment<XummTxConfirmBinding> {
                     getString(R.string.incorrect_tx_data),
                     getString(R.string.confirm),
                     null);
-            navigateUp();
+            popBackStack(R.id.assetFragment, false);
         }
     }
 
