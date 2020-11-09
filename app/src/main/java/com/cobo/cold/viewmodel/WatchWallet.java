@@ -21,6 +21,7 @@ package com.cobo.cold.viewmodel;
 
 import android.content.Context;
 
+import com.cobo.coinlib.coins.XRP.Xrp;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
@@ -46,7 +47,9 @@ public enum WatchWallet {
 
     public String getWalletName(Context context) {
         String[] wallets = context.getResources().getStringArray(R.array.watch_wallet_list);
-        return wallets[Integer.parseInt(walletId)];
+        if (walletId.equals(COBO.walletId)) return wallets[0];
+        else if (walletId.equals(XRP_TOOLKIT.walletId)) return wallets[1];
+        return wallets[0];
     }
 
     public Coins.Coin[] getSupportedCoins() {

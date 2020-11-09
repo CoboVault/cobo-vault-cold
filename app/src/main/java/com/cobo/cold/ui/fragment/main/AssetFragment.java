@@ -139,11 +139,6 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     }
 
     private int getMenuResId() {
-
-        if (watchWallet == WatchWallet.XRP_TOOLKIT) {
-            return R.menu.scan;
-        }
-
         if (Coins.BTC.coinCode().equals(coinCode)) {
             return R.menu.asset_hasmore;
         }

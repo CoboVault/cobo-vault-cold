@@ -20,12 +20,12 @@
 package com.cobo.cold.viewmodel;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.cobo.coinlib.Util;
 import com.cobo.coinlib.coins.XRP.Xrp;
 import com.cobo.coinlib.coins.XRP.XrpImpl;
 import com.cobo.coinlib.coins.XRP.xumm.SupportTransactions;
@@ -35,6 +35,7 @@ import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
+import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryption.ChipSigner;
@@ -48,6 +49,9 @@ import java.util.Objects;
 public class XummTxConfirmViewModel extends TxConfirmViewModel{
 
     private JSONObject xummTxObj;
+    private String account;
+    private String signingPubKey;
+    private String signingKeyPath;
 
     private final MutableLiveData<JSONObject> displayJson = new MutableLiveData<>();
     public XummTxConfirmViewModel(@NonNull Application application) {
@@ -67,6 +71,9 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
                 if (xrpTransaction == null || !xrpTransaction.isValid(object)) {
                     parseTxException.postValue(new InvalidTransactionException("invalid xrp exception"));
                 }
+                if (!checkAccount()) {
+                    parseTxException.postValue(new InvalidTransactionException("invalid xrp account"));
+                }
                 displayJson.postValue(xrpTransaction.flatTransactionDetail(object));
                 xummTxObj = object;
                 TxEntity tx = new TxEntity();
@@ -81,17 +88,36 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
                 e.printStackTrace();
             }
         });
+    }
 
+    public boolean checkAccount() {
+        String account = xummTxObj.optString("Account");
+        String signingPubKey = xummTxObj.optString("SigningPubKey");
+        this.account = account;
+        this.signingPubKey = signingPubKey;
+
+        if (TextUtils.isEmpty(account) || TextUtils.isEmpty(signingPubKey)) {
+            return false;
+        }
+
+        if (!Xrp.encodeAccount(signingPubKey).equals(account)) {
+            return false;
+        }
+
+        for (AddressEntity address : mRepository.loadAddressSync(Coins.XRP.coinId())) {
+            if (address.getAddressString().equals(account)) {
+                signingKeyPath = address.getPath().toLowerCase();
+                return true;
+            }
+        }
+        return false;
     }
 
     public void handleSignXummTransaction() {
         AppExecutors.getInstance().diskIO().execute(() -> {
             SignCallback callback = initSignCallback();
             callback.startSign();
-            String path = "m/44'/144'/0'/0/0";
-            String exPub = mRepository.loadCoinSync(Coins.XRP.coinId()).getExPub();
-            String pubKey = Util.getPublicKeyHex(exPub, path);
-            Signer signer = new ChipSigner(path, getAuthToken(), pubKey);
+            Signer signer = new ChipSigner(signingKeyPath, getAuthToken(), signingPubKey);
             signXummTransaction(xummTxObj, callback, signer);
         });
     }
@@ -99,6 +125,7 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
     public LiveData<CoinEntity> loadXrpCoinEntity() {
         return mRepository.loadCoin(Coins.XRP.coinId());
     }
+
     @Override
     protected TxEntity onSignSuccess(String txId, String rawTx) {
         TxEntity tx = observableTx.getValue();

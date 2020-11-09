@@ -67,6 +67,12 @@ public class Util {
         return HDKeyDerivation.deriveChildKey(change, addressIndex.getValue()).getPublicKeyAsHex();
     }
 
+    public static String getPublicKeyHex(String accountXpub, int change, int index) {
+        DeterministicKey accountKey = DeterministicKey.deserializeB58(accountXpub, MainNetParams.get());
+        DeterministicKey changeKey = HDKeyDerivation.deriveChildKey(accountKey, change);
+        return HDKeyDerivation.deriveChildKey(changeKey, index).getPublicKeyAsHex();
+    }
+
     public static String getPublicKeyHex(String exPub) {
         DeterministicKey key = DeterministicKey.deserializeB58(exPub, MainNetParams.get());
         return key.getPublicKeyAsHex();

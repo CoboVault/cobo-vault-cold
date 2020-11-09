@@ -59,6 +59,9 @@ public class SyncWatchWalletGuide extends BaseFragment<SyncWatchWalletGuideBindi
         mBinding.text1.setText(getString(getSyncWatchWalletGuideTitle(watchWallet), coinCode));
         mBinding.text2.setText(getString(getSyncWatchWalletGuide(watchWallet),
                 Coins.coinNameFromCoinCode(coinCode), coinCode));
+        if (watchWallet == WatchWallet.XRP_TOOLKIT) {
+            mBinding.text3.setText(R.string.sync_first_xrp_accout );
+        }
         mBinding.export.setText(getButtonText());
         mBinding.export.setOnClickListener(v -> export());
     }

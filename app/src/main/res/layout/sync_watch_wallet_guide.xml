@@ -81,6 +81,15 @@
                     android:textColor="@color/white"
                     android:textSize="13sp" />
 
+                <TextView
+                    android:id="@+id/text3"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white40"
+                    android:textSize="14sp"
+                    android:layout_marginHorizontal="16dp"/>
+
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

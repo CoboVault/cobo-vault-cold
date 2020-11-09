@@ -89,6 +89,10 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="15sp"
                     android:visibility="gone"/>
+                <include
+                    android:id="@+id/dynamic_qrcode_layout"
+                    layout="@layout/dynamic_qrcode" />
+
                 <LinearLayout
                     android:id="@+id/address"
                     android:layout_width="match_parent"
@@ -112,9 +116,6 @@
                         android:textSize="12sp"
                         android:gravity="center"/>
                 </LinearLayout>
-                <include
-                    android:id="@+id/dynamic_qrcode_layout"
-                    layout="@layout/dynamic_qrcode" />
 
                 <Button
                     android:id="@+id/complete"

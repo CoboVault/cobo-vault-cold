@@ -31,7 +31,9 @@ import com.cobo.coinlib.interfaces.Signer;
 import com.cobo.coinlib.utils.B58;
 import com.cobo.coinlib.utils.Coins;
 
+import org.bitcoinj.core.Utils;
 import org.bitcoinj.crypto.DeterministicKey;
+import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,6 +62,11 @@ public class Xrp extends AbsCoin implements Coin {
         }
     }
 
+    public static String encodeAccount(String pubkey) {
+        return new B58(DEFAULT_ALPHABET)
+                .encodeToStringChecked(Utils.sha256hash160(Hex.decode(pubkey)), 0);
+    }
+
     public static class Tx extends AbsTx {
 
         public Tx(JSONObject object, String coinCode) throws JSONException, InvalidTransactionException {
@@ -82,6 +89,7 @@ public class Xrp extends AbsCoin implements Coin {
         @Override
         public String derive(String xPubKey, int changeIndex, int addrIndex) {
             DeterministicKey address = getAddrDeterministicKey(xPubKey, changeIndex, addrIndex);
+            System.out.println(Hex.toHexString(address.getPubKey()));
             return new B58(DEFAULT_ALPHABET).encodeToStringChecked(address.getPubKeyHash(), 0);
         }
 

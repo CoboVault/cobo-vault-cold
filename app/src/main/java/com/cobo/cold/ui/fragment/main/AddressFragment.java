@@ -33,12 +33,12 @@ import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.util.Keyboard;
 import com.cobo.cold.viewmodel.CoinViewModel;
-import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.List;
 import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS;
+import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_INDEX;
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_NAME;
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_PATH;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
@@ -61,6 +61,7 @@ public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
                 data.putString(KEY_ADDRESS, addr.getAddressString());
                 data.putString(KEY_ADDRESS_NAME, addr.getName());
                 data.putString(KEY_ADDRESS_PATH, addr.getPath());
+                data.putInt(KEY_ADDRESS_INDEX, addr.getIndex());
                 navigate(R.id.action_to_receiveCoinFragment, data);
             }
         }
@@ -127,13 +128,7 @@ public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
     }
 
     private void subscribeUi(LiveData<List<AddressEntity>> address) {
-        address.observe(this, entities -> {
-            if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XRP_TOOLKIT) {
-                mAddressAdapter.setItems(entities.subList(0,1));
-            } else {
-                mAddressAdapter.setItems(entities);
-            }
-        });
+        address.observe(this, mAddressAdapter::setItems);
     }
 
     public void setQuery(String s) {

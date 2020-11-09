@@ -36,6 +36,9 @@ import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.SyncViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import static com.cobo.cold.ui.fragment.setup.SyncWatchWalletGuide.getSyncWatchWalletGuide;
 import static com.cobo.cold.ui.fragment.setup.SyncWatchWalletGuide.getSyncWatchWalletGuideTitle;
 
@@ -45,6 +48,7 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
     private SyncViewModel viewModel;
     private WatchWallet watchWallet;
     private String coinCode;
+    private boolean fromSyncGuide;
 
     @Override
     protected int setView() {
@@ -57,14 +61,16 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
         Bundle data = getArguments();
         if (data != null) {
             coinCode = data.getString("coinCode");
+            fromSyncGuide = getArguments().getBoolean("fromSyncGuide");
+            if (!fromSyncGuide) {
+                mBinding.complete.setVisibility(View.GONE);
+            }
         }
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.toolbar.setTitle("");
         mBinding.complete.setOnClickListener(v -> {
             if (mActivity instanceof MainActivity) {
-                if (!getArguments().getBoolean("fromSyncGuide")) {
-                    navigateUp();
-                } else if (watchWallet == WatchWallet.POLKADOT_JS && coinCode.equals(Coins.DOT.coinCode())) {
+                if (watchWallet == WatchWallet.POLKADOT_JS && coinCode.equals(Coins.DOT.coinCode())) {
                     Bundle bundle = getArguments();
                     bundle.putString("coinCode", Coins.KSM.coinCode());
                     navigate(R.id.action_to_syncWatchWalletGuide, bundle);
@@ -128,25 +134,27 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
     private void generateSyncData() {
         switch (watchWallet) {
             case COBO:
-                viewModel.generateSyncCobo().observe(SyncFragment.this, sync -> {
+                viewModel.generateSyncCobo().observe(this, sync -> {
                     if (!TextUtils.isEmpty(sync)) {
                         mBinding.dynamicQrcodeLayout.qrcode.setData(sync);
                     }
                 });
                 break;
             case XRP_TOOLKIT:
-                viewModel.generateSyncXumm().observe(SyncFragment.this, addressEntity -> {
-                    if (addressEntity != null) {
+                int index = getArguments().getInt("index");
+                viewModel.generateSyncXumm(index).observe(this, xrpSyncData -> {
+                    if (xrpSyncData != null) {
                         mBinding.dynamicQrcodeLayout.qrcode.disableMultipart();
-                        mBinding.dynamicQrcodeLayout.qrcode.setData(addressEntity.getAddressString());
-                        mBinding.addressName.setText(addressEntity.getName());
+                        mBinding.dynamicQrcodeLayout.qrcode.setData(generateXrpToolsSyncData(xrpSyncData));
+                        mBinding.addressName.setText(xrpSyncData.addressEntity.getName());
                         mBinding.addressInfo.setText(String.format("%s\n(%s)",
-                                addressEntity.getAddressString(), addressEntity.getPath()));
+                                xrpSyncData.addressEntity.getAddressString(),
+                                xrpSyncData.addressEntity.getPath()));
                     }
                 });
                 break;
             case POLKADOT_JS:
-                viewModel.generateSyncPolkadotjs(coinCode).observe(SyncFragment.this, s -> {
+                viewModel.generateSyncPolkadotjs(coinCode).observe(this, s -> {
                     if (!TextUtils.isEmpty(s)) {
                         mBinding.dynamicQrcodeLayout.qrcode.disableMultipart();
                         mBinding.dynamicQrcodeLayout.qrcode.setData(s);
@@ -154,6 +162,18 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
                 });
                 break;
         }
+    }
+
+    private String generateXrpToolsSyncData(SyncViewModel.XrpSyncData xrpSyncData) {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("address", xrpSyncData.addressEntity.getAddressString())
+                    .put("pubkey", xrpSyncData.pubkey);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return object.toString();
     }
 
     @Override
