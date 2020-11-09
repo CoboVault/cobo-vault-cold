@@ -112,9 +112,6 @@ public class AssetListFragment extends BaseFragment<AssetListFragmentBinding> {
         coins.observe(this, coinEntities -> {
             if (coinEntities != null) {
                 List<CoinEntity> toShow = filterDisplayCoins(coinEntities);
-                for (CoinEntity coinEntity : coinEntities) {
-                    Log.w("kkk",coinEntity.toString() );
-                }
                 if (toShow.isEmpty()) {
                     mBinding.setIsEmpty(true);
                 } else {

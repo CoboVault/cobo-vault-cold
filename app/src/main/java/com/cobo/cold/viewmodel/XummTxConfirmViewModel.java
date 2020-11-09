@@ -64,18 +64,20 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
     }
 
     public void parseXummTxData(JSONObject object) {
+        xummTxObj = object;
         AppExecutors.getInstance().networkIO().execute(() -> {
             try {
                 XrpTransaction xrpTransaction = SupportTransactions.get(object.getString("TransactionType"));
 
                 if (xrpTransaction == null || !xrpTransaction.isValid(object)) {
                     parseTxException.postValue(new InvalidTransactionException("invalid xrp exception"));
+                    return;
                 }
                 if (!checkAccount()) {
                     parseTxException.postValue(new InvalidTransactionException("invalid xrp account"));
+                    return;
                 }
                 displayJson.postValue(xrpTransaction.flatTransactionDetail(object));
-                xummTxObj = object;
                 TxEntity tx = new TxEntity();
                 NumberFormat nf = NumberFormat.getInstance();
                 nf.setMaximumFractionDigits(20);
