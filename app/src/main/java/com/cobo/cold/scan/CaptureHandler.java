@@ -112,15 +112,15 @@ public final class CaptureHandler extends Handler {
         }
         if (mScannedDatas[data.index] == null) {
             mScannedDatas[data.index] = data;
-            publishProgress();
-            if (Arrays.stream(mScannedDatas).anyMatch(Objects::isNull)) {
-                state = State.PREVIEW;
-                cameraManager.requestPreviewFrame(decodeThread.getHandler(),
-                        Constant.DECODE);
-            } else {
-                state = State.SUCCESS;
-                host.handleDecode(mScannedDatas);
-            }
+        }
+        publishProgress();
+        if (Arrays.stream(mScannedDatas).anyMatch(Objects::isNull)) {
+            state = State.PREVIEW;
+            cameraManager.requestPreviewFrame(decodeThread.getHandler(),
+                    Constant.DECODE);
+        } else {
+            state = State.SUCCESS;
+            host.handleDecode(mScannedDatas);
         }
 
     }
