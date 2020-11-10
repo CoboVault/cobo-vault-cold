@@ -457,4 +457,6 @@
     <string name="broadcast_xrp_toolkit_hint">请使用XRP Toolkit扫描二维码,广播到区块链网络</string>
     <string name="sync_first_xrp_accout">将默认展示第一个地址的二维码，若您要同步其他地址，可进入钱包添加地址。</string>
     <string name="sync_xrp">同步账户</string>
+    <string name="unresolve_tx">无法解析该交易</string>
+    <string name="unresolve_tx_hint">无法解析该交易，当前观察钱包下仅支持扫描%s生成的二维码。</string>
 </resources>

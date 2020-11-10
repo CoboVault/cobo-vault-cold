@@ -120,25 +120,29 @@ public class QrScanViewModel extends AndroidViewModel {
             throws InvalidTransactionException,
             CoinNotFindException,
             JSONException,
-            UuidNotMatchException,
-            UnknowQrCodeException {
+            UuidNotMatchException {
         logObject(object);
 
-        if (object.has("TransactionType")) {
-            handleSignXrpTx(object);
-        } else {
-            String type = object.getString("type");
-            switch (type) {
-                case "webAuth":
-                    handleWebAuth(object);
-                    break;
-                case "TYPE_SIGN_TX":
-                    handleSign(object);
-                    break;
-                default:
-                    throw new UnknowQrCodeException("unknow qrcode type " + type);
-            }
+        if (object.optString("type").equals("webAuth")) {
+            handleWebAuth(object);
+            return;
         }
+
+        switch (WatchWallet.getWatchWallet(getApplication())) {
+            case XRP_TOOLKIT:
+                if (object.has("TransactionType")) {
+                    handleSignXrpTx(object);
+                    return;
+                }
+                break;
+            case COBO:
+                if (object.optString("type").equals("TYPE_SIGN_TX")) {
+                    handleSign(object);
+                    return;
+                }
+                break;
+        }
+        throw new InvalidTransactionException("unknow qrcode type");
     }
 
     private void handleSignXrpTx(JSONObject object) {
