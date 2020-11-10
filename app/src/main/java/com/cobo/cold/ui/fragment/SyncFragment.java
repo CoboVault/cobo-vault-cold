@@ -38,6 +38,9 @@ import com.cobo.cold.viewmodel.WatchWallet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.Hex;
+
+import java.nio.charset.StandardCharsets;
 
 import static com.cobo.cold.ui.fragment.setup.SyncWatchWalletGuide.getSyncWatchWalletGuide;
 import static com.cobo.cold.ui.fragment.setup.SyncWatchWalletGuide.getSyncWatchWalletGuideTitle;
@@ -144,7 +147,6 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
                 int index = getArguments().getInt("index");
                 viewModel.generateSyncXumm(index).observe(this, xrpSyncData -> {
                     if (xrpSyncData != null) {
-                        mBinding.dynamicQrcodeLayout.qrcode.disableMultipart();
                         mBinding.dynamicQrcodeLayout.qrcode.setData(generateXrpToolsSyncData(xrpSyncData));
                         mBinding.addressName.setText(xrpSyncData.addressEntity.getName());
                         mBinding.addressInfo.setText(String.format("%s\n(%s)",
@@ -173,7 +175,7 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
             e.printStackTrace();
         }
 
-        return object.toString();
+        return Hex.toHexString(object.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
