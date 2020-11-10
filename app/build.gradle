@@ -94,6 +94,13 @@ android {
             proguardFiles 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude '**/*.proto'
+        exclude 'org/**'
+        exclude '**/*.txt'
+    }
+
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
@@ -219,8 +226,8 @@ def getVersionProperties() {
         }
     }
 
-    def versionMajor = 1
-    def versionMinor = 7
+    def versionMajor = versionProps.getProperty('major', '0').toInteger()
+    def versionMinor = versionProps.getProperty('minor', '0').toInteger()
     def versionPatch = versionProps.getProperty('patch', '0').toInteger()
     def isVaultRelease = false
 

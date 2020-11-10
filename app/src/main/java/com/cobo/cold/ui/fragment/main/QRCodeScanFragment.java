@@ -17,6 +17,8 @@
 
 package com.cobo.cold.ui.fragment.main;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -85,6 +87,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     private ModalDialog dialog;
     private WatchWallet watchWallet;
 
+    private ObjectAnimator scanLineAnimator;
+
     @Override
     protected int setView() {
         return R.layout.qrcode_scan_fragment;
@@ -110,6 +114,10 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             mBinding.scanHint.setVisibility(View.GONE);
         }
         qrScanPurpose = QrScanPurpose.ofPurpose(purpose);
+        scanLineAnimator = ObjectAnimator.ofFloat(mBinding.scanLine, "translationY",0, 500);
+        scanLineAnimator.setDuration(3000L);
+        scanLineAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        scanLineAnimator.setStartDelay(1000L);
     }
 
     private String getScanhint() {
@@ -135,6 +143,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } else {
             mSurfaceHolder.addCallback(this);
         }
+        scanLineAnimator.start();
     }
 
     @Override
@@ -149,6 +158,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         if (!hasSurface) {
             mSurfaceHolder.removeCallback(this);
         }
+        scanLineAnimator.cancel();
+        mBinding.scanLine.setTranslationY(500);
     }
 
     @Override
