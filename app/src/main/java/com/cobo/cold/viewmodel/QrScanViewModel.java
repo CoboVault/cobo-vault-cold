@@ -100,7 +100,11 @@ public class QrScanViewModel extends AndroidViewModel {
 
     private void handleBc32QrCode(String hex) throws UnknowQrCodeException, UuidNotMatchException,
              InvalidTransactionException, JSONException, CoinNotFindException {
-        JSONObject object = new JSONObject(new String(Hex.decode(hex)));
+        JSONObject object = null;
+        try {
+            object = new JSONObject(new String(Hex.decode(hex)));
+        } catch (Exception e) {
+        }
 
         if (object == null) {
             //decode as protobuf
