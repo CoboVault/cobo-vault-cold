@@ -17,6 +17,8 @@
 
 package com.cobo.cold.ui.fragment.main;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -45,7 +47,6 @@ import com.cobo.cold.scan.bean.ZxingConfig;
 import com.cobo.cold.scan.bean.ZxingConfigBuilder;
 import com.cobo.cold.scan.camera.CameraManager;
 import com.cobo.cold.scan.view.PreviewFrame;
-import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.ElectrumViewModel;
@@ -53,6 +54,7 @@ import com.cobo.cold.viewmodel.QrScanViewModel;
 import com.cobo.cold.viewmodel.SharedDataViewModel;
 import com.cobo.cold.viewmodel.UnknowQrCodeException;
 import com.cobo.cold.viewmodel.UuidNotMatchException;
+import com.cobo.cold.viewmodel.WatchWallet;
 import com.cobo.cold.viewmodel.XpubNotMatchException;
 
 import org.json.JSONException;
@@ -77,6 +79,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     private QrScanViewModel viewModel;
     private ModalDialog dialog;
 
+    private ObjectAnimator scanLineAnimator;
+
     @Override
     protected int setView() {
         return R.layout.qrcode_scan_fragment;
@@ -99,6 +103,12 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         if (!TextUtils.isEmpty(purpose)) {
             mBinding.electrumScanHint.setVisibility(View.GONE);
         }
+
+        scanLineAnimator = ObjectAnimator.ofFloat(mBinding.scanLine, "translationY",0, 500);
+        scanLineAnimator.setDuration(3000L);
+        scanLineAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        scanLineAnimator.setStartDelay(1000L);
+
     }
 
 
@@ -111,6 +121,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } else {
             mSurfaceHolder.addCallback(this);
         }
+        scanLineAnimator.start();
     }
 
     @Override
@@ -125,6 +136,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         if (!hasSurface) {
             mSurfaceHolder.removeCallback(this);
         }
+        scanLineAnimator.cancel();
+        mBinding.scanLine.setTranslationY(500);
     }
 
     @Override
@@ -185,18 +198,23 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } else if ("address".equals(purpose)) {
             navigateUp();
         } else {
-            try {
-                if (tryParseElecturmTx(res) != null) {
-                    handleElectrumTx(res);
-                } else if(tryDecodePolkadotjsTx(res) != null) {
-                    handlePolkadotJsTx(res);
-                } else {
-                    alert(getString(R.string.unsupported_qrcode));
-                }
-            } catch (XpubNotMatchException e) {
-                alert(getString(R.string.identification_failed),
-                        getString(R.string.master_pubkey_not_match));
-            }
+            alert(getString(R.string.unresolve_tx),
+                    getString(R.string.unresolve_tx_hint,
+                            WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
+//            try {
+//                if (tryParseElecturmTx(res) != null) {
+//                    handleElectrumTx(res);
+//                } else if(tryDecodePolkadotjsTx(res) != null) {
+//                    handlePolkadotJsTx(res);
+//                } else {
+//                    alert(getString(R.string.unresolve_tx),
+//                            getString(R.string.unresolve_tx_hint,
+//                                    WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
+//                }
+//            } catch (XpubNotMatchException e) {
+//                alert(getString(R.string.identification_failed),
+//                        getString(R.string.master_pubkey_not_match));
+//            }
         }
     }
 
@@ -251,7 +269,9 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             viewModel.handleDecode(this, res);
         } catch (InvalidTransactionException e) {
             e.printStackTrace();
-            alert(getString(R.string.incorrect_tx_data));
+            alert(getString(R.string.unresolve_tx),
+                    getString(R.string.unresolve_tx_hint,
+                            WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
         } catch (JSONException e) {
             e.printStackTrace();
             alert(getString(R.string.incorrect_qrcode));
