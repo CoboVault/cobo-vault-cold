@@ -114,10 +114,10 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             mBinding.scanHint.setVisibility(View.GONE);
         }
         qrScanPurpose = QrScanPurpose.ofPurpose(purpose);
-        scanLineAnimator = ObjectAnimator.ofFloat(mBinding.scanLine, "translationY",0, 500);
-        scanLineAnimator.setDuration(3000L);
+
+        scanLineAnimator = ObjectAnimator.ofFloat(mBinding.scanLine, "translationY",0, 600);
+        scanLineAnimator.setDuration(2000L);
         scanLineAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        scanLineAnimator.setStartDelay(1000L);
     }
 
     private String getScanhint() {
@@ -143,7 +143,6 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } else {
             mSurfaceHolder.addCallback(this);
         }
-        scanLineAnimator.start();
     }
 
     @Override
@@ -159,7 +158,6 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             mSurfaceHolder.removeCallback(this);
         }
         scanLineAnimator.cancel();
-        mBinding.scanLine.setTranslationY(500);
     }
 
     @Override
@@ -169,6 +167,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        scanLineAnimator.start();
     }
 
     @Override
@@ -302,7 +301,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
                 CollectExpubFragment.showCommonModal(mActivity,getString(R.string.invalid_xpub_file),
                         getString(R.string.invalid_xpub_file_hint),
                         getString(R.string.know),() -> {
-                            mBinding.setProgress("");
+                            mBinding.scanProgress.setText("");
                             if (mHandler != null) {
                                 mHandler.restartPreviewAndDecode();
                             }
@@ -341,7 +340,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
 
     @Override
     public void handleProgress(int total, int scan) {
-        mBinding.setProgress(getString(R.string.scan_progress, scan + "/" + total));
+        mBinding.scanProgress.setText(getString(R.string.scan_progress, scan + "/" + total));
     }
 
     @Override
@@ -379,7 +378,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             if (run != null) {
                 run.run();
             } else {
-                mBinding.setProgress("");
+                mBinding.scanProgress.setText("");
                 if (mHandler != null) {
                     mHandler.restartPreviewAndDecode();
                 }
