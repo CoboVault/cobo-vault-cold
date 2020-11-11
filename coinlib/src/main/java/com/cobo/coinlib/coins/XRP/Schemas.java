@@ -17,7 +17,7 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm;
+package com.cobo.coinlib.coins.XRP;
 
 public interface Schemas {
     String AccountSet = "{\n" +

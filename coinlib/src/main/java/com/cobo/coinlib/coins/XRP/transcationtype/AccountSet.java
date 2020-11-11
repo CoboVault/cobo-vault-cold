@@ -17,18 +17,19 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SignerListSet extends XrpTransaction {
+public class AccountSet extends XrpTransaction {
 
-    public SignerListSet() { super(Schemas.SignerListSet); }
+    public AccountSet() {
+        super(Schemas.AccountSet);
+    }
 
     @Override
     public JSONObject flatTransactionDetail(JSONObject tx) {
@@ -37,21 +38,11 @@ public class SignerListSet extends XrpTransaction {
             result.put("TransactionType", tx.getString("TransactionType"));
             result.put("Account", tx.getString("Account"));
             result.put("Fee", tx.getString("Fee") + " drops");
-            result.put("SignerQuorum", tx.getInt("SignerQuorum"));
-            if(tx.has("SignerEntries")){
-                JSONArray Signer = tx.optJSONArray("SignerEntries");
-                if(null != Signer) {
-                    for( int index = 0; index < Signer.length(); index++){
-                        JSONObject SignerObj = Signer.optJSONObject(index);
-                        if(SignerObj.has("SignerEntry")){
-                            JSONObject entry = SignerObj.getJSONObject("SignerEntry");
-                            if(entry.has("Account") && entry.has("SignerWeight") ) {
-                                result.put("SignerEntry"+ index +".Account", entry.getString("Account"));
-                                result.put("SignerEntry"+ index +".SignerWeight", entry.getInt("SignerWeight"));
-                            }
-                        }
-                    }
-                }
+            if(tx.has("Domain")){
+                result.put("Domain", tx.getString("Domain"));
+            }
+            if(tx.has("MessageKey")){
+                result.put("MessageKey", tx.getString("MessageKey"));
             }
         } catch (JSONException e) {
             e.printStackTrace();

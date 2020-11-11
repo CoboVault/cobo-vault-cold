@@ -17,18 +17,18 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AccountDelete extends XrpTransaction {
+public class CheckCreate extends XrpTransaction {
 
-    public AccountDelete() {
-        super(Schemas.AccountDelete);
+    public CheckCreate() {
+        super(Schemas.CheckCreate);
     }
 
     @Override
@@ -39,6 +39,21 @@ public class AccountDelete extends XrpTransaction {
             result.put("Account", tx.getString("Account"));
             result.put("Fee", tx.getString("Fee") + " drops");
             result.put("Destination", tx.getString("Destination"));
+            if(tx.has("Expiration")){
+                result.put("Expiration", tx.getInt("Expiration"));
+            }
+            if(tx.has("SendMax")){
+                if(null != tx.optJSONObject("SendMax")) {
+                    JSONObject amount = tx.getJSONObject("SendMax");
+                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
+                        result.put("SendMax.value", amount.getString("value"));
+                        result.put("SendMax.currency", amount.getString("currency"));
+                        result.put("SendMax.issuer", amount.getString("issuer"));
+                    }
+                } else {
+                    result.put("SendMax", tx.getString("SendMax") + " drops");
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

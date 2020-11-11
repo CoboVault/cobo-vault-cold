@@ -17,7 +17,7 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm;
+package com.cobo.coinlib.coins.XRP;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -17,18 +17,18 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CheckCancel extends XrpTransaction {
+public class EscrowCreate extends XrpTransaction {
 
-    public CheckCancel() {
-        super(Schemas.CheckCancel);
+    public EscrowCreate() {
+        super(Schemas.EscrowCreate);
     }
 
     @Override
@@ -37,8 +37,17 @@ public class CheckCancel extends XrpTransaction {
         try {
             result.put("TransactionType", tx.getString("TransactionType"));
             result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
-            result.put("CheckID", tx.getString("CheckID"));
+            result.put("Destination", tx.getString("Destination"));
+            result.put("Amount", tx.getString("Amount") + " drops");
+            if(tx.has("CancelAfter")){
+                result.put("CancelAfter", tx.getInt("CancelAfter"));
+            }
+            if(tx.has("FinishAfter")){
+                result.put("FinishAfter", tx.getInt("FinishAfter"));
+            }
+            if(tx.has("Condition")){
+                result.put("Condition", tx.getString("Condition"));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

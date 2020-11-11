@@ -28,8 +28,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.cobo.coinlib.coins.XRP.Xrp;
 import com.cobo.coinlib.coins.XRP.XrpImpl;
-import com.cobo.coinlib.coins.XRP.xumm.SupportTransactions;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.SupportTransactions;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
+import com.cobo.coinlib.exception.InvalidAccountException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;
@@ -74,7 +75,7 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
                     return;
                 }
                 if (!checkAccount()) {
-                    parseTxException.postValue(new InvalidTransactionException("invalid xrp account"));
+                    parseTxException.postValue(new InvalidAccountException("invalid xrp account"));
                     return;
                 }
                 displayJson.postValue(xrpTransaction.flatTransactionDetail(object));

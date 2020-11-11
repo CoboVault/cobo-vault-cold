@@ -17,7 +17,7 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm;
+package com.cobo.coinlib.coins.XRP;
 
 import org.json.JSONException;
 import org.json.JSONObject;

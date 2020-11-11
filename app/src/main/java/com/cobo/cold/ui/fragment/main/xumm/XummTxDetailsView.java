@@ -28,8 +28,6 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import com.cobo.coinlib.coins.XRP.xumm.SupportTransactions;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.XrpTxItemBinding;
 

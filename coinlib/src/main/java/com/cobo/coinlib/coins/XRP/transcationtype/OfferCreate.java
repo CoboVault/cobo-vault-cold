@@ -17,10 +17,10 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;

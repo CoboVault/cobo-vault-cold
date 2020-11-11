@@ -17,18 +17,18 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EscrowCreate extends XrpTransaction {
+public class EscrowFinish extends XrpTransaction {
 
-    public EscrowCreate() {
-        super(Schemas.EscrowCreate);
+    public EscrowFinish() {
+        super(Schemas.EscrowFinish);
     }
 
     @Override
@@ -37,13 +37,10 @@ public class EscrowCreate extends XrpTransaction {
         try {
             result.put("TransactionType", tx.getString("TransactionType"));
             result.put("Account", tx.getString("Account"));
-            result.put("Destination", tx.getString("Destination"));
-            result.put("Amount", tx.getString("Amount") + " drops");
-            if(tx.has("CancelAfter")){
-                result.put("CancelAfter", tx.getInt("CancelAfter"));
-            }
-            if(tx.has("FinishAfter")){
-                result.put("FinishAfter", tx.getInt("FinishAfter"));
+            result.put("Owner", tx.getString("Owner"));
+            result.put("OfferSequence", tx.getInt("OfferSequence"));
+            if(tx.has("Fulfillment")){
+                result.put("Fulfillment", tx.getString("Fulfillment"));
             }
             if(tx.has("Condition")){
                 result.put("Condition", tx.getString("Condition"));

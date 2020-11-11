@@ -17,18 +17,18 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EscrowCancel extends XrpTransaction {
+public class AccountDelete extends XrpTransaction {
 
-    public EscrowCancel() {
-        super(Schemas.EscrowCancel);
+    public AccountDelete() {
+        super(Schemas.AccountDelete);
     }
 
     @Override
@@ -37,8 +37,8 @@ public class EscrowCancel extends XrpTransaction {
         try {
             result.put("TransactionType", tx.getString("TransactionType"));
             result.put("Account", tx.getString("Account"));
-            result.put("Owner", tx.getString("Owner"));
-            result.put("OfferSequence", tx.getInt("OfferSequence"));
+            result.put("Fee", tx.getString("Fee") + " drops");
+            result.put("Destination", tx.getString("Destination"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

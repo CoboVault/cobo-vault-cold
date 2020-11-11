@@ -17,17 +17,19 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Payment extends XrpTransaction {
+public class CheckCash extends XrpTransaction {
 
-    public Payment() { super(Schemas.Payment); }
+    public CheckCash() {
+        super(Schemas.CheckCash);
+    }
 
     @Override
     public JSONObject flatTransactionDetail(JSONObject tx) {
@@ -36,7 +38,7 @@ public class Payment extends XrpTransaction {
             result.put("TransactionType", tx.getString("TransactionType"));
             result.put("Account", tx.getString("Account"));
             result.put("Fee", tx.getString("Fee") + " drops");
-            result.put("Destination", tx.getString("Destination"));
+            result.put("CheckID", tx.getString("CheckID"));
             if(tx.has("Amount")){
                 if(null != tx.optJSONObject("Amount")) {
                     JSONObject amount = tx.getJSONObject("Amount");
@@ -46,31 +48,7 @@ public class Payment extends XrpTransaction {
                         result.put("Amount.issuer", amount.getString("issuer"));
                     }
                 } else {
-                    result.put("Amount", tx.getString("Amount") + " drops");
-                }
-            }
-            if(tx.has("SendMax")){
-                if(null != tx.optJSONObject("SendMax")) {
-                    JSONObject amount = tx.getJSONObject("SendMax");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("SendMax.value", amount.getString("value"));
-                        result.put("SendMax.currency", amount.getString("currency"));
-                        result.put("SendMax.issuer", amount.getString("issuer"));
-                    }
-                } else {
-                    result.put("SendMax", tx.getString("SendMax") + " drops");
-                }
-            }
-            if(tx.has("DeliverMin")){
-                if(null != tx.optJSONObject("DeliverMin")) {
-                    JSONObject amount = tx.getJSONObject("DeliverMin");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("DeliverMin.value", amount.getString("value"));
-                        result.put("DeliverMin.currency", amount.getString("currency"));
-                        result.put("DeliverMin.issuer", amount.getString("issuer"));
-                    }
-                } else {
-                    result.put("DeliverMin", tx.getString("DeliverMin") + " drops");
+                        result.put("Amount", tx.getString("Amount") + " drops");
                 }
             }
         } catch (JSONException e) {

@@ -17,33 +17,38 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EscrowFinish extends XrpTransaction {
+public class PaymentChannelClaim extends XrpTransaction {
 
-    public EscrowFinish() {
-        super(Schemas.EscrowFinish);
-    }
+    public PaymentChannelClaim() { super(Schemas.PaymentChannelClaim); }
 
     @Override
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
             result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Owner", tx.getString("Owner"));
-            result.put("OfferSequence", tx.getInt("OfferSequence"));
-            if(tx.has("Fulfillment")){
-                result.put("Fulfillment", tx.getString("Fulfillment"));
+            if(tx.has("Account")) {
+                result.put("Account", tx.getString("Account"));
             }
-            if(tx.has("Condition")){
-                result.put("Condition", tx.getString("Condition"));
+            result.put("Channel", tx.getString("Channel"));
+            if(tx.has("Balance")) {
+                result.put("Balance", tx.getString("Balance") + " drops");
+            }
+            if(tx.has("Amount")) {
+                result.put("Amount", tx.getString("Amount") + " drops");
+            }
+            if(tx.has("Signature")){
+                result.put("Signature", tx.getString("Signature"));
+            }
+            if(tx.has("PublicKey")){
+                result.put("PublicKey", tx.getString("PublicKey"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
