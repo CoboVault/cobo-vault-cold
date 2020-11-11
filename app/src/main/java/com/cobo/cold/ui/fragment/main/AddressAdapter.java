@@ -18,15 +18,20 @@
 package com.cobo.cold.ui.fragment.main;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.AddressItemBinding;
 import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.ui.common.FilterableBaseBindingAdapter;
 import com.cobo.cold.util.Keyboard;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 public class AddressAdapter extends FilterableBaseBindingAdapter<AddressEntity, AddressItemBinding> {
 
@@ -90,6 +95,16 @@ public class AddressAdapter extends FilterableBaseBindingAdapter<AddressEntity, 
             }
             return false;
         });
+
+        if (WatchWallet.getWatchWallet(context) == WatchWallet.XRP_TOOLKIT) {
+            binding.editIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.xrp_sync));
+            binding.editIcon.setOnClickListener(v-> {
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("index", item.getIndex());
+                Navigation.findNavController(binding.editIcon).navigate(R.id.action_to_syncFragment, bundle);
+            });
+        }
 
         binding.name.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         binding.setCallback(mAddressCallback);
