@@ -21,10 +21,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
-        <variable
-            name="progress"
-            type="String" />
     </data>
 
     <RelativeLayout
@@ -63,7 +59,7 @@
             android:layout_below="@id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:alpha="0.01"/>
 
         <TextView
             android:id="@+id/scan_progress"
@@ -72,8 +68,7 @@
             tools:text="@string/scan_progress"
             android:textColor="@color/white"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp"
-            android:text="@{progress}" />
+            android:layout_marginTop="100dp"/>
 
         <TextView
             android:id="@+id/align_hint"
@@ -99,13 +94,20 @@
             android:gravity="center"
             android:text="@string/scan_electrum_hint"
             android:visibility="gone"/>
-        <ImageView
-            android:id="@+id/scan_line"
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar"
-            android:src="@drawable/scan_line"
-            tools:ignore="ContentDescription" />
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar">
+            <ImageView
+                android:id="@+id/scan_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:src="@drawable/scan_line"
+                tools:ignore="ContentDescription"/>
+        </FrameLayout>
+
 
     </RelativeLayout>
 </layout>
