@@ -17,18 +17,18 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AccountDelete extends XrpTransaction {
+public class OfferCancel extends XrpTransaction {
 
-    public AccountDelete() {
-        super(Schemas.AccountDelete);
+    public OfferCancel() {
+        super(Schemas.OfferCancel);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class AccountDelete extends XrpTransaction {
             result.put("TransactionType", tx.getString("TransactionType"));
             result.put("Account", tx.getString("Account"));
             result.put("Fee", tx.getString("Fee") + " drops");
-            result.put("Destination", tx.getString("Destination"));
+            result.put("OfferSequence", tx.getInt("OfferSequence"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -17,19 +17,17 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CheckCreate extends XrpTransaction {
+public class PaymentChannelCreate extends XrpTransaction {
 
-    public CheckCreate() {
-        super(Schemas.CheckCreate);
-    }
+    public PaymentChannelCreate() { super(Schemas.PaymentChannelCreate); }
 
     @Override
     public JSONObject flatTransactionDetail(JSONObject tx) {
@@ -37,22 +35,15 @@ public class CheckCreate extends XrpTransaction {
         try {
             result.put("TransactionType", tx.getString("TransactionType"));
             result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
+            result.put("Amount", tx.getString("Amount") + " drops");
             result.put("Destination", tx.getString("Destination"));
-            if(tx.has("Expiration")){
-                result.put("Expiration", tx.getInt("Expiration"));
+            if(tx.has("DestinationTag")){
+                result.put("DestinationTag", tx.getInt("DestinationTag"));
             }
-            if(tx.has("SendMax")){
-                if(null != tx.optJSONObject("SendMax")) {
-                    JSONObject amount = tx.getJSONObject("SendMax");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("SendMax.value", amount.getString("value"));
-                        result.put("SendMax.currency", amount.getString("currency"));
-                        result.put("SendMax.issuer", amount.getString("issuer"));
-                    }
-                } else {
-                    result.put("SendMax", tx.getString("SendMax") + " drops");
-                }
+            result.put("SettleDelay", tx.getInt("SettleDelay"));
+            result.put("PublicKey", tx.getString("PublicKey"));
+            if(tx.has("CancelAfter")) {
+                result.put("CancelAfter", tx.getInt("CancelAfter"));
             }
         } catch (JSONException e) {
             e.printStackTrace();

@@ -17,31 +17,32 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
-
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+package com.cobo.coinlib.coins.XRP;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EscrowCancel extends XrpTransaction {
+public abstract class XrpTransaction {
 
-    public EscrowCancel() {
-        super(Schemas.EscrowCancel);
+    protected String schema;
+
+    protected XrpTransaction(String schema) {
+        this.schema = schema;
     }
 
-    @Override
-    public JSONObject flatTransactionDetail(JSONObject tx) {
-        JSONObject result = new JSONObject();
+    public String getTransactionType() {
+        return getClass().getSimpleName();
+    }
+
+    public abstract JSONObject flatTransactionDetail(JSONObject tx);
+
+    public boolean isValid(JSONObject tx) {
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Owner", tx.getString("Owner"));
-            result.put("OfferSequence", tx.getInt("OfferSequence"));
+            return getTransactionType().equals(tx.getString("TransactionType"))
+                    && new JsonSchemaValidator().isStateValid(schema, tx.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return  result;
+        return false;
     }
 }

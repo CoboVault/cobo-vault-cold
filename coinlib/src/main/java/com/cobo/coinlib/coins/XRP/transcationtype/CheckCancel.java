@@ -17,17 +17,19 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class TrustSet extends XrpTransaction {
+public class CheckCancel extends XrpTransaction {
 
-    public TrustSet() { super(Schemas.TrustSet); }
+    public CheckCancel() {
+        super(Schemas.CheckCancel);
+    }
 
     @Override
     public JSONObject flatTransactionDetail(JSONObject tx) {
@@ -36,24 +38,7 @@ public class TrustSet extends XrpTransaction {
             result.put("TransactionType", tx.getString("TransactionType"));
             result.put("Account", tx.getString("Account"));
             result.put("Fee", tx.getString("Fee") + " drops");
-            if(tx.has("LimitAmount")){
-                if(null != tx.optJSONObject("LimitAmount")) {
-                    JSONObject amount = tx.getJSONObject("LimitAmount");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("LimitAmount.value", amount.getString("value"));
-                        result.put("LimitAmount.currency", amount.getString("currency"));
-                        result.put("LimitAmount.issuer", amount.getString("issuer"));
-                    }
-                } else {
-                    result.put("LimitAmount", tx.getString("LimitAmount") + " drops");
-                }
-            }
-            if(tx.has("QualityIn")){
-                result.put("QualityIn", tx.getInt("QualityIn"));
-            }
-            if(tx.has("QualityOut")){
-                result.put("QualityOut", tx.getInt("QualityOut"));
-            }
+            result.put("CheckID", tx.getString("CheckID"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

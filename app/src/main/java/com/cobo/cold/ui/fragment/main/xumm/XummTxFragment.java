@@ -25,7 +25,7 @@ import android.view.View;
 
 import androidx.lifecycle.ViewModelProviders;
 
-import com.cobo.coinlib.coins.XRP.xumm.SupportTransactions;
+import com.cobo.coinlib.coins.XRP.SupportTransactions;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.XummTxBinding;
 import com.cobo.cold.ui.fragment.BaseFragment;

@@ -17,19 +17,18 @@
  *
  */
 
-package com.cobo.coinlib.coins.XRP.xumm.transcationtype;
+package com.cobo.coinlib.coins.XRP.transcationtype;
 
-import com.cobo.coinlib.coins.XRP.xumm.Schemas;
-import com.cobo.coinlib.coins.XRP.xumm.XrpTransaction;
+import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CheckCash extends XrpTransaction {
+public class SignerListSet extends XrpTransaction {
 
-    public CheckCash() {
-        super(Schemas.CheckCash);
-    }
+    public SignerListSet() { super(Schemas.SignerListSet); }
 
     @Override
     public JSONObject flatTransactionDetail(JSONObject tx) {
@@ -38,17 +37,20 @@ public class CheckCash extends XrpTransaction {
             result.put("TransactionType", tx.getString("TransactionType"));
             result.put("Account", tx.getString("Account"));
             result.put("Fee", tx.getString("Fee") + " drops");
-            result.put("CheckID", tx.getString("CheckID"));
-            if(tx.has("Amount")){
-                if(null != tx.optJSONObject("Amount")) {
-                    JSONObject amount = tx.getJSONObject("Amount");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("Amount.value", amount.getString("value"));
-                        result.put("Amount.currency", amount.getString("currency"));
-                        result.put("Amount.issuer", amount.getString("issuer"));
+            result.put("SignerQuorum", tx.getInt("SignerQuorum"));
+            if(tx.has("SignerEntries")){
+                JSONArray Signer = tx.optJSONArray("SignerEntries");
+                if(null != Signer) {
+                    for( int index = 0; index < Signer.length(); index++){
+                        JSONObject SignerObj = Signer.optJSONObject(index);
+                        if(SignerObj.has("SignerEntry")){
+                            JSONObject entry = SignerObj.getJSONObject("SignerEntry");
+                            if(entry.has("Account") && entry.has("SignerWeight") ) {
+                                result.put("SignerEntry"+ index +".Account", entry.getString("Account"));
+                                result.put("SignerEntry"+ index +".SignerWeight", entry.getInt("SignerWeight"));
+                            }
+                        }
                     }
-                } else {
-                        result.put("Amount", tx.getString("Amount") + " drops");
                 }
             }
         } catch (JSONException e) {
