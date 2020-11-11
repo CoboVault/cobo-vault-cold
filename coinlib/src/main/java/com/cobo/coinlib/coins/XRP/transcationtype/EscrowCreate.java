@@ -39,6 +39,9 @@ public class EscrowCreate extends XrpTransaction {
             result.put("Account", tx.getString("Account"));
             result.put("Destination", tx.getString("Destination"));
             result.put("Amount", tx.getString("Amount") + " drops");
+            if(tx.has("DestinationTag")){
+                result.put("DestinationTag", tx.getInt("DestinationTag"));
+            }
             if(tx.has("CancelAfter")){
                 result.put("CancelAfter", tx.getInt("CancelAfter"));
             }

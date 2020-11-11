@@ -42,6 +42,9 @@ public class CheckCreate extends XrpTransaction {
             if(tx.has("Expiration")){
                 result.put("Expiration", tx.getInt("Expiration"));
             }
+            if(tx.has("DestinationTag")){
+                result.put("DestinationTag", tx.getInt("DestinationTag"));
+            }
             if(tx.has("SendMax")){
                 if(null != tx.optJSONObject("SendMax")) {
                     JSONObject amount = tx.getJSONObject("SendMax");

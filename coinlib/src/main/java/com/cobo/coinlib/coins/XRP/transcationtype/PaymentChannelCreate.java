@@ -37,6 +37,9 @@ public class PaymentChannelCreate extends XrpTransaction {
             result.put("Account", tx.getString("Account"));
             result.put("Amount", tx.getString("Amount") + " drops");
             result.put("Destination", tx.getString("Destination"));
+            if(tx.has("DestinationTag")){
+                result.put("DestinationTag", tx.getInt("DestinationTag"));
+            }
             result.put("SettleDelay", tx.getInt("SettleDelay"));
             result.put("PublicKey", tx.getString("PublicKey"));
             if(tx.has("CancelAfter")) {

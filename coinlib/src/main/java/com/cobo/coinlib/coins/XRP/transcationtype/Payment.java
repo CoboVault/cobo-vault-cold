@@ -37,6 +37,9 @@ public class Payment extends XrpTransaction {
             result.put("Account", tx.getString("Account"));
             result.put("Fee", tx.getString("Fee") + " drops");
             result.put("Destination", tx.getString("Destination"));
+            if(tx.has("DestinationTag")){
+                result.put("DestinationTag", tx.getInt("DestinationTag"));
+            }
             if(tx.has("Amount")){
                 if(null != tx.optJSONObject("Amount")) {
                     JSONObject amount = tx.getJSONObject("Amount");
