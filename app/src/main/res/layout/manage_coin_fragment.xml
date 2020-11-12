@@ -116,7 +116,8 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginHorizontal="16dp"
                 android:text="@string/sync_polkadot_hint"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:visibility="gone"/>
         </LinearLayout>
 
 

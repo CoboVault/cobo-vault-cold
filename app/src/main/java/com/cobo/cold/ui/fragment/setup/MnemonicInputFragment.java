@@ -17,6 +17,7 @@
 
 package com.cobo.cold.ui.fragment.setup;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
+import androidx.navigation.Navigation;
 
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
@@ -42,11 +44,13 @@ import com.cobo.cold.databinding.MnemonicInputFragmentBinding;
 import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
 import com.cobo.cold.db.PresetData;
 import com.cobo.cold.db.entity.CoinEntity;
+import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.ui.fragment.unlock.VerifyMnemonicFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.util.Keyboard;
 import com.cobo.cold.viewmodel.SetupVaultViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -286,8 +290,19 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                         popBackStack(R.id.manageCoinFragment,false);
                     } else {
                         Bundle data = new Bundle();
-                        data.putBoolean(IS_SETUP_VAULT, ((SetupVaultActivity) mActivity).isSetupVault);
-                        navigate(R.id.action_to_setupSyncFragment, data);
+                        boolean isSetupProcess = ((SetupVaultActivity) mActivity).isSetupVault;
+                        data.putBoolean(IS_SETUP_VAULT, isSetupProcess);
+                        if (isSetupProcess) {
+                            navigate(R.id.action_to_setupSyncFragment, data);
+                        } else {
+                            if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.COBO) {
+                                Navigation.findNavController(mActivity, R.id.nav_host_fragment)
+                                        .navigate(R.id.action_to_manageCoinFragment, data);
+                            } else {
+                                startActivity(new Intent(mActivity, MainActivity.class));
+                                mActivity.finish();
+                            }
+                        }
                     }
                 };
 

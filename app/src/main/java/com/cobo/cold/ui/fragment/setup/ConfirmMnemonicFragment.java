@@ -17,20 +17,24 @@
 
 package com.cobo.cold.ui.fragment.setup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.db.PresetData;
 import com.cobo.cold.db.entity.CoinEntity;
+import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.util.Keyboard;
 import com.cobo.cold.viewmodel.SetupVaultViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.List;
 
@@ -100,8 +104,19 @@ public class ConfirmMnemonicFragment extends MnemonicInputFragment {
                     }
 
                     Bundle data = new Bundle();
-                    data.putBoolean(IS_SETUP_VAULT, ((SetupVaultActivity) mActivity).isSetupVault);
-                    navigate(R.id.action_to_manageCoinFragment, data);
+                    boolean isSetupProcess = ((SetupVaultActivity) mActivity).isSetupVault;
+                    data.putBoolean(IS_SETUP_VAULT, isSetupProcess);
+                    if (isSetupProcess) {
+                        navigate(R.id.action_to_setupSyncFragment, data);
+                    } else {
+                        if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.COBO) {
+                            Navigation.findNavController(mActivity, R.id.nav_host_fragment)
+                                    .navigate(R.id.action_to_manageCoinFragment, data);
+                        } else {
+                            startActivity(new Intent(mActivity, MainActivity.class));
+                            mActivity.finish();
+                        }
+                    }
                 };
 
                 List<CoinEntity> coins = PresetData.generateCoins(mActivity);

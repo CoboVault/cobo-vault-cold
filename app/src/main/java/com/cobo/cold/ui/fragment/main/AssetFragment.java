@@ -142,10 +142,6 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         if (watchWallet == WatchWallet.XRP_TOOLKIT) {
             return R.menu.xrp_toolkit;
         }
-
-        if (Coins.BTC.coinCode().equals(coinCode)) {
-            return R.menu.asset_hasmore;
-        }
         return (showPublicKey || Coins.isPolkadotFamily(coinCode)) ? R.menu.asset_without_add : R.menu.asset;
     }
 
