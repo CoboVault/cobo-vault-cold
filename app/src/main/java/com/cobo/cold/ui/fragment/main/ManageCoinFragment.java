@@ -98,8 +98,13 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
             hideConfirmAction = false;
         } else if (mActivity instanceof SetupVaultActivity) {
             mBinding.toolbarTitle.setText(R.string.add_coins);
-            mBinding.toolbar.setNavigationIcon(R.drawable.arrow_left);
-            mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+            if (data != null && data.getBoolean(IS_SETUP_VAULT)) {
+                mBinding.toolbar.setNavigationIcon(R.drawable.arrow_left);
+                mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+            } else {
+                mBinding.toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
+                mBinding.toolbar.setNavigationOnClickListener(null);
+            }
             hideConfirmAction = false;
         } else {
             mBinding.toolbar.setNavigationIcon(R.drawable.arrow_left);
@@ -110,6 +115,9 @@ public class ManageCoinFragment extends BaseFragment<ManageCoinFragmentBinding> 
             }
         }
 
+        if (watchWallet == WatchWallet.POLKADOT_JS) {
+            mBinding.polkadotSyncHint.setVisibility(View.VISIBLE);
+        }
         mBinding.toolbar.setTitle("");
         mCoinAdapter = new CoinAdapter(mActivity, mCoinClickCallback, true);
         mBinding.assetList.setAdapter(mCoinAdapter);
