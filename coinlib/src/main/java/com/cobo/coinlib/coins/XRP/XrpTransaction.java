@@ -22,9 +22,12 @@ package com.cobo.coinlib.coins.XRP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
+
 public abstract class XrpTransaction {
 
     protected String schema;
+    private final int decimals = 6;
 
     protected XrpTransaction(String schema) {
         this.schema = schema;
@@ -44,5 +47,15 @@ public abstract class XrpTransaction {
             e.printStackTrace();
         }
         return false;
+    }
+
+    protected String formatAmount(String drops) {
+        try {
+            return new BigDecimal(drops)
+                    .divide(BigDecimal.TEN.pow(decimals), decimals, BigDecimal.ROUND_HALF_UP)
+                    .stripTrailingZeros().toPlainString() + " XRP";
+        } catch (Exception e) {
+            return "0 XRP";
+        }
     }
 }

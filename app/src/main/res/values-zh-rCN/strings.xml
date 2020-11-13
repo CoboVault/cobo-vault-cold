@@ -401,7 +401,7 @@
     <string-array name="watch_wallet_list">
         <item>Cobo 金库移动端</item>
 <!--        <item>Polkadot.js</item>-->
-        <item>Xrp Toolkit</item>
+        <item>XRP Toolkit</item>
     </string-array>
     <string-array name="watch_wallet_summury" >
         <item>BTC、ETH、TRX、EOS等15条主链</item>
