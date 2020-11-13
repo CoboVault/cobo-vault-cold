@@ -35,7 +35,7 @@ public class Payment extends XrpTransaction {
         try {
             result.put("TransactionType", tx.getString("TransactionType"));
             result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
+            result.put("Fee", formatAmount(tx.getString("Fee")));
             result.put("Destination", tx.getString("Destination"));
             if(tx.has("DestinationTag")){
                 result.put("DestinationTag", tx.getInt("DestinationTag"));
@@ -49,7 +49,7 @@ public class Payment extends XrpTransaction {
                         result.put("Amount.issuer", amount.getString("issuer"));
                     }
                 } else {
-                    result.put("Amount", tx.getString("Amount") + " drops");
+                    result.put("Amount", formatAmount(tx.getString("Amount")));
                 }
             }
             if(tx.has("SendMax")){

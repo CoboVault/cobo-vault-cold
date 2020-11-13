@@ -427,7 +427,7 @@
     <string-array name="watch_wallet_list">
         <item>Cobo Vault App</item>
 <!--        <item>Polkadot.js</item>&ndash;&gt;-->
-        <item>Xrp Toolkit</item>
+        <item>XRP Toolkit</item>
     </string-array>
 
     <string-array name="watch_wallet_list_values" translatable="false">

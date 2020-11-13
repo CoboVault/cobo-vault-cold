@@ -59,7 +59,7 @@ public class XummTxFragment extends BaseFragment<XummTxBinding> {
                 jsonObject.remove("txHex");
                 mBinding.info.setOnClickListener(v -> showBroadcastHint());
                 mBinding.broadcastHint.setText(getString(R.string.please_broadcast_with_hot,
-                        WatchWallet.getWatchWallet(mActivity)));
+                        WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
                 mBinding.qrcode.qrcode.setData(txHex);
                 mBinding.container.setData(SupportTransactions.get(jsonObject.getString("TransactionType"))
                         .flatTransactionDetail(jsonObject));

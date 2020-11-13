@@ -183,12 +183,9 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
                         }
                     };
 
-                    if (TextUtils.isEmpty(passphrase1.get())) {
-                        onComplete.run();
-                    } else {
-                        List<CoinEntity> coins = PresetData.generateCoins(mActivity);
-                        viewModel.presetData(coins, onComplete);
-                    }
+                    List<CoinEntity> coins = PresetData.generateCoins(mActivity);
+                    viewModel.presetData(coins, onComplete);
+
                 }
 
             } else if (state == VAULT_STATE_CREATING_FAILED) {
