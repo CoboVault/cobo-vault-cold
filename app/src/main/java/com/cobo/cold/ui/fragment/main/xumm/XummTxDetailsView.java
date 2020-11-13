@@ -34,12 +34,15 @@ import com.cobo.cold.databinding.XrpTxItemBinding;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class XummTxDetailsView extends LinearLayout {
     private AppCompatActivity context;
+    private List<String> sortedKeys;
     public XummTxDetailsView(Context context) {
         this(context, null);
     }
@@ -62,16 +65,18 @@ public class XummTxDetailsView extends LinearLayout {
 
     private void showTransactionDetails(JSONObject tx) {
         Map<String, String> map = toMap(tx);
+        sortedKeys = new ArrayList<>(map.keySet());
+        sortedKeys.sort((o1, o2) -> getDisplayOrder(o1) - getDisplayOrder(o2));
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        for (Map.Entry<String, String> entry : map.entrySet()) {
+        for (String key : sortedKeys) {
             XrpTxItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.xrp_tx_item,null,false);
-            binding.title.setText(entry.getKey()+":");
-            binding.content.setText(entry.getValue());
+            binding.title.setText(key+":");
+            binding.content.setText(map.get(key));
             addView(binding.getRoot());
         }
     }
 
-    public static Map<String, String> toMap(JSONObject jsonObj) {
+    public Map<String, String> toMap(JSONObject jsonObj) {
         Map<String, String> map = new HashMap<>();
         Iterator<String> keys = jsonObj.keys();
         try {
@@ -85,5 +90,13 @@ public class XummTxDetailsView extends LinearLayout {
 
         }
         return null;
+    }
+
+    private int getDisplayOrder(final String key) {
+        switch (key) {
+            case "TransactionType":
+                return 0;
+        }
+        return Integer.MAX_VALUE;
     }
 }

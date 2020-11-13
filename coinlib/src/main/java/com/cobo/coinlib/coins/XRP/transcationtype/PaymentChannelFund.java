@@ -38,7 +38,7 @@ public class PaymentChannelFund extends XrpTransaction {
             result.put("Amount", tx.getString("Amount") + " drops");
             result.put("Channel", tx.getString("Channel"));
             if(tx.has("Expiration")) {
-                result.put("Expiration", tx.getInt("Expiration"));
+                result.put("Expiration", formatTimeStamp(tx.getInt("Expiration")));
             }
         } catch (JSONException e) {
             e.printStackTrace();

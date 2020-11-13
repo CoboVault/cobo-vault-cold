@@ -23,11 +23,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public abstract class XrpTransaction {
 
     protected String schema;
     private final int decimals = 6;
+    private static final long RippleEpochSeconds = 946684800L;
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",
+            Locale.getDefault());
 
     protected XrpTransaction(String schema) {
         this.schema = schema;
@@ -57,5 +62,9 @@ public abstract class XrpTransaction {
         } catch (Exception e) {
             return "0 XRP";
         }
+    }
+
+    public String formatTimeStamp(int time) {
+        return formatter.format((RippleEpochSeconds + time) * 1e3);
     }
 }
