@@ -26,6 +26,7 @@ import android.view.View;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import com.cobo.coinlib.exception.InvalidAccountException;
 import com.cobo.cold.R;
 import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.databinding.XummTxConfirmBinding;
@@ -96,11 +97,19 @@ public class XummTxConfirmFragment extends BaseFragment<XummTxConfirmBinding> {
     private void handleParseException(Exception ex) {
         if (ex != null) {
             ex.printStackTrace();
-            ModalDialog.showCommonModal(mActivity,
-                    getString(R.string.scan_failed),
-                    getString(R.string.incorrect_tx_data),
-                    getString(R.string.confirm),
-                    null);
+            if (ex instanceof InvalidAccountException) {
+                ModalDialog.showCommonModal(mActivity,
+                        getString(R.string.xrp_account_not_match),
+                        getString(R.string.xrp_account_not_match_detail) ,
+                        getString(R.string.confirm),
+                        null);
+            } else {
+                ModalDialog.showCommonModal(mActivity,
+                        getString(R.string.scan_failed),
+                        getString(R.string.incorrect_tx_data),
+                        getString(R.string.confirm),
+                        null);
+            }
             popBackStack(R.id.assetFragment, false);
         }
     }

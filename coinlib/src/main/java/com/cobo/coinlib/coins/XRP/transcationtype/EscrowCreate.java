@@ -46,7 +46,7 @@ public class EscrowCreate extends XrpTransaction {
                 result.put("CancelAfter", tx.getInt("CancelAfter"));
             }
             if(tx.has("FinishAfter")){
-                result.put("FinishAfter", tx.getInt("FinishAfter"));
+                result.put("FinishAfter", formatTimeStamp(tx.getInt("FinishAfter")));
             }
             if(tx.has("Condition")){
                 result.put("Condition", tx.getString("Condition"));

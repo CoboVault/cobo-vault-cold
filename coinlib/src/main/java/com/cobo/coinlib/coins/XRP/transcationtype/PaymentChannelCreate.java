@@ -43,7 +43,7 @@ public class PaymentChannelCreate extends XrpTransaction {
             result.put("SettleDelay", tx.getInt("SettleDelay"));
             result.put("PublicKey", tx.getString("PublicKey"));
             if(tx.has("CancelAfter")) {
-                result.put("CancelAfter", tx.getInt("CancelAfter"));
+                result.put("CancelAfter", formatTimeStamp(tx.getInt("CancelAfter")));
             }
         } catch (JSONException e) {
             e.printStackTrace();

@@ -74,8 +74,14 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
                     parseTxException.postValue(new InvalidTransactionException("invalid xrp exception"));
                     return;
                 }
+                account = xummTxObj.optString("Account");
+                signingPubKey = xummTxObj.optString("SigningPubKey");
+                if (!isValidAccount()) {
+                    parseTxException.postValue(new InvalidTransactionException("invalid xrp account"));
+                    return;
+                }
                 if (!checkAccount()) {
-                    parseTxException.postValue(new InvalidAccountException("invalid xrp account"));
+                    parseTxException.postValue(new InvalidAccountException("account not match"));
                     return;
                 }
                 displayJson.postValue(xrpTransaction.flatTransactionDetail(object));
@@ -93,20 +99,14 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
         });
     }
 
-    public boolean checkAccount() {
-        String account = xummTxObj.optString("Account");
-        String signingPubKey = xummTxObj.optString("SigningPubKey");
-        this.account = account;
-        this.signingPubKey = signingPubKey;
-
+    public boolean isValidAccount() {
         if (TextUtils.isEmpty(account) || TextUtils.isEmpty(signingPubKey)) {
             return false;
         }
+        return Xrp.encodeAccount(signingPubKey).equals(account);
+    }
 
-        if (!Xrp.encodeAccount(signingPubKey).equals(account)) {
-            return false;
-        }
-
+    public boolean checkAccount() {
         for (AddressEntity address : mRepository.loadAddressSync(Coins.XRP.coinId())) {
             if (address.getAddressString().equals(account)) {
                 signingKeyPath = address.getPath().toLowerCase();
