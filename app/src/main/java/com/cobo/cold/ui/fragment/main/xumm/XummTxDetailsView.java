@@ -25,7 +25,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.cobo.cold.R;
@@ -35,14 +34,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class XummTxDetailsView extends LinearLayout {
-    private AppCompatActivity context;
-    private List<String> sortedKeys;
+
     public XummTxDetailsView(Context context) {
         this(context, null);
     }
@@ -65,12 +64,12 @@ public class XummTxDetailsView extends LinearLayout {
 
     private void showTransactionDetails(JSONObject tx) {
         Map<String, String> map = toMap(tx);
-        sortedKeys = new ArrayList<>(map.keySet());
+        List<String> sortedKeys = new ArrayList<>(map.keySet());
         sortedKeys.sort((o1, o2) -> getDisplayOrder(o1) - getDisplayOrder(o2));
         LayoutInflater inflater = LayoutInflater.from(getContext());
         for (String key : sortedKeys) {
-            XrpTxItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.xrp_tx_item,null,false);
-            binding.title.setText(key+":");
+            XrpTxItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.xrp_tx_item, null, false);
+            binding.title.setText(key + ":");
             binding.content.setText(map.get(key));
             addView(binding.getRoot());
         }
@@ -80,7 +79,7 @@ public class XummTxDetailsView extends LinearLayout {
         Map<String, String> map = new HashMap<>();
         Iterator<String> keys = jsonObj.keys();
         try {
-            while(keys.hasNext()) {
+            while (keys.hasNext()) {
                 String key = keys.next();
                 Object value = jsonObj.get(key);
                 map.put(key, value.toString());
@@ -93,10 +92,57 @@ public class XummTxDetailsView extends LinearLayout {
     }
 
     private int getDisplayOrder(final String key) {
-        switch (key) {
-            case "TransactionType":
-                return 0;
+        int index = keys.indexOf(key);
+        if (index != -1) {
+            return index;
         }
         return Integer.MAX_VALUE;
     }
+
+    List<String> keys = Arrays.asList(
+            "TransactionType",
+            "Account",
+            "SourceTag",
+            "Amount",
+            "Destination",
+            "DestinationTag",
+            "Flags",
+            "CheckID",
+            "EmailHash",
+            "SendMax",
+            "DeliverMin",
+            "FinishAfter",
+            "CancelAfter",
+            "TakerPays",
+            "Amount.currency",
+            "Amount.value",
+            "Amount.issuer",
+            "SendMax.currency",
+            "SendMax.value",
+            "SendMax.issuer",
+
+            "DeliverMin.currency",
+            "DeliverMin.value",
+            "DeliverMin.issuer",
+
+            "LimitAmount.currency",
+            "LimitAmount.value",
+            "LimitAmount.issuer",
+
+            "TakerGets.currency",
+            "TakerGets.value",
+            "TakerGets.issuer",
+
+            "TakerPays.currency",
+            "TakerPays.value",
+            "TakerPays.issuer",
+
+            "Owner",
+            "OfferSequence",
+            "Domain",
+            "Flags",
+            "Memos",
+            "Expiration",
+            "Fee"
+    );
 }
