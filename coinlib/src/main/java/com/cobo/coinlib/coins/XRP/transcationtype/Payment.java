@@ -33,48 +33,48 @@ public class Payment extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Fee", formatAmount(tx.getString("Fee")));
-            result.put("Destination", tx.getString("Destination"));
-            if(tx.has("DestinationTag")){
-                result.put("DestinationTag", tx.getInt("DestinationTag"));
-            }
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("Destination", tx.opt("Destination"));
+            result.putOpt("DestinationTag", tx.opt("DestinationTag"));
+            result.putOpt("InvoiceID", tx.opt("InvoiceID"));
             if(tx.has("Amount")){
                 if(null != tx.optJSONObject("Amount")) {
-                    JSONObject amount = tx.getJSONObject("Amount");
+                    JSONObject amount = tx.optJSONObject("Amount");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("Amount.value", amount.getString("value"));
-                        result.put("Amount.currency", amount.getString("currency"));
-                        result.put("Amount.issuer", amount.getString("issuer"));
+                        result.putOpt("Amount.value", amount.opt("value"));
+                        result.putOpt("Amount.currency", amount.opt("currency"));
+                        result.putOpt("Amount.issuer", amount.opt("issuer"));
                     }
                 } else {
-                    result.put("Amount", formatAmount(tx.getString("Amount")));
+                    result.putOpt("Amount", formatAmount(tx.optString("Amount")));
                 }
             }
             if(tx.has("SendMax")){
                 if(null != tx.optJSONObject("SendMax")) {
-                    JSONObject amount = tx.getJSONObject("SendMax");
+                    JSONObject amount = tx.optJSONObject("SendMax");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("SendMax.value", amount.getString("value"));
-                        result.put("SendMax.currency", amount.getString("currency"));
-                        result.put("SendMax.issuer", amount.getString("issuer"));
+                        result.putOpt("SendMax.value", amount.opt("value"));
+                        result.putOpt("SendMax.currency", amount.opt("currency"));
+                        result.putOpt("SendMax.issuer", amount.opt("issuer"));
                     }
                 } else {
-                    result.put("SendMax", tx.getString("SendMax") + " drops");
+                    result.putOpt("SendMax", formatAmount(tx.optString("SendMax")));
                 }
             }
-            if(tx.has("DeliverMin")){
+            if(tx.has("DeliverMin")) {
                 if(null != tx.optJSONObject("DeliverMin")) {
-                    JSONObject amount = tx.getJSONObject("DeliverMin");
+                    JSONObject amount = tx.optJSONObject("DeliverMin");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("DeliverMin.value", amount.getString("value"));
-                        result.put("DeliverMin.currency", amount.getString("currency"));
-                        result.put("DeliverMin.issuer", amount.getString("issuer"));
+                        result.putOpt("DeliverMin.value", amount.opt("value"));
+                        result.putOpt("DeliverMin.currency", amount.opt("currency"));
+                        result.putOpt("DeliverMin.issuer", amount.opt("issuer"));
                     }
                 } else {
-                    result.put("DeliverMin", tx.getString("DeliverMin") + " drops");
+                    result.putOpt("DeliverMin", formatAmount(tx.optString("DeliverMin")));
                 }
+            }
+            if(tx.has("Paths")){
+                result.putOpt("Paths", tx.optJSONArray("Paths").toString(2));
             }
         } catch (JSONException e) {
             e.printStackTrace();

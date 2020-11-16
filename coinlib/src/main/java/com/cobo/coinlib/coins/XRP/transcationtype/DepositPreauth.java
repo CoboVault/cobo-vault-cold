@@ -35,15 +35,9 @@ public class DepositPreauth extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
-            if(tx.has("Authorize")){
-                result.put("Authorize", tx.getString("Authorize"));
-            }
-            if(tx.has("Unauthorize")){
-                result.put("Unauthorize", tx.getString("Unauthorize"));
-            }
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("Authorize", tx.opt("Authorize"));
+            result.putOpt("Unauthorize", tx.opt("Unauthorize"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

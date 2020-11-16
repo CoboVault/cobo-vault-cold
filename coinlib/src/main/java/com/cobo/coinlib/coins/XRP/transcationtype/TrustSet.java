@@ -33,27 +33,21 @@ public class TrustSet extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
+            flatTransactionCommonFields(result, tx);
             if(tx.has("LimitAmount")){
                 if(null != tx.optJSONObject("LimitAmount")) {
-                    JSONObject amount = tx.getJSONObject("LimitAmount");
+                    JSONObject amount = tx.optJSONObject("LimitAmount");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("LimitAmount.value", amount.getString("value"));
-                        result.put("LimitAmount.currency", amount.getString("currency"));
-                        result.put("LimitAmount.issuer", amount.getString("issuer"));
+                        result.putOpt("LimitAmount.value", amount.opt("value"));
+                        result.putOpt("LimitAmount.currency", amount.opt("currency"));
+                        result.putOpt("LimitAmount.issuer", amount.opt("issuer"));
                     }
                 } else {
-                    result.put("LimitAmount", tx.getString("LimitAmount") + " drops");
+                    result.putOpt("LimitAmount", formatAmount(tx.optString("LimitAmount")));
                 }
             }
-            if(tx.has("QualityIn")){
-                result.put("QualityIn", tx.getInt("QualityIn"));
-            }
-            if(tx.has("QualityOut")){
-                result.put("QualityOut", tx.getInt("QualityOut"));
-            }
+            result.putOpt("QualityIn", tx.opt("QualityIn"));
+            result.putOpt("QualityOut", tx.opt("QualityOut"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

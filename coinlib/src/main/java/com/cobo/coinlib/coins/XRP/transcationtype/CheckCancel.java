@@ -35,10 +35,8 @@ public class CheckCancel extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
-            result.put("CheckID", tx.getString("CheckID"));
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("CheckID", tx.opt("CheckID"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

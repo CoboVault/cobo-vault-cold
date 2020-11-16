@@ -19,6 +19,8 @@
 
 package com.cobo.coinlib.coins.XRP;
 
+import android.text.TextUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,6 +46,58 @@ public abstract class XrpTransaction {
 
     public abstract JSONObject flatTransactionDetail(JSONObject tx);
 
+    public void flatTransactionCommonFields(JSONObject displayTx ,JSONObject tx)
+    {
+        try {
+            displayTx.putOpt("TransactionType", tx.opt("TransactionType"));
+            displayTx.putOpt("Account", tx.opt("Account"));
+            displayTx.putOpt("Fee", formatAmount(tx.optString("Fee")));
+            displayTx.putOpt("AccountTxnID", tx.opt("AccountTxnID"));
+            displayTx.putOpt("Flags", tx.opt("Flags"));
+            displayTx.putOpt("SourceTag", tx.opt("SourceTag"));
+            JSONArray Memo = tx.optJSONArray("Memos");
+            if(null != Memo) {
+                for( int index = 0; index < Memo.length(); index++) {
+                    JSONObject MemoObj = Memo.optJSONObject(index);
+                    JSONObject entry = MemoObj.optJSONObject("Memo");
+                    if(entry.has("MemoType") && entry.has("MemoData") ) {
+                        if(Memo.length() > 1) {
+                            displayTx.putOpt("Memo" + index + ".MemoData", entry.opt("MemoData"));
+                            displayTx.putOpt("Memo" + index + ".MemoType", entry.opt("MemoType"));
+                            displayTx.putOpt("Memo" + index + ".MemoFormat", entry.opt("MemoFormat"));
+                        } else {
+                            displayTx.putOpt("Memo" + ".MemoData", entry.opt("MemoData"));
+                            displayTx.putOpt("Memo" + ".MemoType", entry.opt("MemoType"));
+                            displayTx.putOpt("Memo" + ".MemoFormat", entry.opt("MemoFormat"));
+                        }
+                    }
+                }
+            }
+            JSONArray Signer = tx.optJSONArray("Signers");
+            if(null != Signer) {
+                for( int index = 0; index < Signer.length(); index++) {
+                    JSONObject SignerObj = Signer.optJSONObject(index);
+                    JSONObject entry = SignerObj.optJSONObject("Signer");
+                    if(entry.has("Account") && entry.has("TxnSignature") ) {
+                        if(Signer.length() > 1) {
+                            displayTx.putOpt("Signer" + index + ".Account", entry.opt("Account"));
+                            displayTx.putOpt("Signer" + index + ".TxnSignature", entry.opt("TxnSignature"));
+                            displayTx.putOpt("Signer" + index + ".SigningPubKey", entry.opt("SigningPubKey"));
+                        } else {
+                            displayTx.putOpt("Signer" + ".Account", entry.opt("Account"));
+                            displayTx.putOpt("Signer" + ".TxnSignature", entry.opt("TxnSignature"));
+                            displayTx.putOpt("Signer" + ".SigningPubKey", entry.opt("SigningPubKey"));
+                        }
+                    }
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public boolean isValid(JSONObject tx) {
         try {
             return getTransactionType().equals(tx.getString("TransactionType"))
@@ -55,16 +109,34 @@ public abstract class XrpTransaction {
     }
 
     protected String formatAmount(String drops) {
+        if(TextUtils.isEmpty(drops)) {
+            return null;
+        }
         try {
-            return new BigDecimal(drops)
+            return "XRP " + new BigDecimal(drops)
                     .divide(BigDecimal.TEN.pow(decimals), decimals, BigDecimal.ROUND_HALF_UP)
-                    .stripTrailingZeros().toPlainString() + " XRP";
+                    .stripTrailingZeros().toPlainString();
         } catch (Exception e) {
             return "0 XRP";
         }
     }
 
     public String formatTimeStamp(int time) {
+        if(0 == time) {
+            return null;
+        }
         return formatter.format((RippleEpochSeconds + time) * 1e3);
+    }
+
+    public static String hex2Ascii(String hexStr) {
+        if(TextUtils.isEmpty(hexStr)) {
+            return null;
+        }
+        StringBuilder output = new StringBuilder("");
+        for (int i = 0; i < hexStr.length(); i += 2) {
+            String str = hexStr.substring(i, i + 2);
+            output.append((char) Integer.parseInt(str, 16));
+        }
+        return output.toString();
     }
 }

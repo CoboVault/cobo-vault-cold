@@ -33,18 +33,13 @@ public class PaymentChannelCreate extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Amount", tx.getString("Amount") + " drops");
-            result.put("Destination", tx.getString("Destination"));
-            if(tx.has("DestinationTag")){
-                result.put("DestinationTag", tx.getInt("DestinationTag"));
-            }
-            result.put("SettleDelay", tx.getInt("SettleDelay"));
-            result.put("PublicKey", tx.getString("PublicKey"));
-            if(tx.has("CancelAfter")) {
-                result.put("CancelAfter", formatTimeStamp(tx.getInt("CancelAfter")));
-            }
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("Amount", formatAmount(tx.optString("Amount")));
+            result.putOpt("Destination", tx.opt("Destination"));
+            result.putOpt("DestinationTag", tx.opt("DestinationTag"));
+            result.putOpt("SettleDelay", tx.opt("SettleDelay"));
+            result.putOpt("PublicKey", tx.opt("PublicKey"));
+            result.putOpt("CancelAfter", formatTimeStamp(tx.optInt("CancelAfter")));
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -35,16 +35,11 @@ public class EscrowFinish extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Owner", tx.getString("Owner"));
-            result.put("OfferSequence", tx.getInt("OfferSequence"));
-            if(tx.has("Fulfillment")){
-                result.put("Fulfillment", tx.getString("Fulfillment"));
-            }
-            if(tx.has("Condition")){
-                result.put("Condition", tx.getString("Condition"));
-            }
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("Owner", tx.opt("Owner"));
+            result.putOpt("OfferSequence", tx.opt("OfferSequence"));
+            result.putOpt("Fulfillment", tx.opt("Fulfillment"));
+            result.putOpt("Condition", tx.opt("Condition"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

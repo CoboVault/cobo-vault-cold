@@ -35,26 +35,21 @@ public class CheckCreate extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
-            result.put("Destination", tx.getString("Destination"));
-            if(tx.has("Expiration")){
-                result.put("Expiration", tx.getInt("Expiration"));
-            }
-            if(tx.has("DestinationTag")){
-                result.put("DestinationTag", tx.getInt("DestinationTag"));
-            }
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("Destination", tx.opt("Destination"));
+            result.putOpt("Expiration", formatTimeStamp(tx.optInt("Expiration")));
+            result.putOpt("DestinationTag", tx.opt("DestinationTag"));
+            result.putOpt("InvoiceID", tx.opt("InvoiceID"));
             if(tx.has("SendMax")){
                 if(null != tx.optJSONObject("SendMax")) {
-                    JSONObject amount = tx.getJSONObject("SendMax");
+                    JSONObject amount = tx.optJSONObject("SendMax");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("SendMax.value", amount.getString("value"));
-                        result.put("SendMax.currency", amount.getString("currency"));
-                        result.put("SendMax.issuer", amount.getString("issuer"));
+                        result.putOpt("SendMax.value", amount.opt("value"));
+                        result.putOpt("SendMax.currency", amount.opt("currency"));
+                        result.putOpt("SendMax.issuer", amount.opt("issuer"));
                     }
                 } else {
-                    result.put("SendMax", tx.getString("SendMax") + " drops");
+                    result.putOpt("SendMax", formatAmount(tx.optString("SendMax")));
                 }
             }
         } catch (JSONException e) {
