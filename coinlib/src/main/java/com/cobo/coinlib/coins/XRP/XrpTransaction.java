@@ -20,6 +20,8 @@
 package com.cobo.coinlib.coins.XRP;
 
 import android.text.TextUtils;
+
+import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,13 +64,13 @@ public abstract class XrpTransaction {
                     JSONObject entry = MemoObj.optJSONObject("Memo");
                     if(entry.has("MemoType") && entry.has("MemoData") ) {
                         if(Memo.length() > 1) {
-                            displayTx.putOpt("Memo" + index + ".MemoData", entry.opt("MemoData"));
-                            displayTx.putOpt("Memo" + index + ".MemoType", entry.opt("MemoType"));
-                            displayTx.putOpt("Memo" + index + ".MemoFormat", entry.opt("MemoFormat"));
+                            displayTx.putOpt("Memo" + index + ".MemoData", formatMemo(entry.optString("MemoData")));
+                            displayTx.putOpt("Memo" + index + ".MemoType", formatMemo(entry.optString("MemoType")));
+                            displayTx.putOpt("Memo" + index + ".MemoFormat", formatMemo(entry.optString("MemoFormat")));
                         } else {
-                            displayTx.putOpt("Memo" + ".MemoData", entry.opt("MemoData"));
-                            displayTx.putOpt("Memo" + ".MemoType", entry.opt("MemoType"));
-                            displayTx.putOpt("Memo" + ".MemoFormat", entry.opt("MemoFormat"));
+                            displayTx.putOpt("Memo" + ".MemoData", formatMemo(entry.optString("MemoData")));
+                            displayTx.putOpt("Memo" + ".MemoType", formatMemo(entry.optString("MemoType")));
+                            displayTx.putOpt("Memo" + ".MemoFormat", formatMemo(entry.optString("MemoFormat")));
                         }
                     }
                 }
@@ -94,6 +96,16 @@ public abstract class XrpTransaction {
 
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    private String formatMemo(String hex) {
+        if (TextUtils.isEmpty(hex)) return null;
+        try {
+            return new String(Hex.decode(hex));
+        } catch (Exception e) {
+            return null;
         }
 
     }
