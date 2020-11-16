@@ -35,20 +35,30 @@ public class CheckCash extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
-            result.put("CheckID", tx.getString("CheckID"));
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("CheckID", tx.opt("CheckID"));
             if(tx.has("Amount")){
                 if(null != tx.optJSONObject("Amount")) {
-                    JSONObject amount = tx.getJSONObject("Amount");
+                    JSONObject amount = tx.optJSONObject("Amount");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("Amount.value", amount.getString("value"));
-                        result.put("Amount.currency", amount.getString("currency"));
-                        result.put("Amount.issuer", amount.getString("issuer"));
+                        result.putOpt("Amount.value", amount.opt("value"));
+                        result.putOpt("Amount.currency", amount.opt("currency"));
+                        result.putOpt("Amount.issuer", amount.opt("issuer"));
                     }
                 } else {
-                        result.put("Amount", tx.getString("Amount") + " drops");
+                    result.putOpt("Amount", formatAmount(tx.optString("Amount")));
+                }
+            }
+            if(tx.has("DeliverMin")) {
+                if(null != tx.optJSONObject("DeliverMin")) {
+                    JSONObject amount = tx.optJSONObject("DeliverMin");
+                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
+                        result.putOpt("DeliverMin.value", amount.opt("value"));
+                        result.putOpt("DeliverMin.currency", amount.opt("currency"));
+                        result.putOpt("DeliverMin.issuer", amount.opt("issuer"));
+                    }
+                } else {
+                    result.putOpt("DeliverMin", formatAmount(tx.optString("DeliverMin")));
                 }
             }
         } catch (JSONException e) {

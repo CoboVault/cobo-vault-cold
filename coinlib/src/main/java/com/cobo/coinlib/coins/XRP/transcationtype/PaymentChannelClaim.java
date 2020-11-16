@@ -33,23 +33,12 @@ public class PaymentChannelClaim extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            if(tx.has("Account")) {
-                result.put("Account", tx.getString("Account"));
-            }
-            result.put("Channel", tx.getString("Channel"));
-            if(tx.has("Balance")) {
-                result.put("Balance", tx.getString("Balance") + " drops");
-            }
-            if(tx.has("Amount")) {
-                result.put("Amount", tx.getString("Amount") + " drops");
-            }
-            if(tx.has("Signature")){
-                result.put("Signature", tx.getString("Signature"));
-            }
-            if(tx.has("PublicKey")){
-                result.put("PublicKey", tx.getString("PublicKey"));
-            }
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("Channel", tx.opt("Channel"));
+            result.putOpt("Balance", formatAmount(tx.optString("Balance")));
+            result.putOpt("Amount", formatAmount(tx.optString("Amount")));
+            result.putOpt("Signature", tx.opt("Signature"));
+            result.putOpt("PublicKey", tx.opt("PublicKey"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

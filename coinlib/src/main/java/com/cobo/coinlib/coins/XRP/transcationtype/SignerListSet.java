@@ -34,21 +34,20 @@ public class SignerListSet extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
-            result.put("SignerQuorum", tx.getInt("SignerQuorum"));
-            if(tx.has("SignerEntries")){
-                JSONArray Signer = tx.optJSONArray("SignerEntries");
-                if(null != Signer) {
-                    for( int index = 0; index < Signer.length(); index++){
-                        JSONObject SignerObj = Signer.optJSONObject(index);
-                        if(SignerObj.has("SignerEntry")){
-                            JSONObject entry = SignerObj.getJSONObject("SignerEntry");
-                            if(entry.has("Account") && entry.has("SignerWeight") ) {
-                                result.put("SignerEntry"+ index +".Account", entry.getString("Account"));
-                                result.put("SignerEntry"+ index +".SignerWeight", entry.getInt("SignerWeight"));
-                            }
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("SignerQuorum", tx.opt("SignerQuorum"));
+            JSONArray Signer = tx.optJSONArray("SignerEntries");
+            if(null != Signer) {
+                for( int index = 0; index < Signer.length(); index++){
+                    JSONObject SignerObj = Signer.optJSONObject(index);
+                    JSONObject entry = SignerObj.optJSONObject("SignerEntry");
+                    if(entry.has("Account") && entry.has("SignerWeight") ) {
+                        if (Signer.length() > 1) {
+                            result.putOpt("SignerEntry"+ index +".Account", entry.opt("Account"));
+                            result.putOpt("SignerEntry"+ index +".SignerWeight", entry.opt("SignerWeight"));
+                        } else {
+                            result.putOpt("SignerEntry" +".Account", entry.opt("Account"));
+                            result.putOpt("SignerEntry" +".SignerWeight", entry.opt("SignerWeight"));
                         }
                     }
                 }

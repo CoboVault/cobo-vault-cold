@@ -33,12 +33,8 @@ public class SetRegularKey extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
-            if(tx.has("RegularKey")){
-                result.put("RegularKey", tx.getString("RegularKey"));
-            }
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("RegularKey", tx.opt("RegularKey"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

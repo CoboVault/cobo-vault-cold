@@ -18,6 +18,7 @@
 package com.cobo.coinlib.coin;
 
 import com.cobo.coinlib.coins.XRP.Xrp;
+import com.cobo.coinlib.coins.XRP.XrpTransaction;
 import com.cobo.coinlib.coins.XRP.transcationtype.AccountDelete;
 import com.cobo.coinlib.coins.XRP.transcationtype.AccountSet;
 import com.cobo.coinlib.coins.XRP.transcationtype.CheckCancel;
@@ -77,6 +78,14 @@ public class XrpTest {
                 "    \"Sequence\": 5,\n" +
                 "    \"Domain\": \"6578616D706C652E636F6D\",\n" +
                 "    \"SetFlag\": 5,\n" +
+                "    \"Memos\": [\n" +
+                "        {\n" +
+                "            \"Memo\": {\n" +
+                "                \"MemoType\": \"687474703a2f2f6578616d706c652e636f6d2f6d656d6f2f67656e65726963\",\n" +
+                "                \"MemoData\": \"72656e74\"\n" +
+                "            }\n" +
+                "        }\n" +
+                "    ],\n" +
                 "    \"MessageKey\": \"03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB\"\n" +
                 "}");
         assertTrue(new AccountSet().isValid(tx));
@@ -92,6 +101,20 @@ public class XrpTest {
                 "    \"DestinationTag\": 13,\n" +
                 "    \"Fee\": \"5000000\",\n" +
                 "    \"Sequence\": 2470665,\n" +
+                "    \"Memos\": [\n" +
+                "        {\n" +
+                "            \"Memo\": {\n" +
+                "                \"MemoType\": \"687474703a2f2f6578616d706c652e636f6d2f6d656d6f2f67656e65726963\",\n" +
+                "                \"MemoData\": \"72656e74\"\n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"Memo\": {\n" +
+                "                \"MemoType\": \"697474703a2f2f6578616d706c652e636f6d2f6d656d6f2f67656e65726963\",\n" +
+                "                \"MemoData\": \"82656e74\"\n" +
+                "            }\n" +
+                "        }\n" +
+                "    ],\n" +
                 "    \"Flags\": 2147483648\n" +
                 "}");
         assertTrue(new AccountDelete().isValid(tx));
@@ -297,7 +320,7 @@ public class XrpTest {
                 "  \"Sequence\": 2,\n" +
                 "}");
         assertTrue(new Payment().isValid(tx));
-        System.out.println(new Payment().flatTransactionDetail(tx));
+        System.out.println(new Payment().flatTransactionDetail(tx).toString(2));
     }
 
     @Test

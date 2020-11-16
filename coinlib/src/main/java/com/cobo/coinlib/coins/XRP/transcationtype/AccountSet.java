@@ -33,20 +33,16 @@ public class AccountSet extends XrpTransaction {
 
     @Override
     public JSONObject flatTransactionDetail(JSONObject tx) {
-        JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
-            if(tx.has("Domain")){
-                result.put("Domain", tx.getString("Domain"));
-            }
-            if(tx.has("MessageKey")){
-                result.put("MessageKey", tx.getString("MessageKey"));
-            }
+            JSONObject result = new JSONObject(tx.toString());
+            result.remove("Memos");
+            result.remove("Signers");
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("Domain", hex2Ascii(tx.optString("Domain")));
+            return result;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return  result;
+        return tx;
     }
 }

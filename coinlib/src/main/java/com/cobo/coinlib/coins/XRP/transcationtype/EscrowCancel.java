@@ -35,10 +35,9 @@ public class EscrowCancel extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Owner", tx.getString("Owner"));
-            result.put("OfferSequence", tx.getInt("OfferSequence"));
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("Owner", tx.opt("Owner"));
+            result.putOpt("OfferSequence", tx.opt("OfferSequence"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

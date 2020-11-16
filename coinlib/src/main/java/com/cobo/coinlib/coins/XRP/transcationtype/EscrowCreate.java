@@ -35,22 +35,13 @@ public class EscrowCreate extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Destination", tx.getString("Destination"));
-            result.put("Amount", tx.getString("Amount") + " drops");
-            if(tx.has("DestinationTag")){
-                result.put("DestinationTag", tx.getInt("DestinationTag"));
-            }
-            if(tx.has("CancelAfter")){
-                result.put("CancelAfter", tx.getInt("CancelAfter"));
-            }
-            if(tx.has("FinishAfter")){
-                result.put("FinishAfter", formatTimeStamp(tx.getInt("FinishAfter")));
-            }
-            if(tx.has("Condition")){
-                result.put("Condition", tx.getString("Condition"));
-            }
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("Destination", tx.opt("Destination"));
+            result.putOpt("Amount", formatAmount(tx.optString("Amount")));
+            result.putOpt("DestinationTag", tx.opt("DestinationTag"));
+            result.putOpt("CancelAfter", formatTimeStamp(tx.optInt("CancelAfter")));
+            result.putOpt("FinishAfter", formatTimeStamp(tx.optInt("FinishAfter")));
+            result.putOpt("Condition", tx.opt("Condition"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

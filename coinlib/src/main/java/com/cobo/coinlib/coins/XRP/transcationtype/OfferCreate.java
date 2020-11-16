@@ -35,39 +35,33 @@ public class OfferCreate extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Fee", tx.getString("Fee") + " drops");
+            flatTransactionCommonFields(result, tx);
             if(tx.has("TakerGets")){
                 if(null != tx.optJSONObject("TakerGets")) {
-                    JSONObject amount = tx.getJSONObject("TakerGets");
+                    JSONObject amount = tx.optJSONObject("TakerGets");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("TakerGets.value", amount.getString("value"));
-                        result.put("TakerGets.currency", amount.getString("currency"));
-                        result.put("TakerGets.issuer", amount.getString("issuer"));
+                        result.putOpt("TakerGets.value", amount.opt("value"));
+                        result.putOpt("TakerGets.currency", amount.opt("currency"));
+                        result.putOpt("TakerGets.issuer", amount.opt("issuer"));
                     }
                 } else {
-                    result.put("TakerGets", tx.getString("TakerGets") + " drops");
+                    result.putOpt("TakerGets", formatAmount(tx.optString("TakerGets")));
                 }
             }
             if(tx.has("TakerPays")){
                 if(null != tx.optJSONObject("TakerPays")) {
-                    JSONObject amount = tx.getJSONObject("TakerPays");
+                    JSONObject amount = tx.optJSONObject("TakerPays");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
-                        result.put("TakerPays.value", amount.getString("value"));
-                        result.put("TakerPays.currency", amount.getString("currency"));
-                        result.put("TakerPays.issuer", amount.getString("issuer"));
+                        result.putOpt("TakerPays.value", amount.opt("value"));
+                        result.putOpt("TakerPays.currency", amount.opt("currency"));
+                        result.putOpt("TakerPays.issuer", amount.opt("issuer"));
                     }
                 } else {
-                    result.put("TakerPays", tx.getString("TakerPays") + " drops");
+                    result.putOpt("TakerPays", formatAmount(tx.optString("TakerPays")));
                 }
             }
-            if(tx.has("Expiration")){
-                result.put("Expiration", tx.getInt("Expiration"));
-            }
-            if(tx.has("OfferSequence")){
-                result.put("OfferSequence", tx.getInt("OfferSequence"));
-            }
+            result.putOpt("Expiration", formatTimeStamp(tx.optInt("Expiration")));
+            result.putOpt("OfferSequence", tx.opt("OfferSequence"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

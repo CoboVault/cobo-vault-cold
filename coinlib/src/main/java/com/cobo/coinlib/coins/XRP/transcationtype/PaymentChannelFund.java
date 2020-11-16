@@ -33,13 +33,10 @@ public class PaymentChannelFund extends XrpTransaction {
     public JSONObject flatTransactionDetail(JSONObject tx) {
         JSONObject result = new JSONObject();
         try {
-            result.put("TransactionType", tx.getString("TransactionType"));
-            result.put("Account", tx.getString("Account"));
-            result.put("Amount", tx.getString("Amount") + " drops");
-            result.put("Channel", tx.getString("Channel"));
-            if(tx.has("Expiration")) {
-                result.put("Expiration", formatTimeStamp(tx.getInt("Expiration")));
-            }
+            flatTransactionCommonFields(result, tx);
+            result.putOpt("Amount", formatAmount(tx.optString("Amount")));
+            result.putOpt("Channel", tx.opt("Channel"));
+            result.putOpt("Expiration", formatTimeStamp(tx.optInt("Expiration")));
         } catch (JSONException e) {
             e.printStackTrace();
         }
