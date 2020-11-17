@@ -37,13 +37,15 @@ public class TransactionFlag {
                     | DisallowXRP | AllowXRP),
 
     // AccountSet SetFlag/ClearFlag values
-    asfRequireDest   = 1,
-            asfRequireAuth   = 2,
-            asfDisallowXRP   = 3,
+    asfRequireDest = 1,
+            asfRequireAuth = 2,
+            asfDisallowXRP = 3,
             asfDisableMaster = 4,
-            asfAccountTxnID  = 5,
-            asfNoFreeze      = 6,
-            asfGlobalFreeze  = 7,
+            asfAccountTxnID = 5,
+            asfNoFreeze = 6,
+            asfGlobalFreeze = 7,
+            asfDefaultRipple = 8,
+            asfDepositAuth = 9,
 
     // OfferCreate flags:
     Passive = 0x00010000,
@@ -58,12 +60,17 @@ public class TransactionFlag {
             LimitQuality = 0x00040000,
             PaymentMask = ~(Universal | PartialPayment | LimitQuality | NoRippleDirect),
 
+    // PaymentChannelClaim flags
+    Renew = 0x00010000,
+            Close = 0x00020000,
+            PaymentChannelClaimMask = ~(Renew | Close),
+
     // TrustSet flags:
     SetAuth = 0x00010000,
             SetNoRipple = 0x00020000,
             ClearNoRipple = 0x00040000,
-            SetFreeze            = 0x00100000,
-            ClearFreeze          = 0x00200000,
+            SetFreeze = 0x00100000,
+            ClearFreeze = 0x00200000,
             TrustSetMask = ~(Universal | SetAuth | SetNoRipple | ClearNoRipple | SetFreeze | ClearFreeze);
 
     public static boolean hasFlag(long flags, long flag) {
