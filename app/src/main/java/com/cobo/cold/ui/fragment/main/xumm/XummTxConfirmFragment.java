@@ -24,25 +24,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.cobo.coinlib.exception.InvalidAccountException;
 import com.cobo.cold.R;
 import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.databinding.XummTxConfirmBinding;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.fragment.setup.PreImportFragment;
-import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.viewmodel.TxConfirmViewModel;
 import com.cobo.cold.viewmodel.XummTxConfirmViewModel;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Objects;
 
+import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
@@ -51,6 +50,8 @@ import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
 
 public class XummTxConfirmFragment extends BaseFragment<XummTxConfirmBinding> {
 
+    private Fragment[] fragments;
+    private Bundle bundle;
     private SigningDialog signingDialog;
     private XummTxConfirmViewModel viewModel;
     private final Runnable forgetPassword = () -> {
@@ -58,7 +59,6 @@ public class XummTxConfirmFragment extends BaseFragment<XummTxConfirmBinding> {
         bundle.putString(ACTION, PreImportFragment.ACTION_RESET_PWD);
         navigate(R.id.action_to_preImportFragment, bundle);
     };
-    private JSONObject tx;
 
     @Override
     protected int setView() {
@@ -68,20 +68,40 @@ public class XummTxConfirmFragment extends BaseFragment<XummTxConfirmBinding> {
     @Override
     protected void init(View view) {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
-        Bundle bundle = Objects.requireNonNull(getArguments());
-        viewModel = ViewModelProviders.of(this).get(XummTxConfirmViewModel.class);
-        try {
-            tx = new JSONObject(bundle.getString(KEY_TX_DATA));
-            viewModel.parseTxException().observe(this, this::handleParseException);
-            viewModel.parseXummTxData(tx);
-            viewModel.getDisplayJson().observe(this, tx -> mBinding.container.setData(tx));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        mBinding.sign.setOnClickListener( v -> handleSign());
+        bundle = Objects.requireNonNull(getArguments());
+        viewModel = ViewModelProviders.of(mActivity).get(XummTxConfirmViewModel.class);
+        initViewPager();
+        mBinding.sign.setOnClickListener(v -> handleSign());
     }
 
+    private void initViewPager() {
+        String[] title = { getString(R.string.simple),getString(R.string.raw)};
+        if (fragments == null) {
+            fragments = new Fragment[title.length];
+            fragments[0] = XummTxDetailFragment.newInstance(bundle.getString(KEY_TX_DATA), null);
+            fragments[1] = XummRawTxFragment.newInstance(bundle.getString(KEY_TX_DATA));
+        }
 
+        mBinding.viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager(),
+                BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+            @NonNull
+            @Override
+            public Fragment getItem(int position) {
+                return fragments[position];
+            }
+
+            @Override
+            public int getCount() {
+                return title.length;
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return title[position];
+            }
+        });
+        mBinding.tab.setupWithViewPager(mBinding.viewPager);
+    }
 
     private void handleSign() {
         boolean fingerprintSignEnable = new FingerprintPolicyCallable(READ, TYPE_SIGN_TX).call();
@@ -92,26 +112,6 @@ public class XummTxConfirmFragment extends BaseFragment<XummTxConfirmBinding> {
                     viewModel.handleSignXummTransaction();
                     subscribeSignState();
                 }, forgetPassword);
-    }
-
-    private void handleParseException(Exception ex) {
-        if (ex != null) {
-            ex.printStackTrace();
-            if (ex instanceof InvalidAccountException) {
-                ModalDialog.showCommonModal(mActivity,
-                        getString(R.string.xrp_account_not_match),
-                        getString(R.string.xrp_account_not_match_detail) ,
-                        getString(R.string.confirm),
-                        null);
-            } else {
-                ModalDialog.showCommonModal(mActivity,
-                        getString(R.string.scan_failed),
-                        getString(R.string.incorrect_tx_data),
-                        getString(R.string.confirm),
-                        null);
-            }
-            popBackStack(R.id.assetFragment, false);
-        }
     }
 
     private void subscribeSignState() {
