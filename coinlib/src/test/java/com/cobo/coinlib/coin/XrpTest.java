@@ -74,6 +74,7 @@ public class XrpTest {
     public void testTransactionFlagMap(){
         System.out.println(new TransactionFlagMap().getString(2147745792L, "AccountSet"));
         System.out.println(new TransactionFlagMap().getAccountSetFlagsString(5, "AccountSetFlag"));
+        System.out.println(new TrustSet().formatCurrency("USD"));
     }
 
     @Test
@@ -127,7 +128,7 @@ public class XrpTest {
                 "        {\n" +
                 "            \"Memo\": {\n" +
                 "                \"MemoType\": \"697474703a2f2f6578616d706c652e636f6d2f6d656d6f2f67656e65726963\",\n" +
-                "                \"MemoData\": \"82656e74\"\n" +
+                "                \"MemoData\": \"73656e74\"\n" +
                 "            }\n" +
                 "        }\n" +
                 "    ],\n" +
@@ -327,7 +328,7 @@ public class XrpTest {
                 "  \"Account\" : \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\",\n" +
                 "  \"Destination\" : \"ra5nK24KXen9AHvsdFTKHSANinZseWnPcX\",\n" +
                 "  \"Amount\" : {\n" +
-                "     \"currency\" : \"USD\",\n" +
+                "     \"currency\" : \"0000534F534F0000000000000000000000000000\",\n" +
                 "     \"value\" : \"1\",\n" +
                 "     \"issuer\" : \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\"\n" +
                 "  },\n" +

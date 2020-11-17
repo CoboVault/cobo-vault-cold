@@ -150,4 +150,22 @@ public abstract class XrpTransaction {
             return null;
         }
     }
+    public static String formatCurrency(String hexStr) {
+        if (TextUtils.isEmpty(hexStr)) return null;
+        try {
+            if(40 == hexStr.length()) {
+                byte[] bytes = Hex.decode(hexStr);
+                for (int i = 0; i < bytes.length; i ++){
+                   if( (bytes[i] < 32 || bytes[i] > 126) && bytes[i] != 0) {
+                       return hexStr;
+                   }
+                }
+                return new String(bytes).replace("\u0000", "");
+            } else {
+                return hexStr;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
