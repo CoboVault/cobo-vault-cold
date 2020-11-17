@@ -142,15 +142,12 @@ public abstract class XrpTransaction {
         return formatter.format((RippleEpochSeconds + time) * 1e3);
     }
 
-    public static String hex2Ascii(String hexStr) {
-        if(TextUtils.isEmpty(hexStr)) {
+    public static String formatDomain(String hexStr) {
+        if (TextUtils.isEmpty(hexStr)) return null;
+        try {
+            return new String(Hex.decode(hexStr));
+        } catch (Exception e) {
             return null;
         }
-        StringBuilder output = new StringBuilder("");
-        for (int i = 0; i < hexStr.length(); i += 2) {
-            String str = hexStr.substring(i, i + 2);
-            output.append((char) Integer.parseInt(str, 16));
-        }
-        return output.toString();
     }
 }
