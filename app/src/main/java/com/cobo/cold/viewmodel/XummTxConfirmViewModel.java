@@ -53,6 +53,7 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
     private String account;
     private String signingPubKey;
     private String signingKeyPath;
+    private String txId;
 
     private final MutableLiveData<JSONObject> displayJson = new MutableLiveData<>();
     public XummTxConfirmViewModel(@NonNull Application application) {
@@ -132,6 +133,7 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
 
     @Override
     protected TxEntity onSignSuccess(String txId, String rawTx) {
+        this.txId = txId;
         TxEntity tx = observableTx.getValue();
         Objects.requireNonNull(tx).setTxId(txId);
         try {
@@ -142,6 +144,11 @@ public class XummTxConfirmViewModel extends TxConfirmViewModel{
         tx.setSignedHex(xummTxObj.toString());
         mRepository.insertTx(tx);
         return tx;
+    }
+
+    @Override
+    public String getTxId() {
+        return txId;
     }
 
     public void signXummTransaction(JSONObject txObj, SignCallback callback, Signer signer ) {
