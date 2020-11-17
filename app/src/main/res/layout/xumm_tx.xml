@@ -95,67 +95,25 @@
                 android:layout_alignParentBottom="true" />
         </RelativeLayout>
 
-        <ScrollView
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:tabTextAppearance="@style/TabTextAppearance"
+            app:tabIndicatorColor="@color/colorAccent"
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorHeight="2dp"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/white40" />
+        <include
+            layout="@layout/divider"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fadingEdge="vertical"
-            android:paddingBottom="10dp"
-            android:scrollbars="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.cobo.cold.ui.fragment.main.xumm.XummTxDetailsView
-                    android:id="@+id/container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="20dp" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="16dp"
-                    android:paddingBottom="20dp">
-
-                    <View
-                        android:layout_width="30dp"
-                        android:layout_height="match_parent" />
-
-                    <TextView
-                        android:id="@+id/broadcast_hint"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/please_broadcast_with_hot"
-                        android:textColor="@color/white"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:id="@+id/info"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:padding="5dp"
-                        android:src="@drawable/info"
-                        android:visibility="invisible" />
-
-                </LinearLayout>
-
-                <include
-                    android:id="@+id/qrcode"
-                    layout="@layout/dynamic_qrcode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-        </ScrollView>
+            android:layout_height="1dp" />
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
 
     </LinearLayout>

@@ -461,4 +461,6 @@
     <string name="unresolve_tx_hint">无法解析该交易，当前观察钱包下仅支持扫描%s生成的二维码。</string>
     <string name="xrp_account_not_match">非当前金库交易</string>
     <string name="xrp_account_not_match_detail">该交易不属于当前金库，请检查交易信息。</string>
+    <string name="simple">简单</string>
+    <string name="raw">原始</string>
 </resources>

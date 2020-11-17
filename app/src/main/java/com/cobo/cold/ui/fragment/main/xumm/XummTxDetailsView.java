@@ -65,6 +65,7 @@ public class XummTxDetailsView extends LinearLayout {
     }
 
     private void showTransactionDetails(JSONObject tx) {
+        removeAllViews();
         Map<String, String> map = toMap(tx);
         List<String> sortedKeys = new ArrayList<>(map.keySet());
         sortedKeys.sort((o1, o2) -> getDisplayOrder(o1) - getDisplayOrder(o2));
