@@ -20,6 +20,7 @@
 package com.cobo.coinlib.coins.XRP.transcationtype;
 
 import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.TransactionFlagMap;
 import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
@@ -39,6 +40,7 @@ public class PaymentChannelClaim extends XrpTransaction {
             result.putOpt("Amount", formatAmount(tx.optString("Amount")));
             result.putOpt("Signature", tx.opt("Signature"));
             result.putOpt("PublicKey", tx.opt("PublicKey"));
+            result.putOpt("Flags", TransactionFlagMap.getString(tx.optLong("Flags"),getTransactionType()));
         } catch (JSONException e) {
             e.printStackTrace();
         }

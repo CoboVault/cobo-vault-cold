@@ -17,6 +17,7 @@
 
 package com.cobo.coinlib.coin;
 
+import com.cobo.coinlib.coins.XRP.TransactionFlagMap;
 import com.cobo.coinlib.coins.XRP.Xrp;
 import com.cobo.coinlib.coins.XRP.XrpTransaction;
 import com.cobo.coinlib.coins.XRP.transcationtype.AccountDelete;
@@ -70,6 +71,12 @@ public class XrpTest {
     }
 
     @Test
+    public void testTransactionFlagMap(){
+        System.out.println(new TransactionFlagMap().getString(2147745792L, "AccountSet"));
+        System.out.println(new TransactionFlagMap().getAccountSetFlagsString(5, "AccountSetFlag"));
+    }
+
+    @Test
     public void testAccountSet() throws JSONException {
         JSONObject tx = new JSONObject("{\n" +
                 "    \"TransactionType\": \"AccountSet\",\n" +
@@ -78,6 +85,7 @@ public class XrpTest {
                 "    \"Sequence\": 5,\n" +
                 "    \"Domain\": \"6578616D706C652E636F6D\",\n" +
                 "    \"SetFlag\": 5,\n" +
+                "    \"ClearFlag\": 6,\n" +
                 "    \"LastLedgerSequence\": 7108629,\n" +
                 "    \"Memos\": [\n" +
                 "        {\n" +
@@ -93,6 +101,7 @@ public class XrpTest {
                 "            }\n" +
                 "        }\n" +
                 "    ],\n" +
+                "    \"Flags\": 2147745793,\n" +
                 "    \"MessageKey\": \"03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB\"\n" +
                 "}");
         assertTrue(new AccountSet().isValid(tx));
@@ -280,7 +289,7 @@ public class XrpTest {
                 "    \"TransactionType\": \"OfferCreate\",\n" +
                 "    \"Account\": \"ra5nK24KXen9AHvsdFTKHSANinZseWnPcX\",\n" +
                 "    \"Fee\": \"12\",\n" +
-                "    \"Flags\": 0,\n" +
+                "    \"Flags\": 2147549185,\n" +
                 "    \"LastLedgerSequence\": 7108682,\n" +
                 "    \"Sequence\": 8,\n" +
                 "    \"TakerGets\": \"6000000\",\n" +
@@ -295,7 +304,7 @@ public class XrpTest {
                 "    \"TransactionType\": \"OfferCreate\",\n" +
                 "    \"Account\": \"ra5nK24KXen9AHvsdFTKHSANinZseWnPcX\",\n" +
                 "    \"Fee\": \"12\",\n" +
-                "    \"Flags\": 0,\n" +
+                "    \"Flags\": 1,\n" +
                 "    \"LastLedgerSequence\": 7108682,\n" +
                 "    \"Sequence\": 8,\n" +
                 "    \"TakerPays\": \"6000000\",\n" +
@@ -323,7 +332,7 @@ public class XrpTest {
                 "     \"issuer\" : \"rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn\"\n" +
                 "  },\n" +
                 "  \"Fee\": \"12\",\n" +
-                "  \"Flags\": 2147483648,\n" +
+                "  \"Flags\": 2147549185,\n" +
                 "  \"Sequence\": 2,\n" +
                 "}");
         assertTrue(new Payment().isValid(tx));
@@ -337,6 +346,7 @@ public class XrpTest {
                 "  \"Channel\": \"C1AE6DDDEEC05CF2978C0BAD6FE302948E9533691DC749DCDD3B9E5992CA6198\",\n" +
                 "  \"Balance\": \"1000000\",\n" +
                 "  \"Amount\": \"1000000\",\n" +
+                "  \"Flags\": 2147549185,\n" +
                 "  \"Signature\": \"30440220718D264EF05CAED7C781FF6DE298DCAC68D002562C9BF3A07C1E721B420C0DAB02203A5A4779EF4D2CCC7BC3EF886676D803A9981B928D3B8ACA483B80ECA3CD7B9B\",\n" +
                 "  \"PublicKey\": \"32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A\"\n" +
                 "}");

@@ -56,7 +56,7 @@ public abstract class XrpTransaction {
             displayTx.putOpt("Account", tx.opt("Account"));
             displayTx.putOpt("Fee", formatAmount(tx.optString("Fee")));
             displayTx.putOpt("AccountTxnID", tx.opt("AccountTxnID"));
-            displayTx.putOpt("Flags", tx.opt("Flags"));
+            //displayTx.putOpt("Flags", tx.opt("Flags"));
             displayTx.putOpt("SourceTag", tx.opt("SourceTag"));
             JSONArray Memo = tx.optJSONArray("Memos");
             if(null != Memo) {
