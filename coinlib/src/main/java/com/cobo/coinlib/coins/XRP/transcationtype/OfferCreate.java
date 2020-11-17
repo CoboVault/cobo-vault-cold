@@ -42,7 +42,7 @@ public class OfferCreate extends XrpTransaction {
                     JSONObject amount = tx.optJSONObject("TakerGets");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("TakerGets.value", amount.opt("value"));
-                        result.putOpt("TakerGets.currency", amount.opt("currency"));
+                        result.putOpt("TakerGets.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("TakerGets.issuer", amount.opt("issuer"));
                     }
                 } else {
@@ -54,7 +54,7 @@ public class OfferCreate extends XrpTransaction {
                     JSONObject amount = tx.optJSONObject("TakerPays");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("TakerPays.value", amount.opt("value"));
-                        result.putOpt("TakerPays.currency", amount.opt("currency"));
+                        result.putOpt("TakerPays.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("TakerPays.issuer", amount.opt("issuer"));
                     }
                 } else {

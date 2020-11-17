@@ -44,7 +44,7 @@ public class Payment extends XrpTransaction {
                     JSONObject amount = tx.optJSONObject("Amount");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("Amount.value", amount.opt("value"));
-                        result.putOpt("Amount.currency", amount.opt("currency"));
+                        result.putOpt("Amount.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("Amount.issuer", amount.opt("issuer"));
                     }
                 } else {
@@ -56,7 +56,7 @@ public class Payment extends XrpTransaction {
                     JSONObject amount = tx.optJSONObject("SendMax");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("SendMax.value", amount.opt("value"));
-                        result.putOpt("SendMax.currency", amount.opt("currency"));
+                        result.putOpt("SendMax.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("SendMax.issuer", amount.opt("issuer"));
                     }
                 } else {
@@ -68,7 +68,7 @@ public class Payment extends XrpTransaction {
                     JSONObject amount = tx.optJSONObject("DeliverMin");
                     if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("DeliverMin.value", amount.opt("value"));
-                        result.putOpt("DeliverMin.currency", amount.opt("currency"));
+                        result.putOpt("DeliverMin.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("DeliverMin.issuer", amount.opt("issuer"));
                     }
                 } else {
