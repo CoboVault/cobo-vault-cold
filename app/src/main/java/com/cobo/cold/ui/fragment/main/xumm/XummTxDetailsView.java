@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 public class XummTxDetailsView extends LinearLayout {
+    private JSONObject tx;
 
     public XummTxDetailsView(Context context) {
         this(context, null);
@@ -59,7 +60,8 @@ public class XummTxDetailsView extends LinearLayout {
     }
 
     public void setData(JSONObject object) {
-        showTransactionDetails(object);
+        tx = object;
+        showTransactionDetails(tx);
     }
 
     private void showTransactionDetails(JSONObject tx) {
@@ -96,7 +98,11 @@ public class XummTxDetailsView extends LinearLayout {
         if (index != -1) {
             return index;
         }
-        return Integer.MAX_VALUE;
+        if (key.equals("Fee")) {
+            return Integer.MAX_VALUE;
+        } else {
+            return Integer.MAX_VALUE - 1;
+        }
     }
 
     List<String> keys = Arrays.asList(
@@ -142,7 +148,6 @@ public class XummTxDetailsView extends LinearLayout {
             "Domain",
             "Flags",
             "Memos",
-            "Expiration",
-            "Fee"
+            "Expiration"
     );
 }
