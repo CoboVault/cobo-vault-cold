@@ -152,6 +152,7 @@ public class XummTxConfirmFragment extends BaseFragment<XummTxConfirmBinding> {
         Bundle data = new Bundle();
         data.putString(KEY_TXID, txId);
         navigate(R.id.action_to_broadcastXummTxFragment, data);
+        viewModel.getSignState().setValue("");
         viewModel.getSignState().removeObservers(this);
     }
 

@@ -45,6 +45,7 @@ public class XummTxDetailFragment extends BaseFragment<XrpTxDetailBinding> {
 
     private static final String XRP_TX = "xrp_tx";
     private static final String XRP_TX_HEX = "xrp_tx_hex";
+    private XummTxConfirmViewModel viewModel;
 
     static Fragment newInstance(@NonNull String json, String txHex) {
         XummTxDetailFragment fragment = new XummTxDetailFragment();
@@ -68,7 +69,7 @@ public class XummTxDetailFragment extends BaseFragment<XrpTxDetailBinding> {
             String txHex = bundle.getString(XRP_TX_HEX);
             //unsigned
             if (TextUtils.isEmpty(txHex)) {
-                XummTxConfirmViewModel viewModel = ViewModelProviders.of(mActivity).get(XummTxConfirmViewModel.class);
+                viewModel = ViewModelProviders.of(mActivity).get(XummTxConfirmViewModel.class);
                 viewModel.parseTxException().observe(this, this::handleParseException);
                 viewModel.parseXummTxData(xrpTx);
                 viewModel.getDisplayJson().observe(this, tx -> mBinding.container.setData(tx));
@@ -109,6 +110,7 @@ public class XummTxDetailFragment extends BaseFragment<XrpTxDetailBinding> {
                         getString(R.string.confirm),
                         null);
             }
+            viewModel.parseTxException().setValue(null);
             popBackStack(R.id.assetFragment, false);
         }
     }
