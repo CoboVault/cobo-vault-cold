@@ -60,7 +60,7 @@ public class TransactionFlag {
             LimitQuality = 0x00040000,
             PaymentMask = ~(Universal | PartialPayment | LimitQuality | NoRippleDirect),
 
-    // PaymentChannelClaim flags
+    // PaymentChannelClaim flags:
     Renew = 0x00010000,
             Close = 0x00020000,
             PaymentChannelClaimMask = ~(Renew | Close),

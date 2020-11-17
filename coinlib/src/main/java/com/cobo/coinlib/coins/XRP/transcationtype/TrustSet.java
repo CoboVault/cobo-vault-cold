@@ -20,6 +20,7 @@
 package com.cobo.coinlib.coins.XRP.transcationtype;
 
 import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.TransactionFlagMap;
 import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
@@ -48,6 +49,7 @@ public class TrustSet extends XrpTransaction {
             }
             result.putOpt("QualityIn", tx.opt("QualityIn"));
             result.putOpt("QualityOut", tx.opt("QualityOut"));
+            result.putOpt("Flags", TransactionFlagMap.getString(tx.optLong("Flags"),getTransactionType()));
         } catch (JSONException e) {
             e.printStackTrace();
         }

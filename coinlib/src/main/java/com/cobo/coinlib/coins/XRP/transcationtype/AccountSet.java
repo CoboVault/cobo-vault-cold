@@ -20,6 +20,8 @@
 package com.cobo.coinlib.coins.XRP.transcationtype;
 
 import com.cobo.coinlib.coins.XRP.Schemas;
+import com.cobo.coinlib.coins.XRP.TransactionFlag;
+import com.cobo.coinlib.coins.XRP.TransactionFlagMap;
 import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
 import org.json.JSONException;
@@ -43,6 +45,10 @@ public class AccountSet extends XrpTransaction {
             result.remove("LastLedgerSequence");
             flatTransactionCommonFields(result, tx);
             result.putOpt("Domain", formatDomain(tx.optString("Domain")));
+            result.remove("Flags");
+            result.putOpt("Flags", TransactionFlagMap.getString(tx.optLong("Flags"),getTransactionType()));
+            result.putOpt("ClearFlag", TransactionFlagMap.getAccountSetFlagsString(tx.optLong("ClearFlag"),"AccountSetFlag"));
+            result.putOpt("SetFlag", TransactionFlagMap.getAccountSetFlagsString(tx.optLong("SetFlag"),"AccountSetFlag"));
             return result;
         } catch (JSONException e) {
             e.printStackTrace();
