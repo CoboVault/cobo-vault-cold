@@ -29,13 +29,14 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public abstract class XrpTransaction {
 
     protected String schema;
     private final int decimals = 6;
     private static final long RippleEpochSeconds = 946684800L;
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss 'UTC'",
             Locale.getDefault());
 
     protected XrpTransaction(String schema) {
@@ -137,6 +138,7 @@ public abstract class XrpTransaction {
         if(0 == time) {
             return null;
         }
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         return formatter.format((RippleEpochSeconds + time) * 1e3);
     }
 
