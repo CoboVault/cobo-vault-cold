@@ -78,7 +78,14 @@ public class XrpTest {
                 "    \"Sequence\": 5,\n" +
                 "    \"Domain\": \"6578616D706C652E636F6D\",\n" +
                 "    \"SetFlag\": 5,\n" +
+                "    \"LastLedgerSequence\": 7108629,\n" +
                 "    \"Memos\": [\n" +
+                "        {\n" +
+                "            \"Memo\": {\n" +
+                "                \"MemoType\": \"687474703a2f2f6578616d706c652e636f6d2f6d656d6f2f67656e65726963\",\n" +
+                "                \"MemoData\": \"72656e74\"\n" +
+                "            }\n" +
+                "        },\n" +
                 "        {\n" +
                 "            \"Memo\": {\n" +
                 "                \"MemoType\": \"687474703a2f2f6578616d706c652e636f6d2f6d656d6f2f67656e65726963\",\n" +
@@ -89,7 +96,7 @@ public class XrpTest {
                 "    \"MessageKey\": \"03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB\"\n" +
                 "}");
         assertTrue(new AccountSet().isValid(tx));
-        System.out.println(new AccountSet().flatTransactionDetail(tx));
+        System.out.println(new AccountSet().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -118,7 +125,7 @@ public class XrpTest {
                 "    \"Flags\": 2147483648\n" +
                 "}");
         assertTrue(new AccountDelete().isValid(tx));
-        System.out.println(new AccountDelete().flatTransactionDetail(tx));
+        System.out.println(new AccountDelete().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -130,7 +137,7 @@ public class XrpTest {
                 "    \"Fee\": \"12\"\n" +
                 "}");
         assertTrue(new CheckCancel().isValid(tx));
-        System.out.println(new CheckCancel().flatTransactionDetail(tx));
+        System.out.println(new CheckCancel().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -156,9 +163,9 @@ public class XrpTest {
                 "}");
 
         assertTrue(new CheckCash().isValid(tx));
-        System.out.println(new CheckCash().flatTransactionDetail(tx));
+        System.out.println(new CheckCash().flatTransactionDetail(tx).toString(2));
         assertTrue(new CheckCash().isValid(tx2));
-        System.out.println(new CheckCash().flatTransactionDetail(tx2));
+        System.out.println(new CheckCash().flatTransactionDetail(tx2).toString(2));
     }
 
     @Test
@@ -190,9 +197,9 @@ public class XrpTest {
                 "}");
 
         assertTrue(new CheckCreate().isValid(tx));
-        System.out.println(new CheckCreate().flatTransactionDetail(tx));
+        System.out.println(new CheckCreate().flatTransactionDetail(tx).toString(2));
         assertTrue(new CheckCreate().isValid(tx2));
-        System.out.println(new CheckCreate().flatTransactionDetail(tx2));
+        System.out.println(new CheckCreate().flatTransactionDetail(tx2).toString(2));
     }
 
     @Test
@@ -206,7 +213,7 @@ public class XrpTest {
                 "  \"Sequence\" : 2\n" +
                 "}");
         assertTrue(new DepositPreauth().isValid(tx));
-        System.out.println(new DepositPreauth().flatTransactionDetail(tx));
+        System.out.println(new DepositPreauth().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -218,7 +225,7 @@ public class XrpTest {
                 "  \"OfferSequence\": 7\n" +
                 "}");
         assertTrue(new EscrowCancel().isValid(tx));
-        System.out.println(new EscrowCancel().flatTransactionDetail(tx));
+        System.out.println(new EscrowCancel().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -235,7 +242,7 @@ public class XrpTest {
                 "    \"SourceTag\": 11747\n" +
                 "}\n");
         assertTrue(new EscrowCreate().isValid(tx));
-        System.out.println(new EscrowCreate().flatTransactionDetail(tx));
+        System.out.println(new EscrowCreate().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -249,7 +256,7 @@ public class XrpTest {
                 "    \"Fulfillment\": \"A0028000\"\n" +
                 "}");
         assertTrue(new EscrowFinish().isValid(tx));
-        System.out.println(new EscrowFinish().flatTransactionDetail(tx));
+        System.out.println(new EscrowFinish().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -264,7 +271,7 @@ public class XrpTest {
                 "    \"Sequence\": 7\n" +
                 "}");
         assertTrue(new OfferCancel().isValid(tx));
-        System.out.println(new OfferCancel().flatTransactionDetail(tx));
+        System.out.println(new OfferCancel().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -299,9 +306,9 @@ public class XrpTest {
                 "    }\n" +
                 "}");
         assertTrue(new OfferCreate().isValid(tx));
-        System.out.println(new OfferCreate().flatTransactionDetail(tx));
+        System.out.println(new OfferCreate().flatTransactionDetail(tx).toString(2));
         assertTrue(new OfferCreate().isValid(tx2));
-        System.out.println(new OfferCreate().flatTransactionDetail(tx2));
+        System.out.println(new OfferCreate().flatTransactionDetail(tx2).toString(2));
     }
 
     @Test
@@ -334,7 +341,7 @@ public class XrpTest {
                 "  \"PublicKey\": \"32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A\"\n" +
                 "}");
         assertTrue(new PaymentChannelClaim().isValid(tx));
-        System.out.println(new PaymentChannelClaim().flatTransactionDetail(tx));
+        System.out.println(new PaymentChannelClaim().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -351,7 +358,7 @@ public class XrpTest {
                 "    \"SourceTag\": 11747\n" +
                 "}");
         assertTrue(new PaymentChannelCreate().isValid(tx));
-        System.out.println(new PaymentChannelCreate().flatTransactionDetail(tx));
+        System.out.println(new PaymentChannelCreate().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -364,7 +371,7 @@ public class XrpTest {
                 "    \"Expiration\": 543171558\n" +
                 "}");
         assertTrue(new PaymentChannelFund().isValid(tx));
-        System.out.println(new PaymentChannelFund().flatTransactionDetail(tx));
+        System.out.println(new PaymentChannelFund().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -377,7 +384,7 @@ public class XrpTest {
                 "    \"RegularKey\": \"rAR8rR8sUkBoCZFawhkWzY4Y5YoyuznwD\"\n" +
                 "}");
         assertTrue(new SetRegularKey().isValid(tx));
-        System.out.println(new SetRegularKey().flatTransactionDetail(tx));
+        System.out.println(new SetRegularKey().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -410,7 +417,7 @@ public class XrpTest {
                 "    ]\n" +
                 "}");
         assertTrue(new SignerListSet().isValid(tx));
-        System.out.println(new SignerListSet().flatTransactionDetail(tx));
+        System.out.println(new SignerListSet().flatTransactionDetail(tx).toString(2));
     }
 
     @Test
@@ -430,7 +437,7 @@ public class XrpTest {
                 "}");
 
         assertTrue(new TrustSet().isValid(tx));
-        System.out.println(new TrustSet().flatTransactionDetail(tx));
+        System.out.println(new TrustSet().flatTransactionDetail(tx).toString(2));
     }
 
 }

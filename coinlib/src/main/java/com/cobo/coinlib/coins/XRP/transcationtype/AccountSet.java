@@ -37,8 +37,12 @@ public class AccountSet extends XrpTransaction {
             JSONObject result = new JSONObject(tx.toString());
             result.remove("Memos");
             result.remove("Signers");
+            result.remove("Sequence");
+            result.remove("SigningPubKey");
+            result.remove("TxnSignature");
+            result.remove("LastLedgerSequence");
             flatTransactionCommonFields(result, tx);
-            result.putOpt("Domain", hex2Ascii(tx.optString("Domain")));
+            result.putOpt("Domain", formatDomain(tx.optString("Domain")));
             return result;
         } catch (JSONException e) {
             e.printStackTrace();
