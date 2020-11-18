@@ -43,7 +43,8 @@ public class CheckCreate extends XrpTransaction {
             if(tx.has("SendMax")){
                 if(null != tx.optJSONObject("SendMax")) {
                     JSONObject amount = tx.optJSONObject("SendMax");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
+                    if(amount != null && amount.has("value")
+                            && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("SendMax.value", amount.opt("value"));
                         result.putOpt("SendMax.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("SendMax.issuer", amount.opt("issuer"));

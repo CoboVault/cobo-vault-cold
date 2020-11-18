@@ -19,66 +19,65 @@
 package com.cobo.coinlib.coins.XRP;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 public class TransactionFlagMap {
-    private final static List<Flags> _flags = new ArrayList<>();
-    private final static List<Flags> _AccountSetflags = new ArrayList<>();
+    private final static List<Flags> flags = new ArrayList<>();
+    private final static List<Flags> accountSetFlags = new ArrayList<>();
     static {
         // Constraints flags:
-        _flags.add(new Flags(TransactionFlag.FullyCanonicalSig, "FullyCanonicalSig","Constraints"));
-        _flags.add(new Flags(TransactionFlag.UniversalMask, "UniversalMask", "Constraints"));
+        flags.add(new Flags(TransactionFlag.FullyCanonicalSig, "FullyCanonicalSig","Constraints"));
+        flags.add(new Flags(TransactionFlag.UniversalMask, "UniversalMask", "Constraints"));
         // AccountSet flags:
-        _flags.add(new Flags(TransactionFlag.RequireDestTag, "RequireDestTag", "AccountSet"));
-        _flags.add(new Flags(TransactionFlag.OptionalDestTag, "OptionalDestTag", "AccountSet"));
-        _flags.add(new Flags(TransactionFlag.RequireAuth, "RequireAuth", "AccountSet"));
-        _flags.add(new Flags(TransactionFlag.OptionalAuth, "OptionalAuth", "AccountSet"));
-        _flags.add(new Flags(TransactionFlag.DisallowXRP, "DisallowXRP", "AccountSet"));
-        _flags.add(new Flags(TransactionFlag.AllowXRP, "AllowXRP", "AccountSet"));
-        _flags.add(new Flags(TransactionFlag.AccountSetMask, "AccountSetMask", "AccountSet"));
+        flags.add(new Flags(TransactionFlag.RequireDestTag, "RequireDestTag", "AccountSet"));
+        flags.add(new Flags(TransactionFlag.OptionalDestTag, "OptionalDestTag", "AccountSet"));
+        flags.add(new Flags(TransactionFlag.RequireAuth, "RequireAuth", "AccountSet"));
+        flags.add(new Flags(TransactionFlag.OptionalAuth, "OptionalAuth", "AccountSet"));
+        flags.add(new Flags(TransactionFlag.DisallowXRP, "DisallowXRP", "AccountSet"));
+        flags.add(new Flags(TransactionFlag.AllowXRP, "AllowXRP", "AccountSet"));
+        flags.add(new Flags(TransactionFlag.AccountSetMask, "AccountSetMask", "AccountSet"));
         // OfferCreate flags:
-        _flags.add(new Flags(TransactionFlag.Passive, "Passive", "OfferCreate"));
-        _flags.add(new Flags(TransactionFlag.ImmediateOrCancel, "ImmediateOrCancel", "OfferCreate"));
-        _flags.add(new Flags(TransactionFlag.FillOrKill, "FillOrKill", "OfferCreate"));
-        _flags.add(new Flags(TransactionFlag.Sell, "Sell", "OfferCreate"));
-        _flags.add(new Flags(TransactionFlag.OfferCreateMask, "OfferCreateMask", "OfferCreate"));
+        flags.add(new Flags(TransactionFlag.Passive, "Passive", "OfferCreate"));
+        flags.add(new Flags(TransactionFlag.ImmediateOrCancel, "ImmediateOrCancel", "OfferCreate"));
+        flags.add(new Flags(TransactionFlag.FillOrKill, "FillOrKill", "OfferCreate"));
+        flags.add(new Flags(TransactionFlag.Sell, "Sell", "OfferCreate"));
+        flags.add(new Flags(TransactionFlag.OfferCreateMask, "OfferCreateMask", "OfferCreate"));
         // Payment flags:
-        _flags.add(new Flags(TransactionFlag.NoRippleDirect, "NoRippleDirect", "Payment"));
-        _flags.add(new Flags(TransactionFlag.PartialPayment, "PartialPayment", "Payment"));
-        _flags.add(new Flags(TransactionFlag.LimitQuality, "LimitQuality", "Payment"));
-        _flags.add(new Flags(TransactionFlag.PaymentMask, "PaymentMask", "Payment"));
+        flags.add(new Flags(TransactionFlag.NoRippleDirect, "NoRippleDirect", "Payment"));
+        flags.add(new Flags(TransactionFlag.PartialPayment, "PartialPayment", "Payment"));
+        flags.add(new Flags(TransactionFlag.LimitQuality, "LimitQuality", "Payment"));
+        flags.add(new Flags(TransactionFlag.PaymentMask, "PaymentMask", "Payment"));
         // PaymentChannelClaim flags:
-        _flags.add(new Flags(TransactionFlag.Renew, "Renew", "PaymentChannelClaim"));
-        _flags.add(new Flags(TransactionFlag.Close, "Close", "PaymentChannelClaim"));
-        _flags.add(new Flags(TransactionFlag.PaymentChannelClaimMask, "PaymentChannelClaimMask", "PaymentChannelClaim"));
+        flags.add(new Flags(TransactionFlag.Renew, "Renew", "PaymentChannelClaim"));
+        flags.add(new Flags(TransactionFlag.Close, "Close", "PaymentChannelClaim"));
+        flags.add(new Flags(TransactionFlag.PaymentChannelClaimMask, "PaymentChannelClaimMask", "PaymentChannelClaim"));
         // TrustSet flags:
-        _flags.add(new Flags(TransactionFlag.SetAuth, "SetAuth", "TrustSet"));
-        _flags.add(new Flags(TransactionFlag.SetNoRipple, "SetNoRipple", "TrustSet"));
-        _flags.add(new Flags(TransactionFlag.ClearNoRipple, "ClearNoRipple", "TrustSet"));
-        _flags.add(new Flags(TransactionFlag.SetFreeze, "SetFreeze", "TrustSet"));
-        _flags.add(new Flags(TransactionFlag.ClearFreeze, "ClearFreeze", "TrustSet"));
-        _flags.add(new Flags(TransactionFlag.TrustSetMask, "TrustSetMask", "TrustSet"));
+        flags.add(new Flags(TransactionFlag.SetAuth, "SetAuth", "TrustSet"));
+        flags.add(new Flags(TransactionFlag.SetNoRipple, "SetNoRipple", "TrustSet"));
+        flags.add(new Flags(TransactionFlag.ClearNoRipple, "ClearNoRipple", "TrustSet"));
+        flags.add(new Flags(TransactionFlag.SetFreeze, "SetFreeze", "TrustSet"));
+        flags.add(new Flags(TransactionFlag.ClearFreeze, "ClearFreeze", "TrustSet"));
+        flags.add(new Flags(TransactionFlag.TrustSetMask, "TrustSetMask", "TrustSet"));
         // AccountSet SetFlag/ClearFlag values
-        _AccountSetflags.add(new Flags(TransactionFlag.asfRequireDest, "asfRequireDest", "AccountSetFlag"));
-        _AccountSetflags.add(new Flags(TransactionFlag.asfRequireAuth, "asfRequireAuth", "AccountSetFlag"));
-        _AccountSetflags.add(new Flags(TransactionFlag.asfDisallowXRP, "asfDisallowXRP", "AccountSetFlag"));
-        _AccountSetflags.add(new Flags(TransactionFlag.asfDisableMaster, "asfDisableMaster", "AccountSetFlag"));
-        _AccountSetflags.add(new Flags(TransactionFlag.asfAccountTxnID, "asfAccountTxnID", "AccountSetFlag"));
-        _AccountSetflags.add(new Flags(TransactionFlag.asfNoFreeze, "asfNoFreeze", "AccountSetFlag"));
-        _AccountSetflags.add(new Flags(TransactionFlag.asfGlobalFreeze, "asfGlobalFreeze", "AccountSetFlag"));
-        _AccountSetflags.add(new Flags(TransactionFlag.asfDefaultRipple, "asfDefaultRipple", "AccountSetFlag"));
-        _AccountSetflags.add(new Flags(TransactionFlag.asfDepositAuth, "asfDepositAuth", "AccountSetFlag"));
+        accountSetFlags.add(new Flags(TransactionFlag.asfRequireDest, "asfRequireDest", "AccountSetFlag"));
+        accountSetFlags.add(new Flags(TransactionFlag.asfRequireAuth, "asfRequireAuth", "AccountSetFlag"));
+        accountSetFlags.add(new Flags(TransactionFlag.asfDisallowXRP, "asfDisallowXRP", "AccountSetFlag"));
+        accountSetFlags.add(new Flags(TransactionFlag.asfDisableMaster, "asfDisableMaster", "AccountSetFlag"));
+        accountSetFlags.add(new Flags(TransactionFlag.asfAccountTxnID, "asfAccountTxnID", "AccountSetFlag"));
+        accountSetFlags.add(new Flags(TransactionFlag.asfNoFreeze, "asfNoFreeze", "AccountSetFlag"));
+        accountSetFlags.add(new Flags(TransactionFlag.asfGlobalFreeze, "asfGlobalFreeze", "AccountSetFlag"));
+        accountSetFlags.add(new Flags(TransactionFlag.asfDefaultRipple, "asfDefaultRipple", "AccountSetFlag"));
+        accountSetFlags.add(new Flags(TransactionFlag.asfDepositAuth, "asfDepositAuth", "AccountSetFlag"));
     }
 
-    public final static String getString(long flag, String transactionType) {
-       return  _flags.stream().filter(f -> f.transactionType.equals(transactionType))
+    public static String getString(long flag, String transactionType) {
+       return  flags.stream().filter(f -> f.transactionType.equals(transactionType))
                 .filter(f -> TransactionFlag.hasFlag(flag, f.flag))
                 .map(f -> f.flagName)
-                .reduce((s1,s2) -> s1 + "," + s2).orElse(null);
+                .reduce((s1,s2) -> s1 + ", " + s2).orElse(null);
     }
 
-    public final static String getAccountSetFlagsString(long flag, String transactionType) {
-        return  _AccountSetflags.stream().filter(f -> f.transactionType.equals(transactionType))
+    public static String getAccountSetFlagsString(long flag, String transactionType) {
+        return  accountSetFlags.stream().filter(f -> f.transactionType.equals(transactionType))
                 .filter(f -> f.flag == flag)
                 .findFirst()
                 .map(f -> f.flagName).orElse(null);

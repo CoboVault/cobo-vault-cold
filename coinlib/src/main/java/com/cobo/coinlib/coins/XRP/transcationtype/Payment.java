@@ -23,6 +23,7 @@ import com.cobo.coinlib.coins.XRP.Schemas;
 import com.cobo.coinlib.coins.XRP.TransactionFlagMap;
 import com.cobo.coinlib.coins.XRP.XrpTransaction;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,7 +43,8 @@ public class Payment extends XrpTransaction {
             if(tx.has("Amount")){
                 if(null != tx.optJSONObject("Amount")) {
                     JSONObject amount = tx.optJSONObject("Amount");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
+                    if(amount != null && amount.has("value")
+                            && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("Amount.value", amount.opt("value"));
                         result.putOpt("Amount.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("Amount.issuer", amount.opt("issuer"));
@@ -54,7 +56,8 @@ public class Payment extends XrpTransaction {
             if(tx.has("SendMax")){
                 if(null != tx.optJSONObject("SendMax")) {
                     JSONObject amount = tx.optJSONObject("SendMax");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
+                    if(amount != null && amount.has("value")
+                            && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("SendMax.value", amount.opt("value"));
                         result.putOpt("SendMax.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("SendMax.issuer", amount.opt("issuer"));
@@ -66,7 +69,8 @@ public class Payment extends XrpTransaction {
             if(tx.has("DeliverMin")) {
                 if(null != tx.optJSONObject("DeliverMin")) {
                     JSONObject amount = tx.optJSONObject("DeliverMin");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
+                    if(amount != null && amount.has("value")
+                            && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("DeliverMin.value", amount.opt("value"));
                         result.putOpt("DeliverMin.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("DeliverMin.issuer", amount.opt("issuer"));
@@ -75,8 +79,10 @@ public class Payment extends XrpTransaction {
                     result.putOpt("DeliverMin", formatAmount(tx.optString("DeliverMin")));
                 }
             }
-            if(tx.has("Paths")){
-                result.putOpt("Paths", tx.optJSONArray("Paths").toString(2));
+
+            JSONArray pathArray = tx.optJSONArray("Paths");
+            if(pathArray != null){
+                result.putOpt("Paths", pathArray.toString(2));
             }
         } catch (JSONException e) {
             e.printStackTrace();
