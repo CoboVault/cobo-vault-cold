@@ -38,7 +38,8 @@ public class TrustSet extends XrpTransaction {
             if(tx.has("LimitAmount")){
                 if(null != tx.optJSONObject("LimitAmount")) {
                     JSONObject amount = tx.optJSONObject("LimitAmount");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
+                    if(amount != null && amount.has("value")
+                            && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("LimitAmount.value", amount.opt("value"));
                         result.putOpt("LimitAmount.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("LimitAmount.issuer", amount.opt("issuer"));

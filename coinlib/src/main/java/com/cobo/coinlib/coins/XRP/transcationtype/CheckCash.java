@@ -40,7 +40,8 @@ public class CheckCash extends XrpTransaction {
             if(tx.has("Amount")){
                 if(null != tx.optJSONObject("Amount")) {
                     JSONObject amount = tx.optJSONObject("Amount");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
+                    if(amount!= null && amount.has("value")
+                            && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("Amount.value", amount.opt("value"));
                         result.putOpt("Amount.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("Amount.issuer", amount.opt("issuer"));
@@ -52,7 +53,7 @@ public class CheckCash extends XrpTransaction {
             if(tx.has("DeliverMin")) {
                 if(null != tx.optJSONObject("DeliverMin")) {
                     JSONObject amount = tx.optJSONObject("DeliverMin");
-                    if(amount.has("value") && amount.has("currency") && amount.has("issuer")) {
+                    if(amount != null && amount.has("value") && amount.has("currency") && amount.has("issuer")) {
                         result.putOpt("DeliverMin.value", amount.opt("value"));
                         result.putOpt("DeliverMin.currency", formatCurrency(amount.optString("currency")));
                         result.putOpt("DeliverMin.issuer", amount.opt("issuer"));

@@ -20,7 +20,6 @@
 package com.cobo.coinlib.coins.XRP.transcationtype;
 
 import com.cobo.coinlib.coins.XRP.Schemas;
-import com.cobo.coinlib.coins.XRP.TransactionFlag;
 import com.cobo.coinlib.coins.XRP.TransactionFlagMap;
 import com.cobo.coinlib.coins.XRP.XrpTransaction;
 

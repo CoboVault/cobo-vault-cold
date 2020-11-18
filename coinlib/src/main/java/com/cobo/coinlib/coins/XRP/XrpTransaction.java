@@ -34,9 +34,9 @@ import java.util.TimeZone;
 public abstract class XrpTransaction {
 
     protected String schema;
-    private final int decimals = 6;
+    private static final int decimals = 6;
     private static final long RippleEpochSeconds = 946684800L;
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss 'UTC'",
+    private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss 'UTC'",
             Locale.getDefault());
 
     protected XrpTransaction(String schema) {
@@ -63,7 +63,7 @@ public abstract class XrpTransaction {
                 for( int index = 0; index < Memo.length(); index++) {
                     JSONObject MemoObj = Memo.optJSONObject(index);
                     JSONObject entry = MemoObj.optJSONObject("Memo");
-                    if(entry.has("MemoType") && entry.has("MemoData") ) {
+                    if(entry != null && entry.has("MemoType") && entry.has("MemoData") ) {
                         if(Memo.length() > 1) {
                             displayTx.putOpt("Memo" + index + ".MemoData", formatMemo(entry.optString("MemoData")));
                             displayTx.putOpt("Memo" + index + ".MemoType", formatMemo(entry.optString("MemoType")));
@@ -81,7 +81,7 @@ public abstract class XrpTransaction {
                 for( int index = 0; index < Signer.length(); index++) {
                     JSONObject SignerObj = Signer.optJSONObject(index);
                     JSONObject entry = SignerObj.optJSONObject("Signer");
-                    if(entry.has("Account") && entry.has("TxnSignature") ) {
+                    if(entry!= null && entry.has("Account") && entry.has("TxnSignature") ) {
                         if(Signer.length() > 1) {
                             displayTx.putOpt("Signer" + index + ".Account", entry.opt("Account"));
                             displayTx.putOpt("Signer" + index + ".TxnSignature", entry.opt("TxnSignature"));
@@ -155,10 +155,10 @@ public abstract class XrpTransaction {
         try {
             if(40 == hexStr.length()) {
                 byte[] bytes = Hex.decode(hexStr);
-                for (int i = 0; i < bytes.length; i ++){
-                   if( (bytes[i] < 32 || bytes[i] > 126) && bytes[i] != 0) {
-                       return hexStr;
-                   }
+                for (byte aByte : bytes) {
+                    if ((aByte < 32 || aByte > 126) && aByte != 0) {
+                        return hexStr;
+                    }
                 }
                 return new String(bytes).replace("\u0000", "");
             } else {

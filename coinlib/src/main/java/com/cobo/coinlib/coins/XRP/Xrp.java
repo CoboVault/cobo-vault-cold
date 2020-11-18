@@ -22,7 +22,6 @@ import androidx.annotation.NonNull;
 import com.cobo.coinlib.coins.AbsCoin;
 import com.cobo.coinlib.coins.AbsDeriver;
 import com.cobo.coinlib.coins.AbsTx;
-import com.cobo.coinlib.coins.BTC.BtcImpl;
 import com.cobo.coinlib.coins.SignTxResult;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.Coin;

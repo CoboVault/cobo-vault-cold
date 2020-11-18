@@ -41,7 +41,7 @@ public class SignerListSet extends XrpTransaction {
                 for( int index = 0; index < Signer.length(); index++){
                     JSONObject SignerObj = Signer.optJSONObject(index);
                     JSONObject entry = SignerObj.optJSONObject("SignerEntry");
-                    if(entry.has("Account") && entry.has("SignerWeight") ) {
+                    if(entry != null && entry.has("Account") && entry.has("SignerWeight") ) {
                         if (Signer.length() > 1) {
                             result.putOpt("SignerEntry"+ index +".Account", entry.opt("Account"));
                             result.putOpt("SignerEntry"+ index +".SignerWeight", entry.opt("SignerWeight"));
