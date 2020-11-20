@@ -25,7 +25,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.cobo.coinlib.coins.DOT.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOSDecoder;
 import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;

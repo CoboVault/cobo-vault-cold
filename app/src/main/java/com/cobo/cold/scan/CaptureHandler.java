@@ -20,7 +20,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.cobo.bcUniformResource.Workload;
-import com.cobo.coinlib.coins.DOT.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOSDecoder;
 import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.cold.scan.camera.CameraManager;
 import com.cobo.cold.scan.common.Constant;

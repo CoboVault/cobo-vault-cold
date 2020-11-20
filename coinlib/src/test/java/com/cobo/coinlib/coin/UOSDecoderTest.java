@@ -1,6 +1,6 @@
 package com.cobo.coinlib.coin;
 
-import com.cobo.coinlib.coins.DOT.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOSDecoder;
 import com.cobo.coinlib.exception.InvalidUOSException;
 
 import org.bouncycastle.util.encoders.Hex;

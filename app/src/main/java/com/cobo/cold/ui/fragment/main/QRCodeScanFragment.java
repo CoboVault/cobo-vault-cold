@@ -32,7 +32,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
-import com.cobo.coinlib.coins.DOT.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOSDecoder;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.exception.InvalidUOSException;
