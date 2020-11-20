@@ -21,7 +21,6 @@ package com.cobo.cold.viewmodel;
 
 import android.content.Context;
 
-import com.cobo.coinlib.coins.XRP.Xrp;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
