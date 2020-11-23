@@ -1,18 +1,19 @@
 package com.cobo.coinlib.coins.polkadot.pallets.balance;
 
-import com.cobo.coinlib.coins.polkadot.Pallet;
+import com.cobo.coinlib.coins.polkadot.AddressCodec;
+import com.cobo.coinlib.coins.polkadot.UOS.Network;
+import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class TransferBase extends Pallet {
-    private byte[] destinationPublicKey;
-    private BigInteger amount;
-    public TransferBase(String name) {
-        super(name);
+    public TransferBase(String name, Network network) {
+        super(name, network);
     }
-    public void read(ScaleCodecReader scr){
-        this.destinationPublicKey = scr.readByteArray(32);
-        this.amount = scr.readCompact();
+
+    public TransferParameter read(ScaleCodecReader scr) {
+        return new TransferParameter(network, name, scr.readByteArray(32), scr.readCompact());
     }
 }

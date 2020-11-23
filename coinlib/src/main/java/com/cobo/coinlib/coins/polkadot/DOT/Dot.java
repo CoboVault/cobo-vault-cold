@@ -21,6 +21,16 @@ import com.cobo.coinlib.coins.AbsCoin;
 import com.cobo.coinlib.coins.AbsDeriver;
 import com.cobo.coinlib.coins.AbsTx;
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
+import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
+import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
+import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
+import com.cobo.coinlib.coins.polkadot.pallets.session.SetKeys;
+import com.cobo.coinlib.coins.polkadot.pallets.staking.Bond;
+import com.cobo.coinlib.coins.polkadot.pallets.staking.Nominate;
+import com.cobo.coinlib.coins.polkadot.pallets.staking.SetController;
+import com.cobo.coinlib.coins.polkadot.pallets.staking.Validate;
+import com.cobo.coinlib.coins.polkadot.pallets.utility.Batch;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.Coin;
 import com.cobo.coinlib.utils.B58;
@@ -30,7 +40,21 @@ import org.bouncycastle.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Dot extends AbsCoin {
+    public static final Map<Integer, Pallet> pallets = new HashMap<>();
+    static {
+        pallets.put(0x0500, new Transfer(UOSDecoder.polkadot));
+        pallets.put(0x0503, new TransferKeepAlive(UOSDecoder.polkadot));
+        pallets.put(0x0900, new SetKeys(UOSDecoder.polkadot));
+        pallets.put(0x0700, new Bond(UOSDecoder.polkadot));
+        pallets.put(0x0704, new Validate(UOSDecoder.polkadot));
+        pallets.put(0x0705, new Nominate(UOSDecoder.polkadot));
+        pallets.put(0x0708, new SetController(UOSDecoder.polkadot));
+        pallets.put(0x1a00, new Batch(UOSDecoder.polkadot));
+    }
 
     public Dot(Coin impl) {
         super(impl);

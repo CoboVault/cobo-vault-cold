@@ -13,4 +13,11 @@ public class UInt16Reader implements ScaleReader<Integer> {
         return result;
     }
 
+    public Integer readBE(ScaleCodecReader rdr) {
+        int result = 0;
+        result += rdr.readUByte() << 8;
+        result += rdr.readUByte();
+        return result;
+    }
+
 }

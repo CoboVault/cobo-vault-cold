@@ -1,16 +1,17 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
-import com.cobo.coinlib.coins.polkadot.Pallet;
+import com.cobo.coinlib.coins.polkadot.UOS.Network;
+import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 
 public class Validate extends Pallet {
-    private int value; // base 1 * 10^9
-    public Validate(){
-        super("staking.validate");
+    public Validate(Network network){
+        super("staking.validate", network);
     }
 
     @Override
-    public void read(ScaleCodecReader scr) {
-        this.value = scr.readCompactInt();
+    public ValidateParameter read(ScaleCodecReader scr) {
+
+        return new ValidateParameter(network, name, scr.readCompactInt());
     }
 }

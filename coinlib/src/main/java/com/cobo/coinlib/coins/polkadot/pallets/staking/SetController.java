@@ -1,16 +1,17 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
-import com.cobo.coinlib.coins.polkadot.Pallet;
+import com.cobo.coinlib.coins.polkadot.UOS.Network;
+import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 
 public class SetController extends Pallet {
     private byte[] publicKey;
-    public SetController(){
-        super("staking.setController");
+    public SetController(Network network){
+        super("staking.setController", network);
     }
 
     @Override
-    public void read(ScaleCodecReader scr) {
-        publicKey = scr.readByteArray(32);
+    public SetControllerParameter read(ScaleCodecReader scr) {
+        return new SetControllerParameter(network, name, scr.readByteArray(32));
     }
 }

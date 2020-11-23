@@ -92,6 +92,10 @@ public class ScaleCodecReader {
         return UINT16.read(this);
     }
 
+    public int readUint16BE() {
+        return UINT16.readBE(this);
+    }
+
     public long readUint32() {
         return UINT32.read(this);
     }
