@@ -195,23 +195,13 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } else if ("address".equals(purpose)) {
             navigateUp();
         } else {
-            alert(getString(R.string.unresolve_tx),
-                    getString(R.string.unresolve_tx_hint,
-                            WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
-//            try {
-//                if (tryParseElecturmTx(res) != null) {
-//                    handleElectrumTx(res);
-//                } else if(tryDecodePolkadotjsTx(res) != null) {
-//                    handlePolkadotJsTx(res);
-//                } else {
-//                    alert(getString(R.string.unresolve_tx),
-//                            getString(R.string.unresolve_tx_hint,
-//                                    WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
-//                }
-//            } catch (XpubNotMatchException e) {
-//                alert(getString(R.string.identification_failed),
-//                        getString(R.string.master_pubkey_not_match));
-//            }
+            if(tryDecodePolkadotjsTx(res) != null) {
+                handlePolkadotJsTx(res);
+            } else {
+                alert(getString(R.string.unresolve_tx),
+                        getString(R.string.unresolve_tx_hint,
+                                WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
+            }
         }
     }
 
