@@ -20,6 +20,7 @@
 package com.cobo.coinlib.coins.DOT;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cobo.coinlib.coins.DOT.scale.ScaleCodecWriter;
 
@@ -85,7 +86,7 @@ public class TransactionEncoder {
                 return constructSignedTransaction();
             }
         } catch (Exception ignored) {
-
+            Log.w("TransactionEncoder", "encode exception" ,ignored);
         }
         return null;
     }
@@ -103,7 +104,7 @@ public class TransactionEncoder {
         codecWriter.writeUint32(specVersion);
         codecWriter.writeUint32(transactionVersion);
         codecWriter.writeByteArray(Hex.decode(chainProperty.genesisHash));
-        codecWriter.writeByteArray(Hex.decode(blockHash));
+        codecWriter.writeByteArray(Hex.decode(blockHash.replace("0x","")));
         return codecWriter.toByteArray();
     }
 

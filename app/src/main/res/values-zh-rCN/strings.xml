@@ -400,12 +400,12 @@
 
     <string-array name="watch_wallet_list">
         <item>Cobo 金库移动端</item>
-<!--        <item>Polkadot.js</item>-->
+        <item>Polkadot.js</item>
         <item>XRP Toolkit</item>
     </string-array>
     <string-array name="watch_wallet_summury" >
         <item>BTC、ETH、TRX、EOS等15条主链</item>
-<!--        <item>DOT、KSM</item>-->
+        <item>DOT、KSM</item>
         <item>XRP</item>
     </string-array>
     <string name="choose_watch_only_wallet">选择观察钱包</string>

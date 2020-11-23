@@ -5,17 +5,25 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.cobo.coinlib.coins.AbsTx;
+import com.cobo.coinlib.interfaces.Coin;
 import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONObject;
 
-public class DotImpl {
+public class DotImpl implements Coin {
+    private final String coinCode;
     private final ChainProperty chainProperty;
 
     public DotImpl(String coinCode) {
+        this.coinCode = coinCode;
         chainProperty = ChainProperty.of(coinCode);
+    }
+
+    @Override
+    public String coinCode() {
+        return coinCode;
     }
 
     public void generateTransaction(@NonNull AbsTx tx, SignCallback callback, Signer... signers) {
@@ -52,12 +60,33 @@ public class DotImpl {
             } else {
                 txEncoder.addSignature(result);
                 byte[] signedTx = txEncoder.encode();
-                String txId = Hex.toHexString(AddressCodec.blake2b(signedTx, 256));
-                callback.onSuccess(txId, result);
+                String txId = "0x" + Hex.toHexString(AddressCodec.blake2b(signedTx, 256));
+                callback.onSuccess(txId, "0x" + Hex.toHexString(signedTx));
             }
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onFail();
         }
 
+    }
+
+    @Override
+    public String signMessage(@NonNull String message, Signer signer) {
+        return signer.sign(Hex.toHexString(message.getBytes()));
+    }
+
+    @Override
+    public String generateAddress(@NonNull String publicKey) {
+        return AddressCodec.encodeAddress(Hex.decode(publicKey), chainProperty.addressPrefix);
+    }
+
+    @Override
+    public boolean isAddressValid(@NonNull String address) {
+        try {
+            AddressCodec.decodeAddress(address);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

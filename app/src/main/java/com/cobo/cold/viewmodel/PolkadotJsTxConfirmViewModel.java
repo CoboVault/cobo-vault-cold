@@ -38,7 +38,7 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.util.Objects;
 
-public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel{
+public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
 
     private byte[] signingPayload;
 
@@ -49,14 +49,14 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel{
     public void parseTxData(String data) {
         UOSDecoder decoder = new UOSDecoder();
         try {
-            UOSDecoder.UOSDecodeResult result = decoder.decodeUOSRawData(data,false);
+            UOSDecoder.UOSDecodeResult result = decoder.decodeUOSRawData(data, false);
             TxEntity tx = generateSubstrateTxEntity(result);
             observableTx.postValue(tx);
             signingPayload = result.getSigningPayload();
-        } catch (InvalidUOSException e) {
-
+        } catch (InvalidUOSException ignored) {
         }
     }
+
     private TxEntity generateSubstrateTxEntity(UOSDecoder.UOSDecodeResult result) {
         TxEntity tx = new TxEntity();
         coinCode = getCoinCode(result.getNetwork());
@@ -87,14 +87,14 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel{
             callback.startSign();
             String authToken = getAuthToken();
             if (TextUtils.isEmpty(authToken)) {
-                Log.w(TAG,"authToken null");
+                Log.w(TAG, "authToken null");
                 callback.onFail();
             }
             Signer signer = new ChipSigner(coinCode.equals(Coins.DOT.coinCode()) ?
-                    Coins.DOT.getAccounts()[0] :Coins.KSM.getAccounts()[0] , authToken);
+                    Coins.DOT.getAccounts()[0] : Coins.KSM.getAccounts()[0], authToken);
             String signedHex = signer.sign(Hex.toHexString(signingPayload));
             if (!TextUtils.isEmpty(signedHex)) {
-                callback.onSuccess(signedHex,signedHex);
+                callback.onSuccess(signedHex, signedHex);
             } else {
                 callback.onFail();
             }
@@ -105,7 +105,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel{
     protected TxEntity onSignSuccess(String txId, String rawTx) {
         TxEntity tx = observableTx.getValue();
         Objects.requireNonNull(tx).setTxId(txId);
-        tx.setSignedHex("01"+rawTx);
+        tx.setSignedHex("01" + rawTx);
         mRepository.insertTx(tx);
         return tx;
     }
