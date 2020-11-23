@@ -68,11 +68,11 @@ public class ElectrumViewModel extends AndroidViewModel {
     public static final String ELECTRUM_SIGN_ID = "electrum_sign_id";
     private static final int DEFAULT_CHANGE_ADDRESS_NUM = 100;
 
-    private static Pattern signedTxnPattern = Pattern.compile("^signed_[0-9a-fA-F]{8}.txn$");
+    private static final Pattern signedTxnPattern = Pattern.compile("^signed_[0-9a-fA-F]{8}.txn$");
     private final DataRepository mRepo;
-    private MutableLiveData<String> exPub = new MutableLiveData<>();
-    private Storage storage;
-    private MutableLiveData<List<String>> changeAddress = new MutableLiveData<>();
+    private final MutableLiveData<String> exPub = new MutableLiveData<>();
+    private final Storage storage;
+    private final MutableLiveData<List<String>> changeAddress = new MutableLiveData<>();
     private String xpub;
 
     public ElectrumViewModel(@NonNull Application application) {

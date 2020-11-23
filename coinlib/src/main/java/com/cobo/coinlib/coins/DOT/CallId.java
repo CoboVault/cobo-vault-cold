@@ -21,7 +21,7 @@ package com.cobo.coinlib.coins.DOT;
 
 public enum CallId {
     POLKADOT(0x0503, 0x0500),
-    KUSAMA(0x0603, 0x0600);
+    KUSAMA(0x0403, 0x0400);
 
     public int transferKeepAlive;
     public int transfer;
