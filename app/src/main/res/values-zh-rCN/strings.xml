@@ -469,7 +469,7 @@
         3. Look at the Account Properties page for the <font color="#00cdc3">Message Key<font/> section<br>
         4. Click the small QR code icon in the Message Key field<br>
         5. Scan the Message Key QR Code that displays on Cobo Vault<br>
-        6. Click the Update button<br>
+        6. Click the <font color="#00cdc3">Update<font/> button<br>
         7. Sign the transaction
     ]]></string>
     <string name="spark_token_prepare_title">获取 Spark tokens 准备工作：</string>
