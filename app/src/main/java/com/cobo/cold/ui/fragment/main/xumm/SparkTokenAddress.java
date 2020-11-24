@@ -54,6 +54,7 @@ public class SparkTokenAddress extends BaseFragment<SparkTokenAddressBinding> {
                 .observe(this, s -> {
                     String messageKey = "02000000000000000000000000" + s.substring(2).toUpperCase();
                     mBinding.messageKey.setText(messageKey);
+                    mBinding.qr.qrcode.disableMultipart();
                     mBinding.qr.qrcode.setData(messageKey);
                 });
         mBinding.scan.setOnClickListener(v -> navigate(R.id.action_to_scan));
