@@ -18,15 +18,20 @@
 package com.cobo.cold.ui.fragment.main;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+
+import androidx.databinding.DataBindingUtil;
 
 import com.cobo.coinlib.coins.BCH.Bch;
 import com.cobo.coinlib.coins.LTC.Ltc;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.ReceiveFragmentBinding;
+import com.cobo.cold.databinding.XrpSyncMenuBinding;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.viewmodel.WatchWallet;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Objects;
 
@@ -38,6 +43,7 @@ import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 
 public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
     private int index;
+
     @Override
     protected int setView() {
         return R.layout.receive_fragment;
@@ -61,9 +67,16 @@ public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
         mBinding.setAddressName(data.getString(KEY_ADDRESS_NAME));
         mBinding.setPath(data.getString(KEY_ADDRESS_PATH));
         mBinding.qrcode.setData(data.getString(KEY_ADDRESS));
+        setupMenu();
+    }
+
+    private void setupMenu() {
         if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.XRP_TOOLKIT) {
-            mBinding.button.setVisibility(View.VISIBLE);
-            mBinding.button.setOnClickListener(v -> syncXrp());
+            mBinding.toolbar.inflateMenu(R.menu.more);
+            mBinding.toolbar.setOnMenuItemClickListener(item -> {
+                showBottomSheetMenu();
+                return true;
+            });
         }
     }
 
@@ -73,8 +86,32 @@ public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
         navigate(R.id.action_to_syncFragment, bundle);
     }
 
+    private void syncSparkToken() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("index", index);
+        navigate(R.id.action_to_sparkTokenClaimGuide, bundle);
+    }
+
     @Override
     protected void initData(Bundle savedInstanceState) {
 
     }
+
+    private void showBottomSheetMenu() {
+        BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
+        XrpSyncMenuBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                R.layout.xrp_sync_menu, null, false);
+        binding.pairApp.setOnClickListener(v -> {
+            syncXrp();
+            dialog.dismiss();
+
+        });
+        binding.sparkTokenClaim.setOnClickListener(v -> {
+            syncSparkToken();
+            dialog.dismiss();
+        });
+        dialog.setContentView(binding.getRoot());
+        dialog.show();
+    }
+
 }

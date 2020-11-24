@@ -494,4 +494,18 @@
     <string name="xrp_account_not_match_detail">This transaction does not belong to the current vault, please check the transaction information.</string>
     <string name="simple">Simple</string>
     <string name="raw">Raw</string>
+    <string name="spark_token_claim_guide"><![CDATA[
+    1. Open <font color="#00cdc3">XRP Toolkit<font/><br>
+    2. In the menu bar, go to <font color="#00cdc3">Account<font/> and select the <font color="#00cdc3">Properties<font/> menu item<br>
+    3. Look at the Account Properties page for the <font color="#00cdc3">Message Key<font/> section<br>
+    4. Click the small QR code icon in the Message Key field<br>
+    5. Scan the Message Key QR Code that displays on Cobo Vault<br>
+    6. Click the Update button<br>
+    7. Sign the transaction
+    ]]></string>
+    <string name="spark_token_prepare_title">Prepare for claiming your Spark tokens：</string>
+    <string name="claim_spark_token_button">Display QR Code of Message Key</string>
+    <string name="spark_token_title">Message Key</string>
+    <string name="claim_spark">Claim Spark</string>
+    <string name="claim_spark_button_text">Scan the QR Code of XRP Toolkit</string>
 </resources>
