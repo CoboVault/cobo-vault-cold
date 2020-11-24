@@ -447,7 +447,15 @@
         android:id="@+id/receiveCoinFragment"
         tools:layout="@layout/receive_fragment"
         android:name="com.cobo.cold.ui.fragment.main.ReceiveCoinFragment"
-        android:label="ReceiveCoinFragment" />
+        android:label="ReceiveCoinFragment" >
+        <action
+            android:id="@+id/action_to_sparkTokenClaimGuide"
+            app:destination="@id/sparkTokenClaimGuide"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
     <fragment
         android:id="@+id/licenseFragment"
         tools:layout="@layout/privacy_policy"
@@ -659,6 +667,33 @@
         android:name="com.cobo.cold.ui.fragment.main.xumm.XummTxFragment"
         android:label="XummTxFragment"
         tools:layout="@layout/xumm_tx">
+    </fragment>
+
+    <fragment
+        android:id="@+id/sparkTokenClaimGuide"
+        android:name="com.cobo.cold.ui.fragment.main.xumm.SparkTokenClaimGuide"
+        android:label="SparkTokenClaimGuide"
+        >
+        <action
+            android:id="@+id/action_to_sparkTokenAddress"
+            app:destination="@id/sparkTokenAddress"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/sparkTokenAddress"
+        android:name="com.cobo.cold.ui.fragment.main.xumm.SparkTokenAddress"
+        android:label="SparkTokenAddress">
+        <action
+            android:id="@id/action_to_scan"
+            app:destination="@id/QRCodeScanFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <!--global action-->
