@@ -1,9 +1,15 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
+import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class NominateParameter extends Parameter {
     private final int length;
@@ -13,5 +19,13 @@ public class NominateParameter extends Parameter {
         super(network, name);
         this.length = length;
         this.publicKeys = publicKeys;
+    }
+
+    @Override
+    public JSONObject toJSON() throws JSONException {
+        JSONObject object =  super.toJSON();
+        object.put("length", length);
+        object.put("nominateAccounts", publicKeys.stream().map(publicKey -> AddressCodec.encodeAddress(publicKey, network.SS58Prefix)).collect(Collectors.toList()));
+        return object;
     }
 }

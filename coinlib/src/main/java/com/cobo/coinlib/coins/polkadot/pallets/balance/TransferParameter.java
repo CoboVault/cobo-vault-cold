@@ -4,6 +4,9 @@ import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -25,5 +28,13 @@ public class TransferParameter extends Parameter {
         return new BigDecimal(amount)
                 .divide(BigDecimal.TEN.pow(network.decimals), Math.min(network.decimals, 8), BigDecimal.ROUND_HALF_UP)
                 .stripTrailingZeros().toPlainString();
+    }
+
+    @Override
+    public JSONObject toJSON() throws JSONException {
+        JSONObject object = super.toJSON();
+        object.put("destinationAccount", getDestination());
+        object.put("amount", getAmount());
+        return object;
     }
 }

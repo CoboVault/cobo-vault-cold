@@ -25,7 +25,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.cobo.coinlib.coins.polkadot.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOS.Network;
+import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOS.Result;
 import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;
@@ -47,9 +49,8 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
     }
 
     public void parseTxData(String data) {
-        UOSDecoder decoder = new UOSDecoder();
         try {
-            UOSDecoder.UOSDecodeResult result = decoder.decodeUOSRawData(data, false);
+            Result result = UOSDecoder.decode(data, false);
             TxEntity tx = generateSubstrateTxEntity(result);
             observableTx.postValue(tx);
             signingPayload = result.getSigningPayload();
@@ -57,7 +58,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
         }
     }
 
-    private TxEntity generateSubstrateTxEntity(UOSDecoder.UOSDecodeResult result) {
+    private TxEntity generateSubstrateTxEntity(Result result) {
         TxEntity tx = new TxEntity();
         coinCode = getCoinCode(result.getNetwork());
         tx.setSignId(WatchWallet.POLKADOT_JS_SIGN_ID);
@@ -65,14 +66,11 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
         tx.setCoinCode(coinCode);
         tx.setCoinId(Coins.coinIdFromCoinCode(coinCode));
         tx.setFrom(result.getAccount());
-        tx.setTo(result.getDecodedTransaction().getDestination());
-        tx.setAmount(result.getDecodedTransaction().getAmount() + " " + coinCode);
-        tx.setFee(result.getDecodedTransaction().getTip() + " " + coinCode);
         tx.setBelongTo(mRepository.getBelongTo());
         return tx;
     }
 
-    private String getCoinCode(UOSDecoder.Network network) {
+    private String getCoinCode(Network network) {
         if (network.name.equals("Polkadot")) {
             return Coins.DOT.coinCode();
         } else if (network.name.equals("Kusama")) {
