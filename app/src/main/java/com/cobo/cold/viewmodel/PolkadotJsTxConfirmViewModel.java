@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
 import com.cobo.coinlib.coins.polkadot.UOS.Result;
+import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferParameter;
 import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;
@@ -36,6 +37,8 @@ import com.cobo.cold.AppExecutors;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryption.ChipSigner;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
 import java.util.Objects;
@@ -47,14 +50,17 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
     public PolkadotJsTxConfirmViewModel(@NonNull Application application) {
         super(application);
     }
+    private JSONObject extrinsicObject;
 
     public void parseTxData(String data) {
         try {
             Result result = UOSDecoder.decode(data, false);
+            extrinsicObject = result.extrinsic.palletParameter.toJSON();
             TxEntity tx = generateSubstrateTxEntity(result);
             observableTx.postValue(tx);
             signingPayload = result.getSigningPayload();
-        } catch (InvalidUOSException ignored) {
+        } catch (InvalidUOSException | JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -66,6 +72,12 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
         tx.setCoinCode(coinCode);
         tx.setCoinId(Coins.coinIdFromCoinCode(coinCode));
         tx.setFrom(result.getAccount());
+        tx.setFee(result.getExtrinsic().getTip()+ " " + coinCode);
+        if (result.getExtrinsic().palletParameter instanceof TransferParameter) {
+            TransferParameter transfer = (TransferParameter) result.getExtrinsic().palletParameter;
+            tx.setAmount(transfer.getAmount());
+            tx.setTo(transfer.getDestination());
+        }
         tx.setBelongTo(mRepository.getBelongTo());
         return tx;
     }
@@ -103,8 +115,14 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
     protected TxEntity onSignSuccess(String txId, String rawTx) {
         TxEntity tx = observableTx.getValue();
         Objects.requireNonNull(tx).setTxId(txId);
-        tx.setSignedHex("01" + rawTx);
-        mRepository.insertTx(tx);
+        try {
+            extrinsicObject.put("signedHex","01" + rawTx);
+            tx.setSignedHex(extrinsicObject.toString());
+            mRepository.insertTx(tx);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         return tx;
     }
 }

@@ -14,7 +14,8 @@ public class TransferParameter extends Parameter {
     private final byte[] destinationPublicKey;
     private final BigInteger amount;
 
-    public TransferParameter(Network network, String name, byte[] destinationPublicKey, BigInteger amount) {
+    public TransferParameter(Network network, String name, byte[] destinationPublicKey,
+                             BigInteger amount) {
         super(network, name);
         this.destinationPublicKey = destinationPublicKey;
         this.amount = amount;

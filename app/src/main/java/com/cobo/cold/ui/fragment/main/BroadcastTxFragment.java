@@ -33,6 +33,9 @@ import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.CoinListViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Objects;
 
 public class BroadcastTxFragment extends BaseFragment<BroadcastTxFragmentBinding> {
@@ -103,7 +106,12 @@ public class BroadcastTxFragment extends BaseFragment<BroadcastTxFragmentBinding
         if (watchWallet == WatchWallet.COBO) {
             return getSignTxJson(txEntity);
         } else if(watchWallet == WatchWallet.POLKADOT_JS) {
-            return txEntity.getSignedHex();
+            try {
+                return new JSONObject(txEntity.getSignedHex())
+                        .getString("signedHex");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         return "";
     }

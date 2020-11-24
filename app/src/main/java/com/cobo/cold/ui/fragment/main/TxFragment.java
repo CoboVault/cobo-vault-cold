@@ -218,7 +218,12 @@ public class TxFragment extends BaseFragment<TxBinding> {
         if (watchWallet == WatchWallet.COBO) {
             return getSignTxJson(txEntity);
         } else if(watchWallet == WatchWallet.POLKADOT_JS) {
-            return txEntity.getSignedHex();
+            try {
+                return new JSONObject(txEntity.getSignedHex())
+                        .getString("signedHex");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         return "";
     }
