@@ -48,14 +48,14 @@ public class Ksm extends Dot {
     public static final Map<Integer, Pallet> pallets = new HashMap<>();
     //fix code
     static {
-        pallets.put(0x0500, new Transfer(UOSDecoder.polkadot));
-        pallets.put(0x0503, new TransferKeepAlive(UOSDecoder.polkadot));
-        pallets.put(0x0900, new SetKeys(UOSDecoder.polkadot));
-        pallets.put(0x0700, new Bond(UOSDecoder.polkadot));
-        pallets.put(0x0704, new Validate(UOSDecoder.polkadot));
-        pallets.put(0x0705, new Nominate(UOSDecoder.polkadot));
-        pallets.put(0x0708, new SetController(UOSDecoder.polkadot));
-        pallets.put(0x1a00, new Batch(UOSDecoder.polkadot));
+        pallets.put(0x0500, new Transfer(UOSDecoder.POLKADOT));
+        pallets.put(0x0503, new TransferKeepAlive(UOSDecoder.POLKADOT));
+        pallets.put(0x0900, new SetKeys(UOSDecoder.POLKADOT));
+        pallets.put(0x0700, new Bond(UOSDecoder.POLKADOT));
+        pallets.put(0x0704, new Validate(UOSDecoder.POLKADOT));
+        pallets.put(0x0705, new Nominate(UOSDecoder.POLKADOT));
+        pallets.put(0x0708, new SetController(UOSDecoder.POLKADOT));
+        pallets.put(0x1a00, new Batch(UOSDecoder.POLKADOT));
     }
 
     public Ksm(Coin impl) {

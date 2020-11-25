@@ -26,8 +26,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
-import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
 import com.cobo.coinlib.coins.polkadot.UOS.Result;
+import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferParameter;
 import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.coinlib.interfaces.SignCallback;
@@ -46,6 +46,7 @@ import java.util.Objects;
 public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
 
     private byte[] signingPayload;
+    private boolean isHash;
 
     public PolkadotJsTxConfirmViewModel(@NonNull Application application) {
         super(application);
@@ -55,6 +56,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
     public void parseTxData(String data) {
         try {
             Result result = UOSDecoder.decode(data, false);
+            isHash = result.isHash;
             extrinsicObject = result.extrinsic.palletParameter.toJSON();
             TxEntity tx = generateSubstrateTxEntity(result);
             observableTx.postValue(tx);
@@ -75,7 +77,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
         tx.setFee(result.getExtrinsic().getTip()+ " " + coinCode);
         if (result.getExtrinsic().palletParameter instanceof TransferParameter) {
             TransferParameter transfer = (TransferParameter) result.getExtrinsic().palletParameter;
-            tx.setAmount(transfer.getAmount());
+            tx.setAmount(transfer.getAmount() + " " + coinCode);
             tx.setTo(transfer.getDestination());
         }
         tx.setBelongTo(mRepository.getBelongTo());

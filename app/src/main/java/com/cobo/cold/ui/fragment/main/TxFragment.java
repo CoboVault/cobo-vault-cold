@@ -77,12 +77,13 @@ public class TxFragment extends BaseFragment<TxBinding> {
         });
         CoinListViewModel viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
         viewModel.loadTx(data.getString(KEY_TX_ID)).observe(this, txEntity -> {
+            if (watchWallet == WatchWallet.POLKADOT_JS) {
+                mBinding.qrcodeLayout.qrcode.disableMultipart();
+                mBinding.txDetail.txIdInfo.setVisibility(View.GONE);
+            }
             mBinding.setTx(txEntity);
             this.txEntity = txEntity;
             new Handler().postDelayed(() ->  {
-                if (watchWallet == WatchWallet.POLKADOT_JS) {
-                    mBinding.qrcodeLayout.qrcode.disableMultipart();
-                }
                 mBinding.qrcodeLayout.qrcode.setData(getSignedTxData());
             }, 500);
             refreshAmount();

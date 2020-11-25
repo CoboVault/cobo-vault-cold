@@ -6,13 +6,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UOSDecoder {
-    public static final Network polkadot = new Network("Polkadot", (byte) 0, "91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3", 10);
-    public static final Network kusama = new Network("Kusama", (byte) 2, "b0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe", 12);
-    public static final List<Network> networks = Arrays.asList(
-            polkadot, kusama
+    public static final Network POLKADOT = new Network("Polkadot", (byte) 0, "91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3", 10);
+    public static final Network KUSAMA = new Network("Kusama", (byte) 2, "b0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe", 12);
+
+    public static final List<Network> supportedNetworks = Arrays.asList(
+            POLKADOT, KUSAMA
     );
 
-    public static Result decode(String rawData, boolean multipartComplete) throws InvalidUOSException {
+    public static Result decode(String rawData, boolean multipartComplete)
+            throws InvalidUOSException {
         String UOSRawData = extractUOSRawData(rawData);
         MultipartPayload mp = new MultipartPayload(UOSRawData, multipartComplete);
         SubstratePayload sp = mp.substratePayload;
