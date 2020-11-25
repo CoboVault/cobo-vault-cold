@@ -1,7 +1,6 @@
 package com.cobo.coinlib.coins.polkadot.UOS;
 
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
-import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.PalletFactory;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 

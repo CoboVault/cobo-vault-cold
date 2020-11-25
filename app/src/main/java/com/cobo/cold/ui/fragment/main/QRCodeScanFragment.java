@@ -196,8 +196,17 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } else if ("address".equals(purpose)) {
             navigateUp();
         } else {
-            if(tryDecodePolkadotjsTx(res) != null) {
-                handlePolkadotJsTx(res);
+            Result result;
+            if((result = tryDecodePolkadotjsTx(res)) != null) {
+                if (result.getNetwork().name.equals("UNKNOWN")) {
+                    alert(getString(R.string.unknown_substrate_chain_title) ,
+                            getString(R.string.unknown_substrate_chain_content));
+                } else if(!this.viewModel.checkSubstrateAccount(result.getAccount())) {
+                    alert(getString(R.string.account_not_match),
+                            getString(R.string.account_not_match_detail));
+                } else {
+                    handlePolkadotJsTx(res);
+                }
             } else {
                 alert(getString(R.string.unresolve_tx),
                         getString(R.string.unresolve_tx_hint,

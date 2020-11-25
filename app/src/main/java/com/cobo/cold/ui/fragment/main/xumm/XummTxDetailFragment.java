@@ -99,8 +99,8 @@ public class XummTxDetailFragment extends BaseFragment<XrpTxDetailBinding> {
             ex.printStackTrace();
             if (ex instanceof InvalidAccountException) {
                 ModalDialog.showCommonModal(mActivity,
-                        getString(R.string.xrp_account_not_match),
-                        getString(R.string.xrp_account_not_match_detail) ,
+                        getString(R.string.account_not_match),
+                        getString(R.string.account_not_match_detail) ,
                         getString(R.string.confirm),
                         null);
             } else {

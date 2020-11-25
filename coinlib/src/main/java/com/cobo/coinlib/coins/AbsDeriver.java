@@ -19,6 +19,10 @@ package com.cobo.coinlib.coins;
 
 import androidx.annotation.NonNull;
 
+import com.cobo.coinlib.coins.polkadot.DOT.Dot;
+import com.cobo.coinlib.coins.polkadot.KSM.Ksm;
+import com.cobo.coinlib.utils.Coins;
+
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
@@ -28,8 +32,12 @@ import org.bitcoinj.params.RegTestParams;
 public abstract class AbsDeriver {
     public static AbsDeriver newInstance(@NonNull String coinCode) {
         try {
-            Class clazz = Class.forName(CoinReflect.getCoinClassByCoinCode(coinCode) + "$Deriver");
-            return (AbsDeriver) clazz.newInstance();
+            if (coinCode.equals(Coins.DOT.coinCode())) return new Dot.Deriver();
+            else if (coinCode.equals(Coins.KSM.coinCode())) return new Ksm.Deriver();
+            else {
+                Class clazz = Class.forName(CoinReflect.getCoinClassByCoinCode(coinCode) + "$Deriver");
+                return (AbsDeriver) clazz.newInstance();
+            }
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }

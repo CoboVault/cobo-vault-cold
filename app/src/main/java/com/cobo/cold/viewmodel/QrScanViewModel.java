@@ -36,10 +36,12 @@ import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
 import com.cobo.cold.R;
 import com.cobo.cold.callables.GetUuidCallable;
+import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
 import com.cobo.cold.protocol.ZipUtil;
 import com.cobo.cold.protocol.parser.ProtoParser;
 import com.cobo.cold.scan.ScannedData;
+import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.fragment.main.QRCodeScanFragment;
 import com.cobo.cold.update.utils.Digest;
 
@@ -49,7 +51,13 @@ import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.KEY_TX_DATA;
@@ -61,10 +69,12 @@ public class QrScanViewModel extends AndroidViewModel {
 
     private final boolean isSetupVault;
     private QRCodeScanFragment fragment;
+    private DataRepository mRepo;
 
     private QrScanViewModel(@NonNull Application application, DataRepository repository, boolean isSetupVault) {
         super(application);
         this.isSetupVault = isSetupVault;
+        mRepo = ((MainApplication)application).getRepository();
         repository.loadCoins();
     }
 
@@ -264,6 +274,22 @@ public class QrScanViewModel extends AndroidViewModel {
         if (!obj.optString("uuid").equals(uuid)) {
             throw new UuidNotMatchException("uuid not match");
         }
+    }
+
+
+    public boolean checkSubstrateAccount(String account) {
+        Future<Boolean> future = Executors.newSingleThreadExecutor().submit(() -> {
+            List<AddressEntity> allSubstrateAddress = new ArrayList<>();
+            allSubstrateAddress.addAll(mRepo.loadAddressSync(Coins.KSM.coinId()));
+            allSubstrateAddress.addAll(mRepo.loadAddressSync(Coins.DOT.coinId()));
+            return allSubstrateAddress.stream().anyMatch(entity -> account.equals(entity.getAddressString()));
+        });
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {

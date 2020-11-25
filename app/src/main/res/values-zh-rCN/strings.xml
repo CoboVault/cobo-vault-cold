@@ -459,8 +459,8 @@
     <string name="sync_xrp">同步账户</string>
     <string name="unresolve_tx">无法解析该交易</string>
     <string name="unresolve_tx_hint">无法解析该交易，当前观察钱包下仅支持扫描%s生成的二维码。</string>
-    <string name="xrp_account_not_match">非当前金库交易</string>
-    <string name="xrp_account_not_match_detail">该交易不属于当前金库，请检查交易信息。</string>
+    <string name="account_not_match">非当前金库交易</string>
+    <string name="account_not_match_detail">该交易不属于当前金库，请检查交易信息。</string>
     <string name="simple">简单</string>
     <string name="raw">原始</string>
     <string name="spark_token_claim_guide"><![CDATA[
@@ -475,7 +475,9 @@
     <string name="spark_token_prepare_title">获取 Spark tokens 准备工作：</string>
     <string name="claim_spark_token_button">查看 Message Key 二维码</string>
     <string name="spark_token_title">Message Key</string>
-    <string name="claim_spark">获取 Spark</string>
-    <string name="claim_spark_button_text">扫描 XRP Toolkit 二维码</string>
+    <string name="claim_spark">Claim Spark</string>
+    <string name="claim_spark_button_text">Scan the QR Code of XRP Toolkit</string>
     <string name="pair_app">同步账户</string>
+    <string name="unknown_substrate_chain_title">暂不支持该币种</string>
+    <string name="unknown_substrate_chain_content">Polkadot.js模式下暂不支持该币种</string>
 </resources>
