@@ -26,12 +26,14 @@ import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
+import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.Vote;
 import com.cobo.coinlib.coins.polkadot.pallets.session.SetKeys;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Bond;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Nominate;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.SetController;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Validate;
 import com.cobo.coinlib.coins.polkadot.pallets.utility.Batch;
+import com.cobo.coinlib.coins.polkadot.pallets.utility.BatchAll;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.Coin;
 import com.cobo.coinlib.utils.B58;
@@ -48,14 +50,16 @@ public class Ksm extends Dot {
     public static final Map<Integer, Pallet> pallets = new HashMap<>();
     //fix code
     static {
-        pallets.put(0x0500, new Transfer(UOSDecoder.POLKADOT));
-        pallets.put(0x0503, new TransferKeepAlive(UOSDecoder.POLKADOT));
-        pallets.put(0x0900, new SetKeys(UOSDecoder.POLKADOT));
-        pallets.put(0x0700, new Bond(UOSDecoder.POLKADOT));
-        pallets.put(0x0704, new Validate(UOSDecoder.POLKADOT));
-        pallets.put(0x0705, new Nominate(UOSDecoder.POLKADOT));
-        pallets.put(0x0708, new SetController(UOSDecoder.POLKADOT));
-        pallets.put(0x1a00, new Batch(UOSDecoder.POLKADOT));
+        pallets.put(0x0400, new Transfer(UOSDecoder.KUSAMA));
+        pallets.put(0x0403, new TransferKeepAlive(UOSDecoder.KUSAMA));
+        pallets.put(0x0800, new SetKeys(UOSDecoder.KUSAMA));
+        pallets.put(0x0600, new Bond(UOSDecoder.KUSAMA));
+        pallets.put(0x0604, new Validate(UOSDecoder.KUSAMA));
+        pallets.put(0x0605, new Nominate(UOSDecoder.KUSAMA));
+        pallets.put(0x0608, new SetController(UOSDecoder.KUSAMA));
+        pallets.put(0x1800, new Batch(UOSDecoder.KUSAMA));
+        pallets.put(0x1802, new BatchAll(UOSDecoder.KUSAMA));
+        pallets.put(0x1000, new Vote(UOSDecoder.KUSAMA));
     }
 
     public Ksm(Coin impl) {

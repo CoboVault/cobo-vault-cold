@@ -25,12 +25,14 @@ import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
+import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.Vote;
 import com.cobo.coinlib.coins.polkadot.pallets.session.SetKeys;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Bond;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Nominate;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.SetController;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Validate;
 import com.cobo.coinlib.coins.polkadot.pallets.utility.Batch;
+import com.cobo.coinlib.coins.polkadot.pallets.utility.BatchAll;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.Coin;
 import com.cobo.coinlib.utils.B58;
@@ -54,6 +56,8 @@ public class Dot extends AbsCoin {
         pallets.put(0x0705, new Nominate(UOSDecoder.POLKADOT));
         pallets.put(0x0708, new SetController(UOSDecoder.POLKADOT));
         pallets.put(0x1a00, new Batch(UOSDecoder.POLKADOT));
+        pallets.put(0x1a02, new BatchAll(UOSDecoder.POLKADOT));
+        pallets.put(0x1100, new Vote(UOSDecoder.POLKADOT));
     }
 
     public Dot(Coin impl) {
