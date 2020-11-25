@@ -35,6 +35,8 @@ import com.cobo.coinlib.coins.BTC.Btc;
 import com.cobo.coinlib.coins.BTC.BtcImpl;
 import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.coins.BTC.UtxoTx;
+import com.cobo.coinlib.coins.polkadot.DOT.Dot;
+import com.cobo.coinlib.coins.polkadot.DOT.DotImpl;
 import com.cobo.coinlib.exception.InvalidPathException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.SignCallback;
@@ -492,6 +494,11 @@ public class TxConfirmViewModel extends AndroidViewModel {
             case "OMNI_USDT":
                 Btc btc = new Btc(new BtcImpl());
                 btc.generateOmniTx(transaction, callback, signer);
+                break;
+            case "DOT":
+            case "KSM":
+                Dot dot = new Dot(new DotImpl(coinCode));
+                dot.generateTransaction(transaction, callback, signer);
                 break;
             default:
                 AbsCoin coin = AbsCoin.newInstance(coinCode);

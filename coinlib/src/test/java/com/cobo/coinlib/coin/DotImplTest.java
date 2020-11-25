@@ -1,10 +1,10 @@
 package com.cobo.coinlib.coin;
 
 
-import com.cobo.coinlib.coins.DOT.ChainProperty;
-import com.cobo.coinlib.coins.DOT.DotImpl;
-import com.cobo.coinlib.coins.DOT.TransactionEncoder;
-import com.cobo.coinlib.coins.DOT.TransactionEncoderBuilder;
+import com.cobo.coinlib.coins.polkadot.ChainProperty;
+import com.cobo.coinlib.coins.polkadot.DOT.DotImpl;
+import com.cobo.coinlib.coins.polkadot.TransactionEncoder;
+import com.cobo.coinlib.coins.polkadot.TransactionEncoderBuilder;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;

@@ -426,18 +426,18 @@
 
     <string-array name="watch_wallet_list">
         <item>Cobo Vault App</item>
-<!--        <item>Polkadot.js</item>&ndash;&gt;-->
+        <item>Polkadot.js</item>-->
         <item>XRP Toolkit</item>
     </string-array>
 
     <string-array name="watch_wallet_list_values" translatable="false">
         <item>0</item>
-<!--        <item>1</item>-->
+        <item>1</item>
         <item>2</item>
     </string-array>
     <string-array name="watch_wallet_summury" >
         <item>15 main chains including BTC, ETH, TRX, EOS, etc</item>
-<!--        <item>DOT、KSM</item>-->
+        <item>DOT、KSM</item>
         <item>XRP</item>
     </string-array>
     <string name="choose_watch_only_wallet">Watch-only Wallet</string>

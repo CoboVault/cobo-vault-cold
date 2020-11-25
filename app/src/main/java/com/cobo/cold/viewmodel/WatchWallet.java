@@ -46,9 +46,7 @@ public enum WatchWallet {
 
     public String getWalletName(Context context) {
         String[] wallets = context.getResources().getStringArray(R.array.watch_wallet_list);
-        if (walletId.equals(COBO.walletId)) return wallets[0];
-        else if (walletId.equals(XRP_TOOLKIT.walletId)) return wallets[1];
-        return wallets[0];
+        return wallets[Integer.parseInt(walletId)];
     }
 
     public Coins.Coin[] getSupportedCoins() {
