@@ -464,17 +464,18 @@
     <string name="simple">简单</string>
     <string name="raw">原始</string>
     <string name="spark_token_claim_guide"><![CDATA[
-        1. Open <font color="#00cdc3">XRP Toolkit<font/><br>
-        2. In the menu bar, go to <font color="#00cdc3">Account<font/> and select the <font color="#00cdc3">Properties<font/> menu item<br>
-        3. Look at the Account Properties page for the <font color="#00cdc3">Message Key<font/> section<br>
-        4. Click the small QR code icon in the Message Key field<br>
-        5. Scan the Message Key QR Code that displays on Cobo Vault<br>
-        6. Click the <font color="#00cdc3">Update<font/> button<br>
-        7. Sign the transaction
+        1. 打开 <font color="#00cdc3">XRP Toolkit<font/> 进入账户<br>
+        2. 点击菜单栏中的 <font color="#00cdc3">Account<font/> <br>
+        3. 点击地址下方 <font color="#00cdc3">Message Key<font/> 的编辑按钮<br>
+        4. 在输入 Message Key 区域点击<font color="#00cdc3">二维码图标<font/><br>
+        5. 扫描展示在Cobo Vault上的Message Key二维码<br>
+        6. 点击 <font color="#00cdc3">Update<font/> 按钮<br>
+        7. 对生成的交易签名并广播
     ]]></string>
     <string name="spark_token_prepare_title">获取 Spark tokens 准备工作：</string>
-    <string name="claim_spark_token_button">Display QR Code of Message Key</string>
+    <string name="claim_spark_token_button">查看 Message Key 二维码</string>
     <string name="spark_token_title">Message Key</string>
-    <string name="claim_spark">Claim Spark</string>
-    <string name="claim_spark_button_text">Scan the QR Code of XRP Toolkit</string>
+    <string name="claim_spark">获取 Spark</string>
+    <string name="claim_spark_button_text">扫描 XRP Toolkit 二维码</string>
+    <string name="pair_app">同步账户</string>
 </resources>

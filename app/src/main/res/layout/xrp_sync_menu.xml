@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="16dp"
-                android:text="Pair App"
+                android:text="@string/pair_app"
                 android:textColor="@color/white" />
 
             <ImageView
