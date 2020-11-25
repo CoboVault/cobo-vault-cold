@@ -99,7 +99,7 @@
         <item>600000</item>
     </string-array>
 
-    <string name="tab_my_address">MY ADDRESSES</string>
+    <string name="tab_my_address">ADDRESSES</string>
     <string name="web_auth1"><![CDATA[1. Please visit <font color="#00cdc3">https://cobo.com/hardware-wallet/web-authentication<font/>]]></string>
     <string name="web_auth2"><![CDATA[2. Click on <font color="#00cdc3">\"Scan QR Code\" <font/>below and scan the QR code displayed on the website]]></string>
     <string name="web_auth3">3. Enter the code displayed on your Cobo Vault on the official website for authentication;</string>
@@ -473,7 +473,7 @@
     <string name="sync_xrp_toolkit_guide_text"><![CDATA[
         1. Open XRP Toolkit, click “Connect Wallet”<br>
         2. Select “Cobo Vault”<br>
-        3. Click "Scan account address" in XRP Toolkit<br>
+        3. Click "Scan Cobo Vault" in XRP Toolkit<br>
         4. Tap the button below and scan the QR code<br>
     ]]></string>
     <string name="sync_cobo_guide_button_text">Display QR Code</string>
@@ -498,9 +498,9 @@
     1. Open <font color="#00cdc3">XRP Toolkit<font/><br>
     2. In the menu bar, go to <font color="#00cdc3">Account<font/> and select the <font color="#00cdc3">Properties<font/> menu item<br>
     3. Look at the Account Properties page for the <font color="#00cdc3">Message Key<font/> section<br>
-    4. Click the small QR code icon in the Message Key field<br>
+    4. Click the small <font color="#00cdc3">QR code icon<font/> in the Message Key field<br>
     5. Scan the Message Key QR Code that displays on Cobo Vault<br>
-    6. Click the Update button<br>
+    6. Click the <font color="#00cdc3">Update<font/> button<br>
     7. Sign the transaction
     ]]></string>
     <string name="spark_token_prepare_title">Prepare for claiming your Spark tokens：</string>
@@ -508,4 +508,5 @@
     <string name="spark_token_title">Message Key</string>
     <string name="claim_spark">Claim Spark</string>
     <string name="claim_spark_button_text">Scan the QR Code of XRP Toolkit</string>
+    <string name="pair_app">Pair App</string>
 </resources>
