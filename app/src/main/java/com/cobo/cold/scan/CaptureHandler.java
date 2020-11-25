@@ -20,7 +20,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.cobo.bcUniformResource.Workload;
-import com.cobo.coinlib.coins.DOT.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
 import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.cold.scan.camera.CameraManager;
 import com.cobo.cold.scan.common.Constant;
@@ -70,11 +70,9 @@ public final class CaptureHandler extends Handler {
             case Constant.DECODE_SUCCEEDED:
                 Result result = (Result) message.obj;
                 String text = result.getText();
-                UOSDecoder.UOSDecodeResult decodeResult = null;
+                com.cobo.coinlib.coins.polkadot.UOS.Result decodeResult = null;
                 try {
-                    decodeResult = new UOSDecoder()
-                            .decodeUOSRawData(Hex.toHexString(result.getRawBytes()),
-                            false);
+                    decodeResult = UOSDecoder.decode(Hex.toHexString(result.getRawBytes()), false);
                 } catch (InvalidUOSException e) {
                     e.printStackTrace();
                 }

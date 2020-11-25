@@ -32,7 +32,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
-import com.cobo.coinlib.coins.DOT.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOS.Result;
+import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.exception.InvalidUOSException;
@@ -233,10 +234,9 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         return null;
     }
 
-    private UOSDecoder.UOSDecodeResult tryDecodePolkadotjsTx(String res) {
+    private Result tryDecodePolkadotjsTx(String res) {
         try {
-            UOSDecoder decoder = new UOSDecoder();
-            return decoder.decodeUOSRawData(res,false);
+            return UOSDecoder.decode(res,false);
         } catch (InvalidUOSException e) {
             e.printStackTrace();
         }

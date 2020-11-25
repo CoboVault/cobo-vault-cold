@@ -19,7 +19,7 @@
 
 package com.cobo.coinlib.coin;
 
-import com.cobo.coinlib.coins.DOT.Dot;
+import com.cobo.coinlib.coins.polkadot.DOT.Dot;
 
 import org.bitcoinj.core.Base58;
 import org.bouncycastle.util.encoders.Hex;
