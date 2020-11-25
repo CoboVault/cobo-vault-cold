@@ -51,6 +51,7 @@ import com.cobo.cold.scan.view.PreviewFrame;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.viewmodel.ElectrumViewModel;
+import com.cobo.cold.viewmodel.PolkadotJsTxConfirmViewModel;
 import com.cobo.cold.viewmodel.QrScanViewModel;
 import com.cobo.cold.viewmodel.SharedDataViewModel;
 import com.cobo.cold.viewmodel.UnknowQrCodeException;
@@ -198,20 +199,29 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } else {
             Result result;
             if((result = tryDecodePolkadotjsTx(res)) != null) {
-                if (result.getNetwork().name.equals("UNKNOWN")) {
-                    alert(getString(R.string.unknown_substrate_chain_title) ,
-                            getString(R.string.unknown_substrate_chain_content));
-                } else if(!this.viewModel.checkSubstrateAccount(result.getAccount())) {
-                    alert(getString(R.string.account_not_match),
-                            getString(R.string.account_not_match_detail));
-                } else {
-                    handlePolkadotJsTx(res);
-                }
+                handlePolkadotJsTransaction(res, result);
             } else {
                 alert(getString(R.string.unresolve_tx),
                         getString(R.string.unresolve_tx_hint,
                                 WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
             }
+        }
+    }
+
+    protected void handlePolkadotJsTransaction(String res, Result result) {
+        PolkadotJsTxConfirmViewModel viewModel = ViewModelProviders.of(this)
+                .get(PolkadotJsTxConfirmViewModel.class);
+        if (!viewModel.isNetworkSupported(result.getNetwork())) {
+            alert(getString(R.string.unknown_substrate_chain_title) ,
+                    getString(R.string.unknown_substrate_chain_content));
+        } else if(!viewModel.isTransactionSupported(result.getExtrinsic().palletParameter)) {
+            alert(getString(R.string.unsupported_polka_tx_type_title),
+                    getString(R.string.unsupported_polka_tx_type_content));
+        } else if(!viewModel.isAccountMatch(result.getAccount())) {
+            alert(getString(R.string.account_not_match),
+                    getString(R.string.account_not_match_detail));
+        } else {
+            handlePolkadotJsTx(res);
         }
     }
 

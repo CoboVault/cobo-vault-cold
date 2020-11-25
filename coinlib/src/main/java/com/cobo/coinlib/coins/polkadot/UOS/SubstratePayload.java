@@ -45,10 +45,7 @@ public class SubstratePayload {
         String rawPayload = restString.substring(0, restString.length() - 64);
         isOversize = restString.length() > 512;
         genesisHash = restString.substring(restString.length() - 64);
-        network = UOSDecoder.supportedNetworks.stream()
-                .filter(n -> n.genesisHash.equals(genesisHash))
-                .findFirst()
-                .orElse(new Network("UNKNOWN", (byte) 0, genesisHash, 0));
+        network = Network.of(genesisHash);
 
         switch (secondByte){
             case 0x00:

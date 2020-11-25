@@ -21,7 +21,7 @@ import com.cobo.coinlib.coins.AbsCoin;
 import com.cobo.coinlib.coins.AbsDeriver;
 import com.cobo.coinlib.coins.AbsTx;
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
@@ -48,16 +48,16 @@ import java.util.Map;
 public class Dot extends AbsCoin {
     public static final Map<Integer, Pallet> pallets = new HashMap<>();
     static {
-        pallets.put(0x0500, new Transfer(UOSDecoder.POLKADOT));
-        pallets.put(0x0503, new TransferKeepAlive(UOSDecoder.POLKADOT));
-        pallets.put(0x0900, new SetKeys(UOSDecoder.POLKADOT));
-        pallets.put(0x0700, new Bond(UOSDecoder.POLKADOT));
-        pallets.put(0x0704, new Validate(UOSDecoder.POLKADOT));
-        pallets.put(0x0705, new Nominate(UOSDecoder.POLKADOT));
-        pallets.put(0x0708, new SetController(UOSDecoder.POLKADOT));
-        pallets.put(0x1a00, new Batch(UOSDecoder.POLKADOT));
-        pallets.put(0x1a02, new BatchAll(UOSDecoder.POLKADOT));
-        pallets.put(0x1100, new Vote(UOSDecoder.POLKADOT));
+        pallets.put(0x0500, new Transfer(Network.POLKADOT));
+        pallets.put(0x0503, new TransferKeepAlive(Network.POLKADOT));
+        pallets.put(0x0900, new SetKeys(Network.POLKADOT));
+        pallets.put(0x0700, new Bond(Network.POLKADOT));
+        pallets.put(0x0704, new Validate(Network.POLKADOT));
+        pallets.put(0x0705, new Nominate(Network.POLKADOT));
+        pallets.put(0x0708, new SetController(Network.POLKADOT));
+        pallets.put(0x1a00, new Batch(Network.POLKADOT));
+        pallets.put(0x1a02, new BatchAll(Network.POLKADOT));
+        pallets.put(0x1100, new Vote(Network.POLKADOT));
     }
 
     public Dot(Coin impl) {

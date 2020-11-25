@@ -22,7 +22,7 @@ package com.cobo.coinlib.coins.polkadot.KSM;
 import com.cobo.coinlib.coins.AbsDeriver;
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.DOT.Dot;
-import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
@@ -50,16 +50,16 @@ public class Ksm extends Dot {
     public static final Map<Integer, Pallet> pallets = new HashMap<>();
     //fix code
     static {
-        pallets.put(0x0400, new Transfer(UOSDecoder.KUSAMA));
-        pallets.put(0x0403, new TransferKeepAlive(UOSDecoder.KUSAMA));
-        pallets.put(0x0800, new SetKeys(UOSDecoder.KUSAMA));
-        pallets.put(0x0600, new Bond(UOSDecoder.KUSAMA));
-        pallets.put(0x0604, new Validate(UOSDecoder.KUSAMA));
-        pallets.put(0x0605, new Nominate(UOSDecoder.KUSAMA));
-        pallets.put(0x0608, new SetController(UOSDecoder.KUSAMA));
-        pallets.put(0x1800, new Batch(UOSDecoder.KUSAMA));
-        pallets.put(0x1802, new BatchAll(UOSDecoder.KUSAMA));
-        pallets.put(0x1000, new Vote(UOSDecoder.KUSAMA));
+        pallets.put(0x0400, new Transfer(Network.KUSAMA));
+        pallets.put(0x0403, new TransferKeepAlive(Network.KUSAMA));
+        pallets.put(0x0800, new SetKeys(Network.KUSAMA));
+        pallets.put(0x0600, new Bond(Network.KUSAMA));
+        pallets.put(0x0604, new Validate(Network.KUSAMA));
+        pallets.put(0x0605, new Nominate(Network.KUSAMA));
+        pallets.put(0x0608, new SetController(Network.KUSAMA));
+        pallets.put(0x1800, new Batch(Network.KUSAMA));
+        pallets.put(0x1802, new BatchAll(Network.KUSAMA));
+        pallets.put(0x1000, new Vote(Network.KUSAMA));
     }
 
     public Ksm(Coin impl) {

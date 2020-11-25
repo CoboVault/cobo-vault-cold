@@ -276,22 +276,6 @@ public class QrScanViewModel extends AndroidViewModel {
         }
     }
 
-
-    public boolean checkSubstrateAccount(String account) {
-        Future<Boolean> future = Executors.newSingleThreadExecutor().submit(() -> {
-            List<AddressEntity> allSubstrateAddress = new ArrayList<>();
-            allSubstrateAddress.addAll(mRepo.loadAddressSync(Coins.KSM.coinId()));
-            allSubstrateAddress.addAll(mRepo.loadAddressSync(Coins.DOT.coinId()));
-            return allSubstrateAddress.stream().anyMatch(entity -> account.equals(entity.getAddressString()));
-        });
-        try {
-            return future.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
         @NonNull
         private final Application mApplication;
