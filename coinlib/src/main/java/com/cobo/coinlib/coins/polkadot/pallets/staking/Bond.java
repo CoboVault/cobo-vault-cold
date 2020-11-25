@@ -28,6 +28,8 @@ public class Bond extends Pallet {
         rewardType = scr.readByte();
         switch (rewardType) {
             case 0x00:
+            case 0x01:
+            case 0x02:
                 break;
             default:
                 rewardDestinationPublicKey = scr.readByteArray(32);
