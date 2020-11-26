@@ -17,6 +17,8 @@
 
 package com.cobo.coinlib.coins;
 
+import com.cobo.coinlib.coins.polkadot.DOT.Dot;
+import com.cobo.coinlib.coins.polkadot.KSM.Ksm;
 import com.cobo.coinlib.exception.InvalidPathException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.path.Account;
@@ -102,6 +104,8 @@ public abstract class AbsTx {
         String coinCode = object.getString("coinCode");
 
         try {
+            if (coinCode.equals(Coins.DOT.coinCode())) return new Dot.Tx(object, coinCode);
+            else if (coinCode.equals(Coins.KSM.coinCode())) return new Ksm.Tx(object, coinCode);
             Class<?> clazz = Class.forName(CoinReflect.getCoinClassByCoinCode(coinCode) + "$Tx");
             return (AbsTx) clazz.getDeclaredConstructor(JSONObject.class, String.class)
                     .newInstance(object, coinCode);
@@ -109,7 +113,8 @@ public abstract class AbsTx {
                 | InstantiationException
                 | InvocationTargetException
                 | NoSuchMethodException
-                | IllegalAccessException e) {
+                | IllegalAccessException
+                | InvalidTransactionException e) {
             e.printStackTrace();
         }
         return null;
