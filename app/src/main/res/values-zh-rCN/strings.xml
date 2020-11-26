@@ -475,9 +475,11 @@
     <string name="spark_token_prepare_title">获取 Spark tokens 准备工作：</string>
     <string name="claim_spark_token_button">查看 Message Key 二维码</string>
     <string name="spark_token_title">Message Key</string>
-    <string name="claim_spark">Claim Spark</string>
-    <string name="claim_spark_button_text">Scan the QR Code of XRP Toolkit</string>
+    <string name="claim_spark">获取 Spark</string>
+    <string name="claim_spark_button_text">扫描 XRP Toolkit 二维码</string>
     <string name="pair_app">同步账户</string>
     <string name="unknown_substrate_chain_title">暂不支持该币种</string>
     <string name="unknown_substrate_chain_content">Polkadot.js模式下暂不支持该币种</string>
+    <string name="unsupported_polka_tx_type_title">暂不支持该交易类型</string>
+    <string name="unsupported_polka_tx_type_content">Polkadot.js模式下，仅支持 DOT 和 KSM的接收和发送，其他交易类型暂不支持。</string>
 </resources>

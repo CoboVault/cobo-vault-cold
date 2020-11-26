@@ -28,12 +28,17 @@ import androidx.annotation.NonNull;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.UOS.Result;
 import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferParameter;
 import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
+import com.cobo.cold.DataRepository;
+import com.cobo.cold.MainApplication;
+import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryption.ChipSigner;
 
@@ -41,15 +46,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
 
     private byte[] signingPayload;
     private boolean isHash;
+    private DataRepository mRepo;
 
     public PolkadotJsTxConfirmViewModel(@NonNull Application application) {
         super(application);
+        mRepo = ((MainApplication)application).getRepository();
     }
     private JSONObject extrinsicObject;
 
@@ -64,6 +76,29 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
         } catch (InvalidUOSException | JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isTransactionSupported(Parameter parameter) {
+        return parameter instanceof TransferParameter;
+    }
+
+    public boolean isNetworkSupported(Network network) {
+        return Network.supportedNetworks.contains(network);
+    }
+
+    public boolean isAccountMatch(String account) {
+        Future<Boolean> future = Executors.newSingleThreadExecutor().submit(() -> {
+            List<AddressEntity> allSubstrateAddress = new ArrayList<>();
+            allSubstrateAddress.addAll(mRepo.loadAddressSync(Coins.KSM.coinId()));
+            allSubstrateAddress.addAll(mRepo.loadAddressSync(Coins.DOT.coinId()));
+            return allSubstrateAddress.stream().anyMatch(entity -> account.equals(entity.getAddressString()));
+        });
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private TxEntity generateSubstrateTxEntity(Result result) {
