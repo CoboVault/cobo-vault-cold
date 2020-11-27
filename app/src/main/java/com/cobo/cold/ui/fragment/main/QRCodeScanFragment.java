@@ -197,14 +197,17 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } else if ("address".equals(purpose)) {
             navigateUp();
         } else {
-            Result result;
-            if((result = tryDecodePolkadotjsTx(res)) != null) {
-                handlePolkadotJsTransaction(res, result);
-            } else {
-                alert(getString(R.string.unresolve_tx),
-                        getString(R.string.unresolve_tx_hint,
-                                WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
+            WatchWallet watchWallet = WatchWallet.getWatchWallet(mActivity);
+            if (watchWallet == WatchWallet.POLKADOT_JS) {
+                Result result;
+                if ((result = tryDecodePolkadotjsTx(res)) != null) {
+                    handlePolkadotJsTransaction(res, result);
+                    return;
+                }
             }
+            alert(getString(R.string.unresolve_tx),
+                    getString(R.string.unresolve_tx_hint, watchWallet.getWalletName(mActivity)));
+
         }
     }
 
