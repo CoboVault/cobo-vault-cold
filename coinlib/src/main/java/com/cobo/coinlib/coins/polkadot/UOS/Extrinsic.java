@@ -1,6 +1,7 @@
 package com.cobo.coinlib.coins.polkadot.UOS;
 
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
+import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.PalletFactory;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 
@@ -28,14 +29,18 @@ public class Extrinsic {
 
     private void read() {
         ScaleCodecReader scr = new ScaleCodecReader(rawSigningPayload);
-        palletParameter = PalletFactory.readPallet(scr, network).read(scr);
-        era = scr.readString(2);
-        nonce = scr.readCompact();
-        tip = scr.readCompact();
-        specVersion = scr.readUint32();
-        transactionVersion = scr.readUint32();
-        genesisHash = scr.readString(32);
-        blockHash = scr.readString(32);
+        int code = scr.readUint16BE();
+        Pallet pallet = PalletFactory.getPallet(code, network);
+        if (pallet != null) {
+            palletParameter = pallet.read(scr);
+            era = scr.readString(2);
+            nonce = scr.readCompact();
+            tip = scr.readCompact();
+            specVersion = scr.readUint32();
+            transactionVersion = scr.readUint32();
+            genesisHash = scr.readString(32);
+            blockHash = scr.readString(32);
+        }
     }
 
     public String getEra() {

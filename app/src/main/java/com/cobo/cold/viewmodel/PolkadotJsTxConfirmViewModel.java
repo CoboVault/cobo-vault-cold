@@ -29,7 +29,6 @@ import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.UOS.Result;
 import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
-import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferParameter;
 import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.coinlib.interfaces.SignCallback;
@@ -57,7 +56,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
 
     private byte[] signingPayload;
     private boolean isHash;
-    private DataRepository mRepo;
+    private final DataRepository mRepo;
 
     public PolkadotJsTxConfirmViewModel(@NonNull Application application) {
         super(application);
