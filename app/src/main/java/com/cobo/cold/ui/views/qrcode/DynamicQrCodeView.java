@@ -95,7 +95,7 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
         } else if(scheme == EncodingScheme.Bc32) {
             AppExecutors.getInstance().networkIO().execute(()-> {
                 try {
-                    String[] workloads = UniformResource.Encoder.encode(data.toUpperCase(),900);
+                    String[] workloads = UniformResource.Encoder.encode(data.toUpperCase(),600);
                     count = workloads.length;
                     splitData.clear();
                     for (int i = 0; i < count; i++) {
