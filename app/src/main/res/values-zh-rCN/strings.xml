@@ -414,7 +414,7 @@
     <string name="sync_cobo_wallet_guide_title">Cobo Vault App 绑定指引：</string>
     <string name="sync_xumm_guide_title">XUMM 导入观察账户指引：</string>
     <string name="sync_xrp_toolkit_guide_title">XRP Toolkit 导入观察账户指引：</string>
-    <string name="sync_polkadotjs_wallet_guide_title">创建%s观察钱包指引：</string>
+    <string name="sync_polkadotjs_wallet_guide_title">Polkadot.js 导入 %s 观察钱包指引：</string>
 
     <string name="sync_cobo_wallet_guide_text"><![CDATA[
         1. 打开 Cobo Vault App，添加新钱包<br>
@@ -425,8 +425,8 @@
     ]]></string>
 
     <string name="sync_polkadot_js_guide_text"><![CDATA[
-        1. 打开 Polkadot.js，选择<font color="#00cdc3">%s<font/><br>
-        2. 点击“<font color="#00cdc3">账户<font/>”，选择“<font color="#00cdc3">账户<font/>”<br>
+        1. 打开 Polkadot.js，选择 <font color="#00cdc3">%s<font/><br>
+        2. 点击“<font color="#00cdc3">账户<font/>”，选择 “<font color="#00cdc3"> 账户<font/>”<br>
         3. 点击“<font color="#00cdc3">通过二维码添加<font/>”<br>
         4. 扫描 %s 的二维码<br>
     ]]></string>
@@ -449,7 +449,7 @@
     <string name="sync_xumm_guide_button_text">查看地址二维码</string>
     <string name="sync_xrp_toolkit_guide_button_text">查看地址二维码</string>
     <string name="sync_polkadot_js_guide_button_text">查看%s二维码</string>
-    <string name="sync_polkadot_hint">请注意：\n在Polkadot.js上，需分别创建DOT、KSM的观察钱包。</string>
+    <string name="sync_polkadot_hint">请注意：\n在Polkadot.js上，需分别创建 DOT、KSM 的观察钱包。</string>
     <string name="sync_with_cobo_vault">请使用 Cobo Vault App 扫描二维码</string>
     <string name="sync_with_xumm">请使用 XUMM 扫描地址二维码</string>
     <string name="sync_with_xrp_toolkit">请使用 XRP Toolkit 扫描二维码</string>
