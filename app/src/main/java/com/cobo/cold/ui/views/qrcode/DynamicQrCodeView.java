@@ -237,7 +237,17 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder, QrC
                 handler.postDelayed(this::showQrCode, DURATION);
             }
         } else {
-            mCache.offer(data, this);
+            if (ViewCompat.isLaidOut(this)) {
+                mCache.offer(data, this);
+            } else {
+                getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        mCache.offer(data, DynamicQrCodeView.this);
+                    }
+                });
+            }
         }
     }
 

@@ -23,9 +23,9 @@ import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cobo.cold.R;
@@ -53,6 +53,7 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
     private TxCallback txCallback;
     private String query;
     private Comparator<TxEntity> txEntityComparator;
+    private String coinCode;
 
 
     static Fragment newInstance(@NonNull String coinId, @NonNull String coinCode) {
@@ -87,7 +88,7 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
                 navigate(R.id.action_to_txFragment, bundle);
             }
         };
-
+        coinCode = data.getString(KEY_COIN_CODE);
         viewModel.loadTxs(data.getString(KEY_COIN_ID))
                 .observe(this, txEntities -> {
                     txEntityComparator = (o1, o2) -> {
@@ -154,8 +155,18 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
         }
 
         @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            super.onBindViewHolder(holder, position);
+            if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.POLKADOT_JS) {
+                TxListItemBinding binding = DataBindingUtil.getBinding(holder.itemView);
+                binding.txid.setText(coinCode + "-Transaction-" + (items.size() - position));
+            }
+        }
+
+        @Override
         protected void onBindItem(TxListItemBinding binding, TxEntity item) {
             binding.setTx(item);
+            binding.txid.setText(item.getTxId());
             binding.setTxCallback(txCallback);
         }
     }

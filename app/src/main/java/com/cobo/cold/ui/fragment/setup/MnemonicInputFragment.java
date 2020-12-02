@@ -284,10 +284,15 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                     if (dialog != null && dialog.getDialog() != null && dialog.getDialog().isShowing()) {
                         dialog.dismiss();
                     }
+
                     if (isEnableDot) {
-                        String coinCode = Objects.requireNonNull(getArguments()).getString("coinCode");
-                        viewModel.toggleCoin(coinCode);
-                        popBackStack(R.id.manageCoinFragment,false);
+                        if (Objects.requireNonNull(getArguments()).getBoolean(Utilities.IS_SWITCH_WATCH_WALLET)) {
+                            popBackStack(R.id.chooseWatchWalletFragment, false);
+                        } else {
+                            String coinCode = Objects.requireNonNull(getArguments()).getString("coinCode");
+                            viewModel.toggleCoin(coinCode);
+                            popBackStack(R.id.manageCoinFragment, false);
+                        }
                     } else {
                         Bundle data = new Bundle();
                         boolean isSetupProcess = ((SetupVaultActivity) mActivity).isSetupVault;

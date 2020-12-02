@@ -47,7 +47,6 @@
             android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="bold"
-            android:text="@{tx.txId}"
             tools:text="0x4f7d6a…52ce9824" />
 
         <ImageView
