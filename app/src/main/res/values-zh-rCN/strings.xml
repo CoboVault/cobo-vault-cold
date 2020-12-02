@@ -482,8 +482,9 @@
     <string name="unknown_substrate_chain_content">Polkadot.js模式下暂不支持该币种</string>
     <string name="unsupported_polka_tx_type_title">暂不支持该交易类型</string>
     <string name="unsupported_polka_tx_type_content">Polkadot.js模式下，仅支持 DOT 和 KSM的接收和发送，其他交易类型暂不支持。</string>
-    <string name="enable_dot_for_polkadotjs">切换为观察钱包为 Polkadot.js，您需再次输入当前金库的助记词。具体原因请访问：https://cobo.com/dot</string>
+    <string name="enable_dot_for_polkadotjs">切换观察钱包为 Polkadot.js，您需再次输入当前金库的助记词。具体原因请访问：https://cobo.com/dot</string>
     <string name="not_switch">暂不切换</string>
     <string name="confirm_switch">确认切换</string>
     <string name="keep_screen_on">请勿锁屏</string>
+    <string name="sync">同步观察钱包</string>
 </resources>
