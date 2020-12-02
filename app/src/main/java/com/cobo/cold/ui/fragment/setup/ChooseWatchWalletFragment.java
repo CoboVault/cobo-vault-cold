@@ -93,10 +93,12 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
     private void checkPolkadotEnable() {
         CoinListViewModel viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
         viewModel.getCoins().observe(this, coinEntities -> {
-            for (CoinEntity coin : coinEntities) {
-                if (Coins.isPolkadotFamily(coin.getCoinCode())) {
-                    isPolkadotEnabled = !TextUtils.isEmpty(coin.getExPub());
-                    break;
+            if (coinEntities != null && coinEntities.size() > 0) {
+                for (CoinEntity coin : coinEntities) {
+                    if (Coins.isPolkadotFamily(coin.getCoinCode())) {
+                        isPolkadotEnabled = !TextUtils.isEmpty(coin.getExPub());
+                        break;
+                    }
                 }
             }
         });
