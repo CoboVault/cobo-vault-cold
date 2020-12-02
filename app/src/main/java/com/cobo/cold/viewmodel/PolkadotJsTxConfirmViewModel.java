@@ -33,6 +33,7 @@ import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferParameter;
 import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;
+import com.cobo.coinlib.utils.Arith;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
@@ -45,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -57,6 +59,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
     private byte[] signingPayload;
     private boolean isHash;
     private final DataRepository mRepo;
+    private String txId;
 
     public PolkadotJsTxConfirmViewModel(@NonNull Application application) {
         super(application);
@@ -111,7 +114,11 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
         tx.setFee(result.getExtrinsic().getTip()+ " " + coinCode);
         if (result.getExtrinsic().palletParameter instanceof TransferParameter) {
             TransferParameter transfer = (TransferParameter) result.getExtrinsic().palletParameter;
-            tx.setAmount(transfer.getAmount() + " " + coinCode);
+            double amount = Double.parseDouble(transfer.getAmount());
+            double tip = Double.parseDouble(tx.getFee().split(" ")[0]);
+            double value = Arith.add(amount, tip);
+            final DecimalFormat decimalFormat = new DecimalFormat("###################.##########");
+            tx.setAmount(decimalFormat.format(value) + " " + coinCode);
             tx.setTo(transfer.getDestination());
         }
         tx.setBelongTo(mRepository.getBelongTo());
@@ -148,7 +155,13 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
     }
 
     @Override
+    public String getTxId() {
+        return txId;
+    }
+
+    @Override
     protected TxEntity onSignSuccess(String txId, String rawTx) {
+        this.txId = txId;
         TxEntity tx = observableTx.getValue();
         Objects.requireNonNull(tx).setTxId(txId);
         try {

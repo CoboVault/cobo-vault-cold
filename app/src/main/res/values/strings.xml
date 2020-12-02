@@ -446,7 +446,7 @@
     <string name="sync_cobo_wallet_guide_title">How to bind Cobo Vault App：</string>
     <string name="sync_xumm_guide_title">How to create a Read only account in XUMM：</string>
     <string name="sync_xrp_toolkit_guide_title">How to create a watch-only account in XRP Toolkit：</string>
-    <string name="sync_polkadotjs_wallet_guide_title">How to create a %s watch-only wallet：</string>
+    <string name="sync_polkadotjs_wallet_guide_title">How to create a %s watch-only wallet in Polkadot.js：</string>
 
     <string name="sync_cobo_wallet_guide_text"><![CDATA[
         1. Open Cobo Vault Mobile and add new wallet<br>
@@ -480,7 +480,7 @@
     <string name="sync_xumm_guide_button_text">Display QR Code of Address</string>
     <string name="sync_xrp_toolkit_guide_button_text">Display QR Code</string>
     <string name="sync_polkadot_js_guide_button_text">Display QR Code of %s</string>
-    <string name="sync_polkadot_hint">Hint：\nOn Polkadot.js, you need to create observation wallets for DOT and KSM respectively.</string>
+    <string name="sync_polkadot_hint">Hint：\nOn Polkadot.js, you need to create watch-only wallets for DOT and KSM separately.</string>
     <string name="sync_with_cobo_vault">Scan the QR code using Cobo Vault App</string>
     <string name="sync_with_xumm">Scan the QR code using XUMM</string>
     <string name="sync_with_xrp_toolkit">Scan the QR code using XRP Toolkit</string>
@@ -513,4 +513,8 @@
     <string name="unknown_substrate_chain_content">Polkadot.js watch-only does not support this currency</string>
     <string name="unsupported_polka_tx_type_title">This transaction is not currently supported</string>
     <string name="unsupported_polka_tx_type_content">In Polkadot.js watch-only, only DOT &amp; KSM receiving and sending are supported. Other transaction types are not currently supported.</string>
+    <string name="enable_dot_for_polkadotjs">You need to enter the recovery phrase of this vault when switch watch-only wallet to polkadot.js. For details, please visit: https://cobo.com/dot</string>
+    <string name="not_switch">Not Now</string>
+    <string name="confirm_switch">Confirm</string>
+    <string name="keep_screen_on">Please keep screen on</string>
 </resources>

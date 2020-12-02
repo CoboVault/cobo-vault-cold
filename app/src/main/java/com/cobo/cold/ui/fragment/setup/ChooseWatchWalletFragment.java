@@ -20,27 +20,36 @@ package com.cobo.cold.ui.fragment.setup;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
 import com.cobo.cold.databinding.SettingItemSelectableBinding;
+import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.ui.common.BaseBindingAdapter;
 import com.cobo.cold.ui.fragment.setting.ListPreferenceFragment;
+import com.cobo.cold.ui.modal.ModalDialog;
+import com.cobo.cold.ui.views.AuthenticateModal;
+import com.cobo.cold.viewmodel.CoinListViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_CHOOSE_WATCH_WALLET;
+import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 
 public class ChooseWatchWalletFragment extends ListPreferenceFragment {
 
@@ -49,6 +58,8 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
     private List<Pair<String,String>> displayItems;
 
     private String tempValue;
+
+    private boolean isPolkadotEnabled = true;
     @Override
     protected void init(View view) {
         if (mActivity instanceof MainActivity) {
@@ -76,26 +87,73 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
 
         adapter.setItems(displayItems);
         mBinding.list.setAdapter(adapter);
+        checkPolkadotEnable();
+    }
+
+    private void checkPolkadotEnable() {
+        CoinListViewModel viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
+        viewModel.getCoins().observe(this, coinEntities -> {
+            for (CoinEntity coin : coinEntities) {
+                if (Coins.isPolkadotFamily(coin.getCoinCode())) {
+                    isPolkadotEnabled = !TextUtils.isEmpty(coin.getExPub());
+                    break;
+                }
+            }
+        });
     }
 
     private void onChooseWallet() {
-        value = tempValue;
-        prefs.edit().putString(SETTING_CHOOSE_WATCH_WALLET, value).apply();
         Bundle bundle = new Bundle();
         bundle.putBoolean(Utilities.IS_SWITCH_WATCH_WALLET, true);
-        switch (WatchWallet.getWatchWalletById(value)) {
+        switch (WatchWallet.getWatchWalletById(tempValue)) {
             case POLKADOT_JS:
-                bundle.putString("coinCode", Coins.DOT.coinCode());
-                navigate(R.id.action_to_manageCoinFragment, bundle);
+                if (isPolkadotEnabled) {
+                    bundle.putString("coinCode", Coins.DOT.coinCode());
+                    navigate(R.id.action_to_manageCoinFragment, bundle);
+                    updateCurrentWatchWallet();
+                } else {
+                    enableDot(Coins.DOT.coinCode());
+                }
                 break;
             case COBO:
                 navigate(R.id.action_to_manageCoinFragment, bundle);
+                updateCurrentWatchWallet();
                 break;
             case XRP_TOOLKIT:
                 navigate(R.id.action_to_syncWatchWalletGuide, bundle);
+                updateCurrentWatchWallet();
                 break;
         }
+    }
 
+    private void updateCurrentWatchWallet() {
+        value = tempValue;
+        prefs.edit().putString(SETTING_CHOOSE_WATCH_WALLET, value).apply();
+    }
+
+    private void enableDot(String coinCode) {
+        ModalDialog dialog = new ModalDialog();
+        ModalWithTwoButtonBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                R.layout.modal_with_two_button,
+                null,false);
+        binding.title.setText(R.string.notice1);
+        binding.subTitle.setText(R.string.enable_dot_for_polkadotjs);
+        binding.left.setText(R.string.not_switch);
+        binding.left.setOnClickListener(v -> dialog.dismiss());
+        binding.right.setText(R.string.confirm_switch);
+        binding.right.setOnClickListener(v -> {
+            dialog.dismiss();
+            AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), null, token -> {
+                Bundle data = new Bundle();
+                data.putBoolean("enableDot", true);
+                data.putString("coinCode", coinCode);
+                data.putBoolean(Utilities.IS_SWITCH_WATCH_WALLET, true);
+                data.putString(PASSWORD, token.password);
+                navigate(R.id.action_to_selectMnomenicCountFragment, data);
+            },null);
+        });
+        dialog.setBinding(binding);
+        dialog.show(mActivity.getSupportFragmentManager(),"");
     }
 
     @Override
@@ -126,7 +184,6 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
             if (!old.equals(tempValue)) {
                 adapter.notifyDataSetChanged();
             }
-
             mBinding.button.setEnabled(!tempValue.equals(value));
         } else {
             String old = value;
