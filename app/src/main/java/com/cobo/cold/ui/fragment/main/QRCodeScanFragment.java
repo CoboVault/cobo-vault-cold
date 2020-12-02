@@ -69,6 +69,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
+import static com.cobo.cold.viewmodel.MultiSigViewModel.decodeCaravanWalletFile;
 import static com.cobo.cold.viewmodel.MultiSigViewModel.decodeColdCardWalletFile;
 import static com.cobo.cold.viewmodel.WatchWallet.getWatchWallet;
 
@@ -240,7 +241,25 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         try {
             MultiSigViewModel viewModel = ViewModelProviders.of(mActivity).get(MultiSigViewModel.class);
             String xfp = viewModel.getXfp();
-            JSONObject obj = decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8));
+            JSONObject obj = null;
+            //try decode cc format
+            try {
+                obj = decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8));
+            } catch (InvalidMultisigWalletException e) {
+                e.printStackTrace();
+            }
+            //try decode caravan format
+            if (obj == null) {
+                try {
+                    obj = decodeCaravanWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8));
+                } catch (InvalidMultisigWalletException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (obj == null) {
+                alert(getString(R.string.invalid_multisig_wallet),getString(R.string.invalid_multisig_wallet_hint));
+                return;
+            }
 
             boolean isWalletFileTest = obj.optBoolean("isTest", false);
             boolean isTestnet = !Utilities.isMainNet(mActivity);
@@ -271,9 +290,6 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } catch (XfpNotMatchException e) {
             e.printStackTrace();
             alert(getString(R.string.import_multisig_wallet_fail),getString(R.string.import_multisig_wallet_fail_hint));
-        } catch (InvalidMultisigWalletException e) {
-            e.printStackTrace();
-            alert(getString(R.string.invalid_multisig_wallet),getString(R.string.invalid_multisig_wallet_hint));
         } catch (JSONException e) {
             e.printStackTrace();
             alert(getString(R.string.incorrect_qrcode));

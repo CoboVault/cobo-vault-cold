@@ -45,6 +45,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -59,6 +63,7 @@ public class ImportMultisigFileList extends MultiSigBaseFragment<FileListBinding
     protected int setView() {
         return R.layout.file_list;
     }
+    private Map<String, JSONObject> walletFiles = new HashMap<>();
 
     @Override
     protected void init(View view) {
@@ -80,8 +85,11 @@ public class ImportMultisigFileList extends MultiSigBaseFragment<FileListBinding
         } else {
             mBinding.list.setAdapter(adapter);
             viewModel.loadWalletFile().observe(this, files -> {
+                walletFiles = files;
                 if (files.size() > 0) {
-                    adapter.setItems(files);
+                    List<String> fileNames = new ArrayList<>(files.keySet());
+                    fileNames.sort(String::compareTo);
+                    adapter.setItems(fileNames);
                 } else {
                     showEmpty.set(true);
                     mBinding.emptyTitle.setText(R.string.no_multisig_wallet_file);
@@ -107,28 +115,21 @@ public class ImportMultisigFileList extends MultiSigBaseFragment<FileListBinding
     public void onClick(String file) {
         Storage storage = Storage.createByEnvironment(mActivity);
         Objects.requireNonNull(storage);
-        try {
-            JSONObject walletFile = MultiSigViewModel.decodeColdCardWalletFile(
-                    FileUtils.readString(new File(storage.getExternalDir(), file)));
-            boolean isWalletFileTest = walletFile.optBoolean("isTest", false);
-            boolean isTestnet = !Utilities.isMainNet(mActivity);
-            if (isWalletFileTest != isTestnet) {
-                String currentNet = isTestnet ? getString(R.string.testnet) : getString(R.string.mainnet);
-                String walletFileNet = isWalletFileTest ? getString(R.string.testnet) : getString(R.string.mainnet);
-                ModalDialog.showCommonModal(mActivity, getString(R.string.import_failed),
-                        getString(R.string.import_failed_network_not_match, currentNet, walletFileNet, walletFileNet),
-                        getString(R.string.know),null);
-                return;
-            }
-
-            Bundle data = new Bundle();
-            data.putString("wallet_info",walletFile.toString());
-            navigate(R.id.import_multisig_wallet, data);
-        } catch (InvalidMultisigWalletException e) {
-            e.printStackTrace();
+        JSONObject walletFile = walletFiles.get(file);
+        boolean isWalletFileTest = walletFile.optBoolean("isTest", false);
+        boolean isTestnet = !Utilities.isMainNet(mActivity);
+        if (isWalletFileTest != isTestnet) {
+            String currentNet = isTestnet ? getString(R.string.testnet) : getString(R.string.mainnet);
+            String walletFileNet = isWalletFileTest ? getString(R.string.testnet) : getString(R.string.mainnet);
+            ModalDialog.showCommonModal(mActivity, getString(R.string.import_failed),
+                    getString(R.string.import_failed_network_not_match, currentNet, walletFileNet, walletFileNet),
+                    getString(R.string.know),null);
+            return;
         }
 
-
+        Bundle data = new Bundle();
+        data.putString("wallet_info",walletFile.toString());
+        navigate(R.id.import_multisig_wallet, data);
     }
 
     @Override

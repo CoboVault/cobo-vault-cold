@@ -72,6 +72,15 @@ public class MultiSig {
             return P2WSH;
         }
 
+        public static Account ofFormat(String format, boolean isTestnet) {
+            for (Account value : Account.values()) {
+                if (value.getFormat().equals(format) && value.isTest() == isTestnet) {
+                    return value;
+                }
+            }
+            return P2WSH;
+        }
+
         public boolean isTest() {
             return (this == P2WSH_TEST || this == P2WSH_P2SH_TEST || this == P2SH_TEST);
         }
