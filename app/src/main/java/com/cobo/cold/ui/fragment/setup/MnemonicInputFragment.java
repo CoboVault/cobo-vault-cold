@@ -438,7 +438,11 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
         dialog.show(mActivity.getSupportFragmentManager(), "");
         if (isEnableDot) {
             String coinCode = Objects.requireNonNull(getArguments()).getString("coinCode");
-            binding.text.setText(getString(R.string.adding_dot_hint,coinCode));
+            if (Objects.requireNonNull(getArguments()).getBoolean(Utilities.IS_SWITCH_WATCH_WALLET)) {
+                binding.text.setText(R.string.keep_screen_on);
+            } else {
+                binding.text.setText(getString(R.string.adding_dot_hint, coinCode));
+            }
         } else {
             String[] steps = mActivity.getResources().getStringArray(R.array.create_vault_step);
             binding.step.setText(steps[0]);

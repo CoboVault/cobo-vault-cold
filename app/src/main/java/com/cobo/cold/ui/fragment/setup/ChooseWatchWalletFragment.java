@@ -137,10 +137,10 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
                 R.layout.modal_with_two_button,
                 null,false);
         binding.title.setText(R.string.notice1);
-        binding.subTitle.setText(getString(R.string.add_polkadot_hint, coinCode, coinCode.toLowerCase()));
-        binding.left.setText(R.string.add_later);
+        binding.subTitle.setText(R.string.enable_dot_for_polkadotjs);
+        binding.left.setText(R.string.not_switch);
         binding.left.setOnClickListener(v -> dialog.dismiss());
-        binding.right.setText(R.string.comfirm_add);
+        binding.right.setText(R.string.confirm_switch);
         binding.right.setOnClickListener(v -> {
             dialog.dismiss();
             AuthenticateModal.show(mActivity, getString(R.string.password_modal_title), null, token -> {
