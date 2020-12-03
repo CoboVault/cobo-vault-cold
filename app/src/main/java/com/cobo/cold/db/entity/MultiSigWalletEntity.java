@@ -54,10 +54,11 @@ public class MultiSigWalletEntity {
     private String verifyCode;
     @NonNull
     private String network;
-
+    @NonNull
+    private String creator;
     public MultiSigWalletEntity(String walletName, int threshold, int total,
                                 String exPubPath, String exPubs, String belongTo,
-                                String network, String verifyCode) {
+                                String network, String verifyCode, String creator) {
         this.walletName = walletName;
         this.threshold = threshold;
         this.total = total;
@@ -66,6 +67,7 @@ public class MultiSigWalletEntity {
         this.belongTo = belongTo;
         this.network = network;
         this.verifyCode = verifyCode;
+        this.creator = creator;
     }
 
     @NonNull
@@ -141,6 +143,15 @@ public class MultiSigWalletEntity {
         this.network = network;
     }
 
+    @NonNull
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(@NonNull String creator) {
+        this.creator = creator;
+    }
+
     public String deriveAddress(int[] index, boolean isMainnet) {
         Deriver deriver = new Deriver(isMainnet);
         List<String> xpubList = new ArrayList<>();
@@ -168,6 +179,7 @@ public class MultiSigWalletEntity {
                 ", exPubs='" + exPubs + '\'' +
                 ", belongTo='" + belongTo + '\'' +
                 ", network='" + network + '\'' +
+                ", creator='" + creator + '\'' +
                 '}';
     }
 }

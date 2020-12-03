@@ -39,6 +39,9 @@ public class WalletFragment extends MultiSigBaseFragment<MultisigWalletBinding>
         super.init(view);
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.setClickHandler(this);
+        if ("Caravan".equalsIgnoreCase(Objects.requireNonNull(getArguments()).getString("creator"))) {
+            mBinding.exportWalletToCosigner.setVisibility(View.GONE);
+        }
     }
 
     @Override

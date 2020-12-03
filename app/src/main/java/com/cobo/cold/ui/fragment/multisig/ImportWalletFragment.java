@@ -135,7 +135,7 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
             }
 
             return new MultiSigWalletEntity(walletInfo.getString("Name"),
-                    threshold, total,account.getPath(),array.toString(),"","","");
+                    threshold, total,account.getPath(),array.toString(),"","","", creator);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -145,7 +145,7 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
 
     private void importWallet() {
         try {
-            viewModel.createMultisigWallet(threshold, account, walletInfo.getString("Name"),walletInfo.getJSONArray("Xpubs"))
+            viewModel.createMultisigWallet(threshold, account, walletInfo.getString("Name"),walletInfo.getJSONArray("Xpubs"), creator)
                     .observe(this, this::onImportWalletSuccess);
         } catch (XfpNotMatchException e) {
             e.printStackTrace();
@@ -174,9 +174,9 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
             handler.postDelayed(() -> {
                 dialog.dismiss();
                 popBackStack(R.id.multisigFragment,false);
-                //Bundle bundle = Bundle.forPair("wallet_fingerprint", walletEntity.getWalletFingerPrint());
-                //bundle.putBoolean("isImportMultisig",true);
-                //navigate(R.id.action_export_wallet_to_electrum, bundle);
+                Bundle bundle = Bundle.forPair("wallet_fingerprint", walletEntity.getWalletFingerPrint());
+                bundle.putBoolean("isImportMultisig",true);
+                navigate(R.id.action_export_multisig_wallet_watch_only_guide, bundle);
             },500);
         }
     }

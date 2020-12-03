@@ -270,8 +270,8 @@ public class MultiSigViewModel extends AndroidViewModel {
                     for (int i = 0; i < xpubArray.length(); i++) {
                         JSONObject xpubKey = new JSONObject();
                         xpubKey.put("name", "Extended Public Key " + i);
-                        xpubKey.put("bip32Path", xpubArray.getJSONObject(0).getString("path"));
-                        String xpub = xpubArray.getJSONObject(0).getString("xpub");
+                        xpubKey.put("bip32Path", xpubArray.getJSONObject(i).getString("path"));
+                        String xpub = xpubArray.getJSONObject(i).getString("xpub");
                         if (isTest) {
                             xpub = ExtendPubkeyFormat.convertExtendPubkey(xpub, ExtendPubkeyFormat.tpub);
                         } else {
@@ -392,7 +392,7 @@ public class MultiSigViewModel extends AndroidViewModel {
     public LiveData<MultiSigWalletEntity> createMultisigWallet(int threshold,
                                                                MultiSig.Account account,
                                                                String name,
-                                                               JSONArray xpubsInfo) throws XfpNotMatchException {
+                                                               JSONArray xpubsInfo, String creator) throws XfpNotMatchException {
         MutableLiveData<MultiSigWalletEntity> result = new MutableLiveData<>();
         int total = xpubsInfo.length();
         boolean xfpMatch = false;
@@ -426,7 +426,7 @@ public class MultiSigViewModel extends AndroidViewModel {
                 account.getPath(),
                 xpubsInfo.toString(),
                 xfp,
-                Utilities.isMainNet(getApplication()) ? "main" : "testnet", verifyCode);
+                Utilities.isMainNet(getApplication()) ? "main" : "testnet", verifyCode, creator);
         wallet.setWalletFingerPrint(walletFingerprint);
         AppExecutors.getInstance().diskIO().execute(() -> {
             boolean exist = repo.loadMultisigWallet(walletFingerprint) != null;
@@ -518,6 +518,10 @@ public class MultiSigViewModel extends AndroidViewModel {
         boolean isTest;
         try {
             JSONObject object = new JSONObject(content);
+
+            //Creator
+            result.put("Creator", "Caravan");
+
             //Name
             result.put("Name", object.getString("name"));
 

@@ -715,4 +715,13 @@
     <string name="create_23_word">创建自己的助记词</string>
     <string name="create_23_word_title">创建自己的助记词</string>
     <string name="mnemonic_backuped">我已备份好助记词</string>
+    <string name="export_wallet_to_caravan">导出观察钱包(Caravan)</string>
+    <string name="caravan_import_guide_title">Caravan 导入观察钱包指引</string>
+    <string name="caravan_import_guide"><![CDATA[
+        1. 打开 Caravan<br>
+        2. 点击“SCAN QR CODE OF WALLET”按钮<br>
+        3. 扫描观察钱包二维码（点击下方按钮查看）<br>
+        4. 导入钱包信息后点击“CONFIRM”按钮<br>
+        5. 进入观察钱包<br>
+    ]]></string>
 </resources>

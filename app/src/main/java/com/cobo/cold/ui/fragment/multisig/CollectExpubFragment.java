@@ -117,7 +117,7 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
                     array.put(xpub);
                 }
             }
-            viewModel.createMultisigWallet(threshold, account, null, array)
+            viewModel.createMultisigWallet(threshold, account, null, array, "CoboVault")
                     .observe(this, walletEntity -> {
                         if (walletEntity != null) {
                             Bundle data = new Bundle();

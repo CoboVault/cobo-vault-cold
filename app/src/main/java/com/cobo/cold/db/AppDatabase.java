@@ -47,7 +47,7 @@ import com.cobo.cold.db.entity.WhiteListEntity;
 @Database(entities = {CoinEntity.class, AddressEntity.class,
         TxEntity.class, WhiteListEntity.class,
         AccountEntity.class, MultiSigWalletEntity.class,
-        MultiSigAddressEntity.class}, version = 4)
+        MultiSigAddressEntity.class}, version = 5)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "cobo-vault-db";
     private static AppDatabase sInstance;
@@ -96,7 +96,7 @@ public abstract class AppDatabase extends RoomDatabase {
                         });
                     }
                 })
-                .addMigrations(MIGRATION_2_3,MIGRATION_3_4)
+                .addMigrations(MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5)
                 .fallbackToDestructiveMigration()
                 .build();
     }
@@ -137,6 +137,19 @@ public abstract class AppDatabase extends RoomDatabase {
                         "FOREIGN KEY(`walletFingerPrint`) REFERENCES `multi_sig_wallet`(`walletFingerPrint`) ON UPDATE NO ACTION ON DELETE CASCADE )");
                 database.execSQL("CREATE UNIQUE INDEX index_multi_sig_address_id ON multi_sig_address (id)");
                 database.execSQL("CREATE INDEX index_multi_sig_address_walletFingerPrint ON multi_sig_address (walletFingerPrint)");
+                database.setTransactionSuccessful();
+            } finally {
+                database.endTransaction();
+            }
+        }
+    };
+
+    private static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.beginTransaction();
+            try {
+                database.execSQL("ALTER TABLE multi_sig_wallet ADD COLUMN creator TEXT NOT NULL default ''");
                 database.setTransactionSuccessful();
             } finally {
                 database.endTransaction();

@@ -764,5 +764,14 @@
     <string name="create_23_word">Create your own 24 words Recovery Phrase</string>
     <string name="create_23_word_title">Create your Recovery Phrase</string>
     <string name="mnemonic_backuped">I have my Recovery phrase</string>
+    <string name="export_wallet_to_caravan">Export Watch-Only Wallet to Caravan</string>
+    <string name="caravan_import_guide_title">How to import watch-only wallet to Caravan</string>
+    <string name="caravan_import_guide"><![CDATA[
+        1. Open Caravan<br>
+        2. Click SCAN QR CODE OF WALLET button<br>
+        3. Scan QR Code of watch-only that displays on Cobo Vault<br>
+        4. After importing wallet, click CONFIRM button<br>
+        5. Enter the watch-only wallet<br>
+    ]]></string>
 
 </resources>
