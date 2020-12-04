@@ -91,7 +91,11 @@ public class QrScanViewModel extends AndroidViewModel {
             if (!TextUtils.isEmpty(hex)) {
                 WatchWallet wallet = WatchWallet.getWatchWallet(getApplication());
                 if (QrScanPurpose.IMPORT_MULTISIG_WALLET == fragment.getPurpose()) {
-                    if (MultiSigViewModel.decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8)) != null){
+                    JSONObject object = MultiSigViewModel.decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8));
+                    if(object == null) {
+                        object = MultiSigViewModel.decodeCaravanWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8));
+                    }
+                    if (object != null){
                         fragment.handleImportMultisigWallet(hex);
                     } else {
                         throw new InvalidMultisigWalletException("invalid multisig wallet qrcode");

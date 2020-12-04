@@ -34,6 +34,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Base43;
+import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.databinding.CommonModalBinding;
@@ -68,6 +69,7 @@ import org.spongycastle.util.encoders.Hex;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static com.cobo.coinlib.Util.getExpubFingerprint;
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.viewmodel.MultiSigViewModel.decodeCaravanWalletFile;
 import static com.cobo.cold.viewmodel.MultiSigViewModel.decodeColdCardWalletFile;
@@ -241,20 +243,12 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         try {
             MultiSigViewModel viewModel = ViewModelProviders.of(mActivity).get(MultiSigViewModel.class);
             String xfp = viewModel.getXfp();
-            JSONObject obj = null;
+            JSONObject obj;
             //try decode cc format
-            try {
-                obj = decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8));
-            } catch (InvalidMultisigWalletException e) {
-                e.printStackTrace();
-            }
+            obj = decodeColdCardWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8));
             //try decode caravan format
             if (obj == null) {
-                try {
-                    obj = decodeCaravanWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8));
-                } catch (InvalidMultisigWalletException e) {
-                    e.printStackTrace();
-                }
+                obj = decodeCaravanWalletFile(new String(Hex.decode(hex), StandardCharsets.UTF_8));
             }
             if (obj == null) {
                 alert(getString(R.string.invalid_multisig_wallet),getString(R.string.invalid_multisig_wallet_hint));
@@ -262,6 +256,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             }
 
             boolean isWalletFileTest = obj.optBoolean("isTest", false);
+            MultiSig.Account account = MultiSig.Account.ofPath(obj.getString("Derivation"), isWalletFileTest);
             boolean isTestnet = !Utilities.isMainNet(mActivity);
             if (isWalletFileTest != isTestnet) {
                 String currentNet = isTestnet ? getString(R.string.testnet) : getString(R.string.mainnet);
@@ -277,7 +272,9 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             boolean matchXfp = false;
             for (int i = 0 ; i < array.length(); i++) {
                 JSONObject xpubInfo = array.getJSONObject(i);
-                if (xpubInfo.getString("xfp").equalsIgnoreCase(xfp)) {
+                String thisXfp = xpubInfo.getString("xfp");
+                if (thisXfp.equalsIgnoreCase(xfp)
+                        || thisXfp.equalsIgnoreCase(getExpubFingerprint(viewModel.getXpub(account)))) {
                     matchXfp = true;
                     break;
                 }
@@ -289,7 +286,7 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
             }
         } catch (XfpNotMatchException e) {
             e.printStackTrace();
-            alert(getString(R.string.import_multisig_wallet_fail),getString(R.string.import_multisig_wallet_fail_hint));
+            alert(getString(R.string.import_multisig_wallet_fail), getString(R.string.import_multisig_wallet_fail_hint));
         } catch (JSONException e) {
             e.printStackTrace();
             alert(getString(R.string.incorrect_qrcode));

@@ -20,6 +20,7 @@ package com.cobo.cold.viewmodel;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -93,8 +94,7 @@ public class MultiSigViewModel extends AndroidViewModel {
         return ExtendPubkeyFormat.convertExtendPubkey(xpub, format);
     }
 
-    public static JSONObject decodeColdCardWalletFile(String content)
-            throws InvalidMultisigWalletException {
+    public static JSONObject decodeColdCardWalletFile(String content) {
         /*
         # Coldcard Multisig setup file (created on 5271C071)
         #
@@ -159,7 +159,8 @@ public class MultiSigViewModel extends AndroidViewModel {
             }
 
             if (!isValidMultisigPolicy(total, threshold) || xpubs.length() != total) {
-                throw new InvalidMultisigWalletException("invalid wallet file ");
+                Log.w("Multisig","invalid wallet policy");
+                return null;
             }
             String derivation = object.getString("Derivation");
             String format = object.getString("Format");
@@ -173,14 +174,16 @@ public class MultiSigViewModel extends AndroidViewModel {
             }
 
             if (!validDerivation) {
-                throw new InvalidMultisigWalletException("invalid wallet file ");
+                Log.w("Multisig","invalid wallet validDerivation");
+                return null;
             }
 
             object.put("Xpubs", xpubs);
 
         } catch (IOException | JSONException | NumberFormatException e) {
             e.printStackTrace();
-            throw new InvalidMultisigWalletException("invalid wallet file ");
+            Log.w("Multisig","invalid wallet ",e);
+            return null;
         }
 
         return object;
@@ -247,6 +250,7 @@ public class MultiSigViewModel extends AndroidViewModel {
             MultiSigWalletEntity wallet = repo.loadMultisigWallet(walletFingerprint);
             if (wallet != null) {
                 try {
+                    String creator = wallet.getCreator();
                     String path = wallet.getExPubPath();
                     int threshold = wallet.getThreshold();
                     int total = wallet.getTotal();
@@ -269,8 +273,8 @@ public class MultiSigViewModel extends AndroidViewModel {
                     JSONArray xpubArray = new JSONArray(wallet.getExPubs());
                     for (int i = 0; i < xpubArray.length(); i++) {
                         JSONObject xpubKey = new JSONObject();
-                        xpubKey.put("name", "Extended Public Key " + i);
-                        xpubKey.put("bip32Path", xpubArray.getJSONObject(i).getString("path"));
+                        xpubKey.put("name", "Extended Public Key " + (i + 1));
+                        xpubKey.put("bip32Path", xpubArray.getJSONObject(i).optString("path", path));
                         String xpub = xpubArray.getJSONObject(i).getString("xpub");
                         if (isTest) {
                             xpub = ExtendPubkeyFormat.convertExtendPubkey(xpub, ExtendPubkeyFormat.tpub);
@@ -278,7 +282,8 @@ public class MultiSigViewModel extends AndroidViewModel {
                             xpub = ExtendPubkeyFormat.convertExtendPubkey(xpub, ExtendPubkeyFormat.xpub);
                         }
                         xpubKey.put("xpub", xpub);
-                        xpubKey.put("method", "text");
+                        xpubKey.put("xfp", xpubArray.getJSONObject(i).optString("xfp"));
+                        xpubKey.put("method", "Caravan".equals(creator) ? xpubArray.getJSONObject(i).optString("method") : "text");
                         extendedPublicKeys.put(xpubKey);
                     }
                     object.put("extendedPublicKeys", extendedPublicKeys);
@@ -486,17 +491,17 @@ public class MultiSigViewModel extends AndroidViewModel {
                 File[] files = storage.getExternalDir().listFiles();
                 if (files != null) {
                     for (File f : files) {
-                        try {
-                            if (f.getName().endsWith(".txt")) {
-                                JSONObject object = decodeColdCardWalletFile(FileUtils.readString(f));
-                                fileList.put(f.getName(), object);
-                            } else if (f.getName().endsWith(".json")) {
-                                String fileContent = FileUtils.readString(f);
-                                JSONObject object = decodeCaravanWalletFile(fileContent);
+                        if (f.getName().endsWith(".txt")) {
+                            JSONObject object = decodeColdCardWalletFile(FileUtils.readString(f));
+                            if (object != null) {
                                 fileList.put(f.getName(), object);
                             }
-                        } catch (InvalidMultisigWalletException e) {
-                            e.printStackTrace();
+                        } else if (f.getName().endsWith(".json")) {
+                            String fileContent = FileUtils.readString(f);
+                            JSONObject object = decodeCaravanWalletFile(fileContent);
+                            if (object != null) {
+                                fileList.put(f.getName(), object);
+                            }
                         }
                     }
                 }
@@ -510,7 +515,7 @@ public class MultiSigViewModel extends AndroidViewModel {
         AppExecutors.getInstance().diskIO().execute(() -> repo.updateWallet(entity));
     }
 
-    public static JSONObject decodeCaravanWalletFile(String content) throws InvalidMultisigWalletException {
+    public static JSONObject decodeCaravanWalletFile(String content) {
         JSONObject result = new JSONObject();
         int total;
         int threshold;
@@ -549,25 +554,33 @@ public class MultiSigViewModel extends AndroidViewModel {
                 JSONObject xpubJson = new JSONObject();
                 String xpub = xpubs.getJSONObject(i).getString("xpub");
                 String path = xpubs.getJSONObject(i).getString("bip32Path");
+                String xfp  = xpubs.getJSONObject(i).getString("xfp");
+                String method  = xpubs.getJSONObject(i).getString("method");
                 if (ExtendPubkeyFormat.isValidXpub(xpub)) {
                     if (xpub.startsWith("tpub") || xpub.startsWith("Upub") || xpub.startsWith("Vpub")) {
                         object.put("isTest", true);
                     }
+                    if (TextUtils.isEmpty(xfp)) {
+                        xfp = getExpubFingerprint(xpub);
+                    }
                     xpubJson.put("path", path);
-                    xpubJson.put("xfp", getExpubFingerprint(xpub));
+                    xpubJson.put("xfp", xfp);
                     xpubJson.put("xpub", convertXpub(xpub, MultiSig.Account.ofFormat(format, isTest)));
+                    xpubJson.put("method", method);
                     xpubsArray.put(xpubJson);
                 }
             }
             if (!isValidMultisigPolicy(total, threshold) || xpubs.length() != total) {
-                throw new InvalidMultisigWalletException("invalid wallet file ");
+                Log.w("Multisig","invalid wallet Policy");
+                return null;
             }
             result.put("Xpubs", xpubsArray);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new InvalidMultisigWalletException("invalid wallet file:" + content);
+            Log.w("Multisig","invalid wallet ", e);
         }
+        return null;
     }
 
     public static class AddAddressTask extends AsyncTask<Integer, Void, Void> {
