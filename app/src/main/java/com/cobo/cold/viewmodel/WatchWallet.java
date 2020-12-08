@@ -89,6 +89,7 @@ public enum WatchWallet {
         switch (this) {
             case GENERIC:
             case COBO:
+            case BTCPAY:
             case BLUE:
                 return true;
             default:return false;
@@ -100,6 +101,7 @@ public enum WatchWallet {
             case ELECTRUM:
             case COBO:
             case GENERIC:
+            case BTCPAY:
             case BLUE:
                 return true;
             default:return false;

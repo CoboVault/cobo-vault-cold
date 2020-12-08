@@ -18,14 +18,19 @@
 package com.cobo.cold.ui.fragment.main;
 
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.BroadcastPsbtTxFragmentBinding;
+import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.ui.fragment.BaseFragment;
+import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.views.qrcode.DynamicQrCodeView;
 import com.cobo.cold.viewmodel.CoinListViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
@@ -36,6 +41,7 @@ import org.spongycastle.util.encoders.Hex;
 import java.util.Objects;
 
 import static com.cobo.cold.ui.fragment.main.PsbtTxConfirmFragment.showExportPsbtDialog;
+import static com.cobo.cold.viewmodel.WatchWallet.BTCPAY;
 import static com.cobo.cold.viewmodel.WatchWallet.PSBT_MULTISIG_SIGN_ID;
 
 public class PsbtBroadcastTxFragment extends BaseFragment<BroadcastPsbtTxFragmentBinding> {
@@ -92,9 +98,29 @@ public class PsbtBroadcastTxFragment extends BaseFragment<BroadcastPsbtTxFragmen
             mBinding.signStatus.setVisibility(View.GONE);
             mBinding.scanHint.setText(getString(R.string.use_wallet_to_broadcast,
                     WatchWallet.getWatchWallet(mActivity).getWalletName(mActivity)));
+            if (wallet == BTCPAY) {
+                mBinding.info.setVisibility(View.VISIBLE);
+                mBinding.info.setOnClickListener(v -> showBroadcastGuide(R.string.btc_pay_broadcast_guide,
+                        R.string.btc_pay_broadcast_guide_content));
+            }
         }
         mBinding.toolbar.setNavigationOnClickListener(goHome);
         mBinding.complete.setOnClickListener(goHome);
+    }
+
+    private void showBroadcastGuide(int title, int content) {
+        ModalDialog modalDialog = ModalDialog.newInstance();
+        CommonModalBinding binding = DataBindingUtil.inflate(
+                LayoutInflater.from(mActivity), R.layout.common_modal,
+                null, false);
+        binding.title.setText(title);
+        binding.subTitle.setText(content);
+        binding.subTitle.setGravity(Gravity.START);
+        binding.close.setVisibility(View.GONE);
+        binding.confirm.setText(R.string.know);
+        binding.confirm.setOnClickListener(vv -> modalDialog.dismiss());
+        modalDialog.setBinding(binding);
+        modalDialog.show(mActivity.getSupportFragmentManager(), "");
     }
 
     private String getSignStatus(TxEntity txEntity) {

@@ -62,9 +62,15 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
             mBinding.txDetail.exportToSdcardHint.setText(R.string.generic_qrcode_hint);
             mBinding.txDetail.exportToSdcardHint.setOnClickListener(v -> showExportDialog());
 
-        } else if (watchWallet == WatchWallet.BLUE || watchWallet == WatchWallet.GENERIC) {
+        } else if (watchWallet.supportPsbt() && watchWallet.supportBc32QrCode()) {
             if (watchWallet == WatchWallet.BLUE) {
-                mBinding.txDetail.info.setOnClickListener(v -> showBlueWalletInfo());
+                mBinding.txDetail.info.setOnClickListener(v -> showBlueWalletInfo(
+                        R.string.blue_wallet_broadcast_guide,
+                        R.string.blue_wallet_broadcast_guide1));
+            } else if (watchWallet == WatchWallet.BTCPAY) {
+                mBinding.txDetail.info.setOnClickListener(v -> showBlueWalletInfo(
+                        R.string.btc_pay_broadcast_guide,
+                        R.string.btc_pay_broadcast_guide_content));
             }
             mBinding.txDetail.scanHint.setText(mActivity.getString(R.string.use_wallet_to_broadcast,
                     watchWallet.getWalletName(mActivity)));
@@ -90,7 +96,7 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
 
             }
 
-        } else if(watchWallet == WatchWallet.WASABI || watchWallet == WatchWallet.BTCPAY) {
+        } else if(watchWallet == WatchWallet.WASABI) {
             mBinding.txDetail.qr.setVisibility(View.GONE);
             mBinding.txDetail.broadcastGuide.setGravity(Gravity.START);
             mBinding.txDetail.broadcastGuide.setText(getBroadcastGuideText());
@@ -114,13 +120,13 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
         return sigNumber >= reqSigNumber;
     }
 
-    private void showBlueWalletInfo() {
+    private void showBlueWalletInfo(int title, int content) {
         ModalDialog modalDialog = ModalDialog.newInstance();
         CommonModalBinding binding = DataBindingUtil.inflate(
                 LayoutInflater.from(mActivity), R.layout.common_modal,
                 null, false);
-        binding.title.setText(R.string.blue_wallet_broadcast_guide);
-        binding.subTitle.setText(R.string.blue_wallet_broadcast_guide1);
+        binding.title.setText(title);
+        binding.subTitle.setText(content);
         binding.subTitle.setGravity(Gravity.START);
         binding.close.setVisibility(View.GONE);
         binding.confirm.setText(R.string.know);

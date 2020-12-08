@@ -66,17 +66,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
                     android:gravity="center">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/info"
+                        android:visibility="invisible"/>
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/scan_hint"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:layout_marginHorizontal="16dp"
+
                         android:text="@string/scan_qrcode_with_generic_wallet"
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/info"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/info"
+                        android:visibility="invisible"/>
 
                 </LinearLayout>
 

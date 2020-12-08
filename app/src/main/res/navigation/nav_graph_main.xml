@@ -323,7 +323,7 @@
     <fragment
         android:id="@+id/exportGenericXpubFragment"
         android:name="com.cobo.cold.ui.fragment.main.ExportGenericXpubFragment"
-        android:label="PsbtListFragment"/>
+        android:label="ExportGenericXpubFragment"/>
 
     <fragment
         android:id="@+id/multisigFragment"
@@ -674,6 +674,12 @@
             app:popExitAnim="@android:anim/slide_out_right" />
         <action android:id="@id/action_to_export_xpub_blue"
             app:destination="@id/blueWalletExportFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action android:id="@id/action_to_export_xpub_generic"
+            app:destination="@id/exportGenericXpubFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"

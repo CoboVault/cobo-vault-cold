@@ -18,6 +18,7 @@
 package com.cobo.cold.ui.fragment.main;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -26,6 +27,7 @@ import androidx.databinding.DataBindingUtil;
 import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
+import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.ExportSdcardModalBinding;
 import com.cobo.cold.databinding.ExportXpubGenericBinding;
 import com.cobo.cold.ui.SetupVaultActivity;
@@ -33,6 +35,7 @@ import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.Storage;
 import com.cobo.cold.viewmodel.GlobalViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +50,7 @@ import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
 public class ExportGenericXpubFragment extends BaseFragment<ExportXpubGenericBinding> {
 
     private JSONObject xpubInfo;
+    private WatchWallet watchWallet;
 
     @Override
     protected int setView() {
@@ -56,47 +60,74 @@ public class ExportGenericXpubFragment extends BaseFragment<ExportXpubGenericBin
     @Override
     protected void init(View view) {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+        watchWallet = WatchWallet.getWatchWallet(mActivity);
         try {
             xpubInfo = GlobalViewModel.getXpubInfo(mActivity);
             String exPub = xpubInfo.getString("ExtPubKey");
             exPub = convertExtpub(exPub, getAccount(mActivity));
             xpubInfo.put("ExtPubKey", exPub);
             mBinding.qrcode.setData(xpubInfo.toString());
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        mBinding.done.setOnClickListener(v -> {
-            if (mActivity instanceof SetupVaultActivity) {
-                navigate(R.id.action_to_setupCompleteFragment);
-            } else {
-                popBackStack(R.id.assetFragment, false);
-            }
-        });
+        mBinding.done.setOnClickListener(v -> handleButtonClick());
         mBinding.skip.setOnClickListener(v -> popBackStack(R.id.assetFragment,false));
-        mBinding.exportToSdcard.setOnClickListener(v -> {
-            Storage storage = Storage.createByEnvironment(mActivity);
-            if (storage == null || storage.getExternalDir() == null) {
-                showNoSdcardModal(mActivity);
-            } else {
-                ModalDialog modalDialog = ModalDialog.newInstance();
-                ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
-                        R.layout.export_sdcard_modal, null, false);
-                binding.title.setText(R.string.export_xpub_text_file);
-                binding.fileName.setText(getFileName());
-                binding.actionHint.setText(R.string.electrum_import_xpub_action);
-                binding.cancel.setOnClickListener(vv -> modalDialog.dismiss());
-                binding.confirm.setOnClickListener(vv -> {
-                    modalDialog.dismiss();
-                    if (writeToSdcard(storage, xpubInfo.toString(), getFileName())) {
-                        exportSuccess(mActivity, null);
-                    }
-                });
-                modalDialog.setBinding(binding);
-                modalDialog.show(mActivity.getSupportFragmentManager(), "");
-            }
-        });
+        mBinding.exportToSdcard.setOnClickListener(v -> exportToSdcard());
+        refreshScanHint();
+    }
+
+    private void refreshScanHint() {
+        if (watchWallet == WatchWallet.BTCPAY) {
+            mBinding.scanHint.setText(R.string.scan_xpub_qrcode_with_btc_pay);
+            mBinding.info.setVisibility(View.VISIBLE);
+            mBinding.info.setOnClickListener(v ->
+                    showExportGuide(getString(R.string.export_xpub_guide_text1_btcpay), getString(R.string.export_xpub_guide_text2_btcpay)));
+        }
+    }
+    private void showExportGuide(String title, String content) {
+        ModalDialog modalDialog = ModalDialog.newInstance();
+        CommonModalBinding binding = DataBindingUtil.inflate(
+                LayoutInflater.from(mActivity), R.layout.common_modal,
+                null, false);
+        binding.title.setText(title);
+        binding.subTitle.setText(content);
+        binding.subTitle.setGravity(Gravity.START);
+        binding.close.setVisibility(View.GONE);
+        binding.confirm.setText(R.string.know);
+        binding.confirm.setOnClickListener(vv -> modalDialog.dismiss());
+        modalDialog.setBinding(binding);
+        modalDialog.show(mActivity.getSupportFragmentManager(), "");
+    }
+
+    private void handleButtonClick() {
+        if (mActivity instanceof SetupVaultActivity) {
+            navigate(R.id.action_to_setupCompleteFragment);
+        } else {
+            popBackStack(R.id.assetFragment, false);
+        }
+    }
+
+    private void exportToSdcard() {
+        Storage storage = Storage.createByEnvironment(mActivity);
+        if (storage == null || storage.getExternalDir() == null) {
+            showNoSdcardModal(mActivity);
+        } else {
+            ModalDialog modalDialog = ModalDialog.newInstance();
+            ExportSdcardModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                    R.layout.export_sdcard_modal, null, false);
+            binding.title.setText(R.string.export_xpub_text_file);
+            binding.fileName.setText(getFileName());
+            binding.actionHint.setText(R.string.electrum_import_xpub_action);
+            binding.cancel.setOnClickListener(vv -> modalDialog.dismiss());
+            binding.confirm.setOnClickListener(vv -> {
+                modalDialog.dismiss();
+                if (writeToSdcard(storage, xpubInfo.toString(), getFileName())) {
+                    exportSuccess(mActivity, null);
+                }
+            });
+            modalDialog.setBinding(binding);
+            modalDialog.show(mActivity.getSupportFragmentManager(), "");
+        }
     }
 
     private String getFileName() {
