@@ -28,36 +28,61 @@
         android:background="#ffffff"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/index"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:textColor="#ff0000"
-            android:gravity="center"
-            tools:text="1"/>
-
-        <ImageView
-            android:id="@+id/close"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:padding="18dp"
-            android:src="@drawable/close"
-            android:tint="@color/colorAccent"
-            tools:ignore="ContentDescription" />
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|top"
+                android:padding="18dp"
+                android:src="@drawable/close"
+                android:tint="@color/black"
+                tools:ignore="ContentDescription" />
+            <com.cobo.cold.ui.views.SpanedTextView
+                android:id="@+id/switch_capacity"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:drawableEnd="@drawable/arrow_right"
+                android:drawableTint="@color/colorAccent"
+                tools:text="@string/qrcode_capacity"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|top"
+                android:padding="18dp"
+                android:src="@drawable/close"
+                android:tint="@color/black"
+                android:visibility="invisible"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:layout_marginTop="60dp">
-
             <include
                 android:id="@+id/qrcode_layout"
                 layout="@layout/dynamic_qrcode" />
         </FrameLayout>
 
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="30dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="136dp"
+            android:gravity="center_horizontal"
+            android:textSize="12sp"
+            android:text="@string/adjust_qr_capacity" />
         <SeekBar
             android:id="@+id/seekbar"
             android:layout_width="match_parent"
