@@ -456,11 +456,10 @@
     ]]></string>
     <string name="export_xpub_guide_text2_btcpay"><![CDATA[
         1. In BTCPay Server, Store Settings > General > Derivation Scheme > Import from… <br>
-        2. Choose "…a wallet file (Electrum, wasabi, Cobo Vault, ColdCard)"<br>
-        3. Touch <font color="#00cdc3">"Export Wallet"<font/> below then open the file in BTCPay<br>
+        2. Choose <font color="#00cdc3">"…a QR code"<font/><br>
+        3. Touch <font color="#00cdc3">“Display QR Code"<font/> below scan the QR code with BTCPay Server<br>
         4. Click <font color="#00cdc3">"Submit"<font/><br>
         5. Click <font color="#00cdc3">"Confirm"<font/>.<br>
-        <font color="#808080">Please make sure you have inserted a FAT32 format microSD card with capacity 32GB or less before exporting<font/>
     ]]></string>
 
     <string name="export_xpub_guide_text2_blue"><![CDATA[

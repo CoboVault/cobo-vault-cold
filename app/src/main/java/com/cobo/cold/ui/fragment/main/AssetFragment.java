@@ -217,10 +217,10 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 case COBO:
                     navigate(R.id.export_xpub_cobo);
                     break;
-                case BTCPAY:
                 case WASABI:
                     navigate(R.id.action_to_export_xpub_guide);
                     break;
+                case BTCPAY:
                 case GENERIC:
                     navigate(R.id.action_to_export_xpub_generic);
                     break;
