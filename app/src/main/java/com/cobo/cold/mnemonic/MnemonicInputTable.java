@@ -47,6 +47,7 @@ public class MnemonicInputTable extends RecyclerView {
     public static final int TWEENTYFOUR = 24;
     public static final int TWEENTY = 20;
     public static final int THIRTYTHREE = 33;
+    public static final int TWENTYTHREE = 23;
     private final List<ObservableField<String>> wordsList = new ArrayList<>();
     private int mMnemonicCount = TWEENTYFOUR;
     private MnemonicAdapter mAdapter;
@@ -106,7 +107,7 @@ public class MnemonicInputTable extends RecyclerView {
         mAdapter.notifyDataSetChanged();
     }
 
-    @IntDef({TWELVE, EIGHTEEN, TWEENTYFOUR,TWEENTY,THIRTYTHREE })
+    @IntDef({TWELVE, EIGHTEEN, TWEENTYFOUR,TWEENTY,THIRTYTHREE, TWENTYTHREE })
     public @interface MnemonicCount {
     }
 

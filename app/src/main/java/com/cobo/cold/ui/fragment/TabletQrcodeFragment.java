@@ -38,20 +38,8 @@ public class TabletQrcodeFragment extends SetupVaultBaseFragment<TabletQrcodeBin
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.next.setOnClickListener(v -> next());
         mBinding.createSharding.setOnClickListener(v->navigate(R.id.action_to_shardingSettingFragment));
-        mBinding.tablet.setOnClickListener(new View.OnClickListener() {
-            final int COUNTS = 3;
-            final long DURATION = 3000L;
-            long[] mHits = new long[COUNTS];
-
-            @Override
-            public void onClick(View v) {
-                System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
-                mHits[mHits.length - 1] = SystemClock.uptimeMillis();
-                if (mHits[0] >= (SystemClock.uptimeMillis() - DURATION)) {
-                    navigate(R.id.action_to_rollingDiceGuideFragment);
-                }
-            }
-        });
+        mBinding.tablet.setOnClickListener(new TapHandler(() -> navigate(R.id.action_to_rollingDiceGuideFragment)));
+        mBinding.egg.setOnClickListener(new TapHandler(() -> navigate(R.id.action_to_createMnemonicGuide)));
     }
 
     private void next() {
@@ -62,5 +50,25 @@ public class TabletQrcodeFragment extends SetupVaultBaseFragment<TabletQrcodeBin
     @Override
     protected void initData(Bundle savedInstanceState) {
 
+    }
+
+    static class TapHandler implements View.OnClickListener {
+        final int COUNTS = 3;
+        final long DURATION = 3000L;
+        final long[] mHits = new long[COUNTS];
+        private final Runnable runnable;
+
+        TapHandler(Runnable runnable) {
+            this.runnable = runnable;
+        }
+
+        @Override
+        public void onClick(View v) {
+            System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+            mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+            if (mHits[0] >= (SystemClock.uptimeMillis() - DURATION)) {
+                runnable.run();
+            }
+        }
     }
 }
