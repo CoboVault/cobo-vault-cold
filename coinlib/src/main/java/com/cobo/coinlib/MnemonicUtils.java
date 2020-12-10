@@ -110,6 +110,13 @@ public class MnemonicUtils {
         }
     }
 
+    public static String calculateLastWord(String mnemonic) {
+        for (String word : WordList.words) {
+            if (validateMnemonic(mnemonic + " " +word)) return word;
+        }
+        return null;
+    }
+
     private static boolean[] nextElevenBits(boolean[] bits, int i) {
         int from = i * 11;
         int to = from + 11;

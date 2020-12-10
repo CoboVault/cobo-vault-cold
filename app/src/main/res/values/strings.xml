@@ -523,4 +523,21 @@
     <string name="qr_capacity_mid">Medium</string>
     <string name="qr_capacity_low">Low</string>
     <string name="adjust_qr_capacity">Difficulty scanning, you can adjust the size of the QR Code or lower the density of the QR Code</string>
+
+    <string name="create_mnemonic_guide_content"><![CDATA[
+        1. Touch “Fill in your 23 words” button below<br>
+        2. Select the first 23 from the official list of 2048 words and fill in<br>
+        3. Cobo Vault will calculate the 24th word<br>
+        4. Back up your Recovery Phrase<br>
+    ]]>
+    </string>
+    <string name="create_mnemonic_web_guide">The official list of 2048 words and more details, please visit: https://cobo.com/24th</string>
+    <string name="fill_23_words">Fill in your 23 words</string>
+    <string name="last_word_hint"><![CDATA[
+        You 24th word: <font color="#00cdc3">%s<font/>
+    ]]></string>
+    <string name="please_input_23_words">Fill in your first 23 words</string>
+    <string name="calculate_24th_word">Calculate the 24th Word</string>
+    <string name="create_23_word">Create your own 24 word Recovery Phrase</string>
+
 </resources>

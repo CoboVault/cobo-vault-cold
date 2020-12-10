@@ -61,6 +61,7 @@ import iton.slip.secret.Share;
 import iton.slip.secret.SharedSecretException;
 import iton.slip.secret.words.Mnemonic;
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
+import static com.cobo.cold.mnemonic.MnemonicInputTable.TWENTYTHREE;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.PASSWORD;
 import static com.cobo.cold.ui.fragment.setup.SetPasswordFragment.handleSeStateAbnormal;
 import static com.cobo.cold.viewmodel.SetupVaultViewModel.VAULT_STATE_CREATED;
@@ -77,7 +78,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
     private boolean notMatch;
 
     private static boolean isValidWord(String s, String[] list) {
-        return !TextUtils.isEmpty(s) && Arrays.asList(list).indexOf(s) != -1;
+        return !TextUtils.isEmpty(s) && Arrays.asList(list).contains(s);
     }
 
     @Override
@@ -94,16 +95,22 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
             viewModel.setPassword(data.getString(PASSWORD));
             isEnableDot = data.getBoolean("enableDot");
         }
+
+        mBinding.table.setMnemonicNumber(viewModel.getMnemonicCount().get());
         if (viewModel.isShardingMnemonic()) {
             initImportSharding();
-        } else {
+        } else if(viewModel.isCreateMnemonic()) {
+            mBinding.hint.setText(R.string.please_input_23_words);
+            mBinding.importMnemonic.setText(R.string.calculate_24th_word);
+            mBinding.table.setMnemonicNumber(TWENTYTHREE);
+            mBinding.toolbar.setNavigationOnClickListener(v-> navigateUp());
+        }else {
             mBinding.toolbar.setNavigationOnClickListener(v -> {
                 Keyboard.hide(mActivity, mBinding.table);
                 navigateUp();
             });
         }
 
-        mBinding.table.setMnemonicNumber(viewModel.getMnemonicCount().get());
         mBinding.importMnemonic.setOnClickListener(v -> {
             Keyboard.hide(mActivity, mBinding.importMnemonic);
             validateMnemonic();
@@ -348,6 +355,8 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                 } else {
                     addSharding(mnemonic);
                 }
+            } else if (viewModel.isCreateMnemonic()) {
+                navigateToCalculateMnemonic(mnemonic);
             } else {
                 viewModel.writeMnemonic(mnemonic);
                 mBinding.table.clearWords();
@@ -358,6 +367,13 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
                     getString(R.string.wrong_mnemonic_please_check),
                     getString(R.string.confirm), null);
         }
+    }
+
+    private void navigateToCalculateMnemonic(String mnemonic) {
+        Bundle data = new Bundle();
+        data.putString("words", mnemonic);
+        data.putBoolean("seed_pick", true);
+        navigate(R.id.action_to_generateMnemonicFragment, data);
     }
 
     private void addFirstShard(String mnemonic) {
