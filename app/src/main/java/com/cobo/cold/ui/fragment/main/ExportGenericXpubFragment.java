@@ -78,6 +78,7 @@ public class ExportGenericXpubFragment extends BaseFragment<ExportXpubGenericBin
 
     private void refreshScanHint() {
         if (watchWallet == WatchWallet.BTCPAY) {
+            mBinding.skip.setVisibility(View.GONE);
             mBinding.scanHint.setText(R.string.scan_xpub_qrcode_with_btc_pay);
             mBinding.info.setVisibility(View.VISIBLE);
             mBinding.info.setOnClickListener(v ->

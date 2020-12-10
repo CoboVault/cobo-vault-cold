@@ -382,11 +382,10 @@
 
     <string name="export_xpub_guide_text2_btcpay"><![CDATA[
         1. 打开 BTCPay Server，前往【Store 设置--General--Derivation Scheme--Import from…】<br>
-        2. 选择“…a wallet file (Electrum, wasabi, Cobo Vault, ColdCard)”<br>
-        3. 打开 Cobo 金库导出的钱包文件（点击下方按钮导出）<br>
+        2. 选择“…a QR code”<br>
+        3. 扫描展示在 Cobo Vault 上的钱包二维码<br>
         4. 点击<font color="#00cdc3">“Submit”<font/><br>
         5. 点击<font color="#00cdc3">“Confirm”<font/><br><br>
-        <font color="#808080">请确保 Cobo 金库装有TF卡后再进行导出（仅支持FAT32格式，容量不能超过32G）<font/>
     ]]></string>
 
     <string name="export_xpub_guide_text2_blue"><![CDATA[
