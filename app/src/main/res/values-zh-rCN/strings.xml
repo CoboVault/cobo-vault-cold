@@ -694,8 +694,8 @@
     <string name="abnormal_state_title">设备状态异常</string>
     <string name="scan_xpub_qrcode_with_btc_pay">请用 BTCPay Serve 扫描二维码</string>
     <string name="qrcode_capacity">二维码密度：%s </string>
-    <string name="qr_capacity_high">高（900*900）</string>
-    <string name="qr_capacity_mid">中（600*600）</string>
-    <string name="qr_capacity_low">低（300*300）</string>
+    <string name="qr_capacity_high">高</string>
+    <string name="qr_capacity_mid">中</string>
+    <string name="qr_capacity_low">低</string>
     <string name="adjust_qr_capacity">扫码困难？您可以调整二维码大小或调低二维码密度</string>
 </resources>
