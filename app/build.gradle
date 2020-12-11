@@ -18,6 +18,7 @@
 import groovy.xml.XmlUtil
 
 import java.security.MessageDigest
+import groovy.io.FileType
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
@@ -192,20 +193,27 @@ dependencies {
 
 preBuild {
     doLast {
-        def imlFile = file(project.name + ".iml")
-        println 'Change ' + project.name + '.iml order'
-        try {
-            def parsedXml = (new XmlParser()).parse(imlFile)
-            def jdkNode = parsedXml.component[1].orderEntry.find { it.'@type' == 'jdk' }
-            parsedXml.component[1].remove(jdkNode)
-            def sdkString = "Android API " + android.compileSdkVersion.substring("android-".length()) + " Platform"
-            //noinspection GroovyResultOfObjectAllocationIgnored
-            new Node(parsedXml.component[1], 'orderEntry', ['type': 'jdk', 'jdkName': sdkString, 'jdkType': 'Android SDK'])
-            XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
-        } catch (FileNotFoundException ignored) {
-            // nop, iml not found
-            println 'iml not found'
+        def dir = new File(rootDir.path+"/.idea/modules")
+        dir.eachFileRecurse (FileType.FILES) { file ->
+            if (file.path.endsWith(".iml")) {
+                changeIml(file)
+            }
         }
+    }
+}
+
+def changeIml(File imlFile) {
+    println "change " + imlFile
+    try {
+        def parsedXml = (new XmlParser()).parse(imlFile)
+        def jdkNode = parsedXml.component[1].orderEntry.find { it.'@type' == 'jdk' }
+        parsedXml.component[1].remove(jdkNode)
+        def sdkString = "Android API " + android.compileSdkVersion.substring("android-".length()) + " Platform"
+        //noinspection GroovyResultOfObjectAllocationIgnored
+        new Node(parsedXml.component[1], 'orderEntry', ['type': 'jdk', 'jdkName': sdkString, 'jdkType': 'Android SDK'])
+        XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
+    } catch (FileNotFoundException ignored) {
+        println 'iml not found'
     }
 }
 
