@@ -335,7 +335,7 @@
     <string name="confirm_to_verify_mnemonic">Next Step</string>
     <string name="pattern_unlock_hint">Pattern passwords may be used to unlock Cobo Vault.</string>
     <string name="new_version_footer_hint">You can also go to Menu > Settings > Version and touch “Update Now” later.</string>
-    <string name="factory_reset_warning">Are you sure you want to permanently wipe the device?</string>
+    <string name="factory_reset_warning">All data will be erased. Please confirm whether to continue</string>
     <string-array name="create_vault_step">
         <item>"Creating vault…"</item>
         <item>"Security verification in progress…"</item>
@@ -762,5 +762,6 @@
     <string name="please_input_23_words">Fill in your first 23 words</string>
     <string name="calculate_24th_word">Calculate the 24th Word</string>
     <string name="create_23_word">Create your own 24 word Recovery Phrase</string>
+    <string name="mnemonic_backuped">I have my Recovery phrase</string>
 
 </resources>
