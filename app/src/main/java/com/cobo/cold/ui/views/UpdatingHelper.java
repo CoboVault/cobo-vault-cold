@@ -100,6 +100,8 @@ public class UpdatingHelper implements OnBatteryChangeListener {
                     UpdatingViewModel.MIN_BATTERY_FOR_UPDATE + "%", percent +"%");
             binding.subTitle.setText(batterHint);
             binding.sha256.setVisibility(View.GONE);
+            binding.checkbox.setVisibility(View.GONE);
+            binding.agreeButton.setChecked(true);
             binding.confirm.setText(R.string.know);
             binding.footer.setVisibility(View.GONE);
             binding.confirm.setOnClickListener(v -> dialog.dismiss());

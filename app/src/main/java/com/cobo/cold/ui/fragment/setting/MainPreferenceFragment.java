@@ -49,7 +49,7 @@ import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.callables.GetMessageCallable;
 import com.cobo.cold.callables.ResetCallable;
 import com.cobo.cold.config.FeatureFlags;
-import com.cobo.cold.databinding.CommonModalBinding;
+import com.cobo.cold.databinding.FactoryResetModalBinding;
 import com.cobo.cold.fingerprint.FingerprintKit;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
@@ -359,12 +359,9 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
 
     private void handleFactoryReset() {
         ModalDialog dialog = ModalDialog.newInstance();
-        CommonModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
-                R.layout.common_modal,null,false);
+        FactoryResetModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                R.layout.factory_reset_modal,null,false);
         dialog.setBinding(binding);
-        binding.title.setText(R.string.factory_reset_title);
-        binding.subTitle.setText(R.string.factory_reset_warning);
-        binding.confirm.setText(R.string.confirm);
         binding.close.setOnClickListener(v->dialog.dismiss());
         binding.confirm.setOnClickListener(v-> {
             dialog.dismiss();
