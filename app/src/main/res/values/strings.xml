@@ -519,8 +519,8 @@
     <string name="keep_screen_on">Please keep screen on</string>
     <string name="sync">Sync</string>
     <string name="qrcode_capacity">QR Code Density：%s </string>
-    <string name="qr_capacity_high">High（900*900）</string>
-    <string name="qr_capacity_mid">Medium（600*600）</string>
-    <string name="qr_capacity_low">Low（300*300）</string>
+    <string name="qr_capacity_high">High</string>
+    <string name="qr_capacity_mid">Medium</string>
+    <string name="qr_capacity_low">Low</string>
     <string name="adjust_qr_capacity">Difficulty scanning, you can adjust the size of the QR Code or lower the density of the QR Code</string>
 </resources>

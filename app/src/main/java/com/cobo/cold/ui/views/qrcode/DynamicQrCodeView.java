@@ -104,7 +104,8 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
                         splitData.add(workloads[i].toUpperCase());
                     }
                     currentIndex = 0;
-                    this.post(runnable);
+                    handler.removeCallbacks(runnable);
+                    handler.post(runnable);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -165,7 +166,8 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
             }
             if (count > 1 && autoAnimate) {
                 currentIndex = ++currentIndex % count;
-                handler.postDelayed(this::showQrCode, DURATION);
+                handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable, DURATION);
             }
         } else {
             if (ViewCompat.isLaidOut(this)) {
