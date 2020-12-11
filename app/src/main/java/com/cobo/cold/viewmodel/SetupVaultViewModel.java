@@ -80,6 +80,7 @@ public class SetupVaultViewModel extends AndroidViewModel {
     private int sequence = 0;
     public Share firstShare;
     private boolean isShardingMnemonic;
+    private boolean isCreateMnemonic;
     private String vaultId;
 
     private final DataRepository mRepository;
@@ -151,6 +152,8 @@ public class SetupVaultViewModel extends AndroidViewModel {
                 return false;
             }
             return true;
+        } else if (isCreateMnemonic) {
+            return calculateLastWord(mnemonic) != null;
         } else {
             return Bip39.validateMnemonic(mnemonic);
         }
@@ -400,7 +403,7 @@ public class SetupVaultViewModel extends AndroidViewModel {
             shares.add(share);
             firstShare = Mnemonic.INSTANCE.decode(shares.get(0));
         } else {
-            if (shares.indexOf(share) != -1) {
+            if (shares.contains(share)) {
                 return AddShareResult.RESULT_REPEAT;
             } else {
                 Share currentShare = Mnemonic.INSTANCE.decode(share);
@@ -419,6 +422,22 @@ public class SetupVaultViewModel extends AndroidViewModel {
         }
 
         return AddShareResult.RESULT_OK;
+    }
+
+    public boolean isCreateMnemonic() {
+        return isCreateMnemonic;
+    }
+
+    public void completeMnemonic(String mnemonic) {
+        this.mnemonic.postValue(mnemonic + " " + calculateLastWord(mnemonic));
+    }
+
+    private String calculateLastWord(String mnemonic) {
+        return MnemonicUtils.calculateLastWord(mnemonic);
+    }
+
+    public void setIsCreateMnemonic(boolean b) {
+        isCreateMnemonic = b;
     }
 
     public enum PasswordValidationResult {

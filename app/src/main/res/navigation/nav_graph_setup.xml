@@ -93,6 +93,13 @@
         <action
             android:id="@id/action_to_setupSyncFragment"
             app:destination="@id/SetupWatchWalletFragment" />
+        <action
+            android:id="@+id/action_to_generateMnemonicFragment"
+            app:destination="@id/generateMnemonicFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/setPasswordFragment"
@@ -125,6 +132,13 @@
         <action
             android:id="@+id/action_to_shardingSettingFragment"
             app:destination="@id/shardingSettingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_to_createMnemonicGuide"
+            app:destination="@id/createMnemonicGuide"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -395,6 +409,18 @@
         tools:layout="@layout/blue_export">
         <action android:id="@id/action_to_setupCompleteFragment"
             app:destination="@id/setupCompleteFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createMnemonicGuide"
+        android:name="com.cobo.cold.ui.fragment.CreateMnemonicGuide"
+        android:label="CreateMnemonicGuide">
+        <action android:id="@+id/action_to_createMnemonic"
+            app:destination="@id/mnemonicInputFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"

@@ -23,84 +23,93 @@
 
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:navigationIcon="@drawable/arrow_left"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-
-            <TextView
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/generate_mnemonic"
-                android:textColor="@android:color/white"
-                android:textSize="15sp" />
-        </androidx.appcompat.widget.Toolbar>
-
-        <include layout="@layout/divider" />
-
-        <ScrollView
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:navigationIcon="@drawable/arrow_left"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
 
-                <com.cobo.cold.ui.views.SpanedTextView
+                <TextView
+                    android:id="@+id/toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/mnemonic_hint"
-                    android:textColor="@color/white" />
+                    android:layout_gravity="center"
+                    android:text="@string/generate_mnemonic"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
+            </androidx.appcompat.widget.Toolbar>
 
-                <ImageView
-                    android:id="@+id/tablet"
-                    android:layout_width="264dp"
-                    android:layout_height="152dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/tablet"
-                    tools:ignore="ContentDescription" />
+            <include layout="@layout/divider" />
 
-                <androidx.legacy.widget.Space
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:id="@+id/next"
-                    style="@style/AcceptButton"
-                    android:layout_width="match_parent"
-                    android:layout_marginHorizontal="16dp"
-                    android:text="@string/generate_bip39_phrase" />
-
-                <Button
-                    android:id="@+id/create_sharding"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="10dp"
-                    android:text="@string/generate_slip39_phrase"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical">
 
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
+                    <com.cobo.cold.ui.views.SpanedTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/mnemonic_hint"
+                        android:textColor="@color/white" />
+
+                    <ImageView
+                        android:id="@+id/tablet"
+                        android:layout_width="264dp"
+                        android:layout_height="152dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginVertical="10dp"
+                        android:src="@drawable/tablet"
+                        tools:ignore="ContentDescription" />
+
+                    <androidx.legacy.widget.Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:id="@+id/next"
+                        style="@style/AcceptButton"
+                        android:layout_width="match_parent"
+                        android:layout_marginHorizontal="16dp"
+                        android:text="@string/generate_bip39_phrase" />
+
+                    <Button
+                        android:id="@+id/create_sharding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="10dp"
+                        android:text="@string/generate_slip39_phrase"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+        <View
+            android:id="@+id/egg"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="end|top"/>
+    </FrameLayout>
 </layout>
