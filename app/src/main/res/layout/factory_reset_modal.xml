@@ -29,7 +29,8 @@
         <RelativeLayout
             android:layout_width="288dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/modal_bg">
+            android:background="@drawable/modal_bg"
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:id="@+id/close"
@@ -47,44 +48,35 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="10dp"
+                android:text="@string/factory_reset_title"
                 android:textColor="@color/black"
-                android:text="@string/update"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.cobo.cold.ui.views.SpanedTextView
                 android:id="@+id/sub_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
                 android:layout_centerHorizontal="true"
-                android:layout_marginHorizontal="16dp"
+                android:paddingHorizontal="16dp"
                 android:layout_marginTop="12dp"
-                android:text="@string/new_version_hint_message"
                 android:gravity="start"
-                android:textSize="12sp"
-                android:textColor="@color/black"
-                android:visibility="visible" />
-
-            <TextView
-                android:id="@+id/sha256"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/sub_title"
-                android:layout_centerHorizontal="true"
-                android:layout_marginHorizontal="16dp"
-
-                android:gravity="start"
-                android:textSize="12sp"
-                android:visibility="visible" />
-
+                android:textSize="14sp"
+                android:text="@string/factory_reset_warning"
+                android:lineSpacingExtra="6dp"
+                android:visibility="visible"
+                android:maxLines="15"
+                android:scrollbars="none"
+                />
             <LinearLayout
                 android:id="@+id/checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 android:gravity="top"
-                android:layout_below="@id/sha256"
+                android:layout_below="@id/sub_title"
                 android:layout_marginTop="28dp">
 
                 <androidx.appcompat.widget.AppCompatCheckBox
@@ -100,8 +92,9 @@
                     android:layout_weight="1"
                     android:gravity="start"
                     android:text="@string/mnemonic_backuped"
-                    android:textColor="@color/black" />
+                    android:textColor="#838383" />
             </LinearLayout>
+
 
             <Button
                 android:id="@+id/confirm"
@@ -110,21 +103,9 @@
                 android:layout_below="@id/checkbox"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
                 android:enabled="@{agreeButton.checked}"
-                android:text="@string/update_now" />
-            <TextView
-                android:id="@+id/footer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/confirm"
-                android:layout_centerHorizontal="true"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="@string/new_version_footer_hint"
-                android:gravity="center_horizontal"
-                android:textSize="12sp"
-                android:visibility="visible" />
+                android:text="@string/confirm"/>
+
         </RelativeLayout>
 
     </FrameLayout>
