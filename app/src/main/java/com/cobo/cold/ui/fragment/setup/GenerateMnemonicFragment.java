@@ -31,11 +31,17 @@ import com.cobo.cold.databinding.GenerateMnemonicBinding;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.SecretModalDialog;
 
+import static com.cobo.cold.mnemonic.MnemonicInputTable.TWEENTYFOUR;
+
 public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMnemonicBinding> {
 
     private SecretModalDialog dialog;
     private boolean useDice;
     private byte[] diceRolls;
+    private boolean seedPick;
+    private String incompleteMnemonic;
+    private boolean isSharding;
+    private int shardingSequence;
 
     @Override
     protected int setView() {
@@ -64,6 +70,9 @@ public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMne
         }
         if (useDice) {
             viewModel.generateMnemonicFromDiceRolls(diceRolls);
+        } else if(seedPick) {
+            mBinding.table.setMnemonicNumber(TWEENTYFOUR);
+            viewModel.completeMnemonic(incompleteMnemonic);
         } else {
             viewModel.generateRandomMnemonic();
         }
@@ -115,6 +124,10 @@ public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMne
             String[] words = s.split(" ");
             if (words.length != 24) {
                 return;
+            }
+            if (seedPick) {
+                mBinding.lastWordHint.setVisibility(View.VISIBLE);
+                mBinding.lastWordHint.setText(getString(R.string.last_word_hint, words[23]));
             }
 
             if (dialog == null) {

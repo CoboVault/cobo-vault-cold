@@ -22,54 +22,51 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
-import androidx.databinding.DataBindingUtil;
 
 import com.cobo.bcUniformResource.UniformResource;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
-import com.cobo.cold.databinding.DynamicQrcodeModalBinding;
-import com.cobo.cold.encryptioncore.utils.ByteFormatter;
-import com.cobo.cold.ui.modal.FullScreenModal;
-import com.cobo.cold.update.utils.Digest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder, QrCode{
-
-    public enum EncodingScheme {
-        Cobo,
-        Bc32
-    }
-    private static final int CAPACITY = 800;
+public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
     private static final int DURATION = 330; //ms
     private String data;
     private final List<String> splitData;
-    private String checksum;
-    private int count;
+    public int count;
     private final Cache mCache = Cache.getInstance();
     private ProgressBar progressBar;
     private ImageView img;
-    private EncodingScheme scheme = EncodingScheme.Bc32;
-    private final Handler handler = new Handler();
-    private final Runnable runnable;
+    public final Handler handler = new Handler();
+    public final Runnable runnable;
+    private final AppCompatActivity mActivity;
+    private SplitCallback splitCallback;
 
-    private int currentIndex = 0;
+    enum QrCapacity {
+        HIGH(900),
+        MID(600),
+        LOW(300);
 
-    private boolean autoAnimate = true;
+        public int capacity;
+        QrCapacity(int i) {
+            this.capacity = i;
+        }
+    }
+
+    public QrCapacity qrCapacity = QrCapacity.HIGH;
+
+    public int currentIndex = 0;
+
+    public boolean autoAnimate = true;
 
     private boolean multiPart = true;
 
@@ -79,42 +76,44 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder, QrC
 
     public DynamicQrCodeView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
+        mActivity = (AppCompatActivity) context;
         splitData = new ArrayList<>();
         runnable = this::showQrCode;
-    }
-
-    public void setEncodingScheme(EncodingScheme scheme) {
-        this.scheme = scheme;
     }
 
     public void disableMultipart() {
         multiPart = false;
     }
 
-    @Override
+    public void setSplitCallback(SplitCallback callback) {
+        this.splitCallback = callback;
+    }
+
     public void setData(String s) {
         data = s;
         if (multiPart) {
-            if (scheme == EncodingScheme.Cobo) {
-                checksum = checksum(data);
-                count = (int) Math.ceil(data.length() / (float) CAPACITY);
-                splitData();
-            } else if (scheme == EncodingScheme.Bc32) {
+            AppExecutors.getInstance().networkIO().execute(()-> {
                 try {
-                    String[] workloads = UniformResource.Encoder.encode(data.toUpperCase(), 900);
+                    String[] workloads = UniformResource.Encoder.encode(data.toUpperCase(), qrCapacity.capacity);
                     count = workloads.length;
+                    if (splitCallback != null) {
+                        splitCallback.onSplit(count);
+                    }
                     splitData.clear();
                     for (int i = 0; i < count; i++) {
                         splitData.add(workloads[i].toUpperCase());
                     }
+                    currentIndex = 0;
+                    handler.removeCallbacks(runnable);
+                    handler.post(runnable);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+            });
         } else {
             count = 1;
+            showQrCode();
         }
-        showQrCode();
     }
 
     public void disableModal() {
@@ -149,77 +148,10 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder, QrC
     }
 
     private void showModal() {
-        FullScreenModal dialog = new FullScreenModal();
-        DynamicQrcodeModalBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
-                R.layout.dynamic_qrcode_modal, null, false);
-        dialog.setBinding(binding);
-        binding.close.setOnClickListener(v -> dialog.dismiss());
-        binding.qrcodeLayout.qrcode.setEncodingScheme(scheme);
-        if (!multiPart) {
-            binding.qrcodeLayout.qrcode.disableMultipart();
-        }
-        binding.qrcodeLayout.qrcode.setData(data);
-        binding.qrcodeLayout.qrcode.disableModal();
-        setupSeekbar(binding);
-        setupController(binding);
-        dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "");
+        QrCodeModal modal = QrCodeModal.newInstance(data, multiPart);
+        modal.show(mActivity.getSupportFragmentManager(),"");
     }
-
-    private void setupController(DynamicQrcodeModalBinding binding) {
-        DynamicQrCodeView qr = binding.qrcodeLayout.qrcode;
-        if (qr.count < 2) {
-            binding.animateController.setVisibility(View.GONE);
-        } else {
-            binding.pause.setOnClickListener(v -> {
-                if (qr.autoAnimate) {
-                    qr.setAutoAnimate(false);
-                    binding.pause.setImageResource(R.drawable.resume);
-                    binding.prev.setEnabled(true);
-                    binding.next.setEnabled(true);
-                    binding.prev.setOnClickListener(prev -> {
-                        qr.currentIndex = (qr.currentIndex - 1 + count) % count;
-                        qr.showQrCode();
-                    });
-
-                    binding.next.setOnClickListener(prev -> {
-                        qr.currentIndex = (qr.currentIndex + 1) % count;
-                        qr.showQrCode();
-                    });
-                } else {
-                    qr.setAutoAnimate(true);
-                    binding.pause.setImageResource(R.drawable.pause);
-                    binding.prev.setEnabled(false);
-                    binding.next.setEnabled(false);
-                }
-            });
-        }
-    }
-
-    private void setupSeekbar(DynamicQrcodeModalBinding binding) {
-        float min = 0.5f;
-        float max = 1.15f;
-        float step = (max - min) / 100;
-        binding.seekbar.setProgress((int) ((1 - min) / step));
-        binding.seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                float scale = 0.5f + step * i;
-                binding.qrcodeLayout.qrcode.setScaleX(scale);
-                binding.qrcodeLayout.qrcode.setScaleY(scale);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-    }
-
-    private void showQrCode() {
+    public void showQrCode() {
         if (multiPart) {
             if (ViewCompat.isLaidOut(this)) {
                 mCache.offer(splitData.get(currentIndex), this);
@@ -234,7 +166,8 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder, QrC
             }
             if (count > 1 && autoAnimate) {
                 currentIndex = ++currentIndex % count;
-                handler.postDelayed(this::showQrCode, DURATION);
+                handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable, DURATION);
             }
         } else {
             if (ViewCompat.isLaidOut(this)) {
@@ -257,35 +190,6 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder, QrC
             img.setVisibility(VISIBLE);
             img.setImageBitmap(bm);
         });
-    }
-
-    void splitData() {
-        int partLength = (int) Math.ceil(data.length() / (float) count);
-        splitData.clear();
-        for (int i = 0; i < count; i++) {
-            String part = data.substring(partLength * i,
-                    Math.min(partLength * (i + 1), data.length()));
-            formatPartData(i, part);
-        }
-    }
-
-    void formatPartData(int index, String data) {
-        JSONObject object = new JSONObject();
-        try {
-            object.put("total", count);
-            object.put("index", index);
-            object.put("checkSum", checksum);
-            object.put("value", data);
-            object.put("compress", true);
-            object.put("valueType", "protobuf");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        splitData.add(object.toString());
-    }
-
-    private String checksum(String msg) {
-        return ByteFormatter.bytes2hex(Digest.MD5.checksum(msg));
     }
 
     @Override

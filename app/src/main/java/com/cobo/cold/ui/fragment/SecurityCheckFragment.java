@@ -25,6 +25,7 @@ import android.view.View;
 
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
+import com.cobo.cold.databinding.SecurityCheckBinding;
 import com.cobo.cold.selfcheck.SecurityCheck;
 import com.cobo.cold.ui.AttackWarningActivity;
 import com.cobo.cold.ui.MainActivity;
@@ -34,7 +35,7 @@ import java.util.concurrent.Executors;
 
 import static com.cobo.cold.selfcheck.SecurityCheck.RESULT_OK;
 
-public class SecurityCheckFragment extends BaseFragment {
+public class SecurityCheckFragment extends BaseFragment<SecurityCheckBinding> {
 
     @Override
     protected int setView() {
@@ -57,7 +58,7 @@ public class SecurityCheckFragment extends BaseFragment {
                         intent = new Intent(mActivity, SetupVaultActivity.class);
                         intent.putExtra("check_updating", true);
                     }
-                    startActivity(intent);
+                    mActivity.startActivity(intent);
                     mActivity.finish();
                 } else {
                     Utilities.setAttackDetected(mActivity);
@@ -67,7 +68,7 @@ public class SecurityCheckFragment extends BaseFragment {
                     data.putInt("signature", checkResult.signatureStatusCode);
                     Intent intent = new Intent(mActivity, AttackWarningActivity.class);
                     intent.putExtras(data);
-                    startActivity(intent);
+                    mActivity.startActivity(intent);
                 }
             }, 1500);
         });
