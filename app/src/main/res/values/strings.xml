@@ -538,7 +538,8 @@
     ]]></string>
     <string name="please_input_23_words">Fill in your first 23 words</string>
     <string name="calculate_24th_word">Calculate the 24th Word</string>
-    <string name="create_23_word">Create your own 24 word Recovery Phrase</string>
+    <string name="create_23_word">Create your own 24 words Recovery Phrase</string>
+    <string name="create_23_word_title">Create your Recovery Phrase</string>
     <string name="mnemonic_backuped">I have my Recovery phrase</string>
 
 </resources>
