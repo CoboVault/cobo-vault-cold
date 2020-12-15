@@ -43,7 +43,7 @@
                 android:layout_marginEnd="20dp"
                 android:ellipsize="middle"
                 android:singleLine="true"
-                android:text="@string/create_23_word"
+                android:text="@string/create_23_word_title"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>

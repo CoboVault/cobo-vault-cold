@@ -424,7 +424,7 @@
 
     <string name="btcpay_broadcast_guide"><![CDATA[
         导出后，用 BTCPay Server 进行广播<br>
-        1. 前往【BTCPay--PSBT】，打开该文件<br>
+        1. 前往【BTCPay--PSBT】，扫描已签名交易的二维码<br>
         2. 点击“Decode”<br>
         3. 点击“Other Actions” 选择“Review”<br>
         4. 检查交易无误后点击“Broadcast”<br>
@@ -705,7 +705,7 @@
         4. 备份助记词<br>
         ]]>
     </string>
-    <string name="create_mnemonic_web_guide">助记词官方词表和更多详情，请访问：https://cobo.com/24th</string>
+    <string name="create_mnemonic_web_guide">助记词官方词表和详情介绍，请访问：https://cobo.com/24th</string>
     <string name="fill_23_words">填写前23个单词</string>
     <string name="last_word_hint"><![CDATA[
         第24个单词为：<font color="#00cdc3">%s<font/>
@@ -713,5 +713,6 @@
     <string name="please_input_23_words">请在下方表格中输入前23个单词</string>
     <string name="calculate_24th_word">计算第24个单词</string>
     <string name="create_23_word">创建自己的助记词</string>
+    <string name="create_23_word_title">创建自己的助记词</string>
     <string name="mnemonic_backuped">我已备份好助记词</string>
 </resources>
