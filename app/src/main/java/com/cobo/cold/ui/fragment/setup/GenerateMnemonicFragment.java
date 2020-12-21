@@ -67,6 +67,8 @@ public class GenerateMnemonicFragment extends SetupVaultBaseFragment<GenerateMne
         if (bundle != null) {
             useDice = bundle.getBoolean("use_dice");
             diceRolls = bundle.getByteArray("dice_rolls");
+            seedPick = bundle.getBoolean("seed_pick");
+            incompleteMnemonic = bundle.getString("words");
         }
         if (useDice) {
             viewModel.generateMnemonicFromDiceRolls(diceRolls);
