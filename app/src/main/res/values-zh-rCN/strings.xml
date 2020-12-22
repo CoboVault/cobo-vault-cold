@@ -724,4 +724,5 @@
         4. 导入钱包信息后点击“CONFIRM”按钮<br>
         5. 进入观察钱包<br>
     ]]></string>
+    <string name="scan_with_caravan">请用 Caravan 扫描钱包二维码</string>
 </resources>

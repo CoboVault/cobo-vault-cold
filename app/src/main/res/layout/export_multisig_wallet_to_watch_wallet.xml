@@ -73,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:layout_marginStart="16dp"
-                        android:text="请用 Caravan 扫描钱包二维码"
+                        android:text="@string/scan_with_caravan"
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         android:textStyle="bold" />
