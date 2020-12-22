@@ -62,3 +62,6 @@ Please submit any issues [here](https://github.com/CoboVault/cobo-vault-cold/iss
 ## License
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-green.svg)](https://opensource.org/licenses/)
 This project is licensed under the GPL License. See the [LICENSE](LICENSE) file for details.
+
+
+![W3 Grant](https://github.com/w3f/General-Grants-Program/blob/master/src/badge_black.svg)
