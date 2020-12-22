@@ -36,6 +36,7 @@ import static com.cobo.coinlib.coins.ETH.SolidityType.IntType.decodeInt;
 import static com.cobo.coinlib.coins.ETH.SolidityType.IntType.encodeInt;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.ArrayUtils.nullToEmpty;
 import static org.apache.commons.lang3.ArrayUtils.subarray;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.stripEnd;
@@ -151,6 +152,7 @@ public class Abi extends ArrayList<Abi.Entry> {
                                                              @JsonProperty("type") Abi.Entry.Type type,
                                                              @JsonProperty(value = "payable", required = false, defaultValue = "false") Boolean payable) {
             Abi.Entry result = null;
+            if (type == null) return new Abi.Function(constant, name, inputs, outputs, payable);
             switch (type) {
                 case constructor:
                     result = new Abi.Constructor(inputs, outputs);
