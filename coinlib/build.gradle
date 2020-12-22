@@ -39,11 +39,23 @@ android {
 
     testOptions {
         unitTests.returnDefaultValues = true
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
+    }
+
+    sourceSets {
+        test {
+            resources.srcDirs += ['src/test/resources']
+        }
+        androidTest {
+            resources.srcDirs += ['src/androidTest/resources']
+        }
     }
 
 }

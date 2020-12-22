@@ -17,9 +17,19 @@
 
 package com.cobo.coinlib.coin;
 
+import androidx.annotation.NonNull;
+
+import com.cobo.coinlib.coins.ETH.AbiDecoder;
 import com.cobo.coinlib.coins.ETH.Eth;
 
+import org.json.JSONException;
 import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 
@@ -45,6 +55,44 @@ public class EthTest {
             String address = new Eth.Deriver().derive(pubKey,0,i);
             assertEquals(address,addr[i]);
         }
+    }
+
+    @Test
+    public void test() throws JSONException {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL resource = classLoader.getResource("uniswap.json");
+        File f = new File(resource.getPath());
+        AbiDecoder decoder = new AbiDecoder();
+        decoder.addAbi(readString(f));
+        AbiDecoder.DecodedMethod decodedMethod = decoder.decodeMethod("0x095ea7b30000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        System.out.println(decodedMethod.toJson().toString(2));
+    }
+
+    @Test
+    public void testDepositAbi() throws JSONException {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL resource = classLoader.getResource("eth2_deposit.json");
+        File f = new File(resource.getPath());
+        AbiDecoder decoder = new AbiDecoder();
+        decoder.addAbi(readString(f));
+        AbiDecoder.DecodedMethod decodedMethod = decoder.decodeMethod("0x22895118000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120f77dbe8be8a273697ddfc21215e06a8fdb99ab10fbadf53d5d3a19c68ab0d5f60000000000000000000000000000000000000000000000000000000000000030b3f71bac3bd307ce569b7d6bcbe4edddfdd5259f5c84c8552b600823ab461418198bce196772a88401c9376ffbbb1af600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000a175e6357abdb384081c5cfaf5b3479dd3b11b59c8166bf7b97f8fcc7c954700000000000000000000000000000000000000000000000000000000000000609704a10c46559feae0f9ac9cc4fc32304b1535aa56f20179b42ac41df56a86b201b73987529f6dd801e72ef5d967a9b3181081d38f423c05b352b1073c7eb36c800929c5be5d14c3bc2fd3578c5eda86d1dbb2af252fc7d677e4f0f05c2ea4f8");
+        System.out.println(decodedMethod.toJson().toString(2));
+    }
+
+    public static String readString(@NonNull File file) {
+        final StringBuilder builder = new StringBuilder();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return builder.toString();
     }
 
 }

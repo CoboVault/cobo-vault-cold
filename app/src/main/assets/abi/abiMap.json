@@ -1,0 +1,6 @@
+{
+  "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984": "uniswap.json",
+  "0x80fB784B7eD66730e8b1DBd9820aFD29931aab03": "lend.json",
+  "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9": "aave.json",
+  "0x00000000219ab540356cbb839cbe05303d7705fa": "eth2_deposit.json"
+}
