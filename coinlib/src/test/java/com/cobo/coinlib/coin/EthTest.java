@@ -29,9 +29,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("ALL")
 public class EthTest {
@@ -58,44 +61,57 @@ public class EthTest {
     }
 
     @Test
-    public void test() throws JSONException {
+    public void testUniswap() {
         ClassLoader classLoader = this.getClass().getClassLoader();
         URL resource = classLoader.getResource("uniswap.json");
         File f = new File(resource.getPath());
         AbiDecoder decoder = new AbiDecoder();
         decoder.addAbi(readString(f));
         AbiDecoder.DecodedMethod decodedMethod = decoder.decodeMethod("0x7ff36ab500000000000000000000000000000000000000000000000029a4e56756c9bcb80000000000000000000000000000000000000000000000000000000000000080000000000000000000000000e10aa6471b33845fae88dd7bbeb63c250da3a639000000000000000000000000000000000000000000000000000000005fc9d3820000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000006b175474e89094c44da98b954eedeac495271d0f");
-        if (decodedMethod != null) {
-            System.out.println(decodedMethod.toJson().toString(2));
-        }
+        assertTrue(decodedMethod != null);
+        assertEquals(decodedMethod.name,"swapExactETHForTokens");
+        assertEquals(decodedMethod.params.get(0).name,"amountOutMin");
+        assertEquals(decodedMethod.params.get(0).value,new BigInteger("3000775483736046776"));
+        assertEquals(decodedMethod.params.get(1).name,"path");
+        assertArrayEquals((Object[]) decodedMethod.params.get(1).value,new String[]{
+                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                "0x6b175474e89094c44da98b954eedeac495271d0f"});
+        assertEquals(decodedMethod.params.get(2).name,"to");
+        assertEquals(decodedMethod.params.get(2).value,"0xe10aa6471b33845fae88dd7bbeb63c250da3a639");
+        assertEquals(decodedMethod.params.get(3).name,"deadline");
+        assertEquals(decodedMethod.params.get(3).value,new BigInteger("1607062402"));
     }
 
     @Test
-    public void testDepositAbi() throws JSONException {
+    public void testDeposit() {
         ClassLoader classLoader = this.getClass().getClassLoader();
         URL resource = classLoader.getResource("eth2_deposit.json");
         File f = new File(resource.getPath());
         AbiDecoder decoder = new AbiDecoder();
         decoder.addAbi(readString(f));
         AbiDecoder.DecodedMethod decodedMethod = decoder.decodeMethod("0x22895118000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120f77dbe8be8a273697ddfc21215e06a8fdb99ab10fbadf53d5d3a19c68ab0d5f60000000000000000000000000000000000000000000000000000000000000030b3f71bac3bd307ce569b7d6bcbe4edddfdd5259f5c84c8552b600823ab461418198bce196772a88401c9376ffbbb1af600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000a175e6357abdb384081c5cfaf5b3479dd3b11b59c8166bf7b97f8fcc7c954700000000000000000000000000000000000000000000000000000000000000609704a10c46559feae0f9ac9cc4fc32304b1535aa56f20179b42ac41df56a86b201b73987529f6dd801e72ef5d967a9b3181081d38f423c05b352b1073c7eb36c800929c5be5d14c3bc2fd3578c5eda86d1dbb2af252fc7d677e4f0f05c2ea4f8");
-        if (decodedMethod != null) {
-            System.out.println(decodedMethod.toJson().toString(2));
-        }
+        assertTrue(decodedMethod != null);
+        assertEquals(decodedMethod.name,"deposit");
+        assertEquals(decodedMethod.params.get(0).name,"pubkey");
+        assertEquals(decodedMethod.params.get(0).value,"0xb3f71bac3bd307ce569b7d6bcbe4edddfdd5259f5c84c8552b600823ab461418198bce196772a88401c9376ffbbb1af6");
+        assertEquals(decodedMethod.params.get(1).name,"withdrawal_credentials");
+        assertEquals(decodedMethod.params.get(1).value,"0x00a175e6357abdb384081c5cfaf5b3479dd3b11b59c8166bf7b97f8fcc7c9547");
+        assertEquals(decodedMethod.params.get(2).name,"signature");
+        assertEquals(decodedMethod.params.get(2).value,"0x9704a10c46559feae0f9ac9cc4fc32304b1535aa56f20179b42ac41df56a86b201b73987529f6dd801e72ef5d967a9b3181081d38f423c05b352b1073c7eb36c800929c5be5d14c3bc2fd3578c5eda86d1dbb2af252fc7d677e4f0f05c2ea4f8");
+        assertEquals(decodedMethod.params.get(3).name,"deposit_data_root");
+        assertEquals(decodedMethod.params.get(3).value,"0xf77dbe8be8a273697ddfc21215e06a8fdb99ab10fbadf53d5d3a19c68ab0d5f6");
     }
 
     public static String readString(@NonNull File file) {
         final StringBuilder builder = new StringBuilder();
-
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return builder.toString();
     }
 
