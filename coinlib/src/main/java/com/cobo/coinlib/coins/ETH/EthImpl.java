@@ -20,7 +20,6 @@
 package com.cobo.coinlib.coins.ETH;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -31,7 +30,7 @@ import com.cobo.coinlib.interfaces.Signer;
 import com.cobo.coinlib.utils.Coins;
 
 import org.bouncycastle.util.encoders.Hex;
-import org.jetbrains.annotations.NotNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.abi.FunctionEncoder;
@@ -79,8 +78,6 @@ public class EthImpl implements Coin {
             } else {
                 String txId = "0x" + Hex.toHexString(Hash.sha3(signedTransaction));
                 String txHex = "0x" + Hex.toHexString(signedTransaction);
-                Log.w("kkk",txId);
-                Log.w("kkk",txHex);
                 callback.onSuccess(txId, txHex);
             }
         } catch (JSONException e) {
@@ -89,7 +86,7 @@ public class EthImpl implements Coin {
         }
     }
 
-    @NotNull
+
     protected RawTransaction createRawTransaction(JSONObject metaData) throws JSONException {
         String to = metaData.getString("to");
         BigInteger nonce = new BigInteger(String.valueOf(metaData.getInt("nonce")));
