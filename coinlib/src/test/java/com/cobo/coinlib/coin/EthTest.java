@@ -21,9 +21,15 @@ import androidx.annotation.NonNull;
 
 import com.cobo.coinlib.coins.ETH.AbiDecoder;
 import com.cobo.coinlib.coins.ETH.Eth;
+import com.cobo.coinlib.coins.ETH.EthImpl;
 
-import org.json.JSONException;
+import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.Hash;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -113,6 +119,20 @@ public class EthTest {
             e.printStackTrace();
         }
         return builder.toString();
+    }
+
+    @Test
+    public void test() {
+        BigInteger nonce = new BigInteger("202");
+        BigInteger gasPrice = new BigInteger("b2d05e00",16);
+        BigInteger gasLimit = new BigInteger("21660",16);
+        String to = "0x3535353535353535353535353535353535353535";
+        BigInteger value = new BigInteger("1000000000000000000");
+        String data = FunctionEncoder.encode(new EthImpl(Eth.CHAIN_ID).transfer("0xeeacb7a5e53600c144c0b9839a834bb4b39e540c",new BigInteger("1000000000000000000")));
+        RawTransaction transaction = RawTransaction.createTransaction(nonce, gasPrice, gasLimit,"0xea26c4ac16d4a5a106820bc8aee85fd0b7b2b664", BigInteger.ZERO,data);
+        Credentials credentials = Credentials.create("1e799db5ff3e2df04775afd82bdb3b02302f4d2cdab904cda426032d35768aed");
+        byte[] signed = TransactionEncoder.signMessage(transaction,1, credentials);
+        assertEquals(Hex.toHexString(Hash.sha3(signed)),"de664318df3576d68aded7f70f30ab712d058b71916cc105fc33d5e53fcbed5f");
     }
 
 }
