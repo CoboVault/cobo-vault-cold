@@ -35,6 +35,9 @@ import com.cobo.coinlib.coins.BTC.Btc;
 import com.cobo.coinlib.coins.BTC.BtcImpl;
 import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
 import com.cobo.coinlib.coins.BTC.UtxoTx;
+import com.cobo.coinlib.coins.ETC.Etc;
+import com.cobo.coinlib.coins.ETH.Eth;
+import com.cobo.coinlib.coins.ETH.EthImpl;
 import com.cobo.coinlib.coins.polkadot.DOT.Dot;
 import com.cobo.coinlib.coins.polkadot.DOT.DotImpl;
 import com.cobo.coinlib.exception.InvalidPathException;
@@ -499,6 +502,14 @@ public class TxConfirmViewModel extends AndroidViewModel {
             case "KSM":
                 Dot dot = new Dot(new DotImpl(coinCode));
                 dot.generateTransaction(transaction, callback, signer);
+                break;
+            case "ETH":
+                Eth eth = new Eth(new EthImpl(Eth.CHAIN_ID));
+                eth.generateTransaction(transaction, callback, signer);
+                break;
+            case "ETC":
+                Etc etc = new Etc(new EthImpl(Etc.CHAIN_ID));
+                etc.generateTransaction(transaction, callback, signer);
                 break;
             default:
                 AbsCoin coin = AbsCoin.newInstance(coinCode);

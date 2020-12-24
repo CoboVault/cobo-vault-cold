@@ -41,6 +41,7 @@ import static com.cobo.coinlib.Util.sha3String;
 
 public class Eth extends AbsCoin implements Coin {
 
+    public static int CHAIN_ID = 1;
     public Eth(Coin impl) {
         super(impl);
     }
