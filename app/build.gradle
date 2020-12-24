@@ -105,6 +105,8 @@ android {
         exclude '**/*.proto'
         exclude 'org/**'
         exclude '**/*.txt'
+        exclude 'jni/**'
+        exclude 'solidity/**'
     }
     compileOptions {
         sourceCompatibility = '1.8'
