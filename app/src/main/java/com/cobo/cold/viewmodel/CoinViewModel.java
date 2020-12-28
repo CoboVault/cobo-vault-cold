@@ -42,10 +42,10 @@ public class CoinViewModel extends AndroidViewModel {
     public final ObservableField<CoinEntity> coin = new ObservableField<>();
 
     private CoinViewModel(@NonNull Application application, DataRepository repository,
-                          final long id, final String coinId) {
+                          final String coinId) {
         super(application);
         mRepository = repository;
-        mObservableCoin = repository.loadCoin(id);
+        mObservableCoin = repository.loadCoin(coinId);
         mObservableAddress = repository.loadAddress(coinId);
 
     }
@@ -69,13 +69,11 @@ public class CoinViewModel extends AndroidViewModel {
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
         @NonNull
         private final Application mApplication;
-        private final long mId;
         private final String mCoinId;
         private final DataRepository mRepository;
 
-        public Factory(@NonNull Application application, long id, String coinId) {
+        public Factory(@NonNull Application application, String coinId) {
             mApplication = application;
-            mId = id;
             mCoinId = coinId;
             mRepository = ((MainApplication) application).getRepository();
         }
@@ -84,7 +82,7 @@ public class CoinViewModel extends AndroidViewModel {
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             //noinspection unchecked
-            return (T) new CoinViewModel(mApplication, mRepository, mId, mCoinId);
+            return (T) new CoinViewModel(mApplication, mRepository, mCoinId);
         }
     }
 }

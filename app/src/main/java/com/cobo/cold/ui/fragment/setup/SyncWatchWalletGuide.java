@@ -59,11 +59,19 @@ public class SyncWatchWalletGuide extends BaseFragment<SyncWatchWalletGuideBindi
         mBinding.text1.setText(getString(getSyncWatchWalletGuideTitle(watchWallet), coinCode));
         mBinding.text2.setText(getString(getSyncWatchWalletGuide(watchWallet),
                 Coins.coinNameFromCoinCode(coinCode), coinCode));
-        if (watchWallet == WatchWallet.XRP_TOOLKIT) {
-            mBinding.text3.setText(R.string.sync_first_xrp_accout );
-        }
+
+        mBinding.text3.setText(getText3());
         mBinding.export.setText(getButtonText());
         mBinding.export.setOnClickListener(v -> export());
+    }
+
+    private String getText3() {
+        if (watchWallet == WatchWallet.XRP_TOOLKIT) {
+            return getString(R.string.sync_first_xrp_accout );
+        } else if (watchWallet == WatchWallet.METAMASK) {
+            return getString(R.string.metamask_install_hint);
+        }
+        return "";
     }
 
     private void export() {
@@ -71,6 +79,7 @@ public class SyncWatchWalletGuide extends BaseFragment<SyncWatchWalletGuideBindi
             case COBO:
             case XRP_TOOLKIT:
             case POLKADOT_JS:
+            case METAMASK:
                 Bundle bundle = getArguments();
                 bundle.putBoolean("fromSyncGuide", true);
                 navigate(R.id.action_to_syncFragment, bundle);
@@ -90,6 +99,9 @@ public class SyncWatchWalletGuide extends BaseFragment<SyncWatchWalletGuideBindi
             case POLKADOT_JS:
                 id = R.string.sync_polkadot_js_guide_button_text;
                 break;
+            case METAMASK:
+                id = R.string.sync_metamask_guide_button_text;
+                break;
         }
         return getString(id, coinCode);
     }
@@ -102,6 +114,8 @@ public class SyncWatchWalletGuide extends BaseFragment<SyncWatchWalletGuideBindi
                 return R.string.sync_xrp_toolkit_guide_title;
             case POLKADOT_JS:
                 return R.string.sync_polkadotjs_wallet_guide_title;
+            case METAMASK:
+                return R.string.sync_metamask_guide_title;
         }
         return 0;
     }
@@ -114,6 +128,8 @@ public class SyncWatchWalletGuide extends BaseFragment<SyncWatchWalletGuideBindi
                 return R.string.sync_xrp_toolkit_guide_text;
             case POLKADOT_JS:
                 return R.string.sync_polkadot_js_guide_text;
+            case METAMASK:
+                return R.string.sync_metamask_guide_text;
         }
         return 0;
     }

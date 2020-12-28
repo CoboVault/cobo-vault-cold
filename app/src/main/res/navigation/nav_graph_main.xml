@@ -94,9 +94,46 @@
             app:popExitAnim="@android:anim/slide_out_right"/>
 
         <action
+            android:id="@+id/action_to_ethTxConfirmFragment"
+            app:destination="@id/ethTxConfirmFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+
+        <action
             android:id="@+id/action_QRCodeScan_to_result"
             app:destination="@id/webAuthResultFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/ethTxConfirmFragment"
+        android:name="com.cobo.cold.ui.fragment.main.EthTxConfirmFragment"
+        tools:layout="@layout/eth_tx_confirm"
+        android:label="ethTxConfirmFragment" >
+        <action
+            android:id="@+id/action_to_ethBroadcastTxFragment"
+            app:destination="@id/ethBroadcastTxFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/ethBroadcastTxFragment"
+        android:name="com.cobo.cold.ui.fragment.main.EthBroadcastTxFragment"
+        android:label="ethBroadcastTxFragment" >
+        <action
+            android:id="@+id/action_to_home"
+            app:destination="@id/assetListFragment"
+            app:popUpTo="@id/assetListFragment"
+            app:popUpToInclusive="false"
+            app:launchSingleTop="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ethTxFragment"
+        android:name="com.cobo.cold.ui.fragment.main.EthTxFragment"
+        android:label="ethTxFragment" />
 
     <fragment
         android:id="@+id/xummTxConfirmFragment"
@@ -324,6 +361,13 @@
         <action
             android:id="@+id/action_to_xummTxFragment"
             app:destination="@id/xummTxFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_to_ethTxFragment"
+            app:destination="@id/ethTxFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"

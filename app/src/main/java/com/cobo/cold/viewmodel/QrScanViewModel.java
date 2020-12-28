@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.cobo.bcUniformResource.UniformResource;
+import com.cobo.coinlib.coins.ETH.EthImpl;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.utils.Coins;
@@ -35,13 +36,12 @@ import com.cobo.cold.BuildConfig;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
 import com.cobo.cold.R;
+import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.callables.GetUuidCallable;
-import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.encryptioncore.utils.ByteFormatter;
 import com.cobo.cold.protocol.ZipUtil;
 import com.cobo.cold.protocol.parser.ProtoParser;
 import com.cobo.cold.scan.ScannedData;
-import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.fragment.main.QRCodeScanFragment;
 import com.cobo.cold.update.utils.Digest;
 
@@ -51,13 +51,8 @@ import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.Objects;
 
 import static com.cobo.cold.Utilities.IS_SETUP_VAULT;
 import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.KEY_TX_DATA;
@@ -69,12 +64,14 @@ public class QrScanViewModel extends AndroidViewModel {
 
     private final boolean isSetupVault;
     private QRCodeScanFragment fragment;
-    private DataRepository mRepo;
+    private final DataRepository mRepo;
+    private final WatchWallet watchWallet;
 
     private QrScanViewModel(@NonNull Application application, DataRepository repository, boolean isSetupVault) {
         super(application);
         this.isSetupVault = isSetupVault;
         mRepo = ((MainApplication)application).getRepository();
+        watchWallet = WatchWallet.getWatchWallet(application);
         repository.loadCoins();
     }
 
@@ -155,8 +152,23 @@ public class QrScanViewModel extends AndroidViewModel {
                     return;
                 }
                 break;
+            case METAMASK:
+                String txHex = object.optString("txHex");
+                if (!TextUtils.isEmpty(txHex) && EthImpl.decodeRawTransaction(txHex) != null) {
+                    handleSignMetamaskTx(object);
+                    return;
+                }
         }
         throw new InvalidTransactionException("unknow qrcode type");
+    }
+
+    private void handleSignMetamaskTx(JSONObject object) throws UuidNotMatchException {
+        if (!object.optString("xfp").equalsIgnoreCase(new GetMasterFingerprintCallable().call())) {
+            throw new UuidNotMatchException("uuid not match");
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_TX_DATA, object.toString());
+        fragment.navigate(R.id.action_to_ethTxConfirmFragment, bundle);
     }
 
     private void handleSignXrpTx(JSONObject object) {

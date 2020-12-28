@@ -17,32 +17,28 @@
  *
  */
 
-package com.cobo.coinlib;
+package com.cobo.cold.ui.fragment.main;
 
 import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.LinearLayout;
 
-import com.cobo.coinlib.v8.ScriptLoader;
+import androidx.annotation.Nullable;
 
-public class Coinlib {
-    public static Coinlib sInstance;
-    private final Context context;
-
-    private Coinlib(Context context) {
-        this.context = context;
-        ScriptLoader.init(context);
+public class EthTxDetailView extends LinearLayout {
+    public EthTxDetailView(Context context) {
+        super(context);
     }
 
-    public Context getContext(){
-        return context;
+    public EthTxDetailView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
     }
 
-    public static void init(Context context) {
-        if (sInstance == null) {
-            synchronized (Coinlib.class) {
-                if (sInstance == null) {
-                    sInstance = new Coinlib(context);
-                }
-            }
-        }
+    public EthTxDetailView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public EthTxDetailView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
     }
 }

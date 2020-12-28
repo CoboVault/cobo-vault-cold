@@ -49,6 +49,7 @@ public class SetupWatchWalletFragment extends SetupVaultBaseFragment<SetupWatchW
             case COBO:
                 navigate(R.id.action_to_manageCoinFragment, data);
                 break;
+            case METAMASK:
             case XRP_TOOLKIT:
                 navigate(R.id.action_to_syncWatchWalletGuide, data);
                 break;

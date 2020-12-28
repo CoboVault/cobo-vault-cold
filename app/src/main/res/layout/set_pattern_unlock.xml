@@ -22,7 +22,7 @@
 
     <data>
 
-        <import type="android.text.TextUtils" />
+        1
 
         <variable
             name="viewModel"

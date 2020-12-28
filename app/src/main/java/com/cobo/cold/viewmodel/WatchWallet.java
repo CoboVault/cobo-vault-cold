@@ -30,10 +30,12 @@ import static com.cobo.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_C
 public enum WatchWallet {
     COBO("0"),
     POLKADOT_JS("1"),
-    XRP_TOOLKIT("2");
+    XRP_TOOLKIT("2"),
+    METAMASK("3");
 
     public static final String XRP_TOOLKIT_SIGN_ID = "xrp_toolkit_sign_id";
     public static final String POLKADOT_JS_SIGN_ID = "polkadot_js_sign_id";
+    public static final String METAMASK_SIGN_ID = "metamask_sign_id";
 
     private final String walletId;
     WatchWallet(String walletId) {
@@ -57,6 +59,8 @@ public enum WatchWallet {
                 return new Coins.Coin[] {Coins.DOT, Coins.KSM };
             case XRP_TOOLKIT:
                 return new Coins.Coin[] { Coins.XRP };
+            case METAMASK:
+                return new Coins.Coin[] { Coins.ETH };
         }
         return null;
     }
@@ -67,6 +71,8 @@ public enum WatchWallet {
                 return POLKADOT_JS_SIGN_ID;
             case XRP_TOOLKIT:
                 return XRP_TOOLKIT_SIGN_ID;
+            case METAMASK:
+                return METAMASK_SIGN_ID;
         }
         return null;
     }

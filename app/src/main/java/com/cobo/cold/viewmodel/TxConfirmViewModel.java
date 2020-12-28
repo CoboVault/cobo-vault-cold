@@ -104,7 +104,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
     private AbsTx transaction;
     protected String coinCode;
     protected final MutableLiveData<String> signState = new MutableLiveData<>();
-    private AuthenticateModal.OnVerify.VerifyToken token;
+    protected AuthenticateModal.OnVerify.VerifyToken token;
     private TxEntity previousSignedTx;
     protected WatchWallet watchWallet;
 

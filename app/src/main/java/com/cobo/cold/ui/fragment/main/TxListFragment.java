@@ -84,7 +84,9 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
                 navigate(R.id.action_to_electrumTxFragment, bundle);
             } else if(WatchWallet.XRP_TOOLKIT_SIGN_ID.equals(tx.getSignId())){
                 navigate(R.id.action_to_xummTxFragment, bundle);
-            } else {
+            } else if(WatchWallet.METAMASK_SIGN_ID.equals(tx.getSignId())){
+                navigate(R.id.action_to_ethTxFragment, bundle);
+            }else {
                 navigate(R.id.action_to_txFragment, bundle);
             }
         };

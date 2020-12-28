@@ -18,6 +18,7 @@
 package com.cobo.coinlib.coins.ETC;
 
 import com.cobo.coinlib.coins.ETH.Eth;
+import com.cobo.coinlib.coins.ETH.Network;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.interfaces.Coin;
 import com.cobo.coinlib.utils.Coins;
@@ -26,7 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Etc extends Eth {
-    public static int CHAIN_ID = 61;
+    public static int CHAIN_ID = Network.Ethereum_Classic.getChainId();
     public Etc(Coin impl) {
         super(impl);
     }

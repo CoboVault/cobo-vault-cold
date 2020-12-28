@@ -121,6 +121,7 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
                 navigate(R.id.action_to_manageCoinFragment, bundle);
                 updateCurrentWatchWallet();
                 break;
+            case METAMASK:
             case XRP_TOOLKIT:
                 navigate(R.id.action_to_syncWatchWalletGuide, bundle);
                 updateCurrentWatchWallet();

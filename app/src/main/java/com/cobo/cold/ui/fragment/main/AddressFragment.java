@@ -43,7 +43,6 @@ import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_NAME;
 import static com.cobo.cold.ui.fragment.Constants.KEY_ADDRESS_PATH;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_CODE;
 import static com.cobo.cold.ui.fragment.Constants.KEY_COIN_ID;
-import static com.cobo.cold.ui.fragment.Constants.KEY_ID;
 
 public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
 
@@ -80,10 +79,9 @@ public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
         }
     }
 
-    public static Fragment newInstance(long id, @NonNull String coinId, @NonNull String coinCode) {
+    public static Fragment newInstance(@NonNull String coinId, @NonNull String coinCode) {
         AddressFragment fragment = new AddressFragment();
         Bundle args = new Bundle();
-        args.putLong(KEY_ID, id);
         args.putString(KEY_COIN_ID, coinId);
         args.putString(KEY_COIN_CODE, coinCode);
         fragment.setArguments(args);
@@ -119,7 +117,6 @@ public class AddressFragment extends BaseFragment<AddressFragmentBinding> {
         Bundle data = Objects.requireNonNull(getArguments());
         Objects.requireNonNull(getParentFragment());
         CoinViewModel.Factory factory = new CoinViewModel.Factory(mActivity.getApplication(),
-                data.getLong(KEY_ID),
                 data.getString(KEY_COIN_ID));
         viewModel = ViewModelProviders.of(getParentFragment(), factory)
                 .get(CoinViewModel.class);

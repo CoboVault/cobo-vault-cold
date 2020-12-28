@@ -53,6 +53,7 @@
                 app:contentInsetStartWithNavigation="0dp">
 
                 <LinearLayout
+                    android:id="@+id/custom_title"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"

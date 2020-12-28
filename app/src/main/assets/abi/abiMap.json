@@ -1,6 +1,6 @@
 {
-  "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D": "uniswap.json",
-  "0x80fB784B7eD66730e8b1DBd9820aFD29931aab03": "lend.json",
+  "0x7a250d5630b4cf539739df2c5dacb4c659f2488d": "uniswap.json",
+  "0x80fb784b7ed66730e8b1dbd9820afd29931aab03": "lend.json",
   "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9": "aave.json",
   "0x00000000219ab540356cbb839cbe05303d7705fa": "eth2_deposit.json",
   "0xdac17f958d2ee523a2206206994597c13d831ec7": "usdt.json"

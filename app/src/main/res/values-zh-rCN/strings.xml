@@ -402,11 +402,13 @@
         <item>Cobo 金库移动端</item>
         <item>Polkadot.js</item>
         <item>XRP Toolkit</item>
+        <item>Metamask</item>
     </string-array>
     <string-array name="watch_wallet_summury" >
         <item>BTC、ETH、TRX、EOS等15条主链</item>
         <item>DOT、KSM</item>
         <item>XRP</item>
+        <item>ETH</item>
     </string-array>
     <string name="choose_watch_only_wallet">选择观察钱包</string>
     <string name="sync_later">暂不同步</string>
@@ -415,7 +417,7 @@
     <string name="sync_xumm_guide_title">XUMM 导入观察账户指引：</string>
     <string name="sync_xrp_toolkit_guide_title">XRP Toolkit 导入观察账户指引：</string>
     <string name="sync_polkadotjs_wallet_guide_title">Polkadot.js 导入 %s 观察钱包指引：</string>
-
+    <string name="sync_metamask_guide_title">MetaMask 导入观察账户指引：</string>
     <string name="sync_cobo_wallet_guide_text"><![CDATA[
         1. 打开 Cobo Vault App，添加新钱包<br>
         2. 选择“硬件钱包”，点击绑定按钮<br>
@@ -445,14 +447,23 @@
         3. 点击 “Scan account address”<br>
         4. 扫描地址二维码<br>
     ]]></string>
+
+    <string name="sync_metamask_guide_text"><![CDATA[
+        1. 打开MetaMask for Cobo Vault：<font color="#00cdc3">https://cobo vault/metamask.com<font/> 安装浏览器插件<br>
+        2. 进入 MetaMask for Cobo Vault ，点击“开始使用”按钮<br>
+        3. 进入同步Cobo Vault硬件钱包页面后，扫描钱包二维码完成同步<br>
+        4. 进入观察钱包<br>
+    ]]></string>
     <string name="sync_cobo_guide_button_text">查看钱包二维码</string>
     <string name="sync_xumm_guide_button_text">查看地址二维码</string>
     <string name="sync_xrp_toolkit_guide_button_text">查看地址二维码</string>
     <string name="sync_polkadot_js_guide_button_text">查看%s二维码</string>
+    <string name="sync_metamask_guide_button_text">查看二维码</string>
     <string name="sync_polkadot_hint">请注意：\n在Polkadot.js上，需分别创建 DOT、KSM 的观察钱包。</string>
     <string name="sync_with_cobo_vault">请使用 Cobo Vault App 扫描二维码</string>
     <string name="sync_with_xumm">请使用 XUMM 扫描地址二维码</string>
     <string name="sync_with_xrp_toolkit">请使用 XRP Toolkit 扫描二维码</string>
+    <string name="sync_with_metamask">请使用 MetaMask 扫描二维码</string>
     <string name="sync_with_polkadot_js">请使用 Polkadot.js 扫描二维码</string>
     <string name="broadcast_xrp_toolkit_hint">请使用 XRP Toolkit 扫描二维码</string>
     <string name="sync_first_xrp_accout">将默认展示第一个地址的二维码，若您要同步其他地址，可进入钱包添加地址。</string>
@@ -509,4 +520,6 @@
     <string name="create_23_word">创建自己的助记词</string>
     <string name="create_23_word_title">创建自己的助记词</string>
     <string name="mnemonic_backuped">我已备份好助记词</string>
+    <string name="metamask_install_hint">请注意，MetaMask for Cobo Vault 应用不能和 MetaMask 官方应用同时存在；若您要使用 MetaMask for Cobo Vault，请先卸载MetaMask 官方应用。</string>
+    <string name="testnet">测试网</string>
 </resources>
