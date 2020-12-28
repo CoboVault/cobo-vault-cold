@@ -87,7 +87,7 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
     }
 
     private void showVerifyCode() {
-        if ("CoboVault".equals(creator)) {
+        if ("CoboVault".equals(creator) || "Caravan".equals(creator)) {
             try {
                 List<String> xpubs = new ArrayList<>();
                 JSONArray array = new JSONArray(dummyWallet.getExPubs());
@@ -196,8 +196,12 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
             for (int i = 0; i < wallet.getTotal(); i++) {
                 JSONObject info = array.getJSONObject(i);
                 String xpub = info.getString("xpub");
-                if (creator.equals("Coldcard")) {
-                    xpub = ExtendPubkeyFormat.convertExtendPubkey(xpub,ExtendPubkeyFormat.xpub);
+                if (creator.equals("Coldcard") || creator.equals("Caravan")) {
+                    if (isTestNet) {
+                        xpub = ExtendPubkeyFormat.convertExtendPubkey(xpub, ExtendPubkeyFormat.tpub);
+                    } else {
+                        xpub = ExtendPubkeyFormat.convertExtendPubkey(xpub, ExtendPubkeyFormat.xpub);
+                    }
                 }
                 builder.append(i + 1).append(". ").append(info.getString("xfp")).append("\n")
                         .append(xpub).append("\n\n");
