@@ -29,6 +29,7 @@ import android.view.View;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
+import com.cobo.coinlib.ExtendPubkeyFormat;
 import com.cobo.coinlib.utils.MultiSig;
 import com.cobo.cold.R;
 import com.cobo.cold.Utilities;
@@ -36,6 +37,7 @@ import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.ExportMultisigExpubBinding;
 import com.cobo.cold.databinding.ModalWithTwoButtonBinding;
 import com.cobo.cold.databinding.SwitchXpubBottomSheetBinding;
+import com.cobo.cold.databinding.XpubEncodingHintBinding;
 import com.cobo.cold.ui.modal.ExportToSdcardDialog;
 import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.update.utils.Storage;
@@ -71,6 +73,20 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
         updateUI();
         mBinding.addressType.setOnClickListener(v -> showBottomSheetMenu());
         mBinding.exportToSdcard.setOnClickListener(v -> exportToSdcard());
+        mBinding.expub.setOnClickListener(v -> showXpubEncodingHint());
+    }
+
+    private void showXpubEncodingHint() {
+        boolean isTestnet = !Utilities.isMainNet(mActivity);
+        ModalDialog dialog = new ModalDialog();
+        XpubEncodingHintBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                R.layout.xpub_encoding_hint, null, false);
+        binding.pub1.setText("①"+viewModel.getXpub(account));
+        binding.pub2.setText("②"+ExtendPubkeyFormat.convertExtendPubkey(viewModel.getXpub(account),
+                isTestnet? ExtendPubkeyFormat.tpub : ExtendPubkeyFormat.xpub));
+        binding.close.setOnClickListener(v -> dialog.dismiss());
+        dialog.setBinding(binding);
+        dialog.show(mActivity.getSupportFragmentManager(), "");
     }
 
     private void exportToSdcard() {
@@ -120,7 +136,7 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
         String accountType = getAccountTypeString(account);
         String xpub = viewModel.getXpub(account);
         mBinding.addressType.setText(String.format("%s ", accountType));
-        mBinding.expub.setText(xpub);
+        mBinding.expub.setText(getString(R.string.text_with_info_icon, xpub));
         mBinding.path.setText(String.format("(%s)", account.getPath()));
         mBinding.qrcode.setData(viewModel.getExportXpubInfo(account));
     }

@@ -774,5 +774,9 @@
         5. Enter the watch-only wallet<br>
     ]]></string>
     <string name="scan_with_caravan">Scan with Caravan</string>
-
+    <string name="text_with_info_icon" translatable="false"><![CDATA[
+    %s<img src="info">
+    ]]>
+    </string>
+    <string name="xpub_format_hint">There are two encoding methods for XPUB (interchangeable), which do not affect the result of multisig wallet generation.</string>
 </resources>
