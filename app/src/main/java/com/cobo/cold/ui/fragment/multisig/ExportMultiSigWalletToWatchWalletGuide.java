@@ -23,14 +23,14 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.cobo.cold.R;
-import com.cobo.cold.databinding.ExportWalletToElectrumBinding;
+import com.cobo.cold.databinding.ExportMultisigWalletToWatchWalletGuideBinding;
 
 import java.util.Objects;
 
-public class ExportWalletToElectrum extends MultiSigBaseFragment<ExportWalletToElectrumBinding> {
+public class ExportMultiSigWalletToWatchWalletGuide extends MultiSigBaseFragment<ExportMultisigWalletToWatchWalletGuideBinding> {
     @Override
     protected int setView() {
-        return R.layout.export_wallet_to_electrum;
+        return R.layout.export_multisig_wallet_to_watch_wallet_guide;
     }
 
     @Override
@@ -43,16 +43,30 @@ public class ExportWalletToElectrum extends MultiSigBaseFragment<ExportWalletToE
             mBinding.toolbar.setNavigationOnClickListener(naviBack);
         } else {
             mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
+            mBinding.exportLater.setVisibility(View.GONE);
         }
+        mBinding.toolbarTitle.setText(getTitle());
+        mBinding.text1.setText(getText1());
+        mBinding.text2.setText(getText2());
+
         mBinding.export.setOnClickListener(v -> export());
-        viewModel.getWalletEntity(data.getString("wallet_fingerprint")).observe(this,
-                wallet -> mBinding.text2.setText(getString(R.string.export_multisig_wallet_to_electrum_guide,
-                wallet.getTotal(),wallet.getThreshold())));
         mBinding.exportLater.setOnClickListener(naviBack);
 
     }
 
+    private int getText2() {
+        return R.string.caravan_import_guide;
+    }
+
+    private int getText1() {
+        return R.string.caravan_import_guide_title;
+    }
+
+    private int getTitle() {
+        return R.string.export_wallet_to_caravan;
+    }
+
     private void export() {
-        navigate(R.id.action_to_export_multisig_xpub_to_el, getArguments());
+        navigate(R.id.action_to_export_multisig_wallet_to_watch_only_wallet, getArguments());
     }
 }

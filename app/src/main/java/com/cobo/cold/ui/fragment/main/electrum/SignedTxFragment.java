@@ -193,8 +193,9 @@ public class SignedTxFragment extends BaseFragment<SignedTxBinding> {
     }
 
     protected void displaySignResult(TxEntity txEntity) {
-        String base43 = Base43.encode(Base64.decode(txEntity.getSignedHex()));
-        if (base43.length() <= 1000) {
+        if (txEntity.getSignedHex().length() <= 800) {
+            byte[] data = Base64.decode(txEntity.getSignedHex());
+            String base43 = Base43.encode(data);
             new Handler().postDelayed(() -> mBinding.txDetail.qrcodeLayout.qrcode.setData(base43), 500);
             mBinding.txDetail.export.setVisibility(View.GONE);
             mBinding.txDetail.exportToSdcardHint.setOnClickListener(v -> showExportDialog());

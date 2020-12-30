@@ -139,8 +139,7 @@ public class PsbtTxConfirmFragment extends UnsignedTxFragment {
             data.putString(KEY_TXID, viewModel.getTxId());
             navigate(R.id.action_to_psbt_broadcast, data);
         } else if (wallet == WatchWallet.ELECTRUM) {
-            String base43 = Base43.encode(Base64.decode(viewModel.getTxHex()));
-            if (base43.length() <= 1000) {
+            if (viewModel.getTxHex().length() <= 800) {
                 String txId = viewModel.getTxId();
                 Bundle data = new Bundle();
                 data.putString(BroadcastTxFragment.KEY_TXID, txId);

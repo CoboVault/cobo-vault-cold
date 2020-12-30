@@ -138,7 +138,7 @@ public class PsbtSignedTxFragment extends SignedTxFragment {
     @Override
     protected void showExportDialog() {
         Runnable runnable;
-        if (isMultisig) {
+        if (!isMultisig) {
             runnable = () -> popBackStack(R.id.assetFragment, false);
         } else {
             runnable = ()-> popBackStack(R.id.multisigFragment, false);

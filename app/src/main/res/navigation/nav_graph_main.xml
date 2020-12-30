@@ -415,8 +415,8 @@
             app:popExitAnim="@android:anim/slide_out_right" />
 
         <action
-            android:id="@+id/action_export_wallet_to_electrum"
-            app:destination="@id/exportWalletToElectrum"
+            android:id="@+id/action_export_multisig_wallet_watch_only_guide"
+            app:destination="@id/exportMultiSigWalletToWatchWalletGuide"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -432,9 +432,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/exportWalletToElectrum"
-        android:name="com.cobo.cold.ui.fragment.multisig.ExportWalletToElectrum"
-        android:label="ExportWalletToElectrum">
+        android:id="@+id/exportMultiSigWalletToWatchWalletGuide"
+        android:name="com.cobo.cold.ui.fragment.multisig.ExportMultiSigWalletToWatchWalletGuide"
+        android:label="ExportMultiSigWalletToWatchWalletGuide">
         <action
             android:id="@+id/action_to_export_multisig_xpub_to_el"
             app:destination="@id/exportXpubToElectrumFragment"
@@ -443,7 +443,19 @@
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
 
+        <action
+            android:id="@+id/action_to_export_multisig_wallet_to_watch_only_wallet"
+            app:destination="@id/exportMultiSigWalletToWatchWallet"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
     </fragment>
+    <fragment
+        android:id="@+id/exportMultiSigWalletToWatchWallet"
+        android:name="com.cobo.cold.ui.fragment.multisig.ExportMultiSigWalletToWatchWallet"
+        android:label="ExportMultiSigWalletToWatchWallet"/>
 
     <fragment
         android:id="@+id/exportXpubToElectrumFragment"
@@ -459,8 +471,8 @@
         android:id="@+id/exportWalletToCosignerFragment"
         android:name="com.cobo.cold.ui.fragment.multisig.ExportWalletToCosignerFragment"
         android:label="ExportWalletToCosignerFragment">
-        <action android:id="@id/action_export_wallet_to_electrum"
-            app:destination="@id/exportWalletToElectrum"
+        <action android:id="@id/action_export_multisig_wallet_watch_only_guide"
+            app:destination="@id/exportMultiSigWalletToWatchWalletGuide"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -503,8 +515,8 @@
         android:id="@+id/importWalletFragment"
         android:name="com.cobo.cold.ui.fragment.multisig.ImportWalletFragment"
         android:label="ImportWalletFragment">
-        <action android:id="@id/action_export_wallet_to_electrum"
-            app:destination="@id/exportWalletToElectrum"
+        <action android:id="@id/action_export_multisig_wallet_watch_only_guide"
+            app:destination="@id/exportMultiSigWalletToWatchWalletGuide"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"

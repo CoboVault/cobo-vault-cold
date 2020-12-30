@@ -63,12 +63,12 @@
             android:layout_height="wrap_content"
             android:onClick="@{()->clickHandler.onClick((int)@id/action_export_wallet_to_cosigner)}"
             app:title="@string/export_multisig_to_cosigner"/>
-        <!--com.cobo.cold.ui.views.MultiSigItem
+        <com.cobo.cold.ui.views.SelectableItem
             android:id="@+id/export_wallet_to_electrum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{()->clickHandler.onClick((int)@id/action_export_wallet_to_electrum)}"
-            app:title="@string/export_wallet_to_electrum"/-->
+            android:onClick="@{()->clickHandler.onClick((int)@id/action_export_multisig_wallet_watch_only_guide)}"
+            app:title="@string/export_wallet_to_caravan"/>
         <com.cobo.cold.ui.views.SelectableItem
             android:id="@+id/wallet_info"
             android:layout_width="match_parent"

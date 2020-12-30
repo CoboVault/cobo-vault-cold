@@ -124,6 +124,7 @@ public class MultisigMainFragment extends MultiSigBaseFragment<MultisigMainBindi
     private void navigateToManageWallet() {
         Bundle data = new Bundle();
         data.putString("wallet_fingerprint",wallet.getWalletFingerPrint());
+        data.putString("creator", wallet.getCreator());
         navigate(R.id.action_to_multisig_wallet, data);
     }
 

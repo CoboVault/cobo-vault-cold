@@ -87,7 +87,7 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
     }
 
     private void showVerifyCode() {
-        if ("CoboVault".equals(creator)) {
+        if ("CoboVault".equals(creator) || "Caravan".equals(creator)) {
             try {
                 List<String> xpubs = new ArrayList<>();
                 JSONArray array = new JSONArray(dummyWallet.getExPubs());
@@ -135,7 +135,7 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
             }
 
             return new MultiSigWalletEntity(walletInfo.getString("Name"),
-                    threshold, total,account.getPath(),array.toString(),"","","");
+                    threshold, total,account.getPath(),array.toString(),"","","", creator);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -145,7 +145,7 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
 
     private void importWallet() {
         try {
-            viewModel.createMultisigWallet(threshold, account, walletInfo.getString("Name"),walletInfo.getJSONArray("Xpubs"))
+            viewModel.createMultisigWallet(threshold, account, walletInfo.getString("Name"),walletInfo.getJSONArray("Xpubs"), creator)
                     .observe(this, this::onImportWalletSuccess);
         } catch (XfpNotMatchException e) {
             e.printStackTrace();
@@ -173,10 +173,13 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
             dialog.show(mActivity.getSupportFragmentManager(),"");
             handler.postDelayed(() -> {
                 dialog.dismiss();
-                popBackStack(R.id.multisigFragment,false);
-                //Bundle bundle = Bundle.forPair("wallet_fingerprint", walletEntity.getWalletFingerPrint());
-                //bundle.putBoolean("isImportMultisig",true);
-                //navigate(R.id.action_export_wallet_to_electrum, bundle);
+                if ("Caravan".equalsIgnoreCase(creator)) {
+                    popBackStack(R.id.multisigFragment, false);
+                } else {
+                    Bundle bundle = Bundle.forPair("wallet_fingerprint", walletEntity.getWalletFingerPrint());
+                    bundle.putBoolean("isImportMultisig", true);
+                    navigate(R.id.action_export_multisig_wallet_watch_only_guide, bundle);
+                }
             },500);
         }
     }
@@ -193,8 +196,12 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
             for (int i = 0; i < wallet.getTotal(); i++) {
                 JSONObject info = array.getJSONObject(i);
                 String xpub = info.getString("xpub");
-                if (creator.equals("Coldcard")) {
-                    xpub = ExtendPubkeyFormat.convertExtendPubkey(xpub,ExtendPubkeyFormat.xpub);
+                if (creator.equals("Coldcard") || creator.equals("Caravan")) {
+                    if (isTestNet) {
+                        xpub = ExtendPubkeyFormat.convertExtendPubkey(xpub, ExtendPubkeyFormat.tpub);
+                    } else {
+                        xpub = ExtendPubkeyFormat.convertExtendPubkey(xpub, ExtendPubkeyFormat.xpub);
+                    }
                 }
                 builder.append(i + 1).append(". ").append(info.getString("xfp")).append("\n")
                         .append(xpub).append("\n\n");

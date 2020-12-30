@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2020 Cobo
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -17,14 +16,18 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -39,69 +42,90 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/export_xpub_guide_title_electrum"
+                android:layout_marginEnd="20dp"
+                android:ellipsize="middle"
+                android:singleLine="true"
+                android:text="@string/export_wallet_to_caravan"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
 
         <include layout="@layout/divider" />
+
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:fillViewport="true">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text1"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:padding="16dp"
-                    android:text="@string/export_to_electrum_guide_hint"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="10dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/scan_with_caravan"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/info"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/info" />
+
+                </LinearLayout>
+
+                <include
+                    android:id="@+id/qrcode_layout"
+                    layout="@layout/dynamic_qrcode" />
 
                 <com.cobo.cold.ui.views.SpanedTextView
-                    android:id="@+id/text2"
+                    android:id="@+id/export_to_sdcard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:lineSpacingExtra="6dp"
-                    android:padding="16dp"
-                    android:text="@string/export_multisig_wallet_to_electrum_guide"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="10dp"
+                    android:paddingVertical="10dp"
+                    android:gravity="center"
+                    android:text="@string/generic_qrcode_hint"
                     android:textColor="@color/white"
-                    android:textSize="13sp" />
+                    android:textSize="12sp" />
 
-                <Space
+
+                <androidx.legacy.widget.Space
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
                 <Button
-                    android:id="@+id/export"
+                    android:id="@+id/done"
                     android:layout_width="match_parent"
-                    style="@style/AcceptButton"
                     android:layout_marginHorizontal="16dp"
-                    android:text="@string/view_xpub_qrcode"/>
-
+                    android:layout_marginTop="16dp"
+                    style="@style/AcceptButton"
+                    android:text="@string/complete"/>
                 <TextView
-                    android:id="@+id/export_later"
+                    android:id="@+id/skip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="center"
                     android:padding="10dp"
-                    android:background="?attr/selectableItemBackground"
                     android:textColor="@color/colorAccent"
-                    android:text="@string/export_later"
-                    android:visibility="visible"
-                    android:textSize="14sp" />
+                    android:gravity="center"
+                    android:text="@string/skip_export"
+                    android:visibility="gone"/>
             </LinearLayout>
         </ScrollView>
-
     </LinearLayout>
 </layout>
