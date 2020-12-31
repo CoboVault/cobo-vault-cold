@@ -657,7 +657,7 @@
     <string name="view_wallet_info">Wallet Info</string>
     <string name="wallet_verify_code">Wallet Verification Code</string>
     <string name="info_for_cc"><![CDATA[
-    Cosigner is Coldcard, <u>click here to compare XPUBs</u>
+    <u>click here to view XPUBs in another encoding format</u>
     ]]></string>
     <string name="p2wsh">Native Segwit (P2WSH)</string>
     <string name="p2wsh_p2sh">Nested Segwit (P2WSH-P2SH)</string>
