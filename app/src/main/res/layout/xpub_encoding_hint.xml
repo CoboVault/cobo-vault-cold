@@ -69,28 +69,11 @@
                 android:text="@string/xpub_format_hint"
                 android:scrollbars="none"
                 />
-
-            <TextView
-                android:id="@+id/pub1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/sub_title"
-                android:layout_centerHorizontal="true"
-                android:paddingHorizontal="16dp"
-                android:layout_marginTop="12dp"
-                android:textSize="14sp"
-                android:textColor="#a9a9a9"
-                android:lineSpacingExtra="6dp"
-                android:visibility="visible"
-                android:maxLines="15"
-                android:scrollbars="none"
-                />
-
             <TextView
                 android:id="@+id/pub2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/pub1"
+                android:layout_below="@id/sub_title"
                 android:layout_centerHorizontal="true"
                 android:paddingHorizontal="16dp"
                 android:layout_marginTop="12dp"

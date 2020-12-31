@@ -81,8 +81,7 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
         ModalDialog dialog = new ModalDialog();
         XpubEncodingHintBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.xpub_encoding_hint, null, false);
-        binding.pub1.setText("①"+viewModel.getXpub(account));
-        binding.pub2.setText("②"+ExtendPubkeyFormat.convertExtendPubkey(viewModel.getXpub(account),
+        binding.pub2.setText(ExtendPubkeyFormat.convertExtendPubkey(viewModel.getXpub(account),
                 isTestnet? ExtendPubkeyFormat.tpub : ExtendPubkeyFormat.xpub));
         binding.close.setOnClickListener(v -> dialog.dismiss());
         dialog.setBinding(binding);

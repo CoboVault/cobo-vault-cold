@@ -604,7 +604,7 @@
     <string name="view_wallet_info">查看钱包信息</string>
     <string name="wallet_verify_code">钱包验证码</string>
     <string name="info_for_cc"><![CDATA[
-    <u>点击此处查看另一编码格式的扩展公钥</u>
+    <u>点击此处查看xpub（测试网为tpub）</u>
     ]]></string>
     <string name="p2wsh">隔离见证原生（P2WSH）</string>
     <string name="p2wsh_p2sh">隔离见证兼容（P2WSH-P2SH）</string>
@@ -626,7 +626,7 @@
     <string name="current_device_info">设备信息</string>
     <string name="switch_passphrase">进入密语金库</string>
     <string name="broadcast_multisig_tx_hint">您可扫描二维码或导出文件进行广播</string>
-    <string name="export_multisig_tx_hint">邀请参与方扫码继续签名，或导出文件在Electrum组合该交易</string>
+    <string name="export_multisig_tx_hint">邀请参与方继续签名</string>
     <string name="export_tx">导出交易</string>
     <string name="check_mnemonic">检查助记词</string>
     <string name="check_failed">验证失败</string>
@@ -725,5 +725,5 @@
         5. 进入观察钱包<br>
     ]]></string>
     <string name="scan_with_caravan">请用 Caravan 扫描钱包二维码</string>
-    <string name="xpub_format_hint">扩展公钥有两种编码方式（可互相转换），不影响多签钱包的生成结果。</string>
+    <string name="xpub_format_hint">扩展公钥可转换为xpub（测试网为tpub），该转换不影响多签钱包的生成结果。</string>
 </resources>
