@@ -173,13 +173,7 @@ public class ImportWalletFragment extends MultiSigBaseFragment<ImportWalletBindi
             dialog.show(mActivity.getSupportFragmentManager(),"");
             handler.postDelayed(() -> {
                 dialog.dismiss();
-                if ("Caravan".equalsIgnoreCase(creator)) {
-                    popBackStack(R.id.multisigFragment, false);
-                } else {
-                    Bundle bundle = Bundle.forPair("wallet_fingerprint", walletEntity.getWalletFingerPrint());
-                    bundle.putBoolean("isImportMultisig", true);
-                    navigate(R.id.action_export_multisig_wallet_watch_only_guide, bundle);
-                }
+                popBackStack(R.id.multisigFragment, false);
             },500);
         }
     }
