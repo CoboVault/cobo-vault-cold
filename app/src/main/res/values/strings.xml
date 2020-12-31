@@ -657,7 +657,7 @@
     <string name="view_wallet_info">Wallet Info</string>
     <string name="wallet_verify_code">Wallet Verification Code</string>
     <string name="info_for_cc"><![CDATA[
-    <u>click here to view XPUBs in another encoding format</u>
+    <u>click here to view xpub (testnet is tpub)</u>
     ]]></string>
     <string name="p2wsh">Native Segwit (P2WSH)</string>
     <string name="p2wsh_p2sh">Nested Segwit (P2WSH-P2SH)</string>
@@ -679,7 +679,7 @@
     <string name="current_device_info">Equipment Info</string>
     <string name="switch_passphrase">Enter Passphrase Vault</string>
     <string name="broadcast_multisig_tx_hint">Please scan the QR code or export file to broadcast</string>
-    <string name="export_multisig_tx_hint">Invite cosigners to continue signing, or export file to combine the transaction in Electrum</string>
+    <string name="export_multisig_tx_hint">Invite cosigners to continue signing</string>
     <string name="export_tx">Export Transaction</string>
     <string name="check_mnemonic">Recovery Phrase Check</string>
     <string name="check_failed">Check Failed</string>
@@ -778,5 +778,5 @@
     %s<img src="info">
     ]]>
     </string>
-    <string name="xpub_format_hint">There are two encoding methods for XPUB (interchangeable), which do not affect the result of multisig wallet generation.</string>
+    <string name="xpub_format_hint">XPUB can be converted to xpub (testnet is tpub) , which do not affect the result of multisig wallet generation.</string>
 </resources>
