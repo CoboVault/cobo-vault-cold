@@ -184,6 +184,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
     private TxEntity generateTxEntity(JSONObject object) throws JSONException {
         TxEntity tx = new TxEntity();
         NumberFormat nf = NumberFormat.getInstance();
+        nf.setGroupingUsed(false);
         nf.setMaximumFractionDigits(20);
         coinCode = Objects.requireNonNull(transaction).getCoinCode();
         tx.setSignId(object.getString("signId"));
