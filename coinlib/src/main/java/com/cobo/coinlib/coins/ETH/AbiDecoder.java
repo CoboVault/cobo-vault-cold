@@ -19,6 +19,8 @@
 
 package com.cobo.coinlib.coins.ETH;
 
+import android.text.TextUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,6 +114,9 @@ public class AbiDecoder {
 
     public DecodedMethod decodeMethod(String data){
         String noPrefix = removePrefix(data);
+        if (TextUtils.isEmpty(noPrefix)) {
+            return null;
+        }
         byte[] bytes = Hex.decode(noPrefix);
         String methodId = noPrefix.substring(0,8);
         Abi.Entry entry = methodIDs.get(methodId);
