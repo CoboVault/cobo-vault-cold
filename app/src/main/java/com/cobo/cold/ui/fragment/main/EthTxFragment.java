@@ -36,6 +36,7 @@ import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.viewmodel.CoinListViewModel;
 import com.cobo.cold.viewmodel.WatchWallet;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
@@ -97,10 +98,25 @@ public class EthTxFragment extends BaseFragment<EthTxBinding> {
         mBinding.ethTx.setTx(txEntity);
         String to = txEntity.getTo();
         try {
-            JSONObject bundleMap = new JSONObject(readAsset(mActivity.getAssets(), "abi/abiMap.json"));
-            String abiFile = bundleMap.optString(txEntity.getTo());
-            if (!TextUtils.isEmpty(abiFile)) {
-                to =  to + "\n" + String.format("(%s)",abiFile.replace(".json",""));
+            String contract = null;
+            JSONArray tokensMap = new JSONArray(readAsset(mActivity.getAssets(), "token_contract_address.json"));
+            for (int i = 0; i < tokensMap.length(); i++) {
+                JSONObject token = tokensMap.getJSONObject(i);
+                if (token.getString("contract_address").equalsIgnoreCase(to)) {
+                    contract = token.getString("name");
+                    break;
+                }
+            }
+
+            if (contract == null) {
+                JSONObject bundleMap = new JSONObject(readAsset(mActivity.getAssets(), "abi/abiMap.json"));
+                String abiFile = bundleMap.optString(txEntity.getTo());
+                if (!TextUtils.isEmpty(abiFile)) {
+                    contract = abiFile.replace(".json", "");
+                }
+            }
+            if (contract != null) {
+                to = to + "\n" + String.format("(%s)", contract);
             }
         } catch (JSONException e) {
             e.printStackTrace();

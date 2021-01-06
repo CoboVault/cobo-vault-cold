@@ -120,19 +120,25 @@ public class EthImpl implements Coin {
             metaData.put("gasPrice", rawTx.getGasPrice().toString());
             metaData.put("gasLimit", rawTx.getGasLimit().toString());
             metaData.put("value", rawTx.getValue().toString());
-            String abi = getAbi(Coinlib.sInstance.getContext(), rawTx.getTo());
+
+
+            //decode data
+
+            AbiDecoder decoder = new AbiDecoder();
             String erc20Abi = getAbi(Coinlib.sInstance.getContext(),
                     "0xdac17f958d2ee523a2206206994597c13d831ec7");
-            //decode data
-            if (abi != null) {
-                AbiDecoder decoder = new AbiDecoder();
-                decoder.addAbi(erc20Abi);
+            decoder.addAbi(erc20Abi);
+            String abi = getAbi(Coinlib.sInstance.getContext(), rawTx.getTo());
+            if (!TextUtils.isEmpty(abi)) {
                 decoder.addAbi(abi);
-                AbiDecoder.DecodedMethod method = decoder.decodeMethod(rawTx.getData());
+            }
+            AbiDecoder.DecodedMethod method = decoder.decodeMethod(rawTx.getData());
+            if (method != null) {
                 metaData.put("data", method.toJson().toString());
             } else {
                 metaData.put("data", rawTx.getData());
             }
+
             //decode chainId
             if (rawTx instanceof SignedRawTransaction) {
                 Sign.SignatureData signatureData = ((SignedRawTransaction) rawTx).getSignatureData();
