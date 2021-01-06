@@ -20,6 +20,7 @@
 package com.cobo.cold.ui.fragment.main;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -43,6 +44,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cobo.coinlib.v8.ScriptLoader.readAsset;
 import static com.cobo.cold.ui.fragment.main.TxFragment.KEY_TX_ID;
 
 public class EthTxFragment extends BaseFragment<EthTxBinding> {
@@ -58,7 +60,11 @@ public class EthTxFragment extends BaseFragment<EthTxBinding> {
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         CoinListViewModel viewModel = ViewModelProviders.of(mActivity).get(CoinListViewModel.class);
         mBinding.broadcastHint.setText(getString(R.string.please_broadcast_with_hot, WatchWallet.METAMASK.getWalletName(mActivity)));
-        viewModel.loadTx(bundle.getString(KEY_TX_ID)).observe(this, this::updateUI);
+        viewModel.loadTx(bundle.getString(KEY_TX_ID)).observe(this, txEntity -> {
+            if (txEntity != null) {
+                updateUI(txEntity);
+            }
+        });
     }
 
     private void updateUI(TxEntity txEntity) {
@@ -89,6 +95,17 @@ public class EthTxFragment extends BaseFragment<EthTxBinding> {
             }
         }
         mBinding.ethTx.setTx(txEntity);
+        String to = txEntity.getTo();
+        try {
+            JSONObject bundleMap = new JSONObject(readAsset(mActivity.getAssets(), "abi/abiMap.json"));
+            String abiFile = bundleMap.optString(txEntity.getTo());
+            if (!TextUtils.isEmpty(abiFile)) {
+                to =  to + "\n" + String.format("(%s)",abiFile.replace(".json",""));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mBinding.ethTx.to.setText(to);
     }
 
 

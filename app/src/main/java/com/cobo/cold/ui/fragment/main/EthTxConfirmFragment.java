@@ -49,6 +49,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cobo.coinlib.v8.ScriptLoader.readAsset;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
@@ -78,7 +79,11 @@ public class EthTxConfirmFragment extends BaseFragment<EthTxConfirmBinding> {
         try {
             JSONObject txData = new JSONObject(data.getString(KEY_TX_DATA));
             viewModel.parseTxData(txData);
-            viewModel.getObservableTx().observe(this, this::updateUI);
+            viewModel.getObservableTx().observe(this, txEntity -> {
+                if (txEntity != null) {
+                    updateUI(txEntity);
+                }
+            });
             viewModel.parseTxException().observe(this, this::handleParseException);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -166,6 +171,17 @@ public class EthTxConfirmFragment extends BaseFragment<EthTxConfirmBinding> {
             }
         }
         mBinding.ethTx.setTx(txEntity);
+        String to = txEntity.getTo();
+        try {
+            JSONObject bundleMap = new JSONObject(readAsset(mActivity.getAssets(), "abi/abiMap.json"));
+            String abiFile = bundleMap.optString(txEntity.getTo());
+            if (!TextUtils.isEmpty(abiFile)) {
+                to =  to + "\n" + String.format("(%s)",abiFile.replace(".json",""));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mBinding.ethTx.to.setText(to);
     }
 
     private String getNetwork(int chainId) {

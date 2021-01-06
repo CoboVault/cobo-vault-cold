@@ -54,7 +54,6 @@ import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpType;
 
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -122,9 +121,12 @@ public class EthImpl implements Coin {
             metaData.put("gasLimit", rawTx.getGasLimit().toString());
             metaData.put("value", rawTx.getValue().toString());
             String abi = getAbi(Coinlib.sInstance.getContext(), rawTx.getTo());
+            String erc20Abi = getAbi(Coinlib.sInstance.getContext(),
+                    "0xdac17f958d2ee523a2206206994597c13d831ec7");
             //decode data
             if (abi != null) {
                 AbiDecoder decoder = new AbiDecoder();
+                decoder.addAbi(erc20Abi);
                 decoder.addAbi(abi);
                 AbiDecoder.DecodedMethod method = decoder.decodeMethod(rawTx.getData());
                 metaData.put("data", method.toJson().toString());
