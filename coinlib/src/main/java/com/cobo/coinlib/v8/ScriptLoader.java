@@ -21,7 +21,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.eclipsesource.v8.V8;
 

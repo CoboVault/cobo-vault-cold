@@ -29,7 +29,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.cobo.coinlib.v8.ScriptLoader;
+import com.cobo.coinlib.Coinlib;
 import com.cobo.cold.callables.RestartSeCallable;
 import com.cobo.cold.db.AppDatabase;
 import com.cobo.cold.encryption.EncryptionCoreProvider;
@@ -68,7 +68,7 @@ public class MainApplication extends Application {
             FileLogger.purgeLogs(this);
         });
         initBackgroundCallBack();
-        ScriptLoader.init(this);
+        Coinlib.init(this);
         if (TextUtils.isEmpty(Utilities.getRandomSalt(this))) {
             Utilities.setRandomSalt(this, Hex.toHexString(HashUtil.getNextSalt()));
         }

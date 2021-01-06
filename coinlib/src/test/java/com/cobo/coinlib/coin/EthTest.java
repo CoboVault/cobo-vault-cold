@@ -29,6 +29,7 @@ import org.web3j.abi.FunctionEncoder;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Hash;
 import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionDecoder;
 import org.web3j.crypto.TransactionEncoder;
 
 import java.io.BufferedReader;
@@ -133,6 +134,16 @@ public class EthTest {
         Credentials credentials = Credentials.create("1e799db5ff3e2df04775afd82bdb3b02302f4d2cdab904cda426032d35768aed");
         byte[] signed = TransactionEncoder.signMessage(transaction,1, credentials);
         assertEquals(Hex.toHexString(Hash.sha3(signed)),"de664318df3576d68aded7f70f30ab712d058b71916cc105fc33d5e53fcbed5f");
+    }
+
+    @Test
+    public void generateTx() {
+        BigInteger gasPrice = new BigInteger("b2d05e00",16);
+        BigInteger gasLimit = new BigInteger("21660",16);
+        RawTransaction rawTransaction = RawTransaction.createTransaction(
+                new BigInteger("25"),
+                gasPrice, gasLimit, "0x7a250d5630b4cf539739df2c5dacb4c659f2488d","0x18cbafe50000000000000000000000000000000000000000000000000000000016b89f3100000000000000000000000000000000000000000000000005846047980e016800000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000e9b6d149d8e67bf7876ce962a8c37414c56bc39e000000000000000000000000000000000000000000000000000000005ff2eef80000000000000000000000000000000000000000000000000000000000000002000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec7000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" );
+        System.out.println(Hex.toHexString(TransactionEncoder.encode(rawTransaction,1)));
     }
 
 }

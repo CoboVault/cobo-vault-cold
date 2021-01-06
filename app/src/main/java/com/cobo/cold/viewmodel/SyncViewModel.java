@@ -30,11 +30,15 @@ import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
 import com.cobo.cold.MainApplication;
+import com.cobo.cold.callables.GetMasterFingerprintCallable;
 import com.cobo.cold.db.entity.AccountEntity;
 import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.protocol.EncodeConfig;
 import com.cobo.cold.protocol.builder.SyncBuilder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -121,6 +125,24 @@ public class SyncViewModel extends AndroidViewModel {
             String genesisHash = getGenesisHash(coinCode);
             String name = "Cobo-"+Coins.coinNameFromCoinCode(coinCode);
             result.postValue(prefix + ":" + address + ":" + genesisHash + ":" + name);
+
+        });
+        return result;
+    }
+
+    public LiveData<String> generateSyncMetamask() {
+        MutableLiveData<String> result = new MutableLiveData<>();
+        AppExecutors.getInstance().diskIO().execute(()->{
+            CoinEntity eth = mRepository.loadCoinSync(Coins.ETH.coinId());
+            JSONObject o = new JSONObject();
+            try {
+                o.put("xfp", new GetMasterFingerprintCallable().call());
+                o.put("path","m/44'/60'/0'");
+                o.put("xpub",eth.getExPub());
+                result.postValue(o.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         });
         return result;

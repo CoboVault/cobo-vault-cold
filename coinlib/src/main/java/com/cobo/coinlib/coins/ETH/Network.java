@@ -17,32 +17,32 @@
  *
  */
 
-package com.cobo.coinlib;
+package com.cobo.coinlib.coins.ETH;
 
-import android.content.Context;
+public enum Network {
+    Mainnet(1),
+    Ropsten(3),
+    Rinkeby(4),
+    Goerli(5),
+    Kovan(42),
+    Ethereum_Classic(61);
 
-import com.cobo.coinlib.v8.ScriptLoader;
+    private final int chainId;
 
-public class Coinlib {
-    public static Coinlib sInstance;
-    private final Context context;
-
-    private Coinlib(Context context) {
-        this.context = context;
-        ScriptLoader.init(context);
+    Network(int chainId) {
+        this.chainId = chainId;
     }
 
-    public Context getContext(){
-        return context;
+    public int getChainId() {
+        return chainId;
     }
 
-    public static void init(Context context) {
-        if (sInstance == null) {
-            synchronized (Coinlib.class) {
-                if (sInstance == null) {
-                    sInstance = new Coinlib(context);
-                }
+    public static Network getNetwork(int chainId) {
+        for (Network value : Network.values()) {
+            if (chainId == value.chainId) {
+                return value;
             }
         }
+        return Mainnet;
     }
 }

@@ -51,7 +51,7 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
     private SyncViewModel viewModel;
     private WatchWallet watchWallet;
     private String coinCode;
-    private boolean fromSyncGuide;
+    private boolean fromSyncGuide = false;
 
     @Override
     protected int setView() {
@@ -65,9 +65,9 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
         if (data != null) {
             coinCode = data.getString("coinCode");
             fromSyncGuide = getArguments().getBoolean("fromSyncGuide");
-            if (!fromSyncGuide) {
-                mBinding.complete.setVisibility(View.GONE);
-            }
+        }
+        if (!fromSyncGuide) {
+            mBinding.complete.setVisibility(View.GONE);
         }
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         mBinding.toolbar.setTitle("");
@@ -114,6 +114,9 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
             case XRP_TOOLKIT:
                 mBinding.hint.setText(R.string.sync_with_xrp_toolkit);
                 mBinding.address.setVisibility(View.VISIBLE);
+                break;
+            case METAMASK:
+                mBinding.hint.setText(R.string.sync_with_metamask);
                 break;
         }
     }
@@ -163,6 +166,13 @@ public class SyncFragment extends BaseFragment<SyncFragmentBinding> {
                     }
                 });
                 break;
+            case METAMASK:
+                viewModel.generateSyncMetamask().observe(this, s -> {
+                    if (!TextUtils.isEmpty(s)) {
+                        mBinding.dynamicQrcodeLayout.qrcode.disableMultipart();
+                        mBinding.dynamicQrcodeLayout.qrcode.setData(s);
+                    }
+                });
         }
     }
 

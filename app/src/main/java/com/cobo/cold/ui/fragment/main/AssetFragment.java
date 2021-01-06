@@ -75,7 +75,6 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     private boolean showPublicKey;
     private String coinId;
     private String coinCode;
-    private long id;
     private AddressNumberPicker mAddressNumberPicker;
     private boolean hasAddress;
     private WatchWallet watchWallet;
@@ -88,28 +87,25 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     @Override
     protected void init(View view) {
         watchWallet = WatchWallet.getWatchWallet(mActivity);
-        if (watchWallet == WatchWallet.XRP_TOOLKIT) {
+        if (watchWallet == WatchWallet.METAMASK) {
             mBinding.toolbar.setNavigationIcon(R.drawable.menu);
             mBinding.toolbar.setTitle(watchWallet.getWalletName(mActivity));
+            mBinding.customTitle.setVisibility(View.GONE);
+            coinId = Coins.ETH.coinId();
+            coinCode = Coins.ETH.coinCode();
+        }else if (watchWallet == WatchWallet.XRP_TOOLKIT) {
+            mBinding.toolbar.setNavigationIcon(R.drawable.menu);
+            mBinding.toolbar.setTitle(watchWallet.getWalletName(mActivity));
+            mBinding.customTitle.setVisibility(View.GONE);
             coinId = Coins.XRP.coinId();
             coinCode = Coins.XRP.coinCode();
-            LiveData<CoinEntity> coinEntityLiveData = ViewModelProviders.of(this)
-                    .get(XummTxConfirmViewModel.class)
-                    .loadXrpCoinEntity();
-
-            coinEntityLiveData.observe(this, coinEntity -> {
-                id = coinEntity.getId();
-                updateUI();
-                coinEntityLiveData.removeObservers(this);
-            });
         } else {
             Bundle data = Objects.requireNonNull(getArguments());
             coinId = data.getString(KEY_COIN_ID);
             coinCode = data.getString(KEY_COIN_CODE);
-            id = data.getLong(KEY_ID);
             showPublicKey = Coins.showPublicKey(coinCode);
-            updateUI();
         }
+        updateUI();
     }
 
     private void updateUI() {
@@ -122,7 +118,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         }
         mBinding.toolbar.setOnMenuItemClickListener(this);
         mBinding.toolbar.setNavigationOnClickListener(v -> {
-            if (watchWallet == WatchWallet.XRP_TOOLKIT) {
+            if (watchWallet == WatchWallet.XRP_TOOLKIT || watchWallet == WatchWallet.METAMASK) {
                 ((MainActivity) mActivity).toggleDrawer(v);
             } else {
                 navigateUp();
@@ -141,6 +137,9 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
     private int getMenuResId() {
         if (watchWallet == WatchWallet.XRP_TOOLKIT) {
             return R.menu.xrp_toolkit;
+        }
+        if (watchWallet == WatchWallet.METAMASK) {
+            return R.menu.metamask;
         }
         return (showPublicKey || Coins.isPolkadotFamily(coinCode)) ? R.menu.asset_without_add : R.menu.asset;
     }
@@ -170,7 +169,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
             if (showPublicKey) {
                 fragments[0] = PublicKeyFragment.newInstance(coinId);
             } else {
-                fragments[0] = AddressFragment.newInstance(id, coinId, coinCode);
+                fragments[0] = AddressFragment.newInstance(coinId, coinCode);
             }
             fragments[1] = TxListFragment.newInstance(coinId, coinCode);
         }
@@ -230,7 +229,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        CoinViewModel.Factory factory = new CoinViewModel.Factory(mActivity.getApplication(), id, coinId);
+        CoinViewModel.Factory factory = new CoinViewModel.Factory(mActivity.getApplication(), coinId);
         CoinViewModel viewModel = ViewModelProviders.of(this, factory)
                 .get(CoinViewModel.class);
 
@@ -258,7 +257,11 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 break;
             case R.id.action_scan:
                 Bundle data = new Bundle();
-                data.putString("purpose", "xrpTransaction");
+                if (watchWallet == WatchWallet.XRP_TOOLKIT) {
+                    data.putString("purpose", "xrpTransaction");
+                } else if(watchWallet == WatchWallet.METAMASK) {
+                    data.putString("purpose", "ethTransaction");
+                }
                 navigate(R.id.action_to_QRCodeScanFragment, data);
                 break;
             default:
@@ -287,8 +290,8 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
             dialog.dismiss();
 
         });
-        binding.exportXpubToElectrum.setOnClickListener(v-> {
-            navigate(R.id.action_to_electrum_guide);
+        binding.sync.setOnClickListener(v-> {
+            navigate(R.id.action_to_syncFragment);
             dialog.dismiss();
         });
         dialog.setContentView(binding.getRoot());
@@ -323,9 +326,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
 
     @Override
     public void onValueSet(int value) {
-        AddAddressViewModel.Factory factory = new AddAddressViewModel.Factory(mActivity.getApplication(),
-                id);
-        AddAddressViewModel viewModel = ViewModelProviders.of(this, factory)
+        AddAddressViewModel viewModel = ViewModelProviders.of(this)
                 .get(AddAddressViewModel.class);
 
         ProgressModalDialog dialog = ProgressModalDialog.newInstance();

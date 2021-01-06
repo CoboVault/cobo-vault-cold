@@ -26,8 +26,6 @@ import androidx.databinding.ObservableField;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.cobo.coinlib.coins.AbsDeriver;
 import com.cobo.coinlib.utils.Coins;
@@ -48,10 +46,9 @@ public class AddAddressViewModel extends AndroidViewModel {
     private final ObservableField<Boolean> loading = new ObservableField<>();
     private final MutableLiveData<Boolean> addComplete = new MutableLiveData<>();
 
-    private AddAddressViewModel(@NonNull Application application, DataRepository repository,
-                                final long id) {
+    public AddAddressViewModel(@NonNull Application application) {
         super(application);
-        mRepo = repository;
+        mRepo = ((MainApplication)application).getRepository();
     }
 
     public ObservableField<Boolean> getLoading() {
@@ -77,28 +74,6 @@ public class AddAddressViewModel extends AndroidViewModel {
 
     public LiveData<Boolean> getObservableAddState() {
         return addComplete;
-    }
-
-    public static class Factory extends ViewModelProvider.NewInstanceFactory {
-        @NonNull
-        private final Application mApplication;
-
-        private final long mId;
-
-        private final DataRepository mRepository;
-
-        public Factory(@NonNull Application application, long id) {
-            mApplication = application;
-            mId = id;
-            mRepository = ((MainApplication) application).getRepository();
-        }
-
-        @NonNull
-        @Override
-        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            //noinspection unchecked
-            return (T) new AddAddressViewModel(mApplication, mRepository, mId);
-        }
     }
 
     static class AddAddressTask extends AsyncTask<String, Void, Void> {
