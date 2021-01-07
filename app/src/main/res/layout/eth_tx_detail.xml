@@ -114,11 +114,12 @@
                     android:layout_alignParentBottom="true" />
             </RelativeLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/tx_id_info"
                 android:layout_width="match_parent"
-                android:layout_height="86dp"
-                visibleGone="@{!TextUtils.isEmpty(tx.txId)}">
+                android:layout_height="wrap_content"
+                visibleGone="@{!TextUtils.isEmpty(tx.txId)}"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -132,11 +133,9 @@
 
                 <TextView
                     android:id="@+id/txid"
-                    android:layout_width="184dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginHorizontal="16dp"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     android:text="@{tx.txId}"
@@ -145,13 +144,13 @@
                 <include
                     layout="@layout/divider"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true" />
-            </RelativeLayout>
+                    android:layout_height="1dp"/>
+            </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="74dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -165,35 +164,20 @@
 
                 <TextView
                     android:id="@+id/from"
-                    android:layout_width="184dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginHorizontal="16dp"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     android:text="@{tx.from}"
                     tools:text="0xf3617ee7e3b8cf2a4298cdd519296e36a1fc666d" />
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/arrow_down"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="8dp"
-                    android:layout_marginStart="120dp"
-                    android:src="@drawable/tx_arrow_down"
-                    tools:ignore="ContentDescription" />
-            </RelativeLayout>
-
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/to_info"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -207,24 +191,27 @@
 
                 <TextView
                     android:id="@+id/to"
-                    android:layout_width="184dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginVertical="14dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginHorizontal="16dp"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     tools:text="0x35623ea315322ff2618e7469c2e88415111b5444" />
-            </RelativeLayout>
+                <include
+                    layout="@layout/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp" />
+            </LinearLayout>
 
             <include
                 layout="@layout/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -238,26 +225,25 @@
 
                 <TextView
                     android:id="@+id/value"
-                    android:layout_width="184dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginVertical="14dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginHorizontal="16dp"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     android:text="@{tx.amount}"
                     tools:text="9" />
-            </RelativeLayout>
+            </LinearLayout>
 
             <include
                 layout="@layout/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/fee_info"
                 android:layout_width="match_parent"
-                android:layout_height="49dp">
+                android:layout_height="49dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/fee_label"
@@ -272,11 +258,9 @@
 
                 <TextView
                     android:id="@+id/fee"
-                    android:layout_width="184dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginHorizontal="16dp"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     android:text="@{tx.fee}"
@@ -285,9 +269,8 @@
                 <include
                     layout="@layout/divider"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true" />
-            </RelativeLayout>
+                    android:layout_height="1dp" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
