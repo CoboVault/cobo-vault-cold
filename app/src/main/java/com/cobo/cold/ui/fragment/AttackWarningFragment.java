@@ -31,10 +31,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.internal.app.LocalePicker;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.AttackWarningBinding;
+import com.cobo.cold.setting.LanguageHelper;
 import com.cobo.cold.ui.modal.ProgressModalDialog;
 import com.cobo.cold.util.DataCleaner;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
@@ -111,7 +111,7 @@ public class AttackWarningFragment extends BaseFragment<AttackWarningBinding> {
             try {
                 DataCleaner.cleanApplicationData(activity);
                 removeAllFingerprint(activity);
-                LocalePicker.updateLocale(Locale.SIMPLIFIED_CHINESE);
+                LocalePicker.updateLocale(LanguageHelper.defaultLocale);
             } catch (Exception ignore){
             }finally {
                 DataCleaner.cleanApplicationData(activity);
