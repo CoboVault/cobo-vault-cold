@@ -385,7 +385,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
             String[] names = new String[addressIndex + 1 - addressLength];
             int index = 0;
             for (int i = addressLength; i < addressIndex + 1; i++) {
-                names[index++] = coinCode + "-" + (i + 1);
+                names[index++] = coinCode + "-" + i;
             }
             final CountDownLatch mLatch = new CountDownLatch(1);
             addingAddress.postValue(true);
