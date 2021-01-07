@@ -51,6 +51,7 @@ import com.cobo.cold.callables.ResetCallable;
 import com.cobo.cold.config.FeatureFlags;
 import com.cobo.cold.databinding.FactoryResetModalBinding;
 import com.cobo.cold.fingerprint.FingerprintKit;
+import com.cobo.cold.setting.LanguageHelper;
 import com.cobo.cold.ui.MainActivity;
 import com.cobo.cold.ui.SetupVaultActivity;
 import com.cobo.cold.ui.fragment.setup.PreImportFragment;
@@ -379,7 +380,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                 new ResetCallable().call();
                 DataCleaner.cleanApplicationData(activity);
                 removeAllFingerprint(activity);
-                LocalePicker.updateLocale(Locale.SIMPLIFIED_CHINESE);
+                LocalePicker.updateLocale(LanguageHelper.defaultLocale);
             } catch (Exception ignored) {
             } finally {
                 DataCleaner.cleanApplicationData(activity);
