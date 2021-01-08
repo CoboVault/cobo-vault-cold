@@ -32,10 +32,12 @@
     "type": "event"
   },
   {
+    "payable": true,
     "stateMutability": "payable",
     "type": "fallback"
   },
   {
+    "constant": false,
     "inputs": [],
     "name": "admin",
     "outputs": [
@@ -45,10 +47,12 @@
         "type": "address"
       }
     ],
+    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
+    "constant": false,
     "inputs": [
       {
         "internalType": "address",
@@ -58,10 +62,12 @@
     ],
     "name": "changeAdmin",
     "outputs": [],
+    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
+    "constant": false,
     "inputs": [],
     "name": "implementation",
     "outputs": [
@@ -71,10 +77,12 @@
         "type": "address"
       }
     ],
+    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
+    "constant": false,
     "inputs": [
       {
         "internalType": "address",
@@ -94,10 +102,12 @@
     ],
     "name": "initialize",
     "outputs": [],
+    "payable": true,
     "stateMutability": "payable",
     "type": "function"
   },
   {
+    "constant": false,
     "inputs": [
       {
         "internalType": "address",
@@ -112,10 +122,12 @@
     ],
     "name": "initialize",
     "outputs": [],
+    "payable": true,
     "stateMutability": "payable",
     "type": "function"
   },
   {
+    "constant": false,
     "inputs": [
       {
         "internalType": "address",
@@ -125,10 +137,12 @@
     ],
     "name": "upgradeTo",
     "outputs": [],
+    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
+    "constant": false,
     "inputs": [
       {
         "internalType": "address",
@@ -143,6 +157,7 @@
     ],
     "name": "upgradeToAndCall",
     "outputs": [],
+    "payable": true,
     "stateMutability": "payable",
     "type": "function"
   }

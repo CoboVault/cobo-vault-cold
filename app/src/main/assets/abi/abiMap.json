@@ -1,7 +1,14 @@
 {
   "0x7a250d5630b4cf539739df2c5dacb4c659f2488d": "UniswapV2.json",
-  "0x80fb784b7ed66730e8b1dbd9820afd29931aab03": "lend.json",
-  "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9": "aave.json",
+  "0x398ec7346dcd622edc5ae82352f02be94c62d119": "Aave.json",
   "0x00000000219ab540356cbb839cbe05303d7705fa": "eth2_deposit.json",
-  "0xdac17f958d2ee523a2206206994597c13d831ec7": "usdt.json"
+  "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f": "SushiSwap.json",
+  "0x7cbe5682be6b648cc1100c76d4f6c96997f753d6": "Nexus Mutual.json",
+  "0xdac17f958d2ee523a2206206994597c13d831ec7": "usdt.json",
+  "0x3fda67f7583380e67ef93072294a7fac882fd7e7": "Compound.json",
+  "0x45f783cce6b7ff23b2ab2d70e416cdb7d6055f51": "Curve Finance.json",
+  "0x52ea46506b9cc5ef470c5bf89f17dc28bb35d85c": "Curve Finance USDT Swap.json",
+  "0x99b0d6641a63ce173e6eb063b3d3aed9a35cf9bf": "Harvest Finance.json",
+  "0xb440dd674e1243644791a4adfe3a2abb0a92d309": "Synthetix.json",
+  "0x448a5065aebb8e423f0896e6c5d525c040f59af3": "Maker.json"
 }
