@@ -99,7 +99,7 @@ public class EthTxFragment extends BaseFragment<EthTxBinding> {
         String to = txEntity.getTo();
         try {
             String contract = null;
-            JSONArray tokensMap = new JSONArray(readAsset(mActivity.getAssets(), "token_contract_address.json"));
+            JSONArray tokensMap = new JSONArray(readAsset(mActivity.getAssets(), "abi/token_contract_address.json"));
             for (int i = 0; i < tokensMap.length(); i++) {
                 JSONObject token = tokensMap.getJSONObject(i);
                 if (token.getString("contract_address").equalsIgnoreCase(to)) {

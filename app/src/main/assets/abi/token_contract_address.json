@@ -192,11 +192,11 @@
         "contract_address": "0x69beab403438253f13b6e92db91f7fb849258263"
     },
     {
-        "name": "DAI",
+        "name": "SAI",
         "contract_address": "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359"
     },
     {
-        "name": "ETH",
+        "name": "DAI",
         "contract_address": "0x6b175474e89094c44da98b954eedeac495271d0f"
     },
     {
@@ -260,7 +260,7 @@
         "contract_address": "0xf453b5b9d4e0b5c62ffb256bb2378cc2bc8e8a89"
     },
     {
-        "name": "ETH",
+        "name": "FUCK_1",
         "contract_address": "0xab16e0d25c06cb376259cc18c1de4aca57605589"
     },
     {
@@ -436,7 +436,7 @@
         "contract_address": "0x139d9397274bb9e2c29a9aa8aa0b5874d30d62e3"
     },
     {
-        "name": "ETH",
+        "name": "CAT_1",
         "contract_address": "0x56ba2ee7890461f463f7be02aac3099f6d5811a8"
     },
     {
@@ -2024,7 +2024,7 @@
         "contract_address": "0x614fd8f06ce4d93aa2361b342c86554eb5cb39f1"
     },
     {
-        "name": "ETH",
+        "name": "BET",
         "contract_address": "0x8aa33a7899fcc8ea5fbe6a608a109c3893a1b8b2"
     },
     {
@@ -2280,7 +2280,7 @@
         "contract_address": "0x2e071d2966aa7d8decb1005885ba1977d6038a65"
     },
     {
-        "name": "SCRL",
+        "name": "XD",
         "contract_address": "0x24dcc881e7dd730546834452f21872d5cb4b5293"
     },
     {
@@ -2380,7 +2380,7 @@
         "contract_address": "0x16f812be7fff02caf662b85d5d58a5da6572d4df"
     },
     {
-        "name": "USDX",
+        "name": "USDx",
         "contract_address": "0xeb269732ab75a6fd61ea60b06fe994cd32a83549"
     },
     {
@@ -2696,7 +2696,7 @@
         "contract_address": "0xe2d82dc7da0e6f882e96846451f4fabcc8f90528"
     },
     {
-        "name": "ETH",
+        "name": "PRO_1",
         "contract_address": "0x9041fe5b3fdea0f5e4afdc17e75180738d877a01"
     },
     {
@@ -2772,11 +2772,11 @@
         "contract_address": "0x5ca381bbfb58f0092df149bd3d243b08b9a8386e"
     },
     {
-        "name": "DGTXV2",
+        "name": "New DGTX",
         "contract_address": "0xc666081073e8dff8d3d1c2292a29ae1a2153ec09"
     },
     {
-        "name": "UTKV2",
+        "name": "New UTK",
         "contract_address": "0xdc9ac3c20d1ed0b540df9b1fedc10039df13f99c"
     },
     {
