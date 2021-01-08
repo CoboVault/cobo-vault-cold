@@ -402,7 +402,7 @@
         <item>Cobo 金库移动端</item>
         <item>Polkadot.js</item>
         <item>XRP Toolkit</item>
-        <item>Metamask</item>
+        <item>Metamask for Cobo Vault</item>
     </string-array>
     <string-array name="watch_wallet_summury" >
         <item>BTC、ETH、TRX、EOS等15条主链</item>
@@ -417,7 +417,7 @@
     <string name="sync_xumm_guide_title">XUMM 导入观察账户指引：</string>
     <string name="sync_xrp_toolkit_guide_title">XRP Toolkit 导入观察账户指引：</string>
     <string name="sync_polkadotjs_wallet_guide_title">Polkadot.js 导入 %s 观察钱包指引：</string>
-    <string name="sync_metamask_guide_title">MetaMask 导入观察账户指引：</string>
+    <string name="sync_metamask_guide_title">MetaMask for Cobo Vault 导入观察账户指引：</string>
     <string name="sync_cobo_wallet_guide_text"><![CDATA[
         1. 打开 Cobo Vault App，添加新钱包<br>
         2. 选择“硬件钱包”，点击绑定按钮<br>
@@ -449,9 +449,9 @@
     ]]></string>
 
     <string name="sync_metamask_guide_text"><![CDATA[
-        1. 打开MetaMask for Cobo Vault：<font color="#00cdc3">https://cobo vault/metamask.com<font/> 安装浏览器插件<br>
-        2. 进入 MetaMask for Cobo Vault ，点击“开始使用”按钮<br>
-        3. 进入同步Cobo Vault硬件钱包页面后，扫描钱包二维码完成同步<br>
+        1. 前往 <font color="#00cdc3">https://cobo.com/mm<font/> 安装 MetaMask for Cobo Vault 浏览器插件<br>
+        2. 进入 MetaMask for Cobo Vault ，点击“开始使用”按钮后设置密码<br>
+        3. 进入同步 Cobo 金库页面后，扫描钱包二维码完成同步<br>
         4. 进入观察钱包<br>
     ]]></string>
     <string name="sync_cobo_guide_button_text">查看钱包二维码</string>
@@ -492,8 +492,8 @@
     <string name="unknown_substrate_chain_title">暂不支持该币种</string>
     <string name="unknown_substrate_chain_content">Polkadot.js模式下暂不支持该币种</string>
     <string name="unsupported_polka_tx_type_title">暂不支持该交易类型</string>
-    <string name="unsupported_polka_tx_type_content">Polkadot.js模式下，仅支持 DOT 和 KSM的接收和发送，其他交易类型暂不支持。</string>
-    <string name="enable_dot_for_polkadotjs">切换观察钱包为 Polkadot.js，您需再次输入当前金库的助记词。具体原因请访问：https://cobo.com/dot</string>
+    <string name="unsupported_polka_tx_type_content">Polkadot.js模式下，仅支持DOT和KSM的接收和发送，其他交易类型暂不支持。</string>
+    <string name="enable_dot_for_polkadotjs">切换观察钱包为Polkadot.js，您需再次输入当前金库的助记词。具体原因请访问：https://cobo.com/dot</string>
     <string name="not_switch">暂不切换</string>
     <string name="confirm_switch">确认切换</string>
     <string name="keep_screen_on">请勿锁屏</string>
@@ -520,6 +520,6 @@
     <string name="create_23_word">创建自己的助记词</string>
     <string name="create_23_word_title">创建自己的助记词</string>
     <string name="mnemonic_backuped">我已备份好助记词</string>
-    <string name="metamask_install_hint">请注意，MetaMask for Cobo Vault 应用不能和 MetaMask 官方应用同时存在；若您要使用 MetaMask for Cobo Vault，请先卸载MetaMask 官方应用。</string>
+    <string name="metamask_install_hint">请注意，在使用 MetaMask for Cobo Vault 前，您需先卸载其他所有的 MetaMask（包括官方提供以及非官方fork）。</string>
     <string name="testnet">测试网</string>
 </resources>

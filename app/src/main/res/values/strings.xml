@@ -72,13 +72,13 @@
     <string name="setting_screen_off_time">Screen Timeout Length</string>
 
     <string-array name="language_entries" translatable="false">
-        <item>中文</item>
         <item>English</item>
+        <item>中文</item>
     </string-array>
 
     <string-array name="language_values" translatable="false">
-        <item>zh_rCN</item>
         <item>en</item>
+        <item>zh_rCN</item>
     </string-array>
 
     <string-array name="screen_off_entries">
@@ -428,7 +428,7 @@
         <item>Cobo Vault App</item>
         <item>Polkadot.js</item>-->
         <item>XRP Toolkit</item>
-        <item>Metamask</item>
+        <item>Metamask for Cobo Vault</item>
     </string-array>
 
     <string-array name="watch_wallet_list_values" translatable="false">
@@ -450,7 +450,7 @@
     <string name="sync_xumm_guide_title">How to create a Read only account in XUMM：</string>
     <string name="sync_xrp_toolkit_guide_title">How to create a watch-only account in XRP Toolkit：</string>
     <string name="sync_polkadotjs_wallet_guide_title">How to create a %s watch-only wallet in Polkadot.js：</string>
-    <string name="sync_metamask_guide_title">How to create a Read only account in MetaMask：</string>
+    <string name="sync_metamask_guide_title">How to create a watch-only wallet in MetaMask for Cobo Vault：</string>
 
     <string name="sync_cobo_wallet_guide_text"><![CDATA[
         1. Open Cobo Vault Mobile and add new wallet<br>
@@ -481,10 +481,10 @@
         4. Tap the button below and scan the QR code<br>
     ]]></string>
     <string name="sync_metamask_guide_text"><![CDATA[
-        1. 打开MetaMask for Cobo Vault：<font color="#00cdc3">https://cobo vault/metamask.com<font/> 安装浏览器插件<br>
-        2. 进入 MetaMask for Cobo Vault ，点击“开始使用”按钮<br>
-        3. 进入同步Cobo Vault硬件钱包页面后，扫描钱包二维码完成同步<br>
-        4. 进入观察钱包<br>
+        1. Go to <font color="#00cdc3">https://cobo.com/mm<font/> install MetaMask for Cobo Vault<br>
+        2. Enter MetaMask for Cobo Vault, click "Get Started" and set password<br>
+        3. Scan the QR Code of wallet that displays on Cobo Vault<br>
+        4. Enter watch-only wallet<br>
     ]]></string>
     <string name="sync_cobo_guide_button_text">Display QR Code</string>
     <string name="sync_xumm_guide_button_text">Display QR Code of Address</string>
@@ -553,7 +553,7 @@
     <string name="create_23_word">Create your own 24 words Recovery Phrase</string>
     <string name="create_23_word_title">Create your Recovery Phrase</string>
     <string name="mnemonic_backuped">I have my Recovery phrase</string>
-    <string name="metamask_install_hint">请注意，MetaMask for Cobo Vault 应用不能和 MetaMask 官方应用同时存在；若您要使用 MetaMask for Cobo Vault，请先卸载MetaMask 官方应用。</string>
-    <string name="testnet">测试网</string>
+    <string name="metamask_install_hint">You must disable ALL other instances of MetaMask on ALL open browsers when using MetaMask for Cobo Vault. If you have another instance running, it will interfere with requests to your Cobo Vault and you will get unexpected behavior.</string>
+    <string name="testnet">Testnet</string>
 
 </resources>
