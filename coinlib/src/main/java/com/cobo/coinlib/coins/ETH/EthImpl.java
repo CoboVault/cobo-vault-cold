@@ -19,13 +19,10 @@
 
 package com.cobo.coinlib.coins.ETH;
 
-import android.content.Context;
-import android.content.res.AssetManager;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.cobo.coinlib.Coinlib;
 import com.cobo.coinlib.coins.AbsTx;
 import com.cobo.coinlib.coins.SignTxResult;
 import com.cobo.coinlib.interfaces.Coin;
@@ -34,7 +31,6 @@ import com.cobo.coinlib.interfaces.Signer;
 import com.cobo.coinlib.utils.Coins;
 
 import org.bouncycastle.util.encoders.Hex;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.abi.FunctionEncoder;
@@ -112,9 +108,9 @@ public class EthImpl implements Coin {
     }
 
     public static JSONObject decodeRawTransaction(String txHex) {
-        RawTransaction rawTx = TransactionDecoder.decode(txHex);
         JSONObject metaData = new JSONObject();
         try {
+            RawTransaction rawTx = TransactionDecoder.decode(txHex);
             metaData.put("to", rawTx.getTo());
             metaData.put("nonce", rawTx.getNonce().toString());
             metaData.put("gasPrice", rawTx.getGasPrice().toString());
@@ -157,7 +153,7 @@ public class EthImpl implements Coin {
                 metaData.put("chainId", 1);
             }
             metaData.put("signingData", txHex);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
