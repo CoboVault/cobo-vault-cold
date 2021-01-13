@@ -120,21 +120,30 @@ public class EthImpl implements Coin {
             metaData.put("gasPrice", rawTx.getGasPrice().toString());
             metaData.put("gasLimit", rawTx.getGasLimit().toString());
             metaData.put("value", rawTx.getValue().toString());
-
-
             //decode data
-
+            String contractName = null;
+            String abi = null;
             AbiDecoder decoder = new AbiDecoder();
-            String erc20Abi = getAbi(Coinlib.sInstance.getContext(),
-                    "0xdac17f958d2ee523a2206206994597c13d831ec7");
-            decoder.addAbi(erc20Abi);
-            String abi = getAbi(Coinlib.sInstance.getContext(), rawTx.getTo());
-            if (!TextUtils.isEmpty(abi)) {
-                decoder.addAbi(abi);
+
+            JSONObject bundleMap = new JSONObject(readAsset("abi/abiMap.json"));
+            String abiFile = bundleMap.optString(rawTx.getTo());
+
+            if (!TextUtils.isEmpty(abiFile)) {
+                abi = readAsset("abi/" + abiFile);
+                contractName = abiFile.replace(".json","");
             }
+
+            if (TextUtils.isEmpty(abi)) {
+                //try decode with erc20 abi
+                abi = readAsset("abi/Erc20.json");
+                contractName = "Erc20";
+            }
+            decoder.addAbi(abi);
             AbiDecoder.DecodedMethod method = decoder.decodeMethod(rawTx.getData());
             if (method != null) {
-                metaData.put("data", method.toJson().toString());
+                JSONObject data = method.toJson();
+                data.put("contract", contractName);
+                metaData.put("data", data.toString());
             } else {
                 metaData.put("data", rawTx.getData());
             }
@@ -175,13 +184,12 @@ public class EthImpl implements Coin {
         }
     }
 
-    private static String getAbi(Context context, String contractAddress) {
-        AssetManager am = context.getAssets();
+    private static String getAbi(String contractAddress) {
         try {
-            JSONObject bundleMap = new JSONObject(readAsset(am, "abi/abiMap.json"));
+            JSONObject bundleMap = new JSONObject(readAsset("abi/abiMap.json"));
             String abiFile = bundleMap.optString(contractAddress);
             if (!TextUtils.isEmpty(abiFile)) {
-                return readAsset(am, "abi/" + abiFile);
+                return readAsset("abi/" + abiFile);
             }
         } catch (JSONException e) {
             e.printStackTrace();

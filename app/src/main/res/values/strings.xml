@@ -555,5 +555,7 @@
     <string name="mnemonic_backuped">I have my Recovery phrase</string>
     <string name="metamask_install_hint">You must disable ALL other instances of MetaMask on ALL open browsers when using MetaMask for Cobo Vault. If you have another instance running, it will interfere with requests to your Cobo Vault and you will get unexpected behavior.</string>
     <string name="testnet">Testnet</string>
+    <string name="unknown_address">Unknown Address</string>
+    <string name="inconsistent_address">Inconsistent with "From" address</string>
 
 </resources>

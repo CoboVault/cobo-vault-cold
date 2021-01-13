@@ -16,12 +16,10 @@
  */
 
 package com.cobo.coinlib.v8;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.text.TextUtils;
 
+import com.cobo.coinlib.Coinlib;
 import com.eclipsesource.v8.V8;
 
 import org.json.JSONException;
@@ -34,19 +32,16 @@ import java.io.InputStreamReader;
 
 public class ScriptLoader {
 
-    @SuppressLint("StaticFieldLeak")
     public static ScriptLoader sInstance;
-    private final Context context;
 
-    private ScriptLoader(Context context) {
-        this.context = context;
+    private ScriptLoader() {
     }
 
-    public static void init(Context context) {
+    public static void init() {
         if (sInstance == null) {
             synchronized (ScriptLoader.class) {
                 if (sInstance == null) {
-                    sInstance = new ScriptLoader(context);
+                    sInstance = new ScriptLoader();
                 }
             }
         }
@@ -54,34 +49,25 @@ public class ScriptLoader {
 
     public V8 loadByCoinCode(String coinCode) {
         V8 v8 = V8.createV8Runtime("window");
-        String js = getJs(context, coinCode);
+        String js = getJs(coinCode);
         if (!TextUtils.isEmpty(js) && !v8.isReleased()) {
             v8.executeVoidScript(js);
         }
         return v8;
     }
 
-    public V8 loadByFileName(String fileName) {
-        V8 v8 = V8.createV8Runtime("window");
-        String js = readAsset(context.getAssets(),fileName);
-        if (!TextUtils.isEmpty(js) && !v8.isReleased()) {
-            v8.executeVoidScript(js);
-        }
-        return v8;
-    }
-
-    private String getJs(Context context, String coinCode) {
-        AssetManager am = context.getAssets();
+    private String getJs(String coinCode) {
         try {
-            JSONObject bundleMap = new JSONObject(readAsset(am, "bundleMap.json"));
-            return readAsset(am, "script/" + bundleMap.getString(coinCode));
+            JSONObject bundleMap = new JSONObject(readAsset("bundleMap.json"));
+            return readAsset("script/" + bundleMap.getString(coinCode));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static String readAsset(AssetManager am, String fileName) {
+    public static String readAsset(String fileName) {
+        AssetManager am = Coinlib.sInstance.getContext().getAssets();
         StringBuilder stringBuilder = new StringBuilder();
         try {
             InputStream inputStream = am.open(fileName);

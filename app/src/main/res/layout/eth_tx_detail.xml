@@ -18,7 +18,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <import type="android.text.TextUtils" />
 
         <variable
@@ -29,8 +31,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
-            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -116,9 +118,9 @@
 
             <LinearLayout
                 android:id="@+id/tx_id_info"
+                visibleGone="@{!TextUtils.isEmpty(tx.txId)}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                visibleGone="@{!TextUtils.isEmpty(tx.txId)}"
                 android:orientation="vertical">
 
                 <TextView
@@ -136,15 +138,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
+                    android:text="@{tx.txId}"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:text="@{tx.txId}"
                     tools:text="84asf56sa5ewf46a4s654f6sa46s4z6x46sa46s46d4sa6f4a64f6ad4f6as4dx556s4a" />
 
                 <include
                     layout="@layout/divider"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"/>
+                    android:layout_height="1dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -167,10 +169,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
+                    android:text="@{tx.from}"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:text="@{tx.from}"
                     tools:text="0xf3617ee7e3b8cf2a4298cdd519296e36a1fc666d" />
+                <include
+                    layout="@layout/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -196,17 +202,14 @@
                     android:layout_marginHorizontal="16dp"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    tools:text="0x35623ea315322ff2618e7469c2e88415111b5444" />
+                    android:breakStrategy="simple"
+                    tools:text="0x35623ea315322ff2618e7469c2e88415111b5444(Unknown adderee)" />
+
                 <include
                     layout="@layout/divider"
                     android:layout_width="match_parent"
                     android:layout_height="1dp" />
             </LinearLayout>
-
-            <include
-                layout="@layout/divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -228,9 +231,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
+                    android:text="@{tx.amount}"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:text="@{tx.amount}"
                     tools:text="9" />
             </LinearLayout>
 
@@ -261,15 +264,52 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
+                    android:text="@{tx.fee}"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:text="@{tx.fee}"
                     tools:text="0.00006840 ETH" />
 
                 <include
                     layout="@layout/divider"
                     android:layout_width="match_parent"
                     android:layout_height="1dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="14dp"
+                    android:text="Data"
+                    android:textColor="@color/white40"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/data_bg1"/>
+                <LinearLayout
+                    android:id="@+id/container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-5dp"
+                    android:paddingTop="16dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:background="@drawable/data_bg"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
