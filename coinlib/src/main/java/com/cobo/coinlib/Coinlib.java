@@ -19,17 +19,19 @@
 
 package com.cobo.coinlib;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.cobo.coinlib.v8.ScriptLoader;
 
 public class Coinlib {
+    @SuppressLint("StaticFieldLeak")
     public static Coinlib sInstance;
     private final Context context;
 
     private Coinlib(Context context) {
         this.context = context;
-        ScriptLoader.init(context);
+        ScriptLoader.init();
     }
 
     public Context getContext(){

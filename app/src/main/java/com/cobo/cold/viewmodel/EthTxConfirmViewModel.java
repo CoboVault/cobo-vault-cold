@@ -17,7 +17,9 @@
 
 package com.cobo.cold.viewmodel;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -25,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.cobo.coinlib.coins.ETH.EthImpl;
+import com.cobo.coinlib.coins.ETH.Network;
 import com.cobo.coinlib.coins.SignTxResult;
 import com.cobo.coinlib.exception.InvalidPathException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
@@ -33,11 +36,13 @@ import com.cobo.coinlib.interfaces.Signer;
 import com.cobo.coinlib.path.CoinPath;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
+import com.cobo.cold.R;
 import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.db.entity.TxEntity;
 import com.cobo.cold.encryption.ChipSigner;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,16 +51,79 @@ import java.text.NumberFormat;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
+import static com.cobo.coinlib.v8.ScriptLoader.readAsset;
+
 public class EthTxConfirmViewModel extends TxConfirmViewModel {
     private final MutableLiveData<Boolean> addingAddress = new MutableLiveData<>();
+    private JSONArray tokensMap;
+    private JSONObject contractMap;
     private String hdPath;
     private String signId;
     private String txHex;
     private int chainId;
     private JSONObject abi;
     private String txId;
+    @SuppressLint("StaticFieldLeak")
+    private final Context context;
     public EthTxConfirmViewModel(@NonNull Application application) {
         super(application);
+        context = application;
+        readPresetContactInfo();
+    }
+
+    protected void readPresetContactInfo() {
+        try {
+            tokensMap = new JSONArray(readAsset("abi/token_address_book.json"));
+            contractMap = new JSONObject(readAsset("abi/abiMap.json"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONArray getTokensMap() {
+        return tokensMap;
+    }
+
+    public JSONObject getContractMap() {
+        return contractMap;
+    }
+
+    public String recognizeAddress(String to){
+        try {
+            String addressSymbol = null;
+            JSONArray tokensMap = getTokensMap();
+            for (int i = 0; i < tokensMap.length(); i++) {
+                JSONObject token = tokensMap.getJSONObject(i);
+                if (token.getString("contract_address").equalsIgnoreCase(to)) {
+                    addressSymbol = token.getString("symbol");
+                    break;
+                }
+            }
+
+            if (addressSymbol == null) {
+                JSONObject bundleMap = getContractMap();
+                String abiFile = bundleMap.optString(to);
+                if (!TextUtils.isEmpty(abiFile)) {
+                    addressSymbol = abiFile.replace(".json", "");
+                }
+            }
+            return addressSymbol;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getNetwork(int chainId) {
+        Network network = Network.getNetwork(chainId);
+        if (network == null) {
+            return String.format("chainId:%d", chainId);
+        }
+        String networkName = network.name();
+        if (chainId != 1) {
+            networkName += String.format("(%s)",context.getString(R.string.testnet));
+        }
+        return networkName;
     }
 
     public MutableLiveData<TxEntity> getObservableTx() {

@@ -19,6 +19,8 @@
 
 package com.cobo.cold.ui.fragment.main;
 
+import com.cobo.cold.viewmodel.EthTxConfirmViewModel;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,27 +30,51 @@ import java.util.List;
 
 public class AbiItemAdapter {
 
+    private String fromAddress;
+    private EthTxConfirmViewModel viewModel;
+    public AbiItemAdapter(String fromAddress, EthTxConfirmViewModel viewModel) {
+        this.fromAddress = fromAddress;
+        this.viewModel = viewModel;
+    }
+
     public List<AbiItem> adapt(JSONObject tx) {
         try {
             JSONArray params = tx.getJSONArray("param");
             List<AbiItem> items = new ArrayList<>();
-            items.add(new AbiItem("method", tx.getString("method")));
+            items.add(new AbiItem("method", tx.getString("method"), "method"));
             for (int i = 0; i < params.length(); i++) {
                 JSONObject param = params.getJSONObject(i);
                 String name = param.getString("name");
+                String type = param.getString("type");
                 Object value = param.get("value");
                 if (value instanceof JSONArray) {
                     JSONArray arr = (JSONArray) value;
                     StringBuilder concatValue = new StringBuilder();
                     for (int j = 0; j < arr.length(); j++) {
-                        concatValue.append(arr.getString(j));
+                        String item = arr.getString(j);
+                        if ("address[]".equals(type)) {
+                            String addressSymbol = viewModel.recognizeAddress(item);
+                            if (addressSymbol != null) {
+                                item += String.format("(%s)", addressSymbol);
+                            } else {
+                                item += String.format("[%s]", "Unknown Address");
+                            }
+                        }
+                        concatValue.append(item);
                         if (j != arr.length() -1) {
                             concatValue.append(",\n");
                         }
                     }
-                    items.add(new AbiItem(name, concatValue.toString()));
+                    items.add(new AbiItem(name, concatValue.toString(),type));
                 } else {
-                    items.add(new AbiItem(name, value.toString()));
+                    String item = value.toString();
+                    if ("address".equals(type)) {
+                        String addressSymbol = viewModel.recognizeAddress(item);
+                        if (addressSymbol != null) {
+                            item += String.format("(%s)", addressSymbol);
+                        }
+                    }
+                    items.add(new AbiItem(name, item, type));
                 }
             }
             return items;
@@ -61,10 +87,12 @@ public class AbiItemAdapter {
     public static class AbiItem{
         String key;
         String value;
+        String type;
 
-        public AbiItem(String key, String value) {
+        public AbiItem(String key, String value,String type) {
             this.key = key;
             this.value = value;
+            this.type = type;
         }
     }
 }

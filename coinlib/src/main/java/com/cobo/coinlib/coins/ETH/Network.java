@@ -43,6 +43,6 @@ public enum Network {
                 return value;
             }
         }
-        return Mainnet;
+        return null;
     }
 }

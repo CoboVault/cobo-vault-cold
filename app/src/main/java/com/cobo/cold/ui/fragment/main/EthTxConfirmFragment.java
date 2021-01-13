@@ -19,17 +19,18 @@
 
 package com.cobo.cold.ui.fragment.main;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.cobo.coinlib.coins.ETH.Network;
 import com.cobo.cold.R;
 import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.databinding.AbiItemBinding;
@@ -43,14 +44,14 @@ import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.viewmodel.EthTxConfirmViewModel;
 import com.cobo.cold.viewmodel.TxConfirmViewModel;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static com.cobo.coinlib.v8.ScriptLoader.readAsset;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
 import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
@@ -61,11 +62,15 @@ public class EthTxConfirmFragment extends BaseFragment<EthTxConfirmBinding> {
 
     private EthTxConfirmViewModel viewModel;
     private SigningDialog signingDialog;
+    private TxEntity txEntity;
     private final Runnable forgetPassword = () -> {
         Bundle bundle = new Bundle();
         bundle.putString(ACTION, PreImportFragment.ACTION_RESET_PWD);
         navigate(R.id.action_to_preImportFragment, bundle);
     };
+
+    public static Pattern pattern = Pattern.compile("(?<=\\()[^\\)]+");
+    public static Pattern pattern1 = Pattern.compile("(?<=\\[)[^]]+");
 
     @Override
     protected int setView() {
@@ -81,8 +86,9 @@ public class EthTxConfirmFragment extends BaseFragment<EthTxConfirmBinding> {
             JSONObject txData = new JSONObject(data.getString(KEY_TX_DATA));
             viewModel.parseTxData(txData);
             viewModel.getObservableTx().observe(this, txEntity -> {
-                if (txEntity != null) {
-                    updateUI(txEntity);
+                this.txEntity = txEntity;
+                if (this.txEntity != null) {
+                    updateUI();
                 }
             });
             viewModel.parseTxException().observe(this, this::handleParseException);
@@ -158,58 +164,77 @@ public class EthTxConfirmFragment extends BaseFragment<EthTxConfirmBinding> {
         viewModel.getSignState().removeObservers(this);
     }
 
-    private void updateUI(TxEntity txEntity) {
-        mBinding.ethTx.network.setText(getNetwork(viewModel.getChainId()));
+    private void updateUI() {
+        updateNetworkName();
         JSONObject abi = viewModel.getAbi();
         if (abi != null) {
-            List<AbiItemAdapter.AbiItem> itemList = new AbiItemAdapter().adapt(abi);
-            for (AbiItemAdapter.AbiItem item : itemList) {
-                AbiItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
-                        R.layout.abi_item, null, false);
-                binding.key.setText(item.key);
-                binding.value.setText(item.value);
-                mBinding.ethTx.container.addView(binding.getRoot());
-            }
+            updateAbiView(abi);
+        } else {
+            mBinding.ethTx.data.setVisibility(View.GONE);
         }
         mBinding.ethTx.setTx(txEntity);
-        String to = txEntity.getTo();
-        try {
-            String contract = null;
-            JSONArray tokensMap = new JSONArray(readAsset(mActivity.getAssets(), "abi/token_contract_address.json"));
-            for (int i = 0; i < tokensMap.length(); i++) {
-                JSONObject token = tokensMap.getJSONObject(i);
-                if (token.getString("contract_address").equalsIgnoreCase(to)) {
-                    contract = token.getString("name");
-                    break;
-                }
-            }
-
-            if (contract == null) {
-                JSONObject bundleMap = new JSONObject(readAsset(mActivity.getAssets(), "abi/abiMap.json"));
-                String abiFile = bundleMap.optString(txEntity.getTo());
-                if (!TextUtils.isEmpty(abiFile)) {
-                    contract = abiFile.replace(".json", "");
-                }
-            }
-            if (contract != null) {
-                to = to + "\n" + String.format("(%s)", contract);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        mBinding.ethTx.to.setText(to);
+        processAndUpdateTo();
     }
 
-    private String getNetwork(int chainId) {
-        String network = Network.getNetwork(chainId).name();
-        if (chainId != 1) {
-            network += String.format("(%s)",getString(R.string.testnet));
+    private void updateNetworkName() {
+        mBinding.ethTx.network.setText(viewModel.getNetwork(viewModel.getChainId()));
+    }
+
+    private void processAndUpdateTo() {
+        String to = txEntity.getTo();
+        String addressSymbol = viewModel.recognizeAddress(to);
+        if (addressSymbol != null) {
+            to = to + String.format("(%s)", addressSymbol);
+        } else {
+            to = to + String.format("[%s]", getString(R.string.unknown_address));
         }
-        return network;
+        mBinding.ethTx.to.setText(highLight(to));
+    }
+
+    private void updateAbiView(JSONObject abi) {
+        if (abi != null) {
+            try {
+                String contract = abi.getString("contract");
+                boolean isUniswap = "UniswapV2".equals(contract);
+                List<AbiItemAdapter.AbiItem> itemList = new AbiItemAdapter(txEntity.getFrom(),viewModel).adapt(abi);
+                for (AbiItemAdapter.AbiItem item : itemList) {
+                    AbiItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                            R.layout.abi_item, null, false);
+                    binding.key.setText(item.key);
+                    if (isUniswap && "to".equals(item.key)) {
+                        if (!item.value.equalsIgnoreCase(txEntity.getFrom())) {
+                            item.value += String.format("[%s]",getString(R.string.inconsistent_address));
+                        }
+                        binding.value.setText(highLight(item.value));
+                    } else {
+                        binding.value.setText(highLight(item.value));
+                    }
+                    mBinding.ethTx.container.addView(binding.getRoot());
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
 
+    }
+    public static SpannableStringBuilder highLight(String content) {
+        SpannableStringBuilder spannable = new SpannableStringBuilder(content);
+        Matcher matcher = pattern.matcher(spannable);
+        while (matcher.find())
+            spannable.setSpan(new ForegroundColorSpan(0xff00cdc3), matcher.start() - 1 ,
+                    matcher.end() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        matcher = pattern1.matcher(spannable);
+        while (matcher.find()) {
+            spannable.replace(matcher.start() - 1, matcher.start(),"(");
+            spannable.replace(matcher.end(), matcher.end() + 1,")");
+            spannable.setSpan(new ForegroundColorSpan(Color.RED), matcher.start() - 1 ,
+                    matcher.end() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        }
+        return spannable;
     }
 }
