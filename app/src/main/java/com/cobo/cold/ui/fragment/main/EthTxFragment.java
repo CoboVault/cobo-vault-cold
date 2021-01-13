@@ -114,11 +114,6 @@ public class EthTxFragment extends BaseFragment<EthTxBinding> {
                             item.value += String.format("[%s]",getString(R.string.inconsistent_address));
                         }
                         binding.value.setText(highLight(item.value));
-                    } else if ("_spender".equals(item.key)) {
-                        if (!item.value.equalsIgnoreCase(txEntity.getFrom())) {
-                            item.value += String.format("[%s]",getString(R.string.unknown_address));
-                        }
-                        binding.value.setText(highLight(item.value));
                     } else {
                         SpannableStringBuilder spannableString = highLight(item.value);
                         binding.value.setText(spannableString);
