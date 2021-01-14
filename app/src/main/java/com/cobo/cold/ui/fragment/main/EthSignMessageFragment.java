@@ -30,7 +30,6 @@ import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.databinding.EthSignMessageBinding;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.fragment.setup.PreImportFragment;
-import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.viewmodel.EthTxConfirmViewModel;
@@ -43,7 +42,6 @@ import java.util.Objects;
 
 import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
-import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
 import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.KEY_TX_DATA;
 import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
 
