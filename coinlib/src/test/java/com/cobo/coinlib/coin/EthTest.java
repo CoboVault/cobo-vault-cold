@@ -24,14 +24,15 @@ import com.cobo.coinlib.coins.ETH.Eth;
 import com.cobo.coinlib.coins.ETH.EthImpl;
 import com.cobo.coinlib.coins.ETH.StructuredDataEncoder;
 
-
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECDSASignature;
 import org.web3j.crypto.Hash;
+import org.web3j.crypto.Keys;
 import org.web3j.crypto.RawTransaction;
-
+import org.web3j.crypto.Sign;
 import org.web3j.crypto.TransactionEncoder;
 
 import java.io.BufferedReader;
@@ -40,6 +41,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -156,6 +158,44 @@ public class EthTest {
         String s = readString(f);
         byte[] messageHash = new StructuredDataEncoder(s).hashStructuredData();
         assertEquals("ccb29124860915763e8cd9257da1260abc7df668fde282272587d84b594f37f6", Hex.toHexString(messageHash));
+    }
+
+    @Test
+    public void testVerify() throws IOException {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL resource = classLoader.getResource("test.json");
+        File f = new File(resource.getPath());
+        String s = readString(f);
+        StructuredDataEncoder structuredData = new StructuredDataEncoder(s);
+        byte[] msgHash = structuredData.hashStructuredData();
+        String ownerAddress = "0xE10AA6471B33845FaE88DD7bBeB63c250DA3a639";
+        String sig = "4f4e0dec5f1d6f99460fea04bc374d96a495d96c0c455d4731902cdbf95525fc77c66ee08346466fe188f521c196f0f06bebb8d1a8df44cb68792514ca24808e2a";
+        byte[] signatureBytes = Hex.decode(sig);
+        byte v = signatureBytes[64];
+        Sign.SignatureData sd =
+                new Sign.SignatureData(
+                        v,
+                        Arrays.copyOfRange(signatureBytes, 0, 32),
+                        Arrays.copyOfRange(signatureBytes, 32, 64));
+
+        boolean verified = false;
+        for (int i = 0; i < 4; i++) {
+            BigInteger publicKey =
+                    Sign.recoverFromSignature(
+                            (byte) i,
+                            new ECDSASignature(
+                                    new BigInteger(1, sd.getR()), new BigInteger(1, sd.getS())),
+                            msgHash);
+
+            if (publicKey != null) {
+                String addressRecovered = Keys.toChecksumAddress(Keys.getAddress(publicKey));
+                if (addressRecovered.equals(ownerAddress)) {
+                    verified = true;
+                    break;
+                }
+            }
+        }
+        assertTrue(verified);
     }
 
 }
