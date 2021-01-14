@@ -100,11 +100,32 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_to_ethSignMessageFragment"
+            app:destination="@id/ethSignMessageFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
 
         <action
             android:id="@+id/action_QRCodeScan_to_result"
             app:destination="@id/webAuthResultFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/ethSignMessageFragment"
+        android:name="com.cobo.cold.ui.fragment.main.EthSignMessageFragment"
+        android:label="ethSignMessageFragment" >
+        <action
+            android:id="@+id/action_to_ethBroadcastTxFragment"
+            app:destination="@id/ethBroadcastTxFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+
     <fragment
         android:id="@+id/ethTxConfirmFragment"
         android:name="com.cobo.cold.ui.fragment.main.EthTxConfirmFragment"

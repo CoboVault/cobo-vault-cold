@@ -22,6 +22,8 @@ import androidx.annotation.NonNull;
 import com.cobo.coinlib.coins.ETH.AbiDecoder;
 import com.cobo.coinlib.coins.ETH.Eth;
 import com.cobo.coinlib.coins.ETH.EthImpl;
+import com.cobo.coinlib.coins.ETH.StructuredDataEncoder;
+
 
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
@@ -29,7 +31,7 @@ import org.web3j.abi.FunctionEncoder;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Hash;
 import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionDecoder;
+
 import org.web3j.crypto.TransactionEncoder;
 
 import java.io.BufferedReader;
@@ -144,6 +146,16 @@ public class EthTest {
                 new BigInteger("25"),
                 gasPrice, gasLimit, "0x7a250d5630b4cf539739df2c5dacb4c659f2488d","0x18cbafe50000000000000000000000000000000000000000000000000000000016b89f3100000000000000000000000000000000000000000000000005846047980e016800000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000e9b6d149d8e67bf7876ce962a8c37414c56bc39e000000000000000000000000000000000000000000000000000000005ff2eef80000000000000000000000000000000000000000000000000000000000000002000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec7000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" );
         System.out.println(Hex.toHexString(TransactionEncoder.encode(rawTransaction,1)));
+    }
+
+    @Test
+    public void testEip712() throws IOException {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL resource = classLoader.getResource("order.json");
+        File f = new File(resource.getPath());
+        String s = readString(f);
+        byte[] messageHash = new StructuredDataEncoder(s).hashStructuredData();
+        assertEquals("ccb29124860915763e8cd9257da1260abc7df668fde282272587d84b594f37f6", Hex.toHexString(messageHash));
     }
 
 }

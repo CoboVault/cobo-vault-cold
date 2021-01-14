@@ -55,14 +55,14 @@ public class AbiItemAdapter {
                         if ("address[]".equals(type)) {
                             String addressSymbol = viewModel.recognizeAddress(item);
                             if (addressSymbol != null) {
-                                item += String.format("(%s)", addressSymbol);
+                                item += String.format(" (%s)", addressSymbol);
                             } else {
-                                item += String.format("[%s]", "Unknown Address");
+                                item += String.format(" [%s]", "Unknown Address");
                             }
                         }
                         concatValue.append(item);
                         if (j != arr.length() -1) {
-                            concatValue.append(",\n");
+                            concatValue.append("\n");
                         }
                     }
                     items.add(new AbiItem(name, concatValue.toString(),type));
@@ -71,9 +71,9 @@ public class AbiItemAdapter {
                     if ("address".equals(type)) {
                         String addressSymbol = viewModel.recognizeAddress(item);
                         if (addressSymbol != null) {
-                            item += String.format("(%s)", addressSymbol);
+                            item += String.format(" (%s)", addressSymbol);
                         } else if (!"to".equals(name)) {
-                            item += String.format("[%s]", "Unknown Address");
+                            item += String.format(" [%s]", "Unknown Address");
                         }
                     }
                     items.add(new AbiItem(name, item, type));

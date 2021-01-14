@@ -42,11 +42,11 @@ public class BroadcastTxFragment extends BaseFragment<BroadcastTxFragmentBinding
 
     public static final String KEY_TXID = "txId";
 
-    private WatchWallet watchWallet;
+    protected WatchWallet watchWallet;
 
     protected TxEntity txEntity;
 
-    private final View.OnClickListener goHome = v -> navigate(R.id.action_to_home);
+    protected final View.OnClickListener goHome = v -> navigate(R.id.action_to_home);
 
     @Override
     protected int setView() {
@@ -69,7 +69,7 @@ public class BroadcastTxFragment extends BaseFragment<BroadcastTxFragmentBinding
         });
     }
 
-    private void refreshUI() {
+    protected void refreshUI() {
         mBinding.broadcastHint.setText(getString(R.string.please_broadcast_with_hot,
                 watchWallet.getWalletName(mActivity)));
         mBinding.info.setOnClickListener(v -> showBroadcastHint());

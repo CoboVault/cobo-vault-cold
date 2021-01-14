@@ -175,6 +175,11 @@
 -keep class com.cobo.cold.protobuf.** { *; }
 -keep class com.cobo.coinlib.coins.** { *; }
 -keep class com.networknt.schema.**  { *; }
+-keep class org.web3j.abi.datatypes.** {*;}
+-keep class org.web3j.crypto.StructuredData.** {*;}
+-keep class org.web3j.crypto.StructuredData$Entry { *; }
+-keep class org.web3j.crypto.StructuredData$EIP712Message { *; }
+-keep class org.web3j.crypto.StructuredData$EIP712Domain { *; }
 
 -useuniqueclassmembernames
 

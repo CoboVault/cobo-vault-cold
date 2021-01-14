@@ -522,6 +522,5 @@
     <string name="mnemonic_backuped">我已备份好助记词</string>
     <string name="metamask_install_hint">请注意，在使用 MetaMask for Cobo Vault 前，您需先卸载其他所有的 MetaMask（包括官方提供以及非官方fork）。</string>
     <string name="testnet">测试网</string>
-    <string name="unknown_address">未知地址</string>
     <string name="inconsistent_address">Inconsistent with "From" address</string>
 </resources>

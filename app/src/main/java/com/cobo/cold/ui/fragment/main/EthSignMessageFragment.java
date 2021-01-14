@@ -19,23 +19,15 @@
 
 package com.cobo.cold.ui.fragment.main;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.view.LayoutInflater;
 import android.view.View;
 
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.cold.R;
 import com.cobo.cold.callables.FingerprintPolicyCallable;
-import com.cobo.cold.databinding.AbiItemBinding;
-import com.cobo.cold.databinding.EthTxConfirmBinding;
-import com.cobo.cold.db.entity.TxEntity;
+import com.cobo.cold.databinding.EthSignMessageBinding;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.fragment.setup.PreImportFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
@@ -47,10 +39,7 @@ import com.cobo.cold.viewmodel.TxConfirmViewModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
@@ -58,23 +47,21 @@ import static com.cobo.cold.ui.fragment.main.BroadcastTxFragment.KEY_TXID;
 import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.KEY_TX_DATA;
 import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
 
-public class EthTxConfirmFragment extends BaseFragment<EthTxConfirmBinding> {
+public class EthSignMessageFragment extends BaseFragment<EthSignMessageBinding> {
 
     private EthTxConfirmViewModel viewModel;
     private SigningDialog signingDialog;
-    private TxEntity txEntity;
+
     private final Runnable forgetPassword = () -> {
         Bundle bundle = new Bundle();
         bundle.putString(ACTION, PreImportFragment.ACTION_RESET_PWD);
         navigate(R.id.action_to_preImportFragment, bundle);
     };
 
-    public static Pattern pattern = Pattern.compile("(?<=\\()[^\\)]+");
-    public static Pattern pattern1 = Pattern.compile("(?<=\\[)[^]]+");
 
     @Override
     protected int setView() {
-        return R.layout.eth_tx_confirm;
+        return R.layout.eth_sign_message;
     }
 
     @Override
@@ -84,31 +71,13 @@ public class EthTxConfirmFragment extends BaseFragment<EthTxConfirmBinding> {
         viewModel = ViewModelProviders.of(this).get(EthTxConfirmViewModel.class);
         try {
             JSONObject txData = new JSONObject(data.getString(KEY_TX_DATA));
-            viewModel.parseTxData(txData);
-            viewModel.getObservableTx().observe(this, txEntity -> {
-                this.txEntity = txEntity;
-                if (this.txEntity != null) {
-                    updateUI();
-                }
-            });
-            viewModel.parseTxException().observe(this, this::handleParseException);
+            viewModel.parseMessageData(txData);
+            JSONObject messageData = txData.getJSONObject("data");
+            mBinding.messageData.setText(messageData.toString(2));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         mBinding.sign.setOnClickListener(v -> handleSign());
-    }
-
-    private void handleParseException(Exception ex) {
-        if (ex != null) {
-            ex.printStackTrace();
-            ModalDialog.showCommonModal(mActivity,
-                    getString(R.string.scan_failed),
-                    getString(R.string.incorrect_tx_data),
-                    getString(R.string.confirm),
-                    null);
-            viewModel.parseTxException().setValue(null);
-            popBackStack(R.id.assetFragment, false);
-        }
     }
 
     private void handleSign() {
@@ -117,7 +86,7 @@ public class EthTxConfirmFragment extends BaseFragment<EthTxConfirmBinding> {
                 getString(R.string.password_modal_title), "", fingerprintSignEnable,
                 token -> {
                     viewModel.setToken(token);
-                    viewModel.handleSign();
+                    viewModel.handleSignMessage();
                     subscribeSignState();
                 }, forgetPassword);
     }
@@ -156,85 +125,17 @@ public class EthTxConfirmFragment extends BaseFragment<EthTxConfirmBinding> {
     }
 
     private void onSignSuccess() {
-        String txId = viewModel.getTxId();
+        String signature = viewModel.getMessageSignature();
         Bundle data = new Bundle();
-        data.putString(KEY_TXID, txId);
+        data.putString("MessageSignature", signature);
         navigate(R.id.action_to_ethBroadcastTxFragment, data);
         viewModel.getSignState().setValue("");
         viewModel.getSignState().removeObservers(this);
-    }
-
-    private void updateUI() {
-        updateNetworkName();
-        JSONObject abi = viewModel.getAbi();
-        if (abi != null) {
-            updateAbiView(abi);
-        } else {
-            mBinding.ethTx.data.setVisibility(View.GONE);
-        }
-        mBinding.ethTx.setTx(txEntity);
-        processAndUpdateTo();
-    }
-
-    private void updateNetworkName() {
-        mBinding.ethTx.network.setText(viewModel.getNetwork(viewModel.getChainId()));
-    }
-
-    private void processAndUpdateTo() {
-        String to = txEntity.getTo();
-        String addressSymbol = viewModel.recognizeAddress(to);
-        if (addressSymbol != null) {
-            to = to + String.format(" (%s)", addressSymbol);
-        } else {
-            to = to + String.format(" [%s]", "Unknown Address");
-        }
-        mBinding.ethTx.to.setText(highLight(to));
-    }
-
-    private void updateAbiView(JSONObject abi) {
-        if (abi != null) {
-            try {
-                String contract = abi.getString("contract");
-                boolean isUniswap = "UniswapV2".equals(contract);
-                List<AbiItemAdapter.AbiItem> itemList = new AbiItemAdapter(txEntity.getFrom(),viewModel).adapt(abi);
-                for (AbiItemAdapter.AbiItem item : itemList) {
-                    AbiItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
-                            R.layout.abi_item, null, false);
-                    binding.key.setText(item.key);
-                    if (isUniswap && "to".equals(item.key)) {
-                        if (!item.value.equalsIgnoreCase(txEntity.getFrom())) {
-                            item.value += String.format(" [%s]",getString(R.string.inconsistent_address));
-                        }
-                        binding.value.setText(highLight(item.value));
-                    } else {
-                        binding.value.setText(highLight(item.value));
-                    }
-                    mBinding.ethTx.container.addView(binding.getRoot());
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
 
     }
-    public static SpannableStringBuilder highLight(String content) {
-        SpannableStringBuilder spannable = new SpannableStringBuilder(content);
-        Matcher matcher = pattern.matcher(spannable);
-        while (matcher.find())
-            spannable.setSpan(new ForegroundColorSpan(0xff00cdc3), matcher.start() - 1 ,
-                    matcher.end() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
-        matcher = pattern1.matcher(spannable);
-        while (matcher.find()) {
-            spannable.replace(matcher.start() - 1, matcher.start(),"(");
-            spannable.replace(matcher.end(), matcher.end() + 1,")");
-            spannable.setSpan(new ForegroundColorSpan(Color.RED), matcher.start() - 1 ,
-                    matcher.end() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        }
-        return spannable;
-    }
 }
