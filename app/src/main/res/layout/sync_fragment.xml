@@ -69,9 +69,11 @@
                         android:id="@+id/hint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:maxWidth="240dp"
                         android:gravity="center"
                         android:textColor="@color/white"
                         android:textSize="15sp"
+                        android:breakStrategy="simple"
                         android:textStyle="bold" />
 
                     <ImageView
