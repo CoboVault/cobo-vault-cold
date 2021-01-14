@@ -37,6 +37,7 @@ import com.cobo.coinlib.path.CoinPath;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
+import com.cobo.cold.callables.ClearTokenCallable;
 import com.cobo.cold.db.entity.AddressEntity;
 import com.cobo.cold.db.entity.CoinEntity;
 import com.cobo.cold.db.entity.TxEntity;
@@ -65,6 +66,9 @@ public class EthTxConfirmViewModel extends TxConfirmViewModel {
     private String txId;
     @SuppressLint("StaticFieldLeak")
     private final Context context;
+    private String messageData;
+    private String messageSignature;
+
     public EthTxConfirmViewModel(@NonNull Application application) {
         super(application);
         context = application;
@@ -121,7 +125,7 @@ public class EthTxConfirmViewModel extends TxConfirmViewModel {
         }
         String networkName = network.name();
         if (chainId != 1) {
-            networkName += String.format("(%s)",context.getString(R.string.testnet));
+            networkName += String.format(" (%s)",context.getString(R.string.testnet));
         }
         return networkName;
     }
@@ -159,6 +163,18 @@ public class EthTxConfirmViewModel extends TxConfirmViewModel {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void parseMessageData(JSONObject object) {
+        try {
+            Log.i(TAG, "object = " + object.toString(4));
+            hdPath = object.getString("hdPath");
+            signId = object.getString("signId");
+            messageData = object.getJSONObject("data").toString();
+            chainId = object.getJSONObject("data").getJSONObject("domain").optInt("chainId", 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private TxEntity generateTxEntity(JSONObject object) throws JSONException {
@@ -241,6 +257,49 @@ public class EthTxConfirmViewModel extends TxConfirmViewModel {
         });
     }
 
+    public void handleSignMessage() {
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            SignCallback callback = new SignCallback() {
+                @Override
+                public void startSign() {
+                    signState.postValue(STATE_SIGNING);
+                }
+
+                @Override
+                public void onFail() {
+                    signState.postValue(STATE_SIGN_FAIL);
+                    new ClearTokenCallable().call();
+                }
+
+                @Override
+                public void onSuccess(String txId, String sig) {
+                    messageSignature = sig;
+                    signState.postValue(STATE_SIGN_SUCCESS);
+                    new ClearTokenCallable().call();
+                }
+
+                @Override
+                public void postProgress(int progress) {
+
+                }
+            };
+            callback.startSign();
+            Signer signer = initSigner();
+            signMessage(callback, signer);
+        });
+    }
+
+    public String getMessageSignature() {
+        JSONObject signed = new JSONObject();
+        try {
+            signed.put("signature", messageSignature);
+            signed.put("signId", signId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return signed.toString();
+    }
+
     protected TxEntity onSignSuccess(String txId, String rawTx) {
         TxEntity tx = observableTx.getValue();
         this.txId = txId;
@@ -269,6 +328,18 @@ public class EthTxConfirmViewModel extends TxConfirmViewModel {
             callback.onFail();
         } else {
             callback.onSuccess(result.txId, result.txHex);
+        }
+    }
+    private void signMessage(@NonNull SignCallback callback, Signer signer) {
+        if (signer == null) {
+            callback.onFail();
+            return;
+        }
+        String sig = new EthImpl(chainId).signMessage(messageData, signer);
+        if (sig == null) {
+            callback.onFail();
+        } else {
+            callback.onSuccess(sig, sig);
         }
     }
 

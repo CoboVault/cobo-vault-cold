@@ -20,15 +20,21 @@
 package com.cobo.cold.ui.fragment.main;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
+import androidx.lifecycle.ViewModelProviders;
+
 import com.cobo.cold.R;
+import com.cobo.cold.viewmodel.CoinListViewModel;
+import com.cobo.cold.viewmodel.WatchWallet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class EthBroadcastTxFragment extends BroadcastTxFragment {
     @Override
@@ -38,7 +44,24 @@ public class EthBroadcastTxFragment extends BroadcastTxFragment {
 
     @Override
     protected void init(View view) {
-        super.init(view);
+        Bundle data = Objects.requireNonNull(getArguments());
+        watchWallet = WatchWallet.getWatchWallet(mActivity);
+        mBinding.toolbar.setNavigationOnClickListener(goHome);
+        mBinding.complete.setOnClickListener(goHome);
+
+        String txId = data.getString(KEY_TXID);
+        String messageSignature = data.getString("MessageSignature");
+        if (!TextUtils.isEmpty(txId)) {
+            ViewModelProviders.of(mActivity).get(CoinListViewModel.class)
+                    .loadTx(data.getString(KEY_TXID)).observe(this, txEntity -> {
+                mBinding.setCoinCode(txEntity.getCoinCode());
+                this.txEntity = txEntity;
+                refreshUI();
+                mBinding.qrcodeLayout.qrcode.setData(getSignedTxData());
+            });
+        } else if (!TextUtils.isEmpty(messageSignature)){
+            mBinding.qrcodeLayout.qrcode.setData(Hex.toHexString(messageSignature.getBytes(StandardCharsets.UTF_8)));
+        }
         mBinding.toolbar.setNavigationOnClickListener(v -> popBackStack(R.id.assetFragment,false));
         mBinding.broadcastHint.setText(R.string.sync_with_metamask);
     }

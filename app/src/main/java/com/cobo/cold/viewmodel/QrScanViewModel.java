@@ -154,8 +154,12 @@ public class QrScanViewModel extends AndroidViewModel {
                 break;
             case METAMASK:
                 String txHex = object.optString("txHex");
+                JSONObject data = object.optJSONObject("data");
                 if (!TextUtils.isEmpty(txHex) && EthImpl.decodeRawTransaction(txHex) != null) {
                     handleSignMetamaskTx(object);
+                    return;
+                } else if (data != null) {
+                    handleSignMetamaskMessage(object);
                     return;
                 }
         }
@@ -169,6 +173,15 @@ public class QrScanViewModel extends AndroidViewModel {
         Bundle bundle = new Bundle();
         bundle.putString(KEY_TX_DATA, object.toString());
         fragment.navigate(R.id.action_to_ethTxConfirmFragment, bundle);
+    }
+
+    private void handleSignMetamaskMessage(JSONObject object) throws UuidNotMatchException {
+        if (!object.optString("xfp").equalsIgnoreCase(new GetMasterFingerprintCallable().call())) {
+            throw new UuidNotMatchException("uuid not match");
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_TX_DATA, object.toString());
+        fragment.navigate(R.id.action_to_ethSignMessageFragment, bundle);
     }
 
     private void handleSignXrpTx(JSONObject object) {

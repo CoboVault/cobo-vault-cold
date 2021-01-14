@@ -49,6 +49,7 @@ import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpType;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
@@ -234,6 +235,15 @@ public class EthImpl implements Coin {
 
     @Override
     public String signMessage(@NonNull String message, Signer signer) {
+        try {
+            byte[] messageHash = new StructuredDataEncoder(message).hashStructuredData();
+            String signature = signer.sign(Hex.toHexString(messageHash));
+            Sign.SignatureData signatureData = getSignatureData(signature);
+            byte[] sigBytes = concat(concat(signatureData.getR(),signatureData.getS()),signatureData.getV());
+            return Hex.toHexString(sigBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

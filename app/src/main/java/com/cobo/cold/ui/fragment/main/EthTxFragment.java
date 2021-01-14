@@ -111,12 +111,7 @@ public class EthTxFragment extends BaseFragment<EthTxBinding> {
                     binding.key.setText(item.key);
                     if (isUniswap && "to".equals(item.key)) {
                         if (!item.value.equalsIgnoreCase(txEntity.getFrom())) {
-                            item.value += String.format("[%s]",getString(R.string.inconsistent_address));
-                        }
-                        binding.value.setText(highLight(item.value));
-                    } else if ("_spender".equals(item.key)) {
-                        if (!item.value.equalsIgnoreCase(txEntity.getFrom())) {
-                            item.value += String.format("[%s]",getString(R.string.unknown_address));
+                            item.value += String.format(" [%s]",getString(R.string.inconsistent_address));
                         }
                         binding.value.setText(highLight(item.value));
                     } else {
@@ -137,9 +132,9 @@ public class EthTxFragment extends BaseFragment<EthTxBinding> {
         String to = txEntity.getTo();
         String addressSymbol = viewModel.recognizeAddress(to);
         if (addressSymbol != null) {
-            to = to + String.format("(%s)", addressSymbol);
+            to = to + String.format(" (%s)", addressSymbol);
         } else {
-            to = to + String.format("[%s]", getString(R.string.unknown_address));
+            to = to + String.format(" [%s]", "Unknown Address");
         }
         mBinding.ethTx.to.setText(highLight(to));
     }
