@@ -195,7 +195,7 @@ public class EthTxConfirmFragment extends BaseFragment<EthTxConfirmBinding> {
         if (abi != null) {
             try {
                 String contract = abi.getString("contract");
-                boolean isUniswap = "UniswapV2".equals(contract);
+                boolean isUniswap = contract.toLowerCase().contains("uniswap");
                 List<AbiItemAdapter.AbiItem> itemList = new AbiItemAdapter(txEntity.getFrom(),viewModel).adapt(abi);
                 for (AbiItemAdapter.AbiItem item : itemList) {
                     AbiItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
