@@ -31,6 +31,7 @@ import com.cobo.cold.callables.FingerprintPolicyCallable;
 import com.cobo.cold.databinding.EthSignMessageBinding;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.fragment.setup.PreImportFragment;
+import com.cobo.cold.ui.modal.ModalDialog;
 import com.cobo.cold.ui.modal.SigningDialog;
 import com.cobo.cold.ui.views.AuthenticateModal;
 import com.cobo.cold.viewmodel.EthTxConfirmViewModel;
@@ -77,6 +78,7 @@ public class EthSignMessageFragment extends BaseFragment<EthSignMessageBinding> 
         String txData = data.getString(KEY_TX_DATA);
         LiveData<JSONObject> liveData = viewModel.parseMessageData(txData);
         liveData.observe(this, o -> onMessageParsed(liveData, o));
+        viewModel.parseTxException().observe(this, this::handleParseException);
         mBinding.sign.setOnClickListener(v -> handleSign());
     }
 
@@ -86,13 +88,29 @@ public class EthSignMessageFragment extends BaseFragment<EthSignMessageBinding> 
                 JSONObject messageData = jsonObject.getJSONObject("data");
                 JSONObject domain = messageData.getJSONObject("domain");
                 mBinding.primaryType.setText(messageData.getString("primaryType"));
-                mBinding.network.setText(viewModel.getNetwork(domain.getInt("chainId")));
+                mBinding.network.setText(viewModel.getNetwork(domain.optInt("chainId", 1)));
                 mBinding.name.setText(domain.optString("name"));
                 mBinding.verifyingContract.setText(highLight(recognizeAddress(domain.getString("verifyingContract"))));
                 String message = messageData.getJSONObject("message").toString(2);
                 mBinding.message.setText(highLight(recognizeAddressInText(message)));
                 liveData.removeObservers(EthSignMessageFragment.this);
-            } catch (JSONException ignore){}
+            } catch (JSONException e){
+                e.printStackTrace();
+                handleParseException(e);
+            }
+        }
+    }
+
+    private void handleParseException(Exception ex) {
+        if (ex != null) {
+            ex.printStackTrace();
+            ModalDialog.showCommonModal(mActivity,
+                    getString(R.string.scan_failed),
+                    getString(R.string.incorrect_tx_data),
+                    getString(R.string.confirm),
+                    null);
+            viewModel.parseTxException().setValue(null);
+            popBackStack(R.id.assetFragment, false);
         }
     }
 

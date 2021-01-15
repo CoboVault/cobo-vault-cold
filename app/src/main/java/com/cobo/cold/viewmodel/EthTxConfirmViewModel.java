@@ -180,6 +180,8 @@ public class EthTxConfirmViewModel extends TxConfirmViewModel {
                 observableObject.postValue(object);
             } catch (JSONException e) {
                 e.printStackTrace();
+                observableObject.postValue(null);
+                parseTxException.postValue(e);
             }
         });
         return observableObject;
