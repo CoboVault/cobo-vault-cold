@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.cold.R;
@@ -38,10 +39,17 @@ import com.cobo.cold.viewmodel.TxConfirmViewModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.cobo.cold.callables.FingerprintPolicyCallable.READ;
 import static com.cobo.cold.callables.FingerprintPolicyCallable.TYPE_SIGN_TX;
+import static com.cobo.cold.ui.fragment.main.EthTxConfirmFragment.highLight;
 import static com.cobo.cold.ui.fragment.main.TxConfirmFragment.KEY_TX_DATA;
 import static com.cobo.cold.ui.fragment.setup.PreImportFragment.ACTION;
 
@@ -56,7 +64,6 @@ public class EthSignMessageFragment extends BaseFragment<EthSignMessageBinding> 
         navigate(R.id.action_to_preImportFragment, bundle);
     };
 
-
     @Override
     protected int setView() {
         return R.layout.eth_sign_message;
@@ -67,15 +74,64 @@ public class EthSignMessageFragment extends BaseFragment<EthSignMessageBinding> 
         Bundle data = Objects.requireNonNull(getArguments());
         mBinding.toolbar.setNavigationOnClickListener(v -> navigateUp());
         viewModel = ViewModelProviders.of(this).get(EthTxConfirmViewModel.class);
-        try {
-            JSONObject txData = new JSONObject(data.getString(KEY_TX_DATA));
-            viewModel.parseMessageData(txData);
-            JSONObject messageData = txData.getJSONObject("data");
-            mBinding.messageData.setText(messageData.toString(2));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        String txData = data.getString(KEY_TX_DATA);
+        LiveData<JSONObject> liveData = viewModel.parseMessageData(txData);
+        liveData.observe(this, o -> onMessageParsed(liveData, o));
         mBinding.sign.setOnClickListener(v -> handleSign());
+    }
+
+    private void onMessageParsed(LiveData<JSONObject> liveData, JSONObject jsonObject) {
+        if (jsonObject != null) {
+            try {
+                JSONObject messageData = jsonObject.getJSONObject("data");
+                JSONObject domain = messageData.getJSONObject("domain");
+                mBinding.primaryType.setText(messageData.getString("primaryType"));
+                mBinding.network.setText(viewModel.getNetwork(domain.getInt("chainId")));
+                mBinding.name.setText(domain.optString("name"));
+                mBinding.verifyingContract.setText(highLight(recognizeAddress(domain.getString("verifyingContract"))));
+                String message = messageData.getJSONObject("message").toString(2);
+                mBinding.message.setText(highLight(recognizeAddressInText(message)));
+                liveData.removeObservers(EthSignMessageFragment.this);
+            } catch (JSONException ignore){}
+        }
+    }
+
+    private String recognizeAddress(String address) {
+        String addressSymbol = viewModel.recognizeAddress(address);
+        if (addressSymbol != null) {
+            address = address + String.format(" (%s)", addressSymbol);
+        } else {
+            address = address + String.format(" [%s]", "Unknown Address");
+        }
+        return address;
+    }
+
+    private String recognizeAddressInText(String text) {
+        Pattern pattern = Pattern.compile("0x[a-fA-F0-9]{40}");
+        Matcher matcher = pattern.matcher(text);
+        Map<String, String> recognized = new HashMap<>();
+        Set<String> unknown = new HashSet<>();
+        while (matcher.find()) {
+            String address = matcher.group();
+            String symbol = viewModel.recognizeAddress(address);
+            if (symbol != null) {
+               recognized.put(address, symbol);
+            } else if (address.equalsIgnoreCase(viewModel.getFromAddress())){
+                //do nothing
+            }else {
+                unknown.add(address);
+            }
+        }
+
+        for (String s: recognized.keySet()) {
+            text = text.replace(s, s+String.format(" (%s)", recognized.get(s)));
+        }
+
+        for (String s: unknown) {
+            text = text.replace(s, s +" [Unknown Address]");
+        }
+
+        return text;
     }
 
     private void handleSign() {

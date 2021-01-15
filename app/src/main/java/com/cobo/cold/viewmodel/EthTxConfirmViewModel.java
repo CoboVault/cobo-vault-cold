@@ -68,6 +68,7 @@ public class EthTxConfirmViewModel extends TxConfirmViewModel {
     private final Context context;
     private String messageData;
     private String messageSignature;
+    private String fromAddress;
 
     public EthTxConfirmViewModel(@NonNull Application application) {
         super(application);
@@ -106,7 +107,7 @@ public class EthTxConfirmViewModel extends TxConfirmViewModel {
 
             if (addressSymbol == null) {
                 JSONObject bundleMap = getContractMap();
-                String abiFile = bundleMap.optString(to);
+                String abiFile = bundleMap.optString(to.toLowerCase());
                 if (!TextUtils.isEmpty(abiFile)) {
                     addressSymbol = abiFile.replace(".json", "");
                 }
@@ -165,16 +166,27 @@ public class EthTxConfirmViewModel extends TxConfirmViewModel {
         });
     }
 
-    public void parseMessageData(JSONObject object) {
-        try {
-            Log.i(TAG, "object = " + object.toString(4));
-            hdPath = object.getString("hdPath");
-            signId = object.getString("signId");
-            messageData = object.getJSONObject("data").toString();
-            chainId = object.getJSONObject("data").getJSONObject("domain").optInt("chainId", 1);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public MutableLiveData<JSONObject> parseMessageData(String s) {
+        MutableLiveData<JSONObject> observableObject = new MutableLiveData<>();
+        AppExecutors.getInstance().networkIO().execute(() -> {
+            try {
+                JSONObject object = new JSONObject(s);
+                Log.i(TAG, "object = " + object.toString(4));
+                hdPath = object.getString("hdPath");
+                signId = object.getString("signId");
+                messageData = object.getJSONObject("data").toString();
+                chainId = object.getJSONObject("data").getJSONObject("domain").optInt("chainId", 1);
+                fromAddress = getFromAddress(hdPath);
+                observableObject.postValue(object);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
+        return observableObject;
+    }
+
+    public String getFromAddress() {
+        return fromAddress;
     }
 
     private TxEntity generateTxEntity(JSONObject object) throws JSONException {
