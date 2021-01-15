@@ -64,6 +64,7 @@ public class EthBroadcastTxFragment extends BroadcastTxFragment {
         }
         mBinding.toolbar.setNavigationOnClickListener(v -> popBackStack(R.id.assetFragment,false));
         mBinding.broadcastHint.setText(R.string.sync_with_metamask);
+        mBinding.icon.setImageDrawable(mActivity.getDrawable(R.drawable.coin_eth));
     }
 
     @Override
