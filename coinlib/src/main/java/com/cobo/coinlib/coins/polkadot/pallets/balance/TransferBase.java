@@ -8,11 +8,12 @@ import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class TransferBase extends Pallet {
+public class TransferBase extends Pallet<TransferParameter> {
     public TransferBase(String name, Network network) {
         super(name, network);
     }
 
+    @Override
     public TransferParameter read(ScaleCodecReader scr) {
         return new TransferParameter(network, name, scr.readByteArray(32), scr.readCompact());
     }

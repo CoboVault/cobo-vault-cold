@@ -4,7 +4,7 @@ import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 
-public class SetController extends Pallet {
+public class SetController extends Pallet<SetControllerParameter> {
     private byte[] publicKey;
     public SetController(Network network){
         super("staking.setController", network);

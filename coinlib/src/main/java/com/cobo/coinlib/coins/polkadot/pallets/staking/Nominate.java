@@ -7,7 +7,7 @@ import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import java.util.Arrays;
 import java.util.List;
 
-public class Nominate extends Pallet {
+public class Nominate extends Pallet<NominateParameter> {
     public Nominate(Network network){
         super("staking.nominate", network);
     }

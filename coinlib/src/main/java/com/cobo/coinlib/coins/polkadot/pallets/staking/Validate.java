@@ -4,7 +4,7 @@ import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 
-public class Validate extends Pallet {
+public class Validate extends Pallet<ValidateParameter> {
     public Validate(Network network){
         super("staking.validate", network);
     }

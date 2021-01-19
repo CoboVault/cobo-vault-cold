@@ -9,7 +9,7 @@ import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import java.util.Arrays;
 import java.util.List;
 
-public class BatchBase extends Pallet {
+public class BatchBase extends Pallet<BatchParameter> {
 
     public BatchBase(String name, Network network) {
         super(name, network);

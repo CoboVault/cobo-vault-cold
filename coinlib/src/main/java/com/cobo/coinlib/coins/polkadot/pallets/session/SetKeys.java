@@ -7,7 +7,7 @@ import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import java.util.Arrays;
 import java.util.List;
 
-public class SetKeys extends Pallet {
+public class SetKeys extends Pallet<SetKeysParameter> {
     public SetKeys(Network network){
         super("session.setKeys", network);
     }

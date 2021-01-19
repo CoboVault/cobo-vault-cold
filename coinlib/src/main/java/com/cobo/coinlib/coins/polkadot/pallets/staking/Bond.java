@@ -6,7 +6,7 @@ import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 
 import java.math.BigInteger;
 
-public class Bond extends Pallet {
+public class Bond extends Pallet<BondParameter> {
     private byte[] publicKey;
     private BigInteger amount;
     private byte rewardType;
