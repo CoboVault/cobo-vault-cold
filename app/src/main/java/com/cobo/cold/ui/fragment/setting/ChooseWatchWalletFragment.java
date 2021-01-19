@@ -76,24 +76,11 @@ public class ChooseWatchWalletFragment extends ListPreferenceFragment {
             adapter.setItems(displayItems);
         }
         mBinding.list.setAdapter(adapter);
-        mBinding.confirm.setText(R.string.next);
-        mBinding.confirm.setOnClickListener(v -> next());
+        mBinding.confirm.setText(R.string.confirm);
+        mBinding.confirm.setOnClickListener(v -> popBackStack(R.id.assetFragment, false));
         if (mActivity instanceof MainActivity) {
             mBinding.confirm.setVisibility(View.VISIBLE);
         }
-    }
-
-    private void next() {
-        int navId;
-        Bundle data = new Bundle();
-        WatchWallet selectWatchOnlyWallet = getWatchWallet(mActivity);
-        if (selectWatchOnlyWallet.supportSwitchAccount()) {
-            data.putInt(KEY_TITLE, R.string.select_address_format);
-            navId = R.id.action_to_selectAddressFormatFragment;
-        } else {
-            navId = R.id.action_to_export_xpub_guide;
-        }
-        navigate(navId, data);
     }
 
     @Override
