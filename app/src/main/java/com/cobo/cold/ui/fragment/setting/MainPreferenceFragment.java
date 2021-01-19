@@ -411,7 +411,7 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                 new ResetCallable().call();
                 DataCleaner.cleanApplicationData(activity);
                 removeAllFingerprint(activity);
-                LocalePicker.updateLocale(Locale.SIMPLIFIED_CHINESE);
+                LocalePicker.updateLocale(Locale.ENGLISH);
             } catch (Exception ignored) {
             } finally {
                 DataCleaner.cleanApplicationData(activity);

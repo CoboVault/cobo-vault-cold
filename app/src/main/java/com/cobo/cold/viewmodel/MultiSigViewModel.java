@@ -111,6 +111,7 @@ public class MultiSigViewModel extends AndroidViewModel {
         JSONObject object = new JSONObject();
         JSONArray xpubs = new JSONArray();
         Pattern pattern = Pattern.compile("[0-9a-fA-F]{8}");
+        boolean isTest = false;
         int total = 0;
         int threshold = 0;
         String path = null;
@@ -137,20 +138,13 @@ public class MultiSigViewModel extends AndroidViewModel {
                         total = Integer.parseInt(policy[1]);
                     }
                     object.put(label, value);
-                } else if (label.equals("Derivation")) {
-                    if (MultiSig.Account.ofPath(value).isTest()) {
-                        object.put("isTest", true);
-                    }
-                    object.put(label, value);
-                    path = value;
                 } else if (label.equals("Format")) {
                     object.put(label, value);
                 } else if (pattern.matcher(label).matches()) {
                     JSONObject xpub = new JSONObject();
                     if (ExtendPubkeyFormat.isValidXpub(value)) {
-                        if (value.startsWith("tpub") || value.startsWith("Upub") || value.startsWith("Vpub")) {
-                            object.put("isTest", true);
-                        }
+                        isTest = value.startsWith("tpub") || value.startsWith("Upub") || value.startsWith("Vpub");
+                        object.put("isTest", isTest);
                         xpub.put("xfp", label);
                         xpub.put("xpub", convertXpub(value, MultiSig.Account.ofPath(path)));
                         xpubs.put(xpub);
@@ -162,13 +156,14 @@ public class MultiSigViewModel extends AndroidViewModel {
                 Log.w("Multisig","invalid wallet policy");
                 return null;
             }
-            String derivation = object.getString("Derivation");
+
             String format = object.getString("Format");
 
             boolean validDerivation = false;
             for (MultiSig.Account account : MultiSig.Account.values()) {
-                if (account.getPath().equals(derivation) && account.getFormat().equals(format)) {
+                if (account.isTest() == isTest && account.getFormat().equals(format)) {
                     validDerivation = true;
+                    object.put("Derivation", account.getPath());
                     break;
                 }
             }

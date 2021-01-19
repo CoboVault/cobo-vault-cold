@@ -22,6 +22,7 @@ import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
 import com.cobo.cold.setting.LanguageHelper;
 
+import static com.cobo.cold.setting.LanguageHelper.DEFAULT;
 import static com.cobo.cold.ui.fragment.setting.SystemPreferenceFragment.SETTING_LANGUAGE;
 
 public class LanguagePreferenceFragment extends ListPreferenceFragment {
@@ -43,7 +44,7 @@ public class LanguagePreferenceFragment extends ListPreferenceFragment {
 
     @Override
     protected String defaultValue() {
-        return "zh_rCN";
+        return DEFAULT;
     }
 
     @Override
