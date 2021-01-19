@@ -27,8 +27,9 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class LanguageHelper {
-    private static final String ENGLISH = "en";
+    public static final String ENGLISH = "en";
     public static final String SIMPLIFIED_CHINESE = "zh_rCN";
+    public static final String DEFAULT = ENGLISH;
     private static final String TAG = "Vault.LanguageHelper";
     private static final HashMap<String, Locale> mAllLanguages = new HashMap<String, Locale>() {{
         put(ENGLISH, Locale.ENGLISH);

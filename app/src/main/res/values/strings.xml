@@ -73,13 +73,13 @@
     <string name="setting_screen_off_time">Screen Timeout Length</string>
 
     <string-array name="language_entries" translatable="false">
-        <item>中文</item>
         <item>English</item>
+        <item>中文</item>
     </string-array>
 
     <string-array name="language_values" translatable="false">
-        <item>zh_rCN</item>
         <item>en</item>
+        <item>zh_rCN</item>
     </string-array>
 
     <string-array name="network_entries">

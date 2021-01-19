@@ -34,6 +34,7 @@ import java.io.InputStreamReader;
 import java.util.Objects;
 
 import static android.text.Html.FROM_HTML_MODE_LEGACY;
+import static com.cobo.cold.setting.LanguageHelper.DEFAULT;
 import static com.cobo.cold.ui.fragment.setting.SystemPreferenceFragment.SETTING_LANGUAGE;
 
 public class LicenseFragment extends BaseFragment<PrivacyPolicyBinding> {
@@ -52,7 +53,7 @@ public class LicenseFragment extends BaseFragment<PrivacyPolicyBinding> {
         mBinding.toolbar.setNavigationOnClickListener(view1 -> navigateUp());
         mBinding.toolbarTitle.setText(getArguments().getString(KEY_TITLE));
         String prefix = Utilities.getPrefs(MainApplication.getApplication())
-                .getString(SETTING_LANGUAGE, "zh_rCN");
+                .getString(SETTING_LANGUAGE, DEFAULT);
 
         AppExecutors.getInstance().diskIO().execute(() -> {
             String text = readFromAssets(prefix + "_" + getArguments().getString(KEY_URL));

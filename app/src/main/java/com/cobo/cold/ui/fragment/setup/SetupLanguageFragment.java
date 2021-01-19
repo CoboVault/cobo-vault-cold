@@ -41,7 +41,7 @@ import com.cobo.cold.viewmodel.AboutViewModel;
 
 import java.util.Arrays;
 
-import static com.cobo.cold.setting.LanguageHelper.SIMPLIFIED_CHINESE;
+import static com.cobo.cold.setting.LanguageHelper.DEFAULT;
 import static com.cobo.cold.ui.fragment.setting.SystemPreferenceFragment.SETTING_LANGUAGE;
 
 public class SetupLanguageFragment extends BaseFragment<SetupLanguageBinding>
@@ -64,7 +64,7 @@ public class SetupLanguageFragment extends BaseFragment<SetupLanguageBinding>
         if (savedInstanceState != null) {
             value = savedInstanceState.getString(SETTING_LANGUAGE);
         } else {
-            value = SIMPLIFIED_CHINESE;
+            value = DEFAULT;
         }
 
         prefs = Utilities.getPrefs(mActivity);

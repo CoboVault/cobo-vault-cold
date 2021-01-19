@@ -112,7 +112,7 @@ public class AttackWarningFragment extends BaseFragment<AttackWarningBinding> {
             try {
                 DataCleaner.cleanApplicationData(activity);
                 removeAllFingerprint(activity);
-                LocalePicker.updateLocale(Locale.SIMPLIFIED_CHINESE);
+                LocalePicker.updateLocale(Locale.ENGLISH);
             } catch (Exception ignore){
             }finally {
                 DataCleaner.cleanApplicationData(activity);
