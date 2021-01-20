@@ -161,7 +161,12 @@ public class TxListFragment extends BaseFragment<TxListBinding> {
             super.onBindViewHolder(holder, position);
             if (WatchWallet.getWatchWallet(mActivity) == WatchWallet.POLKADOT_JS) {
                 TxListItemBinding binding = DataBindingUtil.getBinding(holder.itemView);
-                binding.txid.setText(coinCode + "-Transaction-" + (items.size() - position));
+                TxEntity txEntity = items.get(position);
+                if (!txEntity.getTxId().startsWith("0x")) {
+                    Objects.requireNonNull(binding).txid.setText(coinCode + "-Transaction-" + (items.size() - position));
+                } else {
+                    Objects.requireNonNull(binding).txid.setText(txEntity.getTxId());
+                }
             }
         }
 

@@ -79,7 +79,9 @@ public class TxFragment extends BaseFragment<TxBinding> {
         viewModel.loadTx(data.getString(KEY_TX_ID)).observe(this, txEntity -> {
             if (watchWallet == WatchWallet.POLKADOT_JS) {
                 mBinding.qrcodeLayout.qrcode.disableMultipart();
-                mBinding.txDetail.txIdInfo.setVisibility(View.GONE);
+                if (!txEntity.getTxId().startsWith("0x")) {
+                    mBinding.txDetail.txIdInfo.setVisibility(View.GONE);
+                }
             }
             mBinding.setTx(txEntity);
             this.txEntity = txEntity;
