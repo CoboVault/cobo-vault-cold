@@ -11,8 +11,8 @@ import java.util.List;
 
 public class BatchBase extends Pallet<BatchParameter> {
 
-    public BatchBase(String name, Network network) {
-        super(name, network);
+    public BatchBase(String name, Network network, int code) {
+        super(name, network, code);
     }
 
     @Override
@@ -26,6 +26,6 @@ public class BatchBase extends Pallet<BatchParameter> {
             parameters.add(parameter);
         }
 
-        return new BatchParameter(network, name, length, parameters);
+        return new BatchParameter(network, name, code, length, parameters);
     }
 }

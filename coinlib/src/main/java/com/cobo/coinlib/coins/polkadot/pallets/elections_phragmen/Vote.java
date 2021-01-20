@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Vote extends Pallet<VoteParameter> {
-    public Vote(Network network) {
-        super("electionsPhragmen.vote", network);
+    public Vote(Network network, int code) {
+        super("electionsPhragmen.vote", network, code);
     }
 
     @Override
@@ -19,6 +19,6 @@ public class Vote extends Pallet<VoteParameter> {
         for (int i = 0; i < length; i++) {
             publicKeys.add(scr.readByteArray(32));
         }
-        return new VoteParameter(network, name, scr.readCompactInt(), publicKeys);
+        return new VoteParameter(network, name, code, scr.readCompactInt(), publicKeys);
     }
 }

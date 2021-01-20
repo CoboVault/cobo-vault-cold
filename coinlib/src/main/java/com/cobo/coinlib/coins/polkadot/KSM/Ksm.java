@@ -50,16 +50,16 @@ public class Ksm extends Dot {
     public static final Map<Integer, Pallet> pallets = new HashMap<>();
     //fix code
     static {
-        pallets.put(0x0400, new Transfer(Network.KUSAMA));
-        pallets.put(0x0403, new TransferKeepAlive(Network.KUSAMA));
-        pallets.put(0x0800, new SetKeys(Network.KUSAMA));
-        pallets.put(0x0600, new Bond(Network.KUSAMA));
-        pallets.put(0x0604, new Validate(Network.KUSAMA));
-        pallets.put(0x0605, new Nominate(Network.KUSAMA));
-        pallets.put(0x0608, new SetController(Network.KUSAMA));
-        pallets.put(0x1800, new Batch(Network.KUSAMA));
-        pallets.put(0x1802, new BatchAll(Network.KUSAMA));
-        pallets.put(0x1000, new Vote(Network.KUSAMA));
+        pallets.put(0x0400, new Transfer(Network.KUSAMA, 0x0400));
+        pallets.put(0x0403, new TransferKeepAlive(Network.KUSAMA, 0x0403));
+        pallets.put(0x0800, new SetKeys(Network.KUSAMA, 0x0800));
+        pallets.put(0x0600, new Bond(Network.KUSAMA, 0x0600));
+        pallets.put(0x0604, new Validate(Network.KUSAMA, 0x0604));
+        pallets.put(0x0605, new Nominate(Network.KUSAMA, 0x0605));
+        pallets.put(0x0608, new SetController(Network.KUSAMA, 0x0608));
+        pallets.put(0x1800, new Batch(Network.KUSAMA, 0x1800));
+        pallets.put(0x1802, new BatchAll(Network.KUSAMA, 0x1802));
+        pallets.put(0x1000, new Vote(Network.KUSAMA, 0x1000));
     }
 
     public Ksm(Coin impl) {

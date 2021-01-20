@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SetKeys extends Pallet<SetKeysParameter> {
-    public SetKeys(Network network){
-        super("session.setKeys", network);
+    public SetKeys(Network network, int code){
+        super("session.setKeys", network, code);
     }
 
     @Override
@@ -20,6 +20,6 @@ public class SetKeys extends Pallet<SetKeysParameter> {
             publicKeys.add(scr.readByteArray(32));
         }
         proof = scr.readByteArray(1);
-        return new SetKeysParameter(network, name, publicKeys, proof);
+        return new SetKeysParameter(network, name, code, publicKeys, proof);
     }
 }

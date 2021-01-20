@@ -2,17 +2,19 @@ package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 public class ValidateParameter extends Parameter {
     private int value; // base 1 * 10^9
 
-    public ValidateParameter(Network network, String name, int value) {
-        super(network, name);
+    public ValidateParameter(Network network, String name,int code, int value) {
+        super(network, name, code);
         this.value = value;
     }
 
@@ -21,5 +23,11 @@ public class ValidateParameter extends Parameter {
         JSONObject object = super.toJSON();
         object.put("value", BigDecimal.valueOf(value).divide(BigDecimal.TEN.pow(9)));
         return object;
+    }
+
+    @Override
+    public void writeTo(ScaleCodecWriter scw) throws IOException {
+        super.writeTo(scw);
+        scw.writeCompact(value);
     }
 }

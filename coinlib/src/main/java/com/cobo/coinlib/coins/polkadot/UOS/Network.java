@@ -9,12 +9,14 @@ public class Network {
     public byte SS58Prefix;
     public String genesisHash;
     public int decimals;
+    public int payloadVersion;
 
-    public Network(String name, byte SS58Prefix, String genesisHash, int decimals) {
+    public Network(String name, byte SS58Prefix, String genesisHash, int decimals, int payloadVersion) {
         this.name = name;
         this.SS58Prefix = SS58Prefix;
         this.genesisHash = genesisHash;
         this.decimals = decimals;
+        this.payloadVersion = payloadVersion;
     }
 
     @Override
@@ -37,11 +39,11 @@ public class Network {
         return Network.supportedNetworks.stream()
                 .filter(n -> n.genesisHash.equals(genesisHash))
                 .findFirst()
-                .orElse(new Network("UNKNOWN", (byte) 0, genesisHash, 0));
+                .orElse(new Network("UNKNOWN", (byte) 0, genesisHash, 0, 0x00));
     }
 
-    public static final Network POLKADOT = new Network("Polkadot", (byte) 0, "91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3", 10);
-    public static final Network KUSAMA = new Network("Kusama", (byte) 2, "b0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe", 12);
+    public static final Network POLKADOT = new Network("Polkadot", (byte) 0, "91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3", 10, 0x84);
+    public static final Network KUSAMA = new Network("Kusama", (byte) 2, "b0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe", 12, 0x84);
 
     public static final List<Network> supportedNetworks = Arrays.asList(
             POLKADOT, KUSAMA
