@@ -19,12 +19,17 @@ package com.cobo.cold.ui.fragment;
 
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.databinding.DataBindingUtil;
+
 import com.cobo.cold.R;
+import com.cobo.cold.databinding.CalcMnemonicWarningBinding;
 import com.cobo.cold.databinding.TabletQrcodeBinding;
 import com.cobo.cold.mnemonic.MnemonicInputTable;
 import com.cobo.cold.ui.fragment.setup.SetupVaultBaseFragment;
+import com.cobo.cold.ui.modal.ModalDialog;
 
 public class TabletQrcodeFragment extends SetupVaultBaseFragment<TabletQrcodeBinding> {
     @Override
@@ -39,12 +44,25 @@ public class TabletQrcodeFragment extends SetupVaultBaseFragment<TabletQrcodeBin
         mBinding.next.setOnClickListener(v -> next());
         mBinding.createSharding.setOnClickListener(v->navigate(R.id.action_to_shardingSettingFragment));
         mBinding.tablet.setOnClickListener(new TapHandler(() -> navigate(R.id.action_to_rollingDiceGuideFragment)));
-        mBinding.egg.setOnClickListener(new TapHandler(() -> navigate(R.id.action_to_createMnemonicGuide)));
+        mBinding.egg.setOnClickListener(new TapHandler(this::createMnemonic));
     }
 
     private void next() {
         viewModel.setMnemonicCount(MnemonicInputTable.TWEENTYFOUR);
         navigate(R.id.action_to_generateMnemonicFragment);
+    }
+
+    private void createMnemonic() {
+        ModalDialog dialog = ModalDialog.newInstance();
+        CalcMnemonicWarningBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+                R.layout.calc_mnemonic_warning,null,false);
+        dialog.setBinding(binding);
+        binding.close.setOnClickListener(v->dialog.dismiss());
+        binding.confirm.setOnClickListener(v-> {
+            dialog.dismiss();
+            navigate(R.id.action_to_createMnemonicGuide);
+        });
+        dialog.show(mActivity.getSupportFragmentManager(),"");
     }
 
     @Override
@@ -55,7 +73,7 @@ public class TabletQrcodeFragment extends SetupVaultBaseFragment<TabletQrcodeBin
     static class TapHandler implements View.OnClickListener {
         final int COUNTS = 3;
         final long DURATION = 3000L;
-        final long[] mHits = new long[COUNTS];
+        long[] mHits = new long[COUNTS];
         private final Runnable runnable;
 
         TapHandler(Runnable runnable) {
@@ -67,6 +85,7 @@ public class TabletQrcodeFragment extends SetupVaultBaseFragment<TabletQrcodeBin
             System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
             mHits[mHits.length - 1] = SystemClock.uptimeMillis();
             if (mHits[0] >= (SystemClock.uptimeMillis() - DURATION)) {
+                mHits = new long[COUNTS];
                 runnable.run();
             }
         }
