@@ -726,4 +726,7 @@
     ]]></string>
     <string name="scan_with_caravan">请用 Caravan 扫描钱包二维码</string>
     <string name="xpub_format_hint">扩展公钥可转换为xpub（测试网为tpub），该转换不影响多签钱包的生成结果。</string>
+    <string name="calc_mnemonic_warning">您触发了“创建自己的助记词”这一高级功能，请确保您已充分了解助记词生成的相关知识后，再使用本功能。否则请关闭当前页面。</string>
+    <string name="calc_mnemonic_warning_checkbox">我已充分了解随机熵、BIP39、私钥生成等相关知识。</string>
+    <string name="note">须知</string>
 </resources>
