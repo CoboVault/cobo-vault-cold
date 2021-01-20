@@ -779,4 +779,7 @@
     ]]>
     </string>
     <string name="xpub_format_hint">XPUB can be converted to xpub (testnet is tpub) , which do not affect the result of multisig wallet generation.</string>
+    <string name="calc_mnemonic_warning">You have triggered an advanced function of "Create your Recovery Phrase". Please make sure that you fully understand the dangers of this feature before proceeding to generate a recovery phrase with it. Your funds might get compromised if you fail to do so. Proceed at your own risk!</string>
+    <string name="calc_mnemonic_warning_checkbox">I fully understand entropy, BIP39, private key generation and other related material to generate my recovery phrase.</string>
+    <string name="note">DANGER!</string>
 </resources>
