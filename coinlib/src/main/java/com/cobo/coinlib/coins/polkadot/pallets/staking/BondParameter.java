@@ -3,13 +3,14 @@ package com.cobo.coinlib.coins.polkadot.pallets.staking;
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.stream.Collectors;
 
 public class BondParameter extends Parameter {
     private final byte[] publicKey;
@@ -17,8 +18,8 @@ public class BondParameter extends Parameter {
     private final byte rewardType; // 00: Staked, 01: Stash, 02: Controller, 03: Account(AccountId),
     private final byte[] rewardDestinationPublicKey;
 
-    public BondParameter(Network network, String name, byte[] publicKey, BigInteger amount, byte rewardType, byte[] rewardDestinationPublicKey) {
-        super(network, name);
+    public BondParameter(Network network, String name, int code, byte[] publicKey, BigInteger amount, byte rewardType, byte[] rewardDestinationPublicKey) {
+        super(network, name, code);
         this.publicKey = publicKey;
         this.amount = amount;
         this.rewardType = rewardType;
@@ -56,5 +57,14 @@ public class BondParameter extends Parameter {
             object.put("rewardDestinationAccount", AddressCodec.encodeAddress(rewardDestinationPublicKey, network.SS58Prefix));
         }
         return object;
+    }
+
+    @Override
+    public void writeTo(ScaleCodecWriter scw) throws IOException {
+        super.writeTo(scw);
+        scw.writeByteArray(publicKey);
+        scw.writeBIntCompact(amount);
+        scw.writeByte(rewardType);
+        scw.writeByteArray(rewardDestinationPublicKey);
     }
 }

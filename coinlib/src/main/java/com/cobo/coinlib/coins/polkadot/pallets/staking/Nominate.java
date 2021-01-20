@@ -7,9 +7,9 @@ import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import java.util.Arrays;
 import java.util.List;
 
-public class Nominate extends Pallet {
-    public Nominate(Network network){
-        super("staking.nominate", network);
+public class Nominate extends Pallet<NominateParameter> {
+    public Nominate(Network network, int code){
+        super("staking.nominate", network, code);
     }
 
     @Override
@@ -19,6 +19,6 @@ public class Nominate extends Pallet {
         for (int i = 0; i< length; i++) {
             publicKeys.add(scr.readByteArray(32));
         }
-        return new NominateParameter(network, name, length, publicKeys);
+        return new NominateParameter(network, name, code, length, publicKeys);
     }
 }

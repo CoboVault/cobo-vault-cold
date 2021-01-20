@@ -48,16 +48,16 @@ import java.util.Map;
 public class Dot extends AbsCoin {
     public static final Map<Integer, Pallet> pallets = new HashMap<>();
     static {
-        pallets.put(0x0500, new Transfer(Network.POLKADOT));
-        pallets.put(0x0503, new TransferKeepAlive(Network.POLKADOT));
-        pallets.put(0x0900, new SetKeys(Network.POLKADOT));
-        pallets.put(0x0700, new Bond(Network.POLKADOT));
-        pallets.put(0x0704, new Validate(Network.POLKADOT));
-        pallets.put(0x0705, new Nominate(Network.POLKADOT));
-        pallets.put(0x0708, new SetController(Network.POLKADOT));
-        pallets.put(0x1a00, new Batch(Network.POLKADOT));
-        pallets.put(0x1a02, new BatchAll(Network.POLKADOT));
-        pallets.put(0x1100, new Vote(Network.POLKADOT));
+        pallets.put(0x0500, new Transfer(Network.POLKADOT, 0x0500));
+        pallets.put(0x0503, new TransferKeepAlive(Network.POLKADOT, 0x0503));
+        pallets.put(0x0900, new SetKeys(Network.POLKADOT, 0x0900));
+        pallets.put(0x0700, new Bond(Network.POLKADOT, 0x0700));
+        pallets.put(0x0704, new Validate(Network.POLKADOT, 0x0704));
+        pallets.put(0x0705, new Nominate(Network.POLKADOT, 0x0705));
+        pallets.put(0x0708, new SetController(Network.POLKADOT, 0x0708));
+        pallets.put(0x1a00, new Batch(Network.POLKADOT, 0x1a00));
+        pallets.put(0x1a02, new BatchAll(Network.POLKADOT, 0x1a02));
+        pallets.put(0x1100, new Vote(Network.POLKADOT, 0x1100));
     }
 
     public Dot(Coin impl) {

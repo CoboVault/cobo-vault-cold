@@ -3,23 +3,22 @@ package com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
-import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Vote extends Pallet {
-    public Vote(Network network) {
-        super("electionsPhragmen.vote", network);
+public class Vote extends Pallet<VoteParameter> {
+    public Vote(Network network, int code) {
+        super("electionsPhragmen.vote", network, code);
     }
 
     @Override
-    public Parameter read(ScaleCodecReader scr) {
+    public VoteParameter read(ScaleCodecReader scr) {
         int length = scr.readCompactInt();
         List<byte[]> publicKeys = Arrays.asList();
         for (int i = 0; i < length; i++) {
             publicKeys.add(scr.readByteArray(32));
         }
-        return new VoteParameter(network, name, scr.readCompactInt(), publicKeys);
+        return new VoteParameter(network, name, code, scr.readCompactInt(), publicKeys);
     }
 }

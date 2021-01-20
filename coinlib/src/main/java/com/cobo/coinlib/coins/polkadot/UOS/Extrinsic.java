@@ -1,10 +1,16 @@
 package com.cobo.coinlib.coins.polkadot.UOS;
 
+import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.PalletFactory;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
+import org.bouncycastle.util.encoders.Hex;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -72,5 +78,28 @@ public class Extrinsic {
 
     public String getBlockHash() {
         return blockHash;
+    }
+
+    public byte[] getSignedTransaction(byte[] accountPublicKey, byte[] signature) throws IOException {
+        ScaleCodecWriter scaleCodecWriter = new ScaleCodecWriter(new ByteArrayOutputStream());
+        scaleCodecWriter.writeByte(network.payloadVersion);
+        scaleCodecWriter.writeByteArray(accountPublicKey);
+        scaleCodecWriter.writeByte(0x01);
+        scaleCodecWriter.writeByteArray(Hex.decode(signature));
+        scaleCodecWriter.writeByteArray(Hex.decode(era));
+        scaleCodecWriter.writeBIntCompact(nonce);
+        scaleCodecWriter.writeBIntCompact(tip);
+        palletParameter.writeTo(scaleCodecWriter);
+        byte[] txContent = scaleCodecWriter.toByteArray();
+        ScaleCodecWriter finalWriter = new ScaleCodecWriter(new ByteArrayOutputStream());
+        finalWriter.writeCompact(txContent.length);
+        finalWriter.writeByteArray(txContent);
+        return finalWriter.toByteArray();
+    }
+
+    public String getTxId(byte[] accountPublicKey, byte[] signature) throws IOException {
+        byte[] signedTx = getSignedTransaction(accountPublicKey, signature);
+        String txId = "0x" + Hex.toHexString(AddressCodec.blake2b(signedTx, 256));
+        return txId;
     }
 }

@@ -6,14 +6,14 @@ import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 
 import java.math.BigInteger;
 
-public class Bond extends Pallet {
+public class Bond extends Pallet<BondParameter> {
     private byte[] publicKey;
     private BigInteger amount;
     private byte rewardType;
     private byte[] rewardDestinationPublicKey;
 
-    public Bond(Network network) {
-        super("staking.bond", network);
+    public Bond(Network network, int code) {
+        super("staking.bond", network, code);
     }
 
     @Override
@@ -34,6 +34,6 @@ public class Bond extends Pallet {
             default:
                 rewardDestinationPublicKey = scr.readByteArray(32);
         }
-        return new BondParameter(network, name, publicKey, amount, rewardType, rewardDestinationPublicKey);
+        return new BondParameter(network, name, code, publicKey, amount, rewardType, rewardDestinationPublicKey);
     }
 }

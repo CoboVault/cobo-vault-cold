@@ -2,6 +2,10 @@ package com.cobo.coinlib.coins.polkadot.UOS;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
 
+import org.bouncycastle.util.encoders.Hex;
+
+import java.io.IOException;
+
 public class Result {
 
     public String curve;
@@ -81,5 +85,13 @@ public class Result {
 
     public Extrinsic getExtrinsic() {
         return extrinsic;
+    }
+
+    public byte[] getSignedTransaction(String signature) throws IOException {
+        return extrinsic.getSignedTransaction(accountPublicKey, Hex.decode(signature));
+    }
+
+    public String getTxId(String signature) throws IOException {
+        return extrinsic.getTxId(accountPublicKey, Hex.decode(signature));
     }
 }

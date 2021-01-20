@@ -3,10 +3,12 @@ package com.cobo.coinlib.coins.polkadot.pallets.balance;
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -14,9 +16,9 @@ public class TransferParameter extends Parameter {
     private final byte[] destinationPublicKey;
     private final BigInteger amount;
 
-    public TransferParameter(Network network, String name, byte[] destinationPublicKey,
+    public TransferParameter(Network network, String name, int code, byte[] destinationPublicKey,
                              BigInteger amount) {
-        super(network, name);
+        super(network, name, code);
         this.destinationPublicKey = destinationPublicKey;
         this.amount = amount;
     }
@@ -37,5 +39,12 @@ public class TransferParameter extends Parameter {
         object.put("destinationAccount", getDestination());
         object.put("amount", getAmount());
         return object;
+    }
+
+    @Override
+    public void writeTo(ScaleCodecWriter scw) throws IOException {
+        super.writeTo(scw);
+        scw.writeByteArray(destinationPublicKey);
+        scw.writeBIntCompact(amount);
     }
 }
