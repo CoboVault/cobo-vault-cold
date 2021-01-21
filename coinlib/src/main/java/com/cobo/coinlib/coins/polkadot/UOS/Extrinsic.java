@@ -85,7 +85,7 @@ public class Extrinsic {
         scaleCodecWriter.writeByte(network.payloadVersion);
         scaleCodecWriter.writeByteArray(accountPublicKey);
         scaleCodecWriter.writeByte(0x01);
-        scaleCodecWriter.writeByteArray(Hex.decode(signature));
+        scaleCodecWriter.writeByteArray(signature);
         scaleCodecWriter.writeByteArray(Hex.decode(era));
         scaleCodecWriter.writeBIntCompact(nonce);
         scaleCodecWriter.writeBIntCompact(tip);
@@ -99,7 +99,6 @@ public class Extrinsic {
 
     public String getTxId(byte[] accountPublicKey, byte[] signature) throws IOException {
         byte[] signedTx = getSignedTransaction(accountPublicKey, signature);
-        String txId = "0x" + Hex.toHexString(AddressCodec.blake2b(signedTx, 256));
-        return txId;
+        return "0x" + Hex.toHexString(AddressCodec.blake2b(signedTx, 256));
     }
 }

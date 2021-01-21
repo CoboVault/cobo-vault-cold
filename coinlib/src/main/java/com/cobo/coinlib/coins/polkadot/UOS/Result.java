@@ -94,4 +94,8 @@ public class Result {
     public String getTxId(String signature) throws IOException {
         return extrinsic.getTxId(accountPublicKey, Hex.decode(signature));
     }
+
+    public byte[] getAccountPublicKey() {
+        return accountPublicKey;
+    }
 }

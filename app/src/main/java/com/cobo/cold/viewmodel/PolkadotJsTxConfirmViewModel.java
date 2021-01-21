@@ -25,6 +25,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.cobo.coinlib.coins.polkadot.UOS.Extrinsic;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.UOS.Result;
 import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
@@ -46,6 +47,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,8 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
     private byte[] signingPayload;
     private boolean isHash;
     private final DataRepository mRepo;
+    private Extrinsic extrinsic;
+    private byte[] accountPublicKey;
     private String txId;
 
     public PolkadotJsTxConfirmViewModel(@NonNull Application application) {
@@ -71,7 +75,9 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
         try {
             Result result = UOSDecoder.decode(data, false);
             isHash = result.isHash;
-            extrinsicObject = result.extrinsic.palletParameter.toJSON();
+            extrinsic = result.extrinsic;
+            accountPublicKey = result.getAccountPublicKey();
+            extrinsicObject = extrinsic.palletParameter.toJSON();
             TxEntity tx = generateSubstrateTxEntity(result);
             observableTx.postValue(tx);
             signingPayload = result.getSigningPayload();
@@ -146,10 +152,15 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
             Signer signer = new ChipSigner(coinCode.equals(Coins.DOT.coinCode()) ?
                     Coins.DOT.getAccounts()[0] : Coins.KSM.getAccounts()[0], authToken);
             String signedHex = signer.sign(Hex.toHexString(signingPayload));
-            if (!TextUtils.isEmpty(signedHex)) {
-                callback.onSuccess(signedHex, signedHex);
-            } else {
-                callback.onFail();
+            try {
+                String txId = extrinsic.getTxId(accountPublicKey,Hex.decode(signedHex));
+                if (!TextUtils.isEmpty(signedHex)) {
+                    callback.onSuccess(txId, signedHex);
+                } else {
+                    callback.onFail();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
