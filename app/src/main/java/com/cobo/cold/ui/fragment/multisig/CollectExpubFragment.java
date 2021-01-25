@@ -143,8 +143,8 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
     private String getAddressTypeString(MultiSig.Account account) {
         int id = R.string.multi_sig_account_segwit;
 
-        if (account == MultiSig.Account.P2WSH_P2SH
-                || account == MultiSig.Account.P2WSH_P2SH_TEST) {
+        if (account == MultiSig.Account.P2SH_P2WSH
+                || account == MultiSig.Account.P2SH_P2WSH_TEST) {
             id = R.string.multi_sig_account_p2sh;
         } else if (account == MultiSig.Account.P2SH || account == MultiSig.Account.P2SH_TEST) {
             id = R.string.multi_sig_account_legacy;

@@ -140,10 +140,10 @@ public class BtcTest {
 
         List<byte[]> pubkeys = Lists.newArrayList(Hex.decode(pubkey1), Hex.decode(pubkey2), Hex.decode(pubkey3));
 
-        String address = new Deriver(true).createMultiSigAddress(2, pubkeys, MultiSig.Account.P2WSH_P2SH);
+        String address = new Deriver(true).createMultiSigAddress(2, pubkeys, MultiSig.Account.P2SH_P2WSH);
         assertEquals("3PA7HYj6x6xmk9WPGfrwqeKckYcQyNPdS7", address);
 
-        address = new Deriver(false).createMultiSigAddress(2, pubkeys, MultiSig.Account.P2WSH_P2SH);
+        address = new Deriver(false).createMultiSigAddress(2, pubkeys, MultiSig.Account.P2SH_P2WSH);
         assertEquals("2NEiKMHf8ZZU7ww8vwoUpTbJsxtpai1VjtM", address);
 
         address = new Deriver(true).createMultiSigAddress(2, pubkeys, MultiSig.Account.P2WSH);

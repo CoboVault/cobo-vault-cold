@@ -68,8 +68,8 @@ import static com.cobo.coinlib.Util.getExpubFingerprint;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2SH;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2SH_TEST;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH;
-import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_P2SH;
-import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_P2SH_TEST;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2SH_P2WSH;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2SH_P2WSH_TEST;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_TEST;
 
 public class MultiSigViewModel extends AndroidViewModel {
@@ -355,8 +355,8 @@ public class MultiSigViewModel extends AndroidViewModel {
         JSONObject object = new JSONObject();
         try {
             MultiSig.Account[] accounts = Utilities.isMainNet(getApplication()) ?
-                    new MultiSig.Account[]{P2WSH, P2WSH_P2SH, P2SH} :
-                    new MultiSig.Account[]{P2WSH_TEST, P2WSH_P2SH_TEST, P2SH_TEST};
+                    new MultiSig.Account[]{P2WSH, P2SH_P2WSH, P2SH} :
+                    new MultiSig.Account[]{P2WSH_TEST, P2SH_P2WSH_TEST, P2SH_TEST};
             for (MultiSig.Account value : accounts) {
                 String format = value.getFormat().toLowerCase().replace("-", "_");
                 object.put(format + "_deriv", value.getPath());
@@ -380,7 +380,7 @@ public class MultiSigViewModel extends AndroidViewModel {
     public String getAddressTypeString(MultiSig.Account account) {
         int id = R.string.multi_sig_account_segwit;
 
-        if (account == P2WSH_P2SH || account == P2WSH_P2SH_TEST) {
+        if (account == P2SH_P2WSH || account == P2SH_P2WSH_TEST) {
             id = R.string.multi_sig_account_p2sh;
         } else if (account == P2SH || account == P2SH_TEST) {
             id = R.string.multi_sig_account_legacy;

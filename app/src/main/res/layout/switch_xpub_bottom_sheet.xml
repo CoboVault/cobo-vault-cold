@@ -70,7 +70,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/p2wsh_p2sh"
+                android:text="@string/p2sh_p2wsh"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="16dp"
                 android:textColor="@color/white" />
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/checked"
                 android:tint="@color/colorAccent"
-                android:tag="P2WSH-P2SH"
+                android:tag="P2SH-P2WSH"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="16dp" />

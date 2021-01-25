@@ -467,7 +467,7 @@
     </string-array>
 
     <string-array name="address_format">
-        <item>隔离见证兼容（P2WPKH-P2SH）</item>
+        <item>隔离见证兼容（P2SH-P2WPKH）</item>
         <item>隔离见证原生（P2WPKH）</item>
     </string-array>
     <string-array name="address_format_subtitle">
@@ -607,7 +607,7 @@
     <u>点击此处查看xpub（测试网为tpub）</u>
     ]]></string>
     <string name="p2wsh">隔离见证原生（P2WSH）</string>
-    <string name="p2wsh_p2sh">隔离见证兼容（P2WSH-P2SH）</string>
+    <string name="p2sh_p2wsh">隔离见证兼容（P2SH-P2WSH）</string>
     <string name="p2sh">传统（P2SH）</string>
     <string name="select_xpub_file">选择公钥文件</string>
     <string name="delete_wallet_title">删除钱包？</string>
