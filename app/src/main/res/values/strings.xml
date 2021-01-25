@@ -481,7 +481,7 @@
         4. Tap the button below and scan the QR code<br>
     ]]></string>
     <string name="sync_metamask_guide_text"><![CDATA[
-        1. Go to <font color="#00cdc3">https://cobo.com/mm<font/> install MetaMask for Cobo Vault<br>
+        1. Go to <font color="#00cdc3">https://cobo.com/mm<font/> install MetaMask for Cobo Vault according to the tutorial<br>
         2. Enter MetaMask for Cobo Vault, click "Get Started" and set password<br>
         3. Scan the QR Code of wallet that displays on Cobo Vault<br>
         4. Enter watch-only wallet<br>
