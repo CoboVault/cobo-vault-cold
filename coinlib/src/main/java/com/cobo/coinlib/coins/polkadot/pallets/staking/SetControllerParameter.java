@@ -21,7 +21,14 @@ public class SetControllerParameter extends Parameter {
     @Override
     public JSONObject toJSON() throws JSONException {
         JSONObject object = super.toJSON();
-        object.put("Controller", AddressCodec.encodeAddress(publicKey, network.SS58Prefix));
+        object.put("controller", AddressCodec.encodeAddress(publicKey, network.SS58Prefix));
+        return object;
+    }
+
+    @Override
+    protected JSONObject addCallParameter() throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put("controller", AddressCodec.encodeAddress(publicKey, network.SS58Prefix));
         return object;
     }
 

@@ -3,6 +3,7 @@ package com.cobo.coinlib.coins.polkadot.pallets.balance;
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.pallets.Utils;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -26,18 +27,11 @@ public class TransferParameter extends Parameter {
         return AddressCodec.encodeAddress(destinationPublicKey, this.network.SS58Prefix);
     }
 
-    public String getAmount() {
-        return new BigDecimal(amount)
-                .divide(BigDecimal.TEN.pow(network.decimals), Math.min(network.decimals, 8), BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros().toPlainString();
-    }
-
     @Override
-    public JSONObject toJSON() throws JSONException {
-        JSONObject object = super.toJSON();
-        object.put("Destination", getDestination());
-        object.put("Value", getAmount());
-        return object;
+    public JSONObject addCallParameter() throws JSONException {
+        return new JSONObject()
+                .put("dest", getDestination())
+                .put("value", Utils.getReadableBalanceString(this.network, this.amount));
     }
 
     @Override

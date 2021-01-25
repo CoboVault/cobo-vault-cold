@@ -15,15 +15,14 @@ public class BondExtraParameter extends Parameter {
     private final BigInteger additionalAmount;
 
     public BondExtraParameter(Network network, String name, int code, BigInteger additionalAmount) {
-        super(network, name, code);
+        super(name, network, code);
         this.additionalAmount = additionalAmount;
     }
 
     @Override
-    public JSONObject toJSON() throws JSONException {
-        JSONObject object = super.toJSON();
-        object.put("MaxAdditional", Utils.getReadableBalanceString(this.network, this.additionalAmount));
-        return object;
+    protected JSONObject addCallParameter() throws JSONException {
+        return new JSONObject()
+                .put("max_additional", Utils.getReadableBalanceString(this.network, this.additionalAmount));
     }
 
     @Override
