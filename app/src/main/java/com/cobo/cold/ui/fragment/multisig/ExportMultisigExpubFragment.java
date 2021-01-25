@@ -46,8 +46,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2SH;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2SH_TEST;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH;
-import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_P2SH;
-import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_P2SH_TEST;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2SH_P2WSH;
+import static com.cobo.coinlib.utils.MultiSig.Account.P2SH_P2WSH_TEST;
 import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_TEST;
 import static com.cobo.cold.viewmodel.GlobalViewModel.exportSuccess;
 import static com.cobo.cold.viewmodel.GlobalViewModel.showNoSdcardModal;
@@ -143,8 +143,8 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
     private String getAccountTypeString(MultiSig.Account account) {
         int accountType = R.string.multi_sig_account_segwit;
         switch (account) {
-            case P2WSH_P2SH:
-            case P2WSH_P2SH_TEST:
+            case P2SH_P2WSH:
+            case P2SH_P2WSH_TEST:
                 accountType = R.string.multi_sig_account_p2sh;
                 break;
             case P2SH:
@@ -185,8 +185,8 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
         StringBuilder info = new StringBuilder("<br>");
         MultiSig.Account[] accounts =
         Utilities.isMainNet(mActivity) ?
-                new MultiSig.Account[] {P2WSH, P2WSH_P2SH, P2SH}
-                :new MultiSig.Account[] {P2WSH_TEST, P2WSH_P2SH_TEST, P2SH_TEST};
+                new MultiSig.Account[] {P2WSH, P2SH_P2WSH, P2SH}
+                :new MultiSig.Account[] {P2WSH_TEST, P2SH_P2WSH_TEST, P2SH_TEST};
         for (MultiSig.Account a : accounts) {
             info.append(String.format("%s(%s)",getAccountTypeString(a),a.getFormat())).append("<br>")
                     .append(a.getPath()).append("<br>")
@@ -203,11 +203,11 @@ public class ExportMultisigExpubFragment extends MultiSigBaseFragment<ExportMult
         refreshCheckedStatus(binding.getRoot());
         if (Utilities.isMainNet(mActivity)) {
             binding.nativeSegwit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2WSH));
-            binding.nestedSegeit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2WSH_P2SH));
+            binding.nestedSegeit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2SH_P2WSH));
             binding.legacy.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2SH));
         } else {
             binding.nativeSegwit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2WSH_TEST));
-            binding.nestedSegeit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2WSH_P2SH_TEST));
+            binding.nestedSegeit.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2SH_P2WSH_TEST));
             binding.legacy.setOnClickListener(v -> onXpubSwitch(dialog, MultiSig.Account.P2SH_TEST));
         }
         dialog.setContentView(binding.getRoot());

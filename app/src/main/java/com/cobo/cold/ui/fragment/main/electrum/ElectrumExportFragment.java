@@ -126,12 +126,12 @@ public class ElectrumExportFragment extends BaseFragment<ElectrumExportBinding> 
                 return "p2wpkh-pubkey.txt";
             case P2SH:
             case P2SH_TESTNET:
-                return "p2wpkh-p2sh-pubkey.txt";
+                return "p2sh-p2wpkh-pubkey.txt";
             case P2PKH:
             case P2PKH_TESTNET:
                 return "p2pkh-pubkey.txt";
         }
-        return "p2wpkh-p2sh-pubkey.txt";
+        return "p2sh-p2wpkh-pubkey.txt";
     }
 
     @Override
