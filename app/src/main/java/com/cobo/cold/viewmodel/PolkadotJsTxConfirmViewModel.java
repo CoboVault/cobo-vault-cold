@@ -87,7 +87,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
     }
 
     public boolean isTransactionSupported(Parameter parameter) {
-        return parameter instanceof TransferParameter;
+        return true;
     }
 
     public boolean isNetworkSupported(Network network) {

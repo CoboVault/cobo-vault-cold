@@ -36,8 +36,8 @@ public class TransferParameter extends Parameter {
     @Override
     public JSONObject toJSON() throws JSONException {
         JSONObject object = super.toJSON();
-        object.put("destinationAccount", getDestination());
-        object.put("amount", getAmount());
+        object.put("Destination", getDestination());
+        object.put("Value", getAmount());
         return object;
     }
 

@@ -9,6 +9,7 @@ import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferParameter;
 import com.cobo.coinlib.exception.InvalidUOSException;
 
 import org.bouncycastle.util.encoders.Hex;
+import org.json.JSONException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -57,5 +58,14 @@ public class UOSDecoderTest {
         assertEquals(extrinsic.getTransactionVersion(), 5);
         assertEquals(extrinsic.getGenesisHash(), "91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3");
         assertEquals(extrinsic.getBlockHash(), "cec018d65a9ed1edc74c6f5f9caedac4818c65251f46047668eed3d350e692fb");
+    }
+
+    @Test
+    public void testBatch() throws InvalidUOSException, JSONException {
+        String hex = "4016b000001000053010228b9ffce010cff941262f1b5fa5a884a65b2f7324854082abd68aa3d93b0827f55031a020c070028b9ffce010cff941262f1b5fa5a884a65b2f7324854082abd68aa3d93b0827f0700e40b5402000900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007040284d717c5028c001a0000000500000091b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c30a7698e78f89881bbd43267273c91004604a133550ff9aa14a93f7a882a5634491b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c30ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec11ec";
+        Result result = UOSDecoder.decode(hex, false);
+        System.out.println(result.extrinsic.palletParameter.toJSON().toString(2));
+
+
     }
 }

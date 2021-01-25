@@ -4,6 +4,7 @@ import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class Vote extends Pallet<VoteParameter> {
     @Override
     public VoteParameter read(ScaleCodecReader scr) {
         int length = scr.readCompactInt();
-        List<byte[]> publicKeys = Arrays.asList();
+        List<byte[]> publicKeys = new ArrayList<>();
         for (int i = 0; i < length; i++) {
             publicKeys.add(scr.readByteArray(32));
         }

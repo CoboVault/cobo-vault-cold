@@ -5,6 +5,7 @@ import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,8 +27,16 @@ public class NominateParameter extends Parameter {
     public JSONObject toJSON() throws JSONException {
         JSONObject object = super.toJSON();
         object.put("length", length);
-        object.put("nominateAccounts", publicKeys.stream().map(publicKey -> AddressCodec.encodeAddress(publicKey, network.SS58Prefix)).collect(Collectors.toList()));
+        object.put("Targets", toJsonArray());
         return object;
+    }
+
+    public JSONArray toJsonArray() {
+        JSONArray array = new JSONArray();
+        for (byte[] pubkey : publicKeys) {
+            array.put(AddressCodec.encodeAddress(pubkey, network.SS58Prefix));
+        }
+        return array;
     }
 
     @Override

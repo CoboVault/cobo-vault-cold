@@ -50,11 +50,11 @@ public class BondParameter extends Parameter {
     @Override
     public JSONObject toJSON() throws JSONException {
         JSONObject object = super.toJSON();
-        object.put("stashAccount", AddressCodec.encodeAddress(publicKey, network.SS58Prefix));
-        object.put("amount", getAmount());
-        object.put("rewardType", getRewardType());
+        object.put("Controller", AddressCodec.encodeAddress(publicKey, network.SS58Prefix));
+        object.put("Value", getAmount());
+        object.put("Payee", getRewardType());
         if (rewardDestinationPublicKey.length > 0) {
-            object.put("rewardDestinationAccount", AddressCodec.encodeAddress(rewardDestinationPublicKey, network.SS58Prefix));
+            object.put("RewardDestination", AddressCodec.encodeAddress(rewardDestinationPublicKey, network.SS58Prefix));
         }
         return object;
     }

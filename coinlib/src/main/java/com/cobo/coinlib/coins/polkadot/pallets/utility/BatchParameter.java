@@ -4,6 +4,7 @@ import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,9 +25,18 @@ public class BatchParameter extends Parameter {
     public JSONObject toJSON() throws JSONException {
         JSONObject object = super.toJSON();
         object.put("length", length);
-        object.put("pallets", parameters);
+        object.put("pallets", toJsonArray(parameters));
         return object;
     }
+
+    public JSONArray toJsonArray(List<Parameter> parameters) throws JSONException {
+        JSONArray array = new JSONArray();
+        for (Parameter parameter: parameters) {
+            array.put(parameter.toJSON());
+        }
+        return array;
+    }
+
 
     @Override
     public void writeTo(ScaleCodecWriter scw) throws IOException {

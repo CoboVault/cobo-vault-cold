@@ -19,6 +19,7 @@
 
 package com.cobo.coinlib.coin;
 
+import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.DOT.Dot;
 
 import org.bitcoinj.core.Base58;
@@ -35,5 +36,6 @@ public class DotTest {
         System.out.println(Hex.toHexString(Base58.decode("16iM7BVPSvuJnjMW5T7rGWv4PTvgybD5sUS1zZyQkEf7DMHY")));
         String addr = new Dot.Deriver().derive(expub);
         assertEquals("1vQAnWwUYeEnoF1yK51ZmHpaVRs6inHHEJhzJto3xgqe4pF", addr);
+        System.out.println(AddressCodec.encodeAddress(Hex.decode("b27c9706a72d4642c407cad42d8c6c4d45a736902487c0d3ff602ac14ffa5e31"), (byte) 0));
     }
 }

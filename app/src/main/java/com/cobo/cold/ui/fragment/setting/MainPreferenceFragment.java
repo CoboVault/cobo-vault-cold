@@ -69,7 +69,6 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.security.SignatureException;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
@@ -376,17 +375,32 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
         ProgressModalDialog dialog = ProgressModalDialog.newInstance();
         dialog.show(Objects.requireNonNull(activity.getSupportFragmentManager()), "");
         Executors.newSingleThreadExecutor().execute(() -> {
-            try {
-                new ResetCallable().call();
-                DataCleaner.cleanApplicationData(activity);
-                removeAllFingerprint(activity);
-                LocalePicker.updateLocale(LanguageHelper.defaultLocale);
-            } catch (Exception ignored) {
-            } finally {
-                DataCleaner.cleanApplicationData(activity);
-                restartApplication(activity);
+            boolean success = new ResetCallable().call();
+            if (success) {
+                try {
+                    DataCleaner.cleanApplicationData(activity);
+                    removeAllFingerprint(activity);
+                    LocalePicker.updateLocale(LanguageHelper.defaultLocale);
+                    dialog.dismiss();
+                    restartApplication(activity);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    dialog.dismiss();
+                    resetFail(activity);
+                }
+            } else {
+                dialog.dismiss();
+                resetFail(activity);
             }
         });
+    }
+
+    private static void resetFail(AppCompatActivity activity) {
+        ModalDialog.showCommonModal(activity,
+                "reset 失败",
+                "reset 失败",
+                activity.getString(R.string.confirm),
+                () -> reset(activity));
     }
 
     public static void removeAllFingerprint(AppCompatActivity activity) {
