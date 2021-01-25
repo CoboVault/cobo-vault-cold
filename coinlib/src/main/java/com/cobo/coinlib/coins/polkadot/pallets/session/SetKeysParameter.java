@@ -23,11 +23,10 @@ public class SetKeysParameter extends Parameter {
     }
 
     @Override
-    public JSONObject toJSON() throws JSONException {
-        JSONObject object = super.toJSON();
-        object.put("rotateKeys", publicKeys.stream().map(p -> Hex.toHexString(p)).collect(Collectors.toList()));
-        object.put("proof", Hex.toHexString(proof));
-        return object;
+    protected JSONObject addCallParameter() throws JSONException {
+        return new JSONObject()
+                .put("keys", publicKeys.stream().map(p -> Hex.toHexString(p)).collect(Collectors.toList()))
+                .put("proof", Hex.toHexString(proof));
     }
 
     @Override

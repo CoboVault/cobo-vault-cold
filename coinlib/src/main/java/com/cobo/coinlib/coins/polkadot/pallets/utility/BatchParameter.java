@@ -16,14 +16,14 @@ public class BatchParameter extends Parameter {
     private final List<Parameter> parameters;
 
     public BatchParameter(Network network, String name, int code, int length, List<Parameter> parameters) {
-        super(network, name, code);
+        super(name, network,  code);
         this.length = length;
         this.parameters = parameters;
     }
 
     @Override
-    public JSONObject toJSON() throws JSONException {
-        JSONObject object = super.toJSON();
+    protected JSONObject addCallParameter() throws JSONException {
+        JSONObject object = new JSONObject();
         object.put("length", length);
         object.put("pallets", toJsonArray(parameters));
         return object;

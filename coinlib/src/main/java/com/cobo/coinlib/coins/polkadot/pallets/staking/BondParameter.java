@@ -27,12 +27,6 @@ public class BondParameter extends Parameter {
         this.rewardDestinationPublicKey = rewardDestinationPublicKey;
     }
 
-    public String getAmount() {
-        return new BigDecimal(amount)
-                .divide(BigDecimal.TEN.pow(network.decimals), Math.min(network.decimals, 8), BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros().toPlainString();
-    }
-
     public String getRewardType() {
         switch (rewardType) {
             case 0x00:
@@ -49,13 +43,13 @@ public class BondParameter extends Parameter {
     }
 
     @Override
-    public JSONObject toJSON() throws JSONException {
-        JSONObject object = super.toJSON();
-        object.put("Controller", AddressCodec.encodeAddress(publicKey, network.SS58Prefix));
-        object.put("Value", Utils.getReadableBalanceString(this.network, this.amount));
-        object.put("Payee", getRewardType());
+    protected JSONObject addCallParameter() throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put("controller", AddressCodec.encodeAddress(publicKey, network.SS58Prefix));
+        object.put("value", Utils.getReadableBalanceString(this.network, this.amount));
+        object.put("payee", getRewardType());
         if (rewardDestinationPublicKey.length > 0) {
-            object.put("RewardDestination", AddressCodec.encodeAddress(rewardDestinationPublicKey, network.SS58Prefix));
+            object.put("account_id", AddressCodec.encodeAddress(rewardDestinationPublicKey, network.SS58Prefix));
         }
         return object;
     }

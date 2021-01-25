@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class Parameter {
+public abstract class Parameter {
     protected Network network;
     public String name;
     public int code;
@@ -23,8 +23,11 @@ public class Parameter {
         JSONObject object = new JSONObject();
         object.put("name", name);
         object.put("chain", network.name);
+        object.put("parameter", addCallParameter());
         return object;
     }
+
+    protected abstract JSONObject addCallParameter() throws JSONException;
 
     public void writeTo(ScaleCodecWriter scw) throws IOException {
         scw.writeByte((this.code >> 8) & 0xff);
