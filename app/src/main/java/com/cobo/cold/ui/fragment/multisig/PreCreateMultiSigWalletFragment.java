@@ -68,9 +68,9 @@ public class PreCreateMultiSigWalletFragment extends MultiSigBaseFragment<PreCre
         mBinding.addressType.setOnClickListener(v -> selectAddressType());
         mBinding.confirm.setOnClickListener(v -> onConfirm());
         accounts = Utilities.isMainNet(mActivity) ?
-                new MultiSig.Account[] {MultiSig.Account.P2WSH, MultiSig.Account.P2WSH_P2SH, MultiSig.Account.P2SH }
+                new MultiSig.Account[] {MultiSig.Account.P2WSH, MultiSig.Account.P2SH_P2WSH, MultiSig.Account.P2SH }
                 :
-                new MultiSig.Account[] {MultiSig.Account.P2WSH_TEST,MultiSig.Account.P2WSH_P2SH_TEST, MultiSig.Account.P2SH_TEST };
+                new MultiSig.Account[] {MultiSig.Account.P2WSH_TEST,MultiSig.Account.P2SH_P2WSH_TEST, MultiSig.Account.P2SH_TEST };
         account = accounts[0];
         updateUI();
     }

@@ -110,7 +110,7 @@ public class Deriver {
 
         if (type == MultiSig.Account.P2WSH || type == MultiSig.Account.P2WSH_TEST) {
             return SegwitAddress.fromHash(network, p2wsh.getPubKeyHash()).toBech32();
-        } else if(type == MultiSig.Account.P2WSH_P2SH || type == MultiSig.Account.P2WSH_P2SH_TEST){
+        } else if(type == MultiSig.Account.P2SH_P2WSH || type == MultiSig.Account.P2SH_P2WSH_TEST){
             Script p2sh = ScriptBuilder.createP2SHOutputScript(p2wsh);
             return LegacyAddress.fromScriptHash(network, p2sh.getPubKeyHash()).toBase58();
         } else {

@@ -22,10 +22,10 @@ package com.cobo.coinlib.utils;
 public class MultiSig {
     public enum Account {
         P2WSH("m/48'/0'/0'/2'", "P2WSH"),
-        P2WSH_P2SH("m/48'/0'/0'/1'", "P2WSH-P2SH"),
+        P2SH_P2WSH("m/48'/0'/0'/1'", "P2SH-P2WSH"),
         P2SH("m/45'", "P2SH"),
         P2WSH_TEST("m/48'/1'/0'/2'", "P2WSH"),
-        P2WSH_P2SH_TEST("m/48'/1'/0'/1'", "P2WSH-P2SH"),
+        P2SH_P2WSH_TEST("m/48'/1'/0'/1'", "P2SH-P2WSH"),
         P2SH_TEST("m/45'", "P2SH");
 
         private final String format;
@@ -82,7 +82,7 @@ public class MultiSig {
         }
 
         public boolean isTest() {
-            return (this == P2WSH_TEST || this == P2WSH_P2SH_TEST || this == P2SH_TEST);
+            return (this == P2WSH_TEST || this == P2SH_P2WSH_TEST || this == P2SH_TEST);
         }
 
         public String getPath() {
@@ -99,13 +99,13 @@ public class MultiSig {
                     return "xpub";
                 case P2WSH:
                     return "Zpub";
-                case P2WSH_P2SH:
+                case P2SH_P2WSH:
                     return "Ypub";
                 case P2SH_TEST:
                     return "tpub";
                 case P2WSH_TEST:
                     return "Vpub";
-                case P2WSH_P2SH_TEST:
+                case P2SH_P2WSH_TEST:
                     return "Upub";
             }
             return "xpub";

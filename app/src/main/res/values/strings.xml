@@ -112,7 +112,7 @@
 
 
     <string-array name="address_format">
-        <item>Nested SegWit（P2WPKH-P2SH）</item>
+        <item>Nested SegWit（P2SH-P2WPKH）</item>
         <item>Native SegWit（P2WPKH）</item>
     </string-array>
 
@@ -127,7 +127,7 @@
     </string-array>
 
     <string-array name="address_format_value" translatable="false">
-        <item>P2WPKH-P2SH</item>
+        <item>P2SH-P2WPKH</item>
         <item>P2WPKH</item>
     </string-array>
 
@@ -660,7 +660,7 @@
     <u>click here to view xpub (testnet is tpub)</u>
     ]]></string>
     <string name="p2wsh">Native Segwit (P2WSH)</string>
-    <string name="p2wsh_p2sh">Nested Segwit (P2WSH-P2SH)</string>
+    <string name="p2sh_p2wsh">Nested Segwit (P2SH-P2WSH)</string>
     <string name="p2sh">Legacy (P2SH)</string>
     <string name="select_xpub_file">Select XPUB File</string>
     <string name="delete_wallet_title">Delete Wallet？</string>
