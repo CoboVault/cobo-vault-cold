@@ -30,8 +30,8 @@ public class TransferParameter extends Parameter {
     @Override
     public JSONObject addCallParameter() throws JSONException {
         return new JSONObject()
-                .put("dest", getDestination())
-                .put("value", Utils.getReadableBalanceString(this.network, this.amount));
+                .put("Dest", getDestination())
+                .put("Value", Utils.getReadableBalanceString(this.network, this.amount));
     }
 
     @Override

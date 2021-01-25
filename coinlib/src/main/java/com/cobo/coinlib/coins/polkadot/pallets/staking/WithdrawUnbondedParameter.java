@@ -20,7 +20,7 @@ public class WithdrawUnbondedParameter extends Parameter {
     @Override
     protected JSONObject addCallParameter() throws JSONException {
         return new JSONObject()
-                .put("num_slashing_spans", numSlashingSpans);
+                .put("numSlashingSpans", numSlashingSpans);
     }
 
     @Override

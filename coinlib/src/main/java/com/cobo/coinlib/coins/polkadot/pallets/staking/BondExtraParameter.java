@@ -22,7 +22,7 @@ public class BondExtraParameter extends Parameter {
     @Override
     protected JSONObject addCallParameter() throws JSONException {
         return new JSONObject()
-                .put("max_additional", Utils.getReadableBalanceString(this.network, this.additionalAmount));
+                .put("MaxAdditional", Utils.getReadableBalanceString(this.network, this.additionalAmount));
     }
 
     @Override

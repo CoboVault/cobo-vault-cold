@@ -21,7 +21,7 @@ public class ValidateParameter extends Parameter {
     @Override
     protected JSONObject addCallParameter() throws JSONException {
         JSONObject object = new JSONObject();
-        object.put("prefs", BigDecimal.valueOf(value).divide(BigDecimal.TEN.pow(9)));
+        object.put("Prefs", BigDecimal.valueOf(value).divide(BigDecimal.TEN.pow(9)));
         return object;
     }
 

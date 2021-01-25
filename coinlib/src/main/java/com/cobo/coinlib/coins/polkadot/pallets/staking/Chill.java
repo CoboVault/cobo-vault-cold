@@ -7,7 +7,7 @@ import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 
 public class Chill extends Pallet<EmptyParameter> {
 
-    public Chill(Network network, int code) {
+    public Chill(String name, Network network, int code) {
         super("staking.chill", network, code);
     }
 

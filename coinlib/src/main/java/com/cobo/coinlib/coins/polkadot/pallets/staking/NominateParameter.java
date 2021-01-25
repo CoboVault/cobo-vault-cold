@@ -25,8 +25,8 @@ public class NominateParameter extends Parameter {
     @Override
     protected JSONObject addCallParameter() throws JSONException {
         JSONObject object = new JSONObject();
-        object.put("length", length);
-        object.put("targets", toJsonArray());
+        object.put("Length", length);
+        object.put("Targets", toJsonArray());
         return object;
     }
 

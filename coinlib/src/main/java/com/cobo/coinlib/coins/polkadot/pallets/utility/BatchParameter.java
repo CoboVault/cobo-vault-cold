@@ -24,8 +24,8 @@ public class BatchParameter extends Parameter {
     @Override
     protected JSONObject addCallParameter() throws JSONException {
         JSONObject object = new JSONObject();
-        object.put("length", length);
-        object.put("pallets", toJsonArray(parameters));
+        object.put("Length", length);
+        object.put("Pallets", toJsonArray(parameters));
         return object;
     }
 

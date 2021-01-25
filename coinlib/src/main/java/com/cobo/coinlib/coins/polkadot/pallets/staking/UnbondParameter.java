@@ -22,7 +22,7 @@ public class UnbondParameter extends Parameter {
     @Override
     protected JSONObject addCallParameter() throws JSONException {
         JSONObject object = new JSONObject();
-        object.put("value", Utils.getReadableBalanceString(this.network, this.value));
+        object.put("Value", Utils.getReadableBalanceString(this.network, this.value));
         return object;
     }
 
