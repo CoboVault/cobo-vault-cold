@@ -3,6 +3,7 @@ package com.cobo.coinlib.coins.polkadot.pallets.staking;
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.pallets.Utils;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -18,8 +19,8 @@ public class BondParameter extends Parameter {
     private final byte rewardType; // 00: Staked, 01: Stash, 02: Controller, 03: Account(AccountId),
     private final byte[] rewardDestinationPublicKey;
 
-    public BondParameter(Network network, String name, int code, byte[] publicKey, BigInteger amount, byte rewardType, byte[] rewardDestinationPublicKey) {
-        super(network, name, code);
+    public BondParameter(String name, Network network, int code, byte[] publicKey, BigInteger amount, byte rewardType, byte[] rewardDestinationPublicKey) {
+        super(name, network, code);
         this.publicKey = publicKey;
         this.amount = amount;
         this.rewardType = rewardType;
@@ -51,7 +52,7 @@ public class BondParameter extends Parameter {
     public JSONObject toJSON() throws JSONException {
         JSONObject object = super.toJSON();
         object.put("Controller", AddressCodec.encodeAddress(publicKey, network.SS58Prefix));
-        object.put("Value", getAmount());
+        object.put("Value", Utils.getReadableBalanceString(this.network, this.amount));
         object.put("Payee", getRewardType());
         if (rewardDestinationPublicKey.length > 0) {
             object.put("RewardDestination", AddressCodec.encodeAddress(rewardDestinationPublicKey, network.SS58Prefix));

@@ -13,8 +13,8 @@ import java.io.IOException;
 public class SetControllerParameter extends Parameter {
     private final byte[] publicKey;
 
-    public SetControllerParameter(Network network, String name, int code, byte[] publicKey) {
-        super(network, name, code);
+    public SetControllerParameter(String name, Network network, int code, byte[] publicKey) {
+        super(name, network, code);
         this.publicKey = publicKey;
     }
 

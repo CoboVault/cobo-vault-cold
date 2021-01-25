@@ -13,7 +13,7 @@ public class Parameter {
     public String name;
     public int code;
 
-    public Parameter(Network network, String name, int code) {
+    public Parameter(String name, Network network,  int code) {
         this.network = network;
         this.name = name;
         this.code = code;

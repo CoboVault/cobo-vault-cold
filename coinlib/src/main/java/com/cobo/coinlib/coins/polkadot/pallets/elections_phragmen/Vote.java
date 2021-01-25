@@ -20,6 +20,6 @@ public class Vote extends Pallet<VoteParameter> {
         for (int i = 0; i < length; i++) {
             publicKeys.add(scr.readByteArray(32));
         }
-        return new VoteParameter(network, name, code, scr.readCompactInt(), publicKeys);
+        return new VoteParameter(name, network, code, scr.readCompactInt(), publicKeys);
     }
 }

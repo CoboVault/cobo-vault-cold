@@ -17,8 +17,8 @@ public class NominateParameter extends Parameter {
     private final int length;
     private final List<byte[]> publicKeys;
 
-    public NominateParameter(Network network, String name, int code, int length, List<byte[]> publicKeys) {
-        super(network, name, code);
+    public NominateParameter(String name, Network network, int code, int length, List<byte[]> publicKeys) {
+        super(name, network, code);
         this.length = length;
         this.publicKeys = publicKeys;
     }

@@ -21,6 +21,6 @@ public class SetKeys extends Pallet<SetKeysParameter> {
             publicKeys.add(scr.readByteArray(32));
         }
         proof = scr.readByteArray(1);
-        return new SetKeysParameter(network, name, code, publicKeys, proof);
+        return new SetKeysParameter(name, network, code, publicKeys, proof);
     }
 }

@@ -15,8 +15,9 @@ import java.util.stream.Collectors;
 public class SetKeysParameter extends Parameter {
     private final List<byte[]> publicKeys;
     private final byte[] proof;
-    public SetKeysParameter(Network network, String name, int code, List<byte[]> publicKeys, byte[] proof) {
-        super(network, name, code);
+
+    public SetKeysParameter(String name, Network network, int code, List<byte[]> publicKeys, byte[] proof) {
+        super(name, network, code);
         this.proof = proof;
         this.publicKeys = publicKeys;
     }

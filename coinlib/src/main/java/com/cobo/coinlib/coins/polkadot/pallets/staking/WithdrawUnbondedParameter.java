@@ -8,26 +8,27 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
-public class ValidateParameter extends Parameter {
-    private int value; // base 1 * 10^9
+public class WithdrawUnbondedParameter extends Parameter {
+    private long numSlashingSpans;
 
-    public ValidateParameter(String name, Network network, int code, int value) {
+    public WithdrawUnbondedParameter(String name, Network network, int code, long numSlashingSpans) {
         super(name, network, code);
-        this.value = value;
+        this.numSlashingSpans = numSlashingSpans;
     }
 
     @Override
     public JSONObject toJSON() throws JSONException {
         JSONObject object = super.toJSON();
-        object.put("Prefs", BigDecimal.valueOf(value).divide(BigDecimal.TEN.pow(9)));
+        JSONObject parameter = new JSONObject();
+        parameter.put("numSlashingSpans", numSlashingSpans);
+        object.put("parameter", parameter);
         return object;
     }
 
     @Override
     public void writeTo(ScaleCodecWriter scw) throws IOException {
         super.writeTo(scw);
-        scw.writeCompact(value);
+        scw.writeUint32(numSlashingSpans);
     }
 }

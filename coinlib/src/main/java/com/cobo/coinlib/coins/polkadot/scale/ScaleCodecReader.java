@@ -100,6 +100,10 @@ public class ScaleCodecReader {
         return UINT32.read(this);
     }
 
+    public long readUint32BE() {
+        return UINT32.readBE(this);
+    }
+
     public BigInteger readUint128() {
         return UINT128.read(this);
     }

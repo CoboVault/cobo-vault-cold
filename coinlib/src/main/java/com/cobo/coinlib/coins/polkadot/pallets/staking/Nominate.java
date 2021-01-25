@@ -20,6 +20,6 @@ public class Nominate extends Pallet<NominateParameter> {
         for (int i = 0; i< length; i++) {
             publicKeys.add(scr.readByteArray(32));
         }
-        return new NominateParameter(network, name, code, length, publicKeys);
+        return new NominateParameter(name, network, code, length, publicKeys);
     }
 }
