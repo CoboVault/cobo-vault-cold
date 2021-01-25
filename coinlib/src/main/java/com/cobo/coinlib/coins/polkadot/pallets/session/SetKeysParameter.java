@@ -25,8 +25,8 @@ public class SetKeysParameter extends Parameter {
     @Override
     protected JSONObject addCallParameter() throws JSONException {
         return new JSONObject()
-                .put("keys", publicKeys.stream().map(p -> Hex.toHexString(p)).collect(Collectors.toList()))
-                .put("proof", Hex.toHexString(proof));
+                .put("Keys", publicKeys.stream().map(p -> Hex.toHexString(p)).collect(Collectors.toList()))
+                .put("Proof", Hex.toHexString(proof));
     }
 
     @Override
