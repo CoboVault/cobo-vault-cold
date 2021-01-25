@@ -449,7 +449,7 @@
     ]]></string>
 
     <string name="sync_metamask_guide_text"><![CDATA[
-        1. 前往 <font color="#00cdc3">https://cobo.com/mm<font/> 安装 MetaMask for Cobo Vault 浏览器插件<br>
+        1. 前往 <font color="#00cdc3">https://cobo.com/mm<font/>，根据教程安装 MetaMask for Cobo Vault 浏览器插件<br>
         2. 进入 MetaMask for Cobo Vault ，点击“开始使用”按钮后设置密码<br>
         3. 进入同步 Cobo 金库页面后，扫描钱包二维码完成同步<br>
         4. 进入观察钱包<br>
