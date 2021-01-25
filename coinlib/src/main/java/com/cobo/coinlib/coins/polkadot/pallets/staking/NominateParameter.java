@@ -16,16 +16,16 @@ public class NominateParameter extends Parameter {
     private final int length;
     private final List<byte[]> publicKeys;
 
-    public NominateParameter(String name, Network network, int code, int length, List<byte[]> publicKeys) {
-        super(name, network, code);
+    public NominateParameter(Network network, String name, int code, int length, List<byte[]> publicKeys) {
+        super(network, name, code);
         this.length = length;
         this.publicKeys = publicKeys;
     }
 
     @Override
-    protected JSONObject addCallParameter() throws JSONException {
-        JSONObject object = new JSONObject();
-        object.put("Length", length);
+    public JSONObject toJSON() throws JSONException {
+        JSONObject object = super.toJSON();
+        object.put("length", length);
         object.put("Targets", toJsonArray());
         return object;
     }
