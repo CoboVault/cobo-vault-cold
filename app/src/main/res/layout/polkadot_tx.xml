@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/tx_confirm_title"
+                android:text="@string/signing_history"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
         </androidx.appcompat.widget.Toolbar>
@@ -70,15 +70,6 @@
                 android:layout_width="match_parent"
                 android:layout_weight="1"
                 bind:tx="@{tx}"/>
-
-            <Button
-                android:id="@+id/sign"
-                style="@style/AcceptButton"
-                android:layout_width="match_parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="20dp"
-                android:text="@string/sign" />
         </LinearLayout>
 
 

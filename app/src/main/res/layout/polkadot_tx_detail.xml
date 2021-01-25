@@ -28,7 +28,8 @@
             type="com.cobo.cold.model.Tx" />
     </data>
 
-    <ScrollView
+    <com.cobo.cold.ui.fragment.main.polkadot.PolkadotTxDetailView
+        android:id="@+id/tx_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -65,21 +66,6 @@
                     android:textSize="12sp"
                     tools:text="Polkadot"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/unit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{tx.coinCode}"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    tools:text="BTC" />
 
                 <include
                     layout="@layout/divider"
@@ -224,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="14dp"
-                    android:text="@string/tx_fee"
+                    android:text="@string/dot_tip"
                     android:textColor="@color/white40"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -246,7 +232,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -281,8 +266,24 @@
                 </LinearLayout>
 
             </LinearLayout>
+            <TextView
+                android:id="@+id/broadcast_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="30dp"
+                android:text="@string/please_broadcast_with_hot"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+            <include
+                android:id="@+id/qrcode"
+                layout="@layout/dynamic_qrcode"
+                android:visibility="gone"/>
 
         </LinearLayout>
-    </ScrollView>
+    </com.cobo.cold.ui.fragment.main.polkadot.PolkadotTxDetailView>
 
 </layout>
