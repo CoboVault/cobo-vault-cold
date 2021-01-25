@@ -14,14 +14,14 @@ import java.math.BigInteger;
 public class UnbondParameter extends Parameter {
     private final BigInteger value;
 
-    public UnbondParameter(String name, Network network, int code, BigInteger value) {
-        super(name, network, code);
+    public UnbondParameter(String name,Network network,  int code, BigInteger value) {
+        super(name,network,  code);
         this.value = value;
     }
 
     @Override
-    protected JSONObject addCallParameter() throws JSONException {
-        JSONObject object = new JSONObject();
+    public JSONObject toJSON() throws JSONException {
+        JSONObject object = super.toJSON();
         object.put("Value", Utils.getReadableBalanceString(this.network, this.value));
         return object;
     }

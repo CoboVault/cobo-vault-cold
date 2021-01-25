@@ -15,11 +15,20 @@ public class Bond extends Pallet<BondParameter> {
     public BondParameter read(ScaleCodecReader scr) {
         byte[] publicKey;
         BigInteger amount;
+        byte rewardType;
+        byte[] rewardDestinationPublicKey = {};
 
         publicKey = scr.readByteArray(32);
         amount = scr.readCompact();
-
-        Payee payee = Payee.readToPayee(scr);
-        return new BondParameter(name, network, code, publicKey, amount, payee);
+        rewardType = scr.readByte();
+        switch (rewardType) {
+            case 0x00:
+            case 0x01:
+            case 0x02:
+                break;
+            default:
+                rewardDestinationPublicKey = scr.readByteArray(32);
+        }
+        return new BondParameter(name, network, code, publicKey, amount, rewardType, rewardDestinationPublicKey);
     }
 }

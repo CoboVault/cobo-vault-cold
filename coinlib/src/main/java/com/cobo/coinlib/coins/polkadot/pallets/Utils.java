@@ -9,6 +9,6 @@ public class Utils {
     public static String getReadableBalanceString(Network network, BigInteger amount) {
         return new BigDecimal(amount)
                 .divide(BigDecimal.TEN.pow(network.decimals), Math.min(network.decimals, 8), BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros().toPlainString() + " " + network.coinCode();
+                .stripTrailingZeros().toPlainString();
     }
 }

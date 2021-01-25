@@ -6,7 +6,7 @@ import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 
 public class Unbond extends Pallet<UnbondParameter> {
     public Unbond(Network network, int code) {
-        super("staking.unbond", network, code);
+        super("stacking.unbond", network, code);
     }
 
     @Override

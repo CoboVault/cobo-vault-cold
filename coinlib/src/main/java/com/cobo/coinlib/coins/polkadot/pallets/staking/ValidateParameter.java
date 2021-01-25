@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 public class ValidateParameter extends Parameter {
     private final int value; // base 1 * 10^9
 
-    public ValidateParameter(Network network, String name,int code, int value) {
-        super(network, name, code);
+    public ValidateParameter(String name, Network network, int code, int value) {
+        super(name, network, code);
         this.value = value;
     }
 

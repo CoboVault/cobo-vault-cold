@@ -18,9 +18,12 @@ public class WithdrawUnbondedParameter extends Parameter {
     }
 
     @Override
-    protected JSONObject addCallParameter() throws JSONException {
-        return new JSONObject()
-                .put("numSlashingSpans", numSlashingSpans);
+    public JSONObject toJSON() throws JSONException {
+        JSONObject object = super.toJSON();
+        JSONObject parameter = new JSONObject();
+        parameter.put("numSlashingSpans", numSlashingSpans);
+        object.put("parameter", parameter);
+        return object;
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 
 public class BondExtra extends Pallet<BondExtraParameter> {
     public BondExtra(Network network, int code) {
-        super("staking.bondExtra", network, code);
+        super("stacking.bondExtra", network, code);
     }
 
     @Override
