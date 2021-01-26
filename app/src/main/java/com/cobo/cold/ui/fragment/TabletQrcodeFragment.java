@@ -73,7 +73,7 @@ public class TabletQrcodeFragment extends SetupVaultBaseFragment<TabletQrcodeBin
     static class TapHandler implements View.OnClickListener {
         final int COUNTS = 3;
         final long DURATION = 3000L;
-        final long[] mHits = new long[COUNTS];
+        long[] mHits = new long[COUNTS];
         private final Runnable runnable;
 
         TapHandler(Runnable runnable) {
@@ -85,6 +85,7 @@ public class TabletQrcodeFragment extends SetupVaultBaseFragment<TabletQrcodeBin
             System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
             mHits[mHits.length - 1] = SystemClock.uptimeMillis();
             if (mHits[0] >= (SystemClock.uptimeMillis() - DURATION)) {
+                mHits = new long[COUNTS];
                 runnable.run();
             }
         }
