@@ -6,8 +6,8 @@ import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 
 public class WithdrawUnbonded extends Pallet<WithdrawUnbondedParameter> {
 
-    public WithdrawUnbonded(String name, Network network, int code) {
-        super("staking.withdraw_unbonded", network, code);
+    public WithdrawUnbonded(Network network, int code) {
+        super("staking.withdrawUnbonded", network, code);
     }
 
     @Override
