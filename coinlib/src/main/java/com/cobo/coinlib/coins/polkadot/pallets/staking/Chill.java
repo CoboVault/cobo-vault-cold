@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 public class Chill extends Pallet {
 
-    public Chill(String name, Network network, int code) {
+    public Chill(Network network, int code) {
         super("staking.chill", network, code);
     }
 
