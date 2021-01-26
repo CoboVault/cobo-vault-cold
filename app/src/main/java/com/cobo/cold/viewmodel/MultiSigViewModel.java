@@ -108,6 +108,7 @@ public class MultiSigViewModel extends AndroidViewModel {
         5271C071: xpub6EWksRHwPbDmXWkjQeA6wbCmXZeDPXieMob9hhbtJjmrmk647bWkh7om5rk2eoeDKcKG6NmD8nT7UZAFxXQMjTnhENTwTEovQw3MDQ8jJ16
          */
 
+        content = content.replaceAll("P2WSH_P2SH", P2SH_P2WSH.getFormat());
         JSONObject object = new JSONObject();
         JSONArray xpubs = new JSONArray();
         Pattern pattern = Pattern.compile("[0-9a-fA-F]{8}");
@@ -517,6 +518,7 @@ public class MultiSigViewModel extends AndroidViewModel {
         String format;
         boolean isTest;
         try {
+            content = content.replaceAll("P2WSH_P2SH",P2SH_P2WSH.getFormat());
             JSONObject object = new JSONObject(content);
 
             //Creator
@@ -540,7 +542,12 @@ public class MultiSigViewModel extends AndroidViewModel {
             result.put("isTest", isTest);
 
             //Derivation
-            result.put("Derivation", MultiSig.Account.ofFormat(format, isTest).getPath());
+            MultiSig.Account account = MultiSig.Account.ofFormat(format, isTest);
+            if (account == null) {
+                Log.w("Multisig","invalid format");
+                return null;
+            }
+            result.put("Derivation", account.getPath());
 
             //Xpubs
             JSONArray xpubs = object.getJSONArray("extendedPublicKeys");
@@ -560,7 +567,7 @@ public class MultiSigViewModel extends AndroidViewModel {
                     }
                     xpubJson.put("path", path);
                     xpubJson.put("xfp", xfp);
-                    xpubJson.put("xpub", convertXpub(xpub, MultiSig.Account.ofFormat(format, isTest)));
+                    xpubJson.put("xpub", convertXpub(xpub, account));
                     xpubJson.put("method", method);
                     xpubsArray.put(xpubJson);
                 }
