@@ -108,7 +108,7 @@ public class MultiSigViewModel extends AndroidViewModel {
         5271C071: xpub6EWksRHwPbDmXWkjQeA6wbCmXZeDPXieMob9hhbtJjmrmk647bWkh7om5rk2eoeDKcKG6NmD8nT7UZAFxXQMjTnhENTwTEovQw3MDQ8jJ16
          */
 
-        content = content.replaceAll("P2WSH_P2SH", P2SH_P2WSH.getFormat());
+        content = content.replaceAll("P2WSH-P2SH", P2SH_P2WSH.getFormat());
         JSONObject object = new JSONObject();
         JSONArray xpubs = new JSONArray();
         Pattern pattern = Pattern.compile("[0-9a-fA-F]{8}");
@@ -518,7 +518,7 @@ public class MultiSigViewModel extends AndroidViewModel {
         String format;
         boolean isTest;
         try {
-            content = content.replaceAll("P2WSH_P2SH",P2SH_P2WSH.getFormat());
+            content = content.replaceAll("P2WSH-P2SH",P2SH_P2WSH.getFormat());
             JSONObject object = new JSONObject(content);
 
             //Creator
