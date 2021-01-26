@@ -13,15 +13,15 @@ import java.math.BigDecimal;
 public class ValidateParameter extends Parameter {
     private int value; // base 1 * 10^9
 
-    public ValidateParameter(Network network, String name,int code, int value) {
-        super(network, name, code);
+    public ValidateParameter(String name, Network network, int code, int value) {
+        super(name, network, code);
         this.value = value;
     }
 
     @Override
-    public JSONObject toJSON() throws JSONException {
-        JSONObject object = super.toJSON();
-        object.put("value", BigDecimal.valueOf(value).divide(BigDecimal.TEN.pow(9)));
+    protected JSONObject addCallParameter() throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put("Prefs", BigDecimal.valueOf(value).divide(BigDecimal.TEN.pow(9)));
         return object;
     }
 

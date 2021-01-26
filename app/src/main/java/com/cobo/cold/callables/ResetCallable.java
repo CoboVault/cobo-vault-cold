@@ -22,9 +22,9 @@ import com.cobo.cold.encryptioncore.base.Packet;
 
 import java.util.concurrent.Callable;
 
-public class ResetCallable implements Callable {
+public class ResetCallable implements Callable<Boolean> {
     @Override
-    public Void call() {
+    public Boolean call() {
         try {
             final Packet packet = new Packet.Builder(CONSTANTS.METHODS.RESET)
                     .build();
@@ -32,8 +32,9 @@ public class ResetCallable implements Callable {
             callable.call();
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
 
-        return null;
+        return true;
     }
 }

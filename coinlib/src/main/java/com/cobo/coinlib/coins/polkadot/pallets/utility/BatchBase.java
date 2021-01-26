@@ -6,7 +6,7 @@ import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BatchBase extends Pallet<BatchParameter> {
@@ -17,10 +17,10 @@ public class BatchBase extends Pallet<BatchParameter> {
 
     @Override
     public BatchParameter read(ScaleCodecReader scr) {
-        List<Parameter> parameters = Arrays.asList();
+        List<Parameter> parameters = new ArrayList<>();
         int length = scr.readCompactInt();
         for (int i = 0; i < length; i++) {
-            int code = scr.readUint16();
+            int code = scr.readUint16BE();
             Pallet pallet = PalletFactory.getPallet(code, network);
             Parameter parameter = pallet.read(scr);
             parameters.add(parameter);

@@ -13,15 +13,15 @@ import java.io.IOException;
 public class SetControllerParameter extends Parameter {
     private final byte[] publicKey;
 
-    public SetControllerParameter(Network network, String name, int code, byte[] publicKey) {
-        super(network, name, code);
+    public SetControllerParameter(String name, Network network, int code, byte[] publicKey) {
+        super(name, network, code);
         this.publicKey = publicKey;
     }
 
     @Override
-    public JSONObject toJSON() throws JSONException {
-        JSONObject object = super.toJSON();
-        object.put("controller", AddressCodec.encodeAddress(publicKey, network.SS58Prefix));
+    protected JSONObject addCallParameter() throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put("Controller", AddressCodec.encodeAddress(publicKey, network.SS58Prefix));
         return object;
     }
 

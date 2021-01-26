@@ -11,7 +11,6 @@ public class Validate extends Pallet<ValidateParameter> {
 
     @Override
     public ValidateParameter read(ScaleCodecReader scr) {
-
-        return new ValidateParameter(network, name, code, scr.readCompactInt());
+        return new ValidateParameter(name, network, code, scr.readCompactInt());
     }
 }

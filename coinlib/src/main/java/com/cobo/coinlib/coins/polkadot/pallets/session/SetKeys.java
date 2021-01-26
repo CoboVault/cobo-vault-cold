@@ -4,6 +4,7 @@ import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,12 +15,12 @@ public class SetKeys extends Pallet<SetKeysParameter> {
 
     @Override
     public SetKeysParameter read(ScaleCodecReader scr) {
-        List<byte[]> publicKeys = Arrays.asList();
+        List<byte[]> publicKeys = new ArrayList<>();
         byte[] proof;
         for (int i = 0 ; i < 5 ; i++ ){
             publicKeys.add(scr.readByteArray(32));
         }
         proof = scr.readByteArray(1);
-        return new SetKeysParameter(network, name, code, publicKeys, proof);
+        return new SetKeysParameter(name, network, code, publicKeys, proof);
     }
 }

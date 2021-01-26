@@ -87,7 +87,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
     }
 
     public boolean isTransactionSupported(Parameter parameter) {
-        return parameter instanceof TransferParameter;
+        return true;
     }
 
     public boolean isNetworkSupported(Network network) {
@@ -118,15 +118,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
         tx.setCoinId(Coins.coinIdFromCoinCode(coinCode));
         tx.setFrom(result.getAccount());
         tx.setFee(result.getExtrinsic().getTip()+ " " + coinCode);
-        if (result.getExtrinsic().palletParameter instanceof TransferParameter) {
-            TransferParameter transfer = (TransferParameter) result.getExtrinsic().palletParameter;
-            double amount = Double.parseDouble(transfer.getAmount());
-            double tip = Double.parseDouble(tx.getFee().split(" ")[0]);
-            double value = Arith.add(amount, tip);
-            final DecimalFormat decimalFormat = new DecimalFormat("###################.##########");
-            tx.setAmount(decimalFormat.format(value) + " " + coinCode);
-            tx.setTo(transfer.getDestination());
-        }
+        tx.setSignedHex(extrinsicObject.toString());
         tx.setBelongTo(mRepository.getBelongTo());
         return tx;
     }

@@ -15,18 +15,18 @@ import java.util.stream.Collectors;
 public class SetKeysParameter extends Parameter {
     private final List<byte[]> publicKeys;
     private final byte[] proof;
-    public SetKeysParameter(Network network, String name, int code, List<byte[]> publicKeys, byte[] proof) {
-        super(network, name, code);
+
+    public SetKeysParameter(String name, Network network, int code, List<byte[]> publicKeys, byte[] proof) {
+        super(name, network, code);
         this.proof = proof;
         this.publicKeys = publicKeys;
     }
 
     @Override
-    public JSONObject toJSON() throws JSONException {
-        JSONObject object = super.toJSON();
-        object.put("rotateKeys", publicKeys.stream().map(p -> Hex.toHexString(p)).collect(Collectors.toList()));
-        object.put("proof", Hex.toHexString(proof));
-        return object;
+    protected JSONObject addCallParameter() throws JSONException {
+        return new JSONObject()
+                .put("Keys", publicKeys.stream().map(p -> Hex.toHexString(p)).collect(Collectors.toList()))
+                .put("Proof", Hex.toHexString(proof));
     }
 
     @Override

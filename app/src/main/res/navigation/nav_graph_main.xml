@@ -76,6 +76,16 @@
             app:popUpToInclusive="false" />
 
         <action
+            android:id="@+id/action_to_polkadotTxConfirm"
+            app:destination="@id/polkadotTxConfirm"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/assetListFragment"
+            app:popUpToInclusive="false" />
+
+        <action
             android:id="@+id/action_to_ElectrumTxConfirmFragment"
             app:destination="@id/electrumTxConfirmFragment"
             app:enterAnim="@anim/slide_in_right"
@@ -111,6 +121,27 @@
         <action
             android:id="@+id/action_QRCodeScan_to_result"
             app:destination="@id/webAuthResultFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/polkadotTxConfirm"
+        android:name="com.cobo.cold.ui.fragment.main.polkadot.PolkadotTxConfirm"
+        tools:layout="@layout/eth_tx_confirm"
+        android:label="ethTxConfirmFragment" >
+        <action
+            android:id="@id/action_to_broadcastTxFragment"
+            app:destination="@id/broadcastTxFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/polkadotTxFragment"
+        android:name="com.cobo.cold.ui.fragment.main.polkadot.PolkadotTxFragment"
+        tools:layout="@layout/eth_tx_confirm"
+        android:label="ethTxConfirmFragment" >
     </fragment>
 
     <fragment
@@ -389,6 +420,13 @@
         <action
             android:id="@+id/action_to_ethTxFragment"
             app:destination="@id/ethTxFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_to_polkadotTxFragment"
+            app:destination="@id/polkadotTxFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
