@@ -78,7 +78,7 @@ public class MultiSig {
                     return value;
                 }
             }
-            return P2WSH;
+            return null;
         }
 
         public boolean isTest() {

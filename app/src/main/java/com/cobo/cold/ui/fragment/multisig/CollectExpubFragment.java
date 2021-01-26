@@ -264,7 +264,9 @@ public class CollectExpubFragment extends MultiSigBaseFragment<CollectExpubBindi
 
     private void decodeXpubFile(File file, CollectXpubViewModel.XpubInfo info) {
         try {
-            JSONObject obj = new JSONObject(FileUtils.readString(file));
+            String content = FileUtils.readString(file);
+            content = content.replaceAll("p2wsh_p2sh","p2sh_p2wsh");
+            JSONObject obj = new JSONObject(content);
 
             String xpub;
             String path;
