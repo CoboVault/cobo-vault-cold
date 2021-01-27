@@ -14,11 +14,6 @@ public class Nominate extends Pallet<NominateParameter> {
 
     @Override
     public NominateParameter read(ScaleCodecReader scr) {
-        List<byte[]> publicKeys = new ArrayList<>();
-        int length = scr.readUByte();
-        for (int i = 0; i< length; i++) {
-            publicKeys.add(scr.readByteArray(32));
-        }
-        return new NominateParameter(name, network, code, length, publicKeys);
+        return new NominateParameter(name, network, code, scr);
     }
 }

@@ -11,6 +11,6 @@ public class SetController extends Pallet<SetControllerParameter> {
 
     @Override
     public SetControllerParameter read(ScaleCodecReader scr) {
-        return new SetControllerParameter(name, network, code, scr.readByteArray(32));
+        return new SetControllerParameter(name, network, code, scr);
     }
 }

@@ -14,12 +14,6 @@ public class CancelDeferredSlash extends Pallet<CancelDeferredSlashParameter> {
 
     @Override
     public CancelDeferredSlashParameter read(ScaleCodecReader scr) {
-        long eraIndex = scr.readUint32();
-        int length = scr.readCompactInt();
-        List<Long> slashIndices = new ArrayList<>();
-        for (int i = 0; i < length; i++) {
-            slashIndices.add(scr.readUint32());
-        }
-        return new CancelDeferredSlashParameter(name, network, code, eraIndex, length, slashIndices);
+        return new CancelDeferredSlashParameter(name, network, code, scr);
     }
 }

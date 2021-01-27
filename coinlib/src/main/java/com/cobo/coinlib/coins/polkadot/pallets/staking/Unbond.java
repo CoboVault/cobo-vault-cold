@@ -11,6 +11,6 @@ public class Unbond extends Pallet<UnbondParameter> {
 
     @Override
     public UnbondParameter read(ScaleCodecReader scr) {
-        return new UnbondParameter(name, network, code, scr.readCompact());
+        return new UnbondParameter(name, network, code, scr);
     }
 }

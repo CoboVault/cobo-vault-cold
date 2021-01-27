@@ -12,6 +12,6 @@ public class Rebond extends Pallet<RebondParameter> {
 
     @Override
     public RebondParameter read(ScaleCodecReader scr) {
-        return new RebondParameter(name, network, code, scr.readCompact());
+        return new RebondParameter(name, network, code, scr);
     }
 }

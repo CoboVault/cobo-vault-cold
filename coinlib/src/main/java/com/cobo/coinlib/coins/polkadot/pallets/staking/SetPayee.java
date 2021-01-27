@@ -11,7 +11,6 @@ public class SetPayee extends Pallet<SetPayeeParameter> {
 
     @Override
     public SetPayeeParameter read(ScaleCodecReader scr) {
-        Payee payee = Payee.readToPayee(scr);
-        return new SetPayeeParameter(name, network, code, payee);
+        return new SetPayeeParameter(name, network, code, scr);
     }
 }

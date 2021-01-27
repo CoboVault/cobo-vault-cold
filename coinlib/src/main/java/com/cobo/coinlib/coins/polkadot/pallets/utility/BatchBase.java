@@ -17,15 +17,6 @@ public class BatchBase extends Pallet<BatchParameter> {
 
     @Override
     public BatchParameter read(ScaleCodecReader scr) {
-        List<Parameter> parameters = new ArrayList<>();
-        int length = scr.readCompactInt();
-        for (int i = 0; i < length; i++) {
-            int code = scr.readUint16BE();
-            Pallet<? extends Parameter> pallet = PalletFactory.getPallet(code, network);
-            Parameter parameter = pallet.read(scr);
-            parameters.add(parameter);
-        }
-
-        return new BatchParameter(network, name, code, length, parameters);
+        return new BatchParameter(network, name, code, scr);
     }
 }

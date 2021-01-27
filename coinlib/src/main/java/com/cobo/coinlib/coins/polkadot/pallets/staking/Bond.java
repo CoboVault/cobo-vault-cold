@@ -13,13 +13,6 @@ public class Bond extends Pallet<BondParameter> {
 
     @Override
     public BondParameter read(ScaleCodecReader scr) {
-        byte[] publicKey;
-        BigInteger amount;
-
-        publicKey = scr.readByteArray(32);
-        amount = scr.readCompact();
-
-        Payee payee = Payee.readToPayee(scr);
-        return new BondParameter(name, network, code, publicKey, amount, payee);
+        return new BondParameter(name, network, code, scr);
     }
 }

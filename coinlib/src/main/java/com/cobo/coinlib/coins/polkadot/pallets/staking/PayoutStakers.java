@@ -12,6 +12,6 @@ public class PayoutStakers extends Pallet<PayoutStakersParameter> {
 
     @Override
     public PayoutStakersParameter read(ScaleCodecReader scr) {
-        return new PayoutStakersParameter(name, network, code, scr.readByteArray(32), scr.readUint32());
+        return new PayoutStakersParameter(name, network, code, scr);
     }
 }

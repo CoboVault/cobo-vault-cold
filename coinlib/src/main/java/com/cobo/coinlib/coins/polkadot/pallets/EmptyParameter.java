@@ -19,14 +19,19 @@
 
 package com.cobo.coinlib.coins.polkadot.pallets;
 
+import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EmptyParameter extends Parameter{
-    public EmptyParameter(String name, Network network, int code) {
-        super(name, network, code);
+public class EmptyParameter extends Parameter {
+    public EmptyParameter(String name, Network network, int code, ScaleCodecReader scr) {
+        super(name, network, code, scr);
+    }
+
+    @Override
+    protected void read(ScaleCodecReader scr) {
     }
 
     @Override

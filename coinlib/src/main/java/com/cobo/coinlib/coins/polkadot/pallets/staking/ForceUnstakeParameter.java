@@ -1,6 +1,7 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
+import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
@@ -11,12 +12,17 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class ForceUnstakeParameter extends Parameter {
-    private final byte[] stashAccountPublicKey;
-    private final long numSlashingSpans;
-    public ForceUnstakeParameter(String name, Network network, int code, byte[] stashAccountPublicKey, long numSlashingSpans) {
-        super(name, network, code);
-        this.stashAccountPublicKey = stashAccountPublicKey;
-        this.numSlashingSpans = numSlashingSpans;
+    private byte[] stashAccountPublicKey;
+    private long numSlashingSpans;
+
+    public ForceUnstakeParameter(String name, Network network, int code, ScaleCodecReader scr) {
+        super(name, network, code, scr);
+    }
+
+    @Override
+    protected void read(ScaleCodecReader scr) {
+        stashAccountPublicKey = scr.readByteArray(32);
+        numSlashingSpans = scr.readUint32();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
+import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
@@ -11,11 +12,15 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 public class ValidateParameter extends Parameter {
-    private final int value; // base 1 * 10^9
+    private int value; // base 1 * 10^9
 
-    public ValidateParameter(String name, Network network, int code, int value) {
-        super(name, network, code);
-        this.value = value;
+    public ValidateParameter(String name, Network network, int code, ScaleCodecReader scr) {
+        super(name, network, code, scr);
+    }
+
+    @Override
+    protected void read(ScaleCodecReader scr) {
+        this.value = scr.readCompactInt();
     }
 
     @Override
