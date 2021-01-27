@@ -39,8 +39,7 @@ public class BondParameter extends Parameter {
     }
 
     @Override
-    public void writeTo(ScaleCodecWriter scw) throws IOException {
-        super.writeTo(scw);
+    public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeByteArray(publicKey);
         scw.writeBIntCompact(amount);
         payee.writeTo(scw);

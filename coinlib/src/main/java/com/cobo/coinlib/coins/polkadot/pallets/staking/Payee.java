@@ -59,7 +59,7 @@ public class Payee {
 
     public void writeToJSON(Network network, JSONObject object) throws JSONException {
         object.put("Payee", this.getRewardType());
-        if(this.rewardType == 0x03) {
+        if (this.rewardType == 0x03) {
             object.put("Address", this.getRewardAddress(network));
         }
     }

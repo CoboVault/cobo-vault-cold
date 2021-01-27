@@ -26,7 +26,7 @@ public class NominateParameter extends Parameter {
     protected void read(ScaleCodecReader scr) {
         publicKeys = new ArrayList<>();
         length = scr.readUByte();
-        for (int i = 0; i< length; i++) {
+        for (int i = 0; i < length; i++) {
             publicKeys.add(scr.readByteArray(32));
         }
     }
@@ -48,8 +48,7 @@ public class NominateParameter extends Parameter {
     }
 
     @Override
-    public void writeTo(ScaleCodecWriter scw) throws IOException {
-        super.writeTo(scw);
+    public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeCompact(length);
         for (byte[] pk :
                 publicKeys) {

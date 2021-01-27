@@ -13,6 +13,7 @@ import java.io.IOException;
 public class ScaleValidatorCountParameter extends Parameter {
     // TODO: need to check with true extrinsic
     private long percent; // base 100
+
     public ScaleValidatorCountParameter(String name, Network network, int code, ScaleCodecReader scr) {
         super(name, network, code, scr);
     }
@@ -28,8 +29,7 @@ public class ScaleValidatorCountParameter extends Parameter {
     }
 
     @Override
-    public void writeTo(ScaleCodecWriter scw) throws IOException {
-        super.writeTo(scw);
+    public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeUint32(percent);
     }
 }

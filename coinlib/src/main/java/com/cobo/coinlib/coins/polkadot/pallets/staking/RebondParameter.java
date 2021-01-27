@@ -12,8 +12,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.math.BigInteger;
 
-public class RebondParameter  extends Parameter {
+public class RebondParameter extends Parameter {
     private BigInteger value;
+
     public RebondParameter(String name, Network network, int code, ScaleCodecReader scr) {
         super(name, network, code, scr);
     }
@@ -29,8 +30,7 @@ public class RebondParameter  extends Parameter {
     }
 
     @Override
-    public void writeTo(ScaleCodecWriter scw) throws IOException {
-        super.writeTo(scw);
+    public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeBIntCompact(value);
     }
 }

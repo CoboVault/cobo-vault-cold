@@ -45,7 +45,7 @@ public class BatchParameter extends Parameter {
 
     public JSONArray toJsonArray(List<Parameter> parameters) throws JSONException {
         JSONArray array = new JSONArray();
-        for (Parameter parameter: parameters) {
+        for (Parameter parameter : parameters) {
             array.put(parameter.toJSON());
         }
         return array;
@@ -53,11 +53,9 @@ public class BatchParameter extends Parameter {
 
 
     @Override
-    public void writeTo(ScaleCodecWriter scw) throws IOException {
-        super.writeTo(scw);
+    public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeCompact(length);
-        for (Parameter p:
-             parameters) {
+        for (Parameter p : parameters) {
             p.writeTo(scw);
         }
     }
