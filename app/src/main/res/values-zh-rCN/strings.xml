@@ -719,7 +719,7 @@
     <string name="caravan_import_guide_title">Caravan 导入观察钱包指引</string>
     <string name="caravan_import_guide"><![CDATA[
         1. 打开 Caravan<br>
-        2. 点击“SCAN QR CODE OF WALLET”按钮<br>
+        2. 点击“SCAN COBO VAULT”按钮<br>
         3. 扫描观察钱包二维码（点击下方按钮查看）<br>
         4. 导入钱包信息后点击“CONFIRM”按钮<br>
         5. 进入观察钱包<br>
