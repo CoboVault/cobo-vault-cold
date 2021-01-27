@@ -5,7 +5,6 @@ import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Vote extends Pallet<VoteParameter> {

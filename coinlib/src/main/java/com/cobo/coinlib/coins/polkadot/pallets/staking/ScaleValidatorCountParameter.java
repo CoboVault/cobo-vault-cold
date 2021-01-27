@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class ScaleValidatorCountParameter extends Parameter {
     // TODO: need to check with true extrinsic
-    private long percent; // base 100
+    private final long percent; // base 100
     public ScaleValidatorCountParameter(String name, Network network, int code, long percent) {
         super(name, network, code);
         this.percent = percent;

@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 public class SetHistoryDepthParameter extends Parameter {
-    private BigInteger eraIndex;
-    private BigInteger _eraItemsDeleted;
+    private final BigInteger eraIndex;
+    private final BigInteger _eraItemsDeleted;
 
     public SetHistoryDepthParameter(String name, Network network, int code, BigInteger eraIndex, BigInteger _eraItemsDeleted) {
         super(name, network, code);

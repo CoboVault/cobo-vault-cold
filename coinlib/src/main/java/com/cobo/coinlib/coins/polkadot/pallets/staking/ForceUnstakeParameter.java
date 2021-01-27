@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class ForceUnstakeParameter extends Parameter {
-    private byte[] stashAccountPublicKey;
-    private long numSlashingSpans;
+    private final byte[] stashAccountPublicKey;
+    private final long numSlashingSpans;
     public ForceUnstakeParameter(String name, Network network, int code, byte[] stashAccountPublicKey, long numSlashingSpans) {
         super(name, network, code);
         this.stashAccountPublicKey = stashAccountPublicKey;

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 public class UnbondParameter extends Parameter {
-    private BigInteger value;
+    private final BigInteger value;
 
     public UnbondParameter(String name, Network network, int code, BigInteger value) {
         super(name, network, code);

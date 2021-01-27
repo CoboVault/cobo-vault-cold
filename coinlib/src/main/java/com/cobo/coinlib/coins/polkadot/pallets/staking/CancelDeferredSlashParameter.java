@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class CancelDeferredSlashParameter extends Parameter {
-    private long eraIndex;
-    private int length;
-    private List<Long> slashIndices;
+    private final long eraIndex;
+    private final int length;
+    private final List<Long> slashIndices;
 
     public CancelDeferredSlashParameter(String name, Network network, int code, long eraIndex, int length, List<Long> slashIndices) {
         super(name, network, code);

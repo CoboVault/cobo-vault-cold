@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class PayoutStakersParameter extends Parameter {
-    private byte[] publicKey;
-    private long eraIndex;
+    private final byte[] publicKey;
+    private final long eraIndex;
     public PayoutStakersParameter(String name, Network network, int code, byte[] publicKey, long eraIndex) {
         super(name, network, code);
         this.publicKey = publicKey;

@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class WithdrawUnbondedParameter extends Parameter {
-    private long numSlashingSpans;
+    private final long numSlashingSpans;
 
     public WithdrawUnbondedParameter(String name, Network network, int code, long numSlashingSpans) {
         super(name, network, code);

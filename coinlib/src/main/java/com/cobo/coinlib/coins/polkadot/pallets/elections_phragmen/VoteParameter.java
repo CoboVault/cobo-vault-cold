@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class VoteParameter extends Parameter {
     private final int length;
     private final List<byte[]> publicKeys;
-    private BigInteger value;
+    private final BigInteger value;
 
     public VoteParameter(String name, Network network, int code, int length, List<byte[]> publicKeys, BigInteger value) {
         super(name, network, code);

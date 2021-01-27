@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class ReapStashParameter extends Parameter {
-    private byte[] stashAccountPublicKey;
-    private long numSlashingSpans;
+    private final byte[] stashAccountPublicKey;
+    private final long numSlashingSpans;
 
     public ReapStashParameter(String name, Network network, int code, byte[] stashAccountPublicKey, long numSlashingSpans) {
         super(name, network, code);
