@@ -32,8 +32,7 @@ public class ReapStashParameter extends Parameter {
     }
 
     @Override
-    public void writeTo(ScaleCodecWriter scw) throws IOException {
-        super.writeTo(scw);
+    public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeByteArray(stashAccountPublicKey);
         scw.writeUint32(numSlashingSpans);
     }

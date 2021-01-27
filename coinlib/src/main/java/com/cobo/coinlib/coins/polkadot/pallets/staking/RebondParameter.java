@@ -29,8 +29,7 @@ public class RebondParameter  extends Parameter {
     }
 
     @Override
-    public void writeTo(ScaleCodecWriter scw) throws IOException {
-        super.writeTo(scw);
+    public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeBIntCompact(value);
     }
 }

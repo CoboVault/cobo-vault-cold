@@ -87,6 +87,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
     }
 
     public boolean isTransactionSupported(Parameter parameter) {
+        if (parameter == null) return false;
         return  parameter.name.startsWith("balance.transfer")
                 || parameter.name.startsWith("staking")
                 || parameter.name.startsWith("utility.batch");
