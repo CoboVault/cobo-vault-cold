@@ -21,7 +21,7 @@ public class BatchBase extends Pallet<BatchParameter> {
         int length = scr.readCompactInt();
         for (int i = 0; i < length; i++) {
             int code = scr.readUint16BE();
-            Pallet pallet = PalletFactory.getPallet(code, network);
+            Pallet<? extends Parameter> pallet = PalletFactory.getPallet(code, network);
             Parameter parameter = pallet.read(scr);
             parameters.add(parameter);
         }

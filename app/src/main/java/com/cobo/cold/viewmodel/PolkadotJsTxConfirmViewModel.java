@@ -87,7 +87,9 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
     }
 
     public boolean isTransactionSupported(Parameter parameter) {
-        return true;
+        return  parameter.name.startsWith("balance.transfer")
+                || parameter.name.startsWith("staking")
+                || parameter.name.startsWith("utility.batch");
     }
 
     public boolean isNetworkSupported(Network network) {
@@ -111,7 +113,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
 
     private TxEntity generateSubstrateTxEntity(Result result) {
         TxEntity tx = new TxEntity();
-        coinCode = getCoinCode(result.getNetwork());
+        coinCode = result.getNetwork().coinCode();
         tx.setSignId(WatchWallet.POLKADOT_JS_SIGN_ID);
         tx.setTimeStamp(getUniversalSignIndex(getApplication()));
         tx.setCoinCode(coinCode);
@@ -121,15 +123,6 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
         tx.setSignedHex(extrinsicObject.toString());
         tx.setBelongTo(mRepository.getBelongTo());
         return tx;
-    }
-
-    private String getCoinCode(Network network) {
-        if (network.name.equals("Polkadot")) {
-            return Coins.DOT.coinCode();
-        } else if (network.name.equals("Kusama")) {
-            return Coins.KSM.coinCode();
-        }
-        return null;
     }
 
     public void handleSign() {

@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class SetPayeeParameter extends Parameter {
-    private Payee payee;
+    private final Payee payee;
     public SetPayeeParameter(String name, Network network, int code, Payee payee) {
         super(name, network, code);
         this.payee = payee;

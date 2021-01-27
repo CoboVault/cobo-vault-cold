@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 public class ValidateParameter extends Parameter {
-    private int value; // base 1 * 10^9
+    private final int value; // base 1 * 10^9
 
     public ValidateParameter(String name, Network network, int code, int value) {
         super(name, network, code);

@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NominateParameter extends Parameter {
     private final int length;

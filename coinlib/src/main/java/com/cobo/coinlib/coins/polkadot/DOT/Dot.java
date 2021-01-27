@@ -23,6 +23,7 @@ import com.cobo.coinlib.coins.AbsTx;
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
+import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
 import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.Vote;
@@ -64,7 +65,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Dot extends AbsCoin {
-    public static final Map<Integer, Pallet> pallets = new HashMap<>();
+    public static final Map<Integer, Pallet<? extends Parameter>> pallets = new HashMap<>();
     static {
         pallets.put(0x0500, new Transfer(Network.POLKADOT, 0x0500));
         pallets.put(0x0503, new TransferKeepAlive(Network.POLKADOT, 0x0503));

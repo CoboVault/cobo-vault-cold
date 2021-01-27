@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class IncreaseValidatorCountParameter extends Parameter {
-    private long additional;
+    private final long additional;
 
     public IncreaseValidatorCountParameter(String name, Network network, int code, long additional) {
         super(name, network, code);

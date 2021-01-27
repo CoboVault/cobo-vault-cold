@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 public class BondExtraParameter extends Parameter {
-    private BigInteger additionalAmount;
+    private final BigInteger additionalAmount;
 
     public BondExtraParameter(Network network, String name, int code, BigInteger additionalAmount) {
         super(name, network, code);

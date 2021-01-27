@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class Payee {
-    private byte rewardType;
-    private byte[] rewardDestination;
+    private final byte rewardType;
+    private final byte[] rewardDestination;
 
     public static Payee readToPayee(ScaleCodecReader scr) {
         byte[] rewardDestinationPublicKey = {};
