@@ -12,6 +12,7 @@ import java.io.IOException;
 
 public class SetValidatorCountParameter extends Parameter {
     private long newValue;
+
     public SetValidatorCountParameter(String name, Network network, int code, ScaleCodecReader scr) {
         super(name, network, code, scr);
     }
@@ -27,8 +28,7 @@ public class SetValidatorCountParameter extends Parameter {
     }
 
     @Override
-    public void writeTo(ScaleCodecWriter scw) throws IOException {
-        super.writeTo(scw);
+    public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeLIntCompact(newValue);
     }
 }

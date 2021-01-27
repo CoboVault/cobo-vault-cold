@@ -12,8 +12,7 @@ public class PalletFactory {
             } else {
                 return Ksm.pallets.get(code);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new Error("unknown pallet code");
         }
     }

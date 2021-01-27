@@ -44,8 +44,7 @@ public class VoteParameter extends Parameter {
     }
 
     @Override
-    public void writeTo(ScaleCodecWriter scw) throws IOException {
-        super.writeTo(scw);
+    public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeCompact(length);
         for (int i = 0; i < publicKeys.size(); i++) {
             scw.writeByteArray(publicKeys.get(i));

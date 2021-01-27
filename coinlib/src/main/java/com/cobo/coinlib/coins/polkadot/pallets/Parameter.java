@@ -29,6 +29,8 @@ public abstract class Parameter {
         return object;
     }
 
+    protected abstract void write(ScaleCodecWriter scw) throws IOException;
+
     protected abstract void read(ScaleCodecReader scr);
 
     protected abstract JSONObject addCallParameter() throws JSONException;
@@ -36,5 +38,6 @@ public abstract class Parameter {
     public void writeTo(ScaleCodecWriter scw) throws IOException {
         scw.writeByte((this.code >> 8) & 0xff);
         scw.writeByte(this.code & 0xff);
+        write(scw);
     }
 }

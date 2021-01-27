@@ -14,6 +14,7 @@ import java.io.IOException;
 public class PayoutStakersParameter extends Parameter {
     private byte[] publicKey;
     private long eraIndex;
+
     public PayoutStakersParameter(String name, Network network, int code, ScaleCodecReader scr) {
         super(name, network, code, scr);
     }
@@ -31,8 +32,7 @@ public class PayoutStakersParameter extends Parameter {
     }
 
     @Override
-    public void writeTo(ScaleCodecWriter scw) throws IOException {
-        super.writeTo(scw);
+    public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeByteArray(publicKey);
         scw.writeUint32(eraIndex);
     }

@@ -4,11 +4,8 @@ import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Nominate extends Pallet<NominateParameter> {
-    public Nominate(Network network, int code){
+    public Nominate(Network network, int code) {
         super("staking.nominate", network, code);
     }
 

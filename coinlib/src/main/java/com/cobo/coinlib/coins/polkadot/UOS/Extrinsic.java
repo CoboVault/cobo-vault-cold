@@ -36,7 +36,7 @@ public class Extrinsic {
     private void read() {
         ScaleCodecReader scr = new ScaleCodecReader(rawSigningPayload);
         int code = scr.readUint16BE();
-        Pallet pallet = PalletFactory.getPallet(code, network);
+        Pallet<? extends Parameter> pallet = PalletFactory.getPallet(code, network);
         if (pallet != null) {
             palletParameter = pallet.read(scr);
             era = scr.readString(2);

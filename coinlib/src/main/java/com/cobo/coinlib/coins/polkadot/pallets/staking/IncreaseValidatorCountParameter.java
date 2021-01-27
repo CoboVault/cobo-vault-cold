@@ -19,7 +19,7 @@ public class IncreaseValidatorCountParameter extends Parameter {
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        additional =  scr.readCompactInt();
+        additional = scr.readCompactInt();
     }
 
     @Override
@@ -28,8 +28,7 @@ public class IncreaseValidatorCountParameter extends Parameter {
     }
 
     @Override
-    public void writeTo(ScaleCodecWriter scw) throws IOException {
-        super.writeTo(scw);
+    public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeLIntCompact(additional);
     }
 }
