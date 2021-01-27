@@ -768,7 +768,7 @@
     <string name="caravan_import_guide_title">How to import watch-only wallet to Caravan</string>
     <string name="caravan_import_guide"><![CDATA[
         1. Open Caravan<br>
-        2. Click SCAN QR CODE OF WALLET button<br>
+        2. Click SCAN COBO VAULT button<br>
         3. Scan QR Code of watch-only that displays on Cobo Vault<br>
         4. After importing wallet, click CONFIRM button<br>
         5. Enter the watch-only wallet<br>
