@@ -11,6 +11,6 @@ public class TransferBase extends Pallet<TransferParameter> {
 
     @Override
     public TransferParameter read(ScaleCodecReader scr) {
-        return new TransferParameter(name, network, this.code, scr.readByteArray(32), scr.readCompact());
+        return new TransferParameter(name, network, this.code, scr);
     }
 }

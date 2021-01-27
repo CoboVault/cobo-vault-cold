@@ -1,6 +1,7 @@
 package com.cobo.coinlib.coins.polkadot.pallets.balance;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
+import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.Utils;
@@ -13,18 +14,21 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 public class TransferParameter extends Parameter {
-    private final byte[] destinationPublicKey;
-    private final BigInteger amount;
+    private byte[] destinationPublicKey;
+    private BigInteger amount;
 
-    public TransferParameter(String name, Network network, int code, byte[] destinationPublicKey,
-                             BigInteger amount) {
-        super(name, network, code);
-        this.destinationPublicKey = destinationPublicKey;
-        this.amount = amount;
+    public TransferParameter(String name, Network network, int code, ScaleCodecReader scr) {
+        super(name, network, code, scr);
     }
 
     public String getDestination() {
         return AddressCodec.encodeAddress(destinationPublicKey, this.network.SS58Prefix);
+    }
+
+    @Override
+    protected void read(ScaleCodecReader scr) {
+        destinationPublicKey = scr.readByteArray(32);
+        amount = scr.readCompact();
     }
 
     @Override

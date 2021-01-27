@@ -11,6 +11,6 @@ public class BondExtra extends Pallet<BondExtraParameter> {
 
     @Override
     public BondExtraParameter read(ScaleCodecReader scr) {
-        return new BondExtraParameter(network, name, code, scr.readCompact());
+        return new BondExtraParameter(network, name, code, scr);
     }
 }

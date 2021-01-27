@@ -12,6 +12,6 @@ public class SetHistoryDepth extends Pallet<SetHistoryDepthParameter> {
 
     @Override
     public SetHistoryDepthParameter read(ScaleCodecReader scr) {
-        return new SetHistoryDepthParameter(name, network, code, scr.readCompact(), scr.readCompact());
+        return new SetHistoryDepthParameter(name, network, code, scr);
     }
 }

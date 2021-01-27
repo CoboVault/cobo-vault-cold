@@ -14,11 +14,6 @@ public class Vote extends Pallet<VoteParameter> {
 
     @Override
     public VoteParameter read(ScaleCodecReader scr) {
-        int length = scr.readCompactInt();
-        List<byte[]> publicKeys = new ArrayList<>();
-        for (int i = 0; i < length; i++) {
-            publicKeys.add(scr.readByteArray(32));
-        }
-        return new VoteParameter(name, network, code, scr.readCompactInt(), publicKeys, scr.readCompact());
+        return new VoteParameter(name, network, code, scr);
     }
 }

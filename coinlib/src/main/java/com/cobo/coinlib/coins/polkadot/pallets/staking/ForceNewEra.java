@@ -12,6 +12,6 @@ public class ForceNewEra extends Pallet<EmptyParameter> {
 
     @Override
     public EmptyParameter read(ScaleCodecReader scr) {
-        return new EmptyParameter(name, network, code);
+        return new EmptyParameter(name, network, code, scr);
     }
 }

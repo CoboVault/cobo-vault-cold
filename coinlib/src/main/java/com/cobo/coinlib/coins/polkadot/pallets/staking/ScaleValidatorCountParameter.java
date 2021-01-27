@@ -1,5 +1,6 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
+import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
@@ -11,10 +12,14 @@ import java.io.IOException;
 
 public class ScaleValidatorCountParameter extends Parameter {
     // TODO: need to check with true extrinsic
-    private final long percent; // base 100
-    public ScaleValidatorCountParameter(String name, Network network, int code, long percent) {
-        super(name, network, code);
-        this.percent = percent;
+    private long percent; // base 100
+    public ScaleValidatorCountParameter(String name, Network network, int code, ScaleCodecReader scr) {
+        super(name, network, code, scr);
+    }
+
+    @Override
+    protected void read(ScaleCodecReader scr) {
+        percent = scr.readUint32();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
+import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
@@ -10,11 +11,15 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class IncreaseValidatorCountParameter extends Parameter {
-    private final long additional;
+    private long additional;
 
-    public IncreaseValidatorCountParameter(String name, Network network, int code, long additional) {
-        super(name, network, code);
-        this.additional = additional;
+    public IncreaseValidatorCountParameter(String name, Network network, int code, ScaleCodecReader scr) {
+        super(name, network, code, scr);
+    }
+
+    @Override
+    protected void read(ScaleCodecReader scr) {
+        additional =  scr.readCompactInt();
     }
 
     @Override

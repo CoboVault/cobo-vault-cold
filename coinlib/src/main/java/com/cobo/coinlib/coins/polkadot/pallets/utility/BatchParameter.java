@@ -1,6 +1,9 @@
 package com.cobo.coinlib.coins.polkadot.pallets.utility;
 
+import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
+import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
+import com.cobo.coinlib.coins.polkadot.pallets.PalletFactory;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
@@ -9,16 +12,27 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BatchParameter extends Parameter {
-    private final int length;
-    private final List<Parameter> parameters;
+    private int length;
+    private List<Parameter> parameters;
 
-    public BatchParameter(Network network, String name, int code, int length, List<Parameter> parameters) {
-        super(name, network,  code);
-        this.length = length;
-        this.parameters = parameters;
+    public BatchParameter(Network network, String name, int code, ScaleCodecReader scr) {
+        super(name, network, code, scr);
+    }
+
+    @Override
+    protected void read(ScaleCodecReader scr) {
+        parameters = new ArrayList<>();
+        length = scr.readCompactInt();
+        for (int i = 0; i < length; i++) {
+            int code = scr.readUint16BE();
+            Pallet<? extends Parameter> pallet = PalletFactory.getPallet(code, network);
+            Parameter parameter = pallet.read(scr);
+            parameters.add(parameter);
+        }
     }
 
     @Override

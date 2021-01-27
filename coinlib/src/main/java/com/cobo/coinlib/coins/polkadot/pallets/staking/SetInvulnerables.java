@@ -14,11 +14,6 @@ public class SetInvulnerables extends Pallet<SetInvulnerablesParameter> {
 
     @Override
     public SetInvulnerablesParameter read(ScaleCodecReader scr) {
-        List<byte[]> publicKeys = new ArrayList<>();
-        int length = scr.readUByte();
-        for (int i = 0; i< length; i++) {
-            publicKeys.add(scr.readByteArray(32));
-        }
-        return new SetInvulnerablesParameter(name, network, code, length, publicKeys);
+        return new SetInvulnerablesParameter(name, network, code, scr);
     }
 }

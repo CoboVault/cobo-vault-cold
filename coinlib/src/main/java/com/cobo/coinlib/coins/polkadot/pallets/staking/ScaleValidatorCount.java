@@ -12,6 +12,6 @@ public class ScaleValidatorCount extends Pallet<ScaleValidatorCountParameter> {
 
     @Override
     public ScaleValidatorCountParameter read(ScaleCodecReader scr) {
-        return new ScaleValidatorCountParameter(name, network, code, scr.readUint32());
+        return new ScaleValidatorCountParameter(name, network, code, scr);
     }
 }

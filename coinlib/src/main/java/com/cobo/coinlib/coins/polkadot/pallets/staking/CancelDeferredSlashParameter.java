@@ -1,5 +1,6 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
+import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
@@ -9,18 +10,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CancelDeferredSlashParameter extends Parameter {
-    private final long eraIndex;
-    private final int length;
-    private final List<Long> slashIndices;
+    private long eraIndex;
+    private int length;
+    private List<Long> slashIndices;
 
-    public CancelDeferredSlashParameter(String name, Network network, int code, long eraIndex, int length, List<Long> slashIndices) {
-        super(name, network, code);
-        this.eraIndex = eraIndex;
-        this.length = length;
-        this.slashIndices = slashIndices;
+    public CancelDeferredSlashParameter(String name, Network network, int code, ScaleCodecReader scr) {
+        super(name, network, code, scr);
+    }
+
+    @Override
+    protected void read(ScaleCodecReader scr) {
+        eraIndex = scr.readUint32();
+        length = scr.readCompactInt();
+        slashIndices = new ArrayList<>();
+        for (int i = 0; i < length; i++) {
+            slashIndices.add(scr.readUint32());
+        }
     }
 
     @Override

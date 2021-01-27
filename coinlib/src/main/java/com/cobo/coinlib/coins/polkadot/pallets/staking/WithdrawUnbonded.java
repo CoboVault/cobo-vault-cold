@@ -12,6 +12,6 @@ public class WithdrawUnbonded extends Pallet<WithdrawUnbondedParameter> {
 
     @Override
     public WithdrawUnbondedParameter read(ScaleCodecReader scr) {
-        return new WithdrawUnbondedParameter(name, network, code, scr.readUint32());
+        return new WithdrawUnbondedParameter(name, network, code, scr);
     }
 }

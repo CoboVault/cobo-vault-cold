@@ -12,6 +12,6 @@ public class ForceUnstake extends Pallet<ForceUnstakeParameter> {
 
     @Override
     public ForceUnstakeParameter read(ScaleCodecReader scr) {
-        return new ForceUnstakeParameter(name, network, code, scr.readByteArray(32), scr.readUint32());
+        return new ForceUnstakeParameter(name, network, code, scr);
     }
 }

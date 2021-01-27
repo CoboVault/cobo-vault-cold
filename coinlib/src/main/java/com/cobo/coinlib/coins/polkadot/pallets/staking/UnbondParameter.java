@@ -1,5 +1,6 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
+import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.Utils;
@@ -12,11 +13,15 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 public class UnbondParameter extends Parameter {
-    private final BigInteger value;
+    private BigInteger value;
 
-    public UnbondParameter(String name, Network network, int code, BigInteger value) {
-        super(name, network, code);
-        this.value = value;
+    public UnbondParameter(String name, Network network, int code, ScaleCodecReader scr) {
+        super(name, network, code, scr);
+    }
+
+    @Override
+    protected void read(ScaleCodecReader scr) {
+        this.value = scr.readCompact();
     }
 
     @Override

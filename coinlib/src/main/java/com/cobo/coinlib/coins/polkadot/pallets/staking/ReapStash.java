@@ -11,6 +11,6 @@ public class ReapStash extends Pallet<ReapStashParameter> {
 
     @Override
     public ReapStashParameter read(ScaleCodecReader scr) {
-        return new ReapStashParameter(name, network, code, scr.readByteArray(32), scr.readUint32());
+        return new ReapStashParameter(name, network, code, scr);
     }
 }
