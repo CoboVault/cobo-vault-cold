@@ -523,4 +523,7 @@
     <string name="metamask_install_hint">请注意，在使用 MetaMask for Cobo Vault 前，您需先卸载其他所有的 MetaMask（包括官方提供以及非官方fork）。</string>
     <string name="testnet">测试网</string>
     <string name="inconsistent_address">Inconsistent with "From" address</string>
+    <string name="calc_mnemonic_warning">您触发了“创建自己的助记词”这一高级功能，请确保您已充分了解助记词生成的相关知识后，再使用本功能。否则请关闭当前页面。</string>
+    <string name="calc_mnemonic_warning_checkbox">我已充分了解随机熵、BIP39、私钥生成等相关知识。</string>
+    <string name="note">须知</string>
 </resources>

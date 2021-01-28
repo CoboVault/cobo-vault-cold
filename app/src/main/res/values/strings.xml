@@ -556,5 +556,7 @@
     <string name="metamask_install_hint">You must disable ALL other instances of MetaMask on ALL open browsers when using MetaMask for Cobo Vault. If you have another instance running, it will interfere with requests to your Cobo Vault and you will get unexpected behavior.</string>
     <string name="testnet">Testnet</string>
     <string name="inconsistent_address">Inconsistent with "From" address</string>
-
+    <string name="calc_mnemonic_warning">You have triggered an advanced function of "Create your Recovery Phrase". Please make sure that you fully understand the dangers of this feature before proceeding to generate a recovery phrase with it. Your funds might get compromised if you fail to do so. Proceed at your own risk!</string>
+    <string name="calc_mnemonic_warning_checkbox">I fully understand entropy, BIP39, private key generation and other related material to generate my recovery phrase.</string>
+    <string name="note">DANGER!</string>
 </resources>
