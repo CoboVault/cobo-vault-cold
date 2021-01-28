@@ -58,7 +58,6 @@ public class PolkadotTxDetailView extends ScrollView {
 
     public PolkadotTxDetailView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
-
     }
 
     public PolkadotTxDetailView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -66,11 +65,7 @@ public class PolkadotTxDetailView extends ScrollView {
         inflater = LayoutInflater.from(context);
     }
 
-    public void setData(TxEntity txEntity) {
-        updateUI(txEntity);
-    }
-
-    private void updateUI(TxEntity txEntity) {
+    public void updateUI(TxEntity txEntity) {
         mBinding = DataBindingUtil.getBinding(this);
         Objects.requireNonNull(mBinding).setTx(txEntity);
         try {
@@ -95,9 +90,11 @@ public class PolkadotTxDetailView extends ScrollView {
 
     private void renderCallArgs(JSONObject callArgs) {
         Map<String, Object> paramMap = toMap(callArgs);
-        for (String key : paramMap.keySet()) {
-            Object value = paramMap.get(key);
-            addParamItem(key, value.toString());
+        if (paramMap != null) {
+            for (String key : paramMap.keySet()) {
+                Object value = paramMap.get(key);
+                addParamItem(key, value.toString());
+            }
         }
     }
 

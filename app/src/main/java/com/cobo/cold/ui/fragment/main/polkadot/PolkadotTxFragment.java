@@ -54,7 +54,7 @@ public class PolkadotTxFragment extends BaseFragment<PolkadotTxBinding> {
                 .loadTx(bundle.getString(KEY_TX_ID)).observe(this, txEntity -> {
             this.txEntity = txEntity;
             if (this.txEntity != null) {
-                mBinding.dotTx.txDetail.setData(txEntity);
+                mBinding.dotTx.txDetail.updateUI(txEntity);
                 mBinding.dotTx.qrcode.qrcode.disableMultipart();
                 mBinding.dotTx.qrcode.qrcode.setVisibility(View.VISIBLE);
                 mBinding.dotTx.broadcastHint.setVisibility(View.VISIBLE);
