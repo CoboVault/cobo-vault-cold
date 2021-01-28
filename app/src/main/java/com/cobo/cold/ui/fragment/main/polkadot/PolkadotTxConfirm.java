@@ -68,7 +68,7 @@ public class PolkadotTxConfirm extends BaseFragment<PolkadotTxConfirmBinding> {
         viewModel.getObservableTx().observe(this, txEntity -> {
             if (txEntity != null) {
                 mBinding.setTx(txEntity);
-                mBinding.dotTx.txDetail.setData(txEntity);
+                mBinding.dotTx.txDetail.updateUI(txEntity);
             }
         });
         mBinding.sign.setOnClickListener(v -> handleSign());
