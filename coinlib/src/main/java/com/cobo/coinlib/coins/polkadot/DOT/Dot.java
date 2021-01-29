@@ -26,7 +26,10 @@ import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.Delegate;
 import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.Vote;
+import com.cobo.coinlib.coins.polkadot.pallets.identity.SetIdentity;
+import com.cobo.coinlib.coins.polkadot.pallets.proxy.AddProxy;
 import com.cobo.coinlib.coins.polkadot.pallets.session.SetKeys;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Bond;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.BondExtra;
@@ -93,6 +96,12 @@ public class Dot extends AbsCoin {
         pallets.put(0x0713, new Rebond(Network.POLKADOT, 0x0713));
         pallets.put(0x0714, new SetHistoryDepth(Network.POLKADOT, 0x0714));
         pallets.put(0x0715, new ReapStash(Network.POLKADOT, 0x0715));
+
+        pallets.put(0x0e0b, new Delegate(Network.POLKADOT, 0x0e0b));
+
+        pallets.put(0x1c01, new SetIdentity(Network.POLKADOT, 0x1c01));
+
+        pallets.put(0x1d01, new AddProxy(Network.POLKADOT, 0x1d01));
 
         pallets.put(0x1a00, new Batch(Network.POLKADOT, 0x1a00));
         pallets.put(0x1a02, new BatchAll(Network.POLKADOT, 0x1a02));

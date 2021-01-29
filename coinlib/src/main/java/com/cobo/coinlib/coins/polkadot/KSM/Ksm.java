@@ -27,7 +27,10 @@ import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.Delegate;
 import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.Vote;
+import com.cobo.coinlib.coins.polkadot.pallets.identity.SetIdentity;
+import com.cobo.coinlib.coins.polkadot.pallets.proxy.AddProxy;
 import com.cobo.coinlib.coins.polkadot.pallets.session.SetKeys;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Bond;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.BondExtra;
@@ -95,6 +98,12 @@ public class Ksm extends Dot {
         pallets.put(0x0613, new Rebond(Network.KUSAMA, 0x0613));
         pallets.put(0x0614, new SetHistoryDepth(Network.KUSAMA, 0x0614));
         pallets.put(0x0615, new ReapStash(Network.KUSAMA, 0x0615));
+
+        pallets.put(0x0d0b, new Delegate(Network.KUSAMA, 0x0d0b));
+
+        pallets.put(0x1901, new SetIdentity(Network.KUSAMA, 0x1901));
+
+        pallets.put(0x1e01, new AddProxy(Network.KUSAMA, 0x1e01));
 
         pallets.put(0x1800, new Batch(Network.KUSAMA, 0x1800));
         pallets.put(0x1802, new BatchAll(Network.KUSAMA, 0x1802));
