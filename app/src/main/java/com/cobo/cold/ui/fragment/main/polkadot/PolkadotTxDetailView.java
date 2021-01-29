@@ -81,7 +81,12 @@ public class PolkadotTxDetailView extends ScrollView {
             if (isBatch) {
                 renderBatchCall();
             } else {
-                renderCallArgs(parameter.getJSONObject("parameter"));
+                JSONObject obj = parameter.optJSONObject("parameter");
+                if (obj == null) {
+                    mBinding.param.setVisibility(GONE);
+                } else {
+                    renderCallArgs(obj);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -106,7 +111,10 @@ public class PolkadotTxDetailView extends ScrollView {
             String call = param.getString("name").split("\\.")[1];
             addParamItem("Module", module);
             addParamItem("Call", call);
-            renderCallArgs(param.getJSONObject("parameter"));
+            JSONObject object = param.optJSONObject("parameter");
+            if (object != null) {
+                renderCallArgs(object);
+            }
             addDivider();
         }
     }

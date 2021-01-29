@@ -5,9 +5,6 @@ import com.cobo.coinlib.exception.InvalidUOSException;
 
 import org.bouncycastle.util.encoders.Hex;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class SubstratePayload {
     private final String rawData;
 
@@ -43,7 +40,6 @@ public class SubstratePayload {
         accountPublicKey = scaleCodecReader.readByteArray(32);
         String restString = scaleCodecReader.readRestString();
         String rawPayload = restString.substring(0, restString.length() - 64);
-        isOversize = restString.length() > 512;
         genesisHash = restString.substring(restString.length() - 64);
         network = Network.of(genesisHash);
 
@@ -54,6 +50,7 @@ public class SubstratePayload {
                 ScaleCodecReader tempReader = new ScaleCodecReader(Hex.decode(rawPayload));
                 tempReader.readCompact();
                 rawSigningData = tempReader.readRestBytes();
+                isOversize = rawSigningData.length > 256;
                 extrinsic = new Extrinsic(rawSigningData, network);
                 break;
             }

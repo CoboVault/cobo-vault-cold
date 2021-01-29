@@ -6,7 +6,6 @@ import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,16 +34,16 @@ public class NominateParameter extends Parameter {
     protected JSONObject addCallParameter() throws JSONException {
         JSONObject object = new JSONObject();
         object.put("Length", length);
-        object.put("Targets", toJsonArray());
+        object.put("Targets", concatAddress());
         return object;
     }
 
-    public JSONArray toJsonArray() {
-        JSONArray array = new JSONArray();
+    public String concatAddress() {
+        StringBuilder sb = new StringBuilder();
         for (byte[] pubkey : publicKeys) {
-            array.put(AddressCodec.encodeAddress(pubkey, network.SS58Prefix));
+            sb.append(AddressCodec.encodeAddress(pubkey, network.SS58Prefix)).append("\n");
         }
-        return array;
+        return sb.toString();
     }
 
     @Override
