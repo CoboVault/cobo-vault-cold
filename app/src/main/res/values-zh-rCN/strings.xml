@@ -39,7 +39,7 @@
     <string name="pattern_lock_hint">请绘制解锁图案</string>
     <string name="switch_to_password">切换至密码解锁</string>
     <string name="about_message">Cobo 金库是一款利用二维码作为信息传输媒介，从而实现100%完全脱网的硬件钱包产品。通过二维码，用户亦可方便地检查输入和输出的信息。我们的安全芯片通过物理震荡环生成真随机数（TRNG），从而充分保障了用户私钥的随机性。私钥派生，所有的交易签名全部在安全芯片内完成。从而将硬件钱包的安全性能推到一个前所未有的新高度。</string>
-    <string name="device_info">序列号: %s\n  固件版本：%s\n  系统版本：%s  \n应用版本：%s</string>
+    <string name="device_info">序列号: %s\n  固件版本：%s\n   芯片版本：%s\n  系统版本：%s  \n</string>
     <string name="asset_list_empty">请到“菜单 - 添加 / 隐藏币种” 中添加所需币种</string>
     <string name="mnemonic_hint1">助记词用于恢复钱包，请使用cryptosteel依次记录您的24个助记词，并保存到安全的地方。</string>
     <string name="mnemonic_hint2">请勿进行拍照等操作！如果他人获取您的助记词将直接获取您的资产！</string>

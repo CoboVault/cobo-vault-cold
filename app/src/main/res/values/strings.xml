@@ -41,7 +41,7 @@
     <string name="pattern_lock_hint">Please draw an unlock pattern</string>
     <string name="switch_to_password">Switch to password unlock</string>
     <string name="www_cobo_com" translatable="false">www.cobo.com</string>
-    <string name="device_info">Serial Number: %s \n Firmware Version: %s\n System Version：%s\n App Version：%s</string>
+    <string name="device_info">Serial Number: %s \n   Firmware Version：%s\n SE Firmware Version: %s\n System Version：%s </string>
     <string name="addr" translatable="false">addr.</string>
     <string name="asset_list_empty">Please go to Menu - Add / Hide Assets to add assets you need</string>
     <string name="mnemonic_hint1">"The recovery phrase is used to restore your wallet. Use a Cobo Tablet to record your 24 recovery phrase words and store them securely."</string>
