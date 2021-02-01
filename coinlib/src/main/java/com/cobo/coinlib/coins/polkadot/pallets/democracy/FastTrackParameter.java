@@ -11,24 +11,33 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class ExternalProposeDefaultParameter extends Parameter {
+public class FastTrackParameter extends Parameter {
     private byte[] proposalHash;
-    public ExternalProposeDefaultParameter(String name, Network network, int code, ScaleCodecReader scr) {
+    private long votingPeriod;
+    private long delay;
+
+    public FastTrackParameter(String name, Network network, int code, ScaleCodecReader scr) {
         super(name, network, code, scr);
     }
 
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
         scw.writeByteArray(proposalHash);
+        scw.writeUint32(votingPeriod);
+        scw.writeUint32(delay);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
         proposalHash = scr.readByteArray(32);
+        votingPeriod = scr.readUint32();
+        delay = scr.readUint32();
     }
 
     @Override
     protected JSONObject addCallParameter() throws JSONException {
-        return new JSONObject().put("ProposalHash", Hex.toHexString(proposalHash));
+        return new JSONObject().put("ProposalHash", Hex.toHexString(proposalHash))
+                .put("VotingPeriod", votingPeriod)
+                .put("Delay", delay);
     }
 }

@@ -11,24 +11,28 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class ExternalProposeMajorityParameter extends Parameter {
-    private byte[] proposalHash;
-    public ExternalProposeMajorityParameter(String name, Network network, int code, ScaleCodecReader scr) {
+public class NotePreimageParameter extends Parameter {
+    private int length;
+    private byte[] encodedProposal;
+
+    public NotePreimageParameter(String name, Network network, int code, ScaleCodecReader scr) {
         super(name, network, code, scr);
     }
 
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
-        scw.writeByteArray(proposalHash);
+        scw.writeCompact(length);
+        scw.writeByteArray(encodedProposal);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        proposalHash = scr.readByteArray(32);
+        length = scr.readCompactInt();
+        encodedProposal = scr.readByteArray(length);
     }
 
     @Override
     protected JSONObject addCallParameter() throws JSONException {
-        return new JSONObject().put("ProposalHash", Hex.toHexString(proposalHash));
+        return new JSONObject().put("EncodedProposal", Hex.toHexString(encodedProposal));
     }
 }

@@ -4,10 +4,9 @@ import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 
-public class ExternalProposeMajority extends Pallet<ExternalProposeParameter> {
-
-    public ExternalProposeMajority(Network network, int code) {
-        super("democracy.externalProposeMajority", network, code);
+public class VetoExternal extends Pallet<ExternalProposeParameter> {
+    public VetoExternal(String name, Network network, int code) {
+        super("democracy.vetoExternal", network, code);
     }
 
     @Override
