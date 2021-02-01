@@ -9,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
 public class ValidateParameter extends Parameter {
     private int value; // base 1 * 10^9
@@ -26,7 +25,7 @@ public class ValidateParameter extends Parameter {
     @Override
     protected JSONObject addCallParameter() throws JSONException {
         JSONObject object = new JSONObject();
-        object.put("Prefs", value);
+        object.put("Prefs", value / 10000000);
         return object;
     }
 
