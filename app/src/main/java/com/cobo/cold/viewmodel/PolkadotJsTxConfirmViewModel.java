@@ -90,7 +90,8 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
         if (parameter == null) return false;
         return  parameter.name.startsWith("balance.transfer")
                 || parameter.name.startsWith("staking")
-                || parameter.name.startsWith("utility.batch");
+                || parameter.name.startsWith("utility.batch")
+                || parameter.name.startsWith("session.setKeys");
     }
 
     public boolean isNetworkSupported(Network network) {
