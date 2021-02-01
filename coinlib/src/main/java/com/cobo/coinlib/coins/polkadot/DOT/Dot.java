@@ -69,11 +69,7 @@ import java.util.Map;
 
 public class Dot extends AbsCoin {
     public static final Map<Integer, Pallet<? extends Parameter>> pallets = new HashMap<>();
-    static {
-        pallets.put(0x0500, new Transfer(Network.POLKADOT, 0x0500));
-        pallets.put(0x0503, new TransferKeepAlive(Network.POLKADOT, 0x0503));
-        pallets.put(0x0900, new SetKeys(Network.POLKADOT, 0x0900));
-        //Staking
+    private static void registerStaking() {
         pallets.put(0x0700, new Bond(Network.POLKADOT, 0x0700));
         pallets.put(0x0701, new BondExtra(Network.POLKADOT, 0x0701));
         pallets.put(0x0702, new Unbond(Network.POLKADOT, 0x0702));
@@ -96,6 +92,14 @@ public class Dot extends AbsCoin {
         pallets.put(0x0713, new Rebond(Network.POLKADOT, 0x0713));
         pallets.put(0x0714, new SetHistoryDepth(Network.POLKADOT, 0x0714));
         pallets.put(0x0715, new ReapStash(Network.POLKADOT, 0x0715));
+    }
+    static {
+        pallets.put(0x0500, new Transfer(Network.POLKADOT, 0x0500));
+        pallets.put(0x0503, new TransferKeepAlive(Network.POLKADOT, 0x0503));
+        pallets.put(0x0900, new SetKeys(Network.POLKADOT, 0x0900));
+        //Staking
+
+        registerStaking();
 
         pallets.put(0x0e0b, new Delegate(Network.POLKADOT, 0x0e0b));
 
@@ -139,7 +143,6 @@ public class Dot extends AbsCoin {
                 metaData.put("authoringVersion",0);
             }
             metaData.put("eraPeriod",4096);
-
         }
 
         @Override
