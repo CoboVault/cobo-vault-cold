@@ -79,6 +79,10 @@ public class Eth extends AbsCoin implements Coin {
                 amount = calculateDisplayAmount();
                 memo = metaData.optString("memo");
                 boolean enableMemo = false;
+                int nonce = metaData.optInt("nonce", -1);
+                if (nonce == -1) {
+                    metaData.put("nonce", 0);
+                }
                 if (!TextUtils.isEmpty(memo) && !enableMemo) {
                     metaData.put("memo", "");
                 }
