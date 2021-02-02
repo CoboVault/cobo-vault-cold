@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 public class VoteParameter extends Parameter {
-    private abstract class Vote {
+    private abstract static class Vote {
         protected abstract String getTypeName();
 
         protected abstract void write(ScaleCodecWriter scw) throws IOException;
