@@ -51,6 +51,11 @@ import com.cobo.coinlib.coins.polkadot.pallets.democracy.UnDelegate;
 import com.cobo.coinlib.coins.polkadot.pallets.democracy.Unlock;
 import com.cobo.coinlib.coins.polkadot.pallets.democracy.VetoExternal;
 import com.cobo.coinlib.coins.polkadot.pallets.democracy.Vote;
+import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.RemoveMember;
+import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.RemoveVoter;
+import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.RenounceCandidacy;
+import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.ReportDefunctVoter;
+import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.SubmitCandidacy;
 import com.cobo.coinlib.coins.polkadot.pallets.identity.SetIdentity;
 import com.cobo.coinlib.coins.polkadot.pallets.proxy.AddProxy;
 import com.cobo.coinlib.coins.polkadot.pallets.session.SetKeys;
@@ -143,6 +148,15 @@ public class Dot extends AbsCoin {
         pallets.put(0x0e17, new Blacklist(Network.POLKADOT, 0x0e17));
         pallets.put(0x0e18, new CancelProposal(Network.POLKADOT, 0x0e18));
     }
+    private static void registerElectionsPhragmen() {
+        pallets.put(0x1100,
+                new com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.Vote(Network.POLKADOT, 0x1100));
+        pallets.put(0x1101, new RemoveVoter(Network.POLKADOT, 0x1101));
+        pallets.put(0x1102, new ReportDefunctVoter(Network.POLKADOT, 0x1102));
+        pallets.put(0x1103, new SubmitCandidacy(Network.POLKADOT, 0x1103));
+        pallets.put(0x1104, new RenounceCandidacy(Network.POLKADOT, 0x1104));
+        pallets.put(0x1105, new RemoveMember(Network.POLKADOT, 0x1105));
+    }
     static {
         pallets.put(0x0500, new Transfer(Network.POLKADOT, 0x0500));
         pallets.put(0x0503, new TransferKeepAlive(Network.POLKADOT, 0x0503));
@@ -150,6 +164,7 @@ public class Dot extends AbsCoin {
 
         registerStaking();
         registerDemocracy();
+        registerElectionsPhragmen();
 
 
         pallets.put(0x1c01, new SetIdentity(Network.POLKADOT, 0x1c01));
@@ -158,7 +173,6 @@ public class Dot extends AbsCoin {
 
         pallets.put(0x1a00, new Batch(Network.POLKADOT, 0x1a00));
         pallets.put(0x1a02, new BatchAll(Network.POLKADOT, 0x1a02));
-        pallets.put(0x1100, new Vote(Network.POLKADOT, 0x1100));
     }
 
     public Dot(Coin impl) {
