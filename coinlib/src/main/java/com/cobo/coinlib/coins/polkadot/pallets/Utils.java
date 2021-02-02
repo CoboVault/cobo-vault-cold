@@ -11,4 +11,25 @@ public class Utils {
                 .divide(BigDecimal.TEN.pow(network.decimals), Math.min(network.decimals, 8), BigDecimal.ROUND_HALF_UP)
                 .stripTrailingZeros().toPlainString() + " " + network.coinCode();
     }
+
+    public static String transformConviction(byte conviction){
+        switch (conviction) {
+            case 0x00:
+                return "None";
+            case 0x01:
+                return "Locked1x";
+            case 0x02:
+                return "Locked2x";
+            case 0x03:
+                return "Locked3x";
+            case 0x04:
+                return "Locked4x";
+            case 0x05:
+                return "Locked5x";
+            case 0x06:
+                return "Locked6x";
+            default:
+                throw new Error("Unknown Conviction");
+        }
+    }
 }

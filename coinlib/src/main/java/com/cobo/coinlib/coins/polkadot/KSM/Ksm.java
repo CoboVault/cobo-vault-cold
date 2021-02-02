@@ -70,12 +70,7 @@ import java.util.Map;
 
 public class Ksm extends Dot {
     public static final Map<Integer, Pallet<? extends Parameter>> pallets = new HashMap<>();
-    //fix code
-    static {
-        pallets.put(0x0400, new Transfer(Network.KUSAMA, 0x0400));
-        pallets.put(0x0403, new TransferKeepAlive(Network.KUSAMA, 0x0403));
-        pallets.put(0x0800, new SetKeys(Network.KUSAMA, 0x0800));
-        //Staking
+    private static void registerStaking(){
         pallets.put(0x0600, new Bond(Network.KUSAMA, 0x0600));
         pallets.put(0x0601, new BondExtra(Network.KUSAMA, 0x0601));
         pallets.put(0x0602, new Unbond(Network.KUSAMA, 0x0602));
@@ -99,6 +94,14 @@ public class Ksm extends Dot {
         pallets.put(0x0614, new SetHistoryDepth(Network.KUSAMA, 0x0614));
         pallets.put(0x0615, new ReapStash(Network.KUSAMA, 0x0615));
 
+    }
+    //fix code
+    static {
+        pallets.put(0x0400, new Transfer(Network.KUSAMA, 0x0400));
+        pallets.put(0x0403, new TransferKeepAlive(Network.KUSAMA, 0x0403));
+        pallets.put(0x0800, new SetKeys(Network.KUSAMA, 0x0800));
+        //Staking
+        registerStaking();
         pallets.put(0x0d0b, new Delegate(Network.KUSAMA, 0x0d0b));
 
         pallets.put(0x1901, new SetIdentity(Network.KUSAMA, 0x1901));

@@ -116,6 +116,10 @@ public class ScaleCodecWriter implements Closeable {
         COMPACT_UINT.write(this, value);
     }
 
+    public void writeBoolean(boolean flag) throws IOException {
+        BOOL.write(this, flag);
+    }
+
     @SuppressWarnings("unchecked")
     public <T> void writeOptional(ScaleWriter<T> writer, T value) throws IOException {
         if (writer instanceof BoolOptionalWriter || writer instanceof BoolWriter) {
