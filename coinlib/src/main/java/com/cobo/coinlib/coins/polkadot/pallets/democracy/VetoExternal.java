@@ -5,7 +5,7 @@ import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 
 public class VetoExternal extends Pallet<ExternalProposeParameter> {
-    public VetoExternal(String name, Network network, int code) {
+    public VetoExternal(Network network, int code) {
         super("democracy.vetoExternal", network, code);
     }
 

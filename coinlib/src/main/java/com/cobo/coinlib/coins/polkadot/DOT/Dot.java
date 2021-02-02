@@ -26,8 +26,31 @@ import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.Blacklist;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.CancelProposal;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.CancelQueued;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.CancelReferendum;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.ClearPublicProposals;
 import com.cobo.coinlib.coins.polkadot.pallets.democracy.Delegate;
-import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.Vote;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.EmergencyCancel;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.EnactProposal;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.ExternalPropose;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.ExternalProposeDefault;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.ExternalProposeMajority;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.FastTrack;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.NoteImminentPreimage;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.NoteImminentPreimageOperational;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.NotePreimage;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.NotePreimageOperational;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.Propose;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.ReapPreimage;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.RemoveOtherVote;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.RemoveVote;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.Second;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.UnDelegate;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.Unlock;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.VetoExternal;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.Vote;
 import com.cobo.coinlib.coins.polkadot.pallets.identity.SetIdentity;
 import com.cobo.coinlib.coins.polkadot.pallets.proxy.AddProxy;
 import com.cobo.coinlib.coins.polkadot.pallets.session.SetKeys;
@@ -93,15 +116,41 @@ public class Dot extends AbsCoin {
         pallets.put(0x0714, new SetHistoryDepth(Network.POLKADOT, 0x0714));
         pallets.put(0x0715, new ReapStash(Network.POLKADOT, 0x0715));
     }
+    private static void registerDemocracy() {
+        pallets.put(0x0e00, new Propose(Network.POLKADOT, 0x0e00));
+        pallets.put(0x0e01, new Second(Network.POLKADOT, 0x0e01));
+        pallets.put(0x0e02, new Vote(Network.POLKADOT, 0x0e02));
+        pallets.put(0x0e03, new EmergencyCancel(Network.POLKADOT, 0x0e03));
+        pallets.put(0x0e04, new ExternalPropose(Network.POLKADOT, 0x0e04));
+        pallets.put(0x0e05, new ExternalProposeMajority(Network.POLKADOT, 0x0e05));
+        pallets.put(0x0e06, new ExternalProposeDefault(Network.POLKADOT, 0x0e06));
+        pallets.put(0x0e07, new FastTrack(Network.POLKADOT, 0x0e07));
+        pallets.put(0x0e08, new VetoExternal(Network.POLKADOT, 0x0e08));
+        pallets.put(0x0e09, new CancelReferendum(Network.POLKADOT, 0x0e09));
+        pallets.put(0x0e0a, new CancelQueued(Network.POLKADOT, 0x0e0a));
+        pallets.put(0x0e0b, new Delegate(Network.POLKADOT, 0x0e0b));
+        pallets.put(0x0e0c, new UnDelegate(Network.POLKADOT, 0x0e0c));
+        pallets.put(0x0e0d, new ClearPublicProposals(Network.POLKADOT, 0x0e0d));
+        pallets.put(0x0e0e, new NotePreimage(Network.POLKADOT, 0x0e0e));
+        pallets.put(0x0e0f, new NotePreimageOperational(Network.POLKADOT, 0x0e0f));
+        pallets.put(0x0e10, new NoteImminentPreimage(Network.POLKADOT, 0x0e10));
+        pallets.put(0x0e11, new NoteImminentPreimageOperational(Network.POLKADOT, 0x0e11));
+        pallets.put(0x0e12, new ReapPreimage(Network.POLKADOT, 0x0e12));
+        pallets.put(0x0e13, new Unlock(Network.POLKADOT, 0x0e13));
+        pallets.put(0x0e14, new RemoveVote(Network.POLKADOT, 0x0e14));
+        pallets.put(0x0e15, new RemoveOtherVote(Network.POLKADOT, 0x0e15));
+        pallets.put(0x0e16, new EnactProposal(Network.POLKADOT, 0x0e16));
+        pallets.put(0x0e17, new Blacklist(Network.POLKADOT, 0x0e17));
+        pallets.put(0x0e18, new CancelProposal(Network.POLKADOT, 0x0e18));
+    }
     static {
         pallets.put(0x0500, new Transfer(Network.POLKADOT, 0x0500));
         pallets.put(0x0503, new TransferKeepAlive(Network.POLKADOT, 0x0503));
         pallets.put(0x0900, new SetKeys(Network.POLKADOT, 0x0900));
-        //Staking
 
         registerStaking();
+        registerDemocracy();
 
-        pallets.put(0x0e0b, new Delegate(Network.POLKADOT, 0x0e0b));
 
         pallets.put(0x1c01, new SetIdentity(Network.POLKADOT, 0x1c01));
 
