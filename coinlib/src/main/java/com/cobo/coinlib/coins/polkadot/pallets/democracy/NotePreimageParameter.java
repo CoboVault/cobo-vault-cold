@@ -33,6 +33,6 @@ public class NotePreimageParameter extends Parameter {
 
     @Override
     protected JSONObject addCallParameter() throws JSONException {
-        return new JSONObject().put("EncodedProposal", Hex.toHexString(encodedProposal));
+        return new JSONObject().put("EncodedProposal", "0x" + Hex.toHexString(encodedProposal));
     }
 }
