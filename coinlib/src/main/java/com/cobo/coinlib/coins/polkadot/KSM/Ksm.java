@@ -27,7 +27,30 @@ import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.Blacklist;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.CancelProposal;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.CancelQueued;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.CancelReferendum;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.ClearPublicProposals;
 import com.cobo.coinlib.coins.polkadot.pallets.democracy.Delegate;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.EmergencyCancel;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.EnactProposal;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.ExternalPropose;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.ExternalProposeDefault;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.ExternalProposeMajority;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.FastTrack;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.NoteImminentPreimage;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.NoteImminentPreimageOperational;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.NotePreimage;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.NotePreimageOperational;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.Propose;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.ReapPreimage;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.RemoveOtherVote;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.RemoveVote;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.Second;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.UnDelegate;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.Unlock;
+import com.cobo.coinlib.coins.polkadot.pallets.democracy.VetoExternal;
 import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.Vote;
 import com.cobo.coinlib.coins.polkadot.pallets.identity.SetIdentity;
 import com.cobo.coinlib.coins.polkadot.pallets.proxy.AddProxy;
@@ -95,14 +118,40 @@ public class Ksm extends Dot {
         pallets.put(0x0615, new ReapStash(Network.KUSAMA, 0x0615));
 
     }
-    //fix code
+    private static void registerDemocracy() {
+        pallets.put(0x0d00, new Propose(Network.KUSAMA, 0x0d00));
+        pallets.put(0x0d01, new Second(Network.KUSAMA, 0x0d01));
+        pallets.put(0x0d02, new Vote(Network.KUSAMA, 0x0d02));
+        pallets.put(0x0d03, new EmergencyCancel(Network.KUSAMA, 0x0d03));
+        pallets.put(0x0d04, new ExternalPropose(Network.KUSAMA, 0x0d04));
+        pallets.put(0x0d05, new ExternalProposeMajority(Network.KUSAMA, 0x0d05));
+        pallets.put(0x0d06, new ExternalProposeDefault(Network.KUSAMA, 0x0d06));
+        pallets.put(0x0d07, new FastTrack(Network.KUSAMA, 0x0d07));
+        pallets.put(0x0d08, new VetoExternal(Network.KUSAMA, 0x0d08));
+        pallets.put(0x0d09, new CancelReferendum(Network.KUSAMA, 0x0d09));
+        pallets.put(0x0d0a, new CancelQueued(Network.KUSAMA, 0x0d0a));
+        pallets.put(0x0d0b, new Delegate(Network.KUSAMA, 0x0d0b));
+        pallets.put(0x0d0c, new UnDelegate(Network.KUSAMA, 0x0d0c));
+        pallets.put(0x0d0d, new ClearPublicProposals(Network.KUSAMA, 0x0d0d));
+        pallets.put(0x0d0e, new NotePreimage(Network.KUSAMA, 0x0d0e));
+        pallets.put(0x0d0f, new NotePreimageOperational(Network.KUSAMA, 0x0d0f));
+        pallets.put(0x0d10, new NoteImminentPreimage(Network.KUSAMA, 0x0d10));
+        pallets.put(0x0d11, new NoteImminentPreimageOperational(Network.KUSAMA, 0x0d11));
+        pallets.put(0x0d12, new ReapPreimage(Network.KUSAMA, 0x0d12));
+        pallets.put(0x0d13, new Unlock(Network.KUSAMA, 0x0d13));
+        pallets.put(0x0d14, new RemoveVote(Network.KUSAMA, 0x0d14));
+        pallets.put(0x0d15, new RemoveOtherVote(Network.KUSAMA, 0x0d15));
+        pallets.put(0x0d16, new EnactProposal(Network.KUSAMA, 0x0d16));
+        pallets.put(0x0d17, new Blacklist(Network.KUSAMA, 0x0d17));
+        pallets.put(0x0d18, new CancelProposal(Network.KUSAMA, 0x0d18));
+    }
     static {
         pallets.put(0x0400, new Transfer(Network.KUSAMA, 0x0400));
         pallets.put(0x0403, new TransferKeepAlive(Network.KUSAMA, 0x0403));
         pallets.put(0x0800, new SetKeys(Network.KUSAMA, 0x0800));
-        //Staking
+
         registerStaking();
-        pallets.put(0x0d0b, new Delegate(Network.KUSAMA, 0x0d0b));
+        registerDemocracy();
 
         pallets.put(0x1901, new SetIdentity(Network.KUSAMA, 0x1901));
 

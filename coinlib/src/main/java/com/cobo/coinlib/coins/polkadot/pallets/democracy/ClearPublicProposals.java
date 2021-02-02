@@ -6,13 +6,13 @@ import com.cobo.coinlib.coins.polkadot.pallets.EmptyParameter;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 
-public class ClearPublicProposals extends Pallet {
+public class ClearPublicProposals extends Pallet<EmptyParameter> {
     public ClearPublicProposals(Network network, int code) {
         super("democracy.clearPublicProposals", network, code);
     }
 
     @Override
-    public Parameter read(ScaleCodecReader scr) {
+    public EmptyParameter read(ScaleCodecReader scr) {
         return new EmptyParameter(name, network, code, scr);
     }
 }
