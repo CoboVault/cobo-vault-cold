@@ -523,8 +523,8 @@
     <string name="pair_app">Pair App</string>
     <string name="unknown_substrate_chain_title">This currency is not currently supported</string>
     <string name="unknown_substrate_chain_content">Polkadot.js watch-only does not support this currency</string>
-    <string name="unsupported_polka_tx_type_title">This transaction is not currently supported</string>
-    <string name="unsupported_polka_tx_type_content">In Polkadot.js watch-only, only DOT &amp; KSM receiving and sending are supported. Other transaction types are not currently supported.</string>
+    <string name="unsupported_polka_tx_type_title">Unresolved Transaction</string>
+    <string name="unsupported_polka_tx_type_content">This transaction types are not currently supported.</string>
     <string name="enable_dot_for_polkadotjs">You need to enter the recovery phrase of this vault when switch watch-only wallet to polkadot.js. For details, please visit: https://cobo.com/dot</string>
     <string name="not_switch">Not Now</string>
     <string name="confirm_switch">Confirm</string>

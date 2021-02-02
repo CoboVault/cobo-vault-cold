@@ -88,7 +88,7 @@ public class SetIdentityParameter extends Parameter {
     }
 
     private void writePgpFingerprint(ScaleCodecWriter scw) throws IOException {
-        if (pgpFingerprint.length > 0) {
+        if (pgpFingerprint!= null && pgpFingerprint.length > 0) {
             scw.writeByte(0x01);
             scw.writeByteArray(pgpFingerprint);
         }
@@ -114,16 +114,13 @@ public class SetIdentityParameter extends Parameter {
         return new String(hex, StandardCharsets.UTF_8);
     }
 
-    private JSONObject getAdditional() {
-        JSONObject object = new JSONObject();
-        additional.forEach((key, value) -> {
-            try {
-                object.put(fromHexToUtf8String(key), fromHexToUtf8String(value));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        });
-        return object;
+    private String getAdditional() {
+        StringBuilder sb = new StringBuilder();
+        additional.forEach((key, value) -> sb.append(fromHexToUtf8String(key))
+                .append(":\n")
+                .append(fromHexToUtf8String(value))
+                .append("\n"));
+        return sb.toString();
     }
 
     @Override
@@ -135,9 +132,11 @@ public class SetIdentityParameter extends Parameter {
                 .put("Web", fromHexToUtf8String(web))
                 .put("Riot", fromHexToUtf8String(riot))
                 .put("Email", fromHexToUtf8String(email))
-                .put("PgpFingerprint", Hex.toHexString(pgpFingerprint))
                 .put("Image", fromHexToUtf8String(image))
                 .put("Twitter", fromHexToUtf8String(twitter));
+        if (pgpFingerprint != null) {
+        object.put("PgpFingerprint", Hex.toHexString(pgpFingerprint));
+        }
         return object;
     }
 }

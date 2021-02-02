@@ -39,7 +39,9 @@ public class VoteParameter extends Parameter {
     protected JSONObject addCallParameter() throws JSONException {
         return new JSONObject()
                 .put("Length", length)
-                .put("Votes", publicKeys.stream().map(p -> AddressCodec.encodeAddress(p, network.SS58Prefix)).collect(Collectors.toList()))
+                .put("Votes", publicKeys.stream()
+                        .map(p -> AddressCodec.encodeAddress(p, network.SS58Prefix))
+                        .reduce((s1,s2) -> s1+ "\n" + s2).orElse(""))
                 .put("Value", Utils.getReadableBalanceString(network, value));
     }
 
