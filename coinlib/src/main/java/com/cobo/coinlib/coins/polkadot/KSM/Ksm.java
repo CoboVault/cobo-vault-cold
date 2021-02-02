@@ -25,6 +25,8 @@ import com.cobo.coinlib.coins.polkadot.DOT.Dot;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.pallets.balance.ForceTransfer;
+import com.cobo.coinlib.coins.polkadot.pallets.balance.SetBalance;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
 import com.cobo.coinlib.coins.polkadot.pallets.democracy.Blacklist;
@@ -98,7 +100,15 @@ import java.util.Map;
 
 public class Ksm extends Dot {
     public static final Map<Integer, Pallet<? extends Parameter>> pallets = new HashMap<>();
-    private static void registerStaking(){
+
+    private static void registerBalance() {
+        pallets.put(0x0400, new Transfer(Network.KUSAMA, 0x0400));
+        pallets.put(0x0401, new SetBalance(Network.KUSAMA, 0x0401));
+        pallets.put(0x0402, new ForceTransfer(Network.KUSAMA, 0x0402));
+        pallets.put(0x0403, new TransferKeepAlive(Network.KUSAMA, 0x0403));
+    }
+
+    private static void registerStaking() {
         pallets.put(0x0600, new Bond(Network.KUSAMA, 0x0600));
         pallets.put(0x0601, new BondExtra(Network.KUSAMA, 0x0601));
         pallets.put(0x0602, new Unbond(Network.KUSAMA, 0x0602));
@@ -160,10 +170,8 @@ public class Ksm extends Dot {
         pallets.put(0x1005, new RemoveMember(Network.POLKADOT, 0x1005));
     }
     static {
-        pallets.put(0x0400, new Transfer(Network.KUSAMA, 0x0400));
-        pallets.put(0x0403, new TransferKeepAlive(Network.KUSAMA, 0x0403));
         pallets.put(0x0800, new SetKeys(Network.KUSAMA, 0x0800));
-
+        registerBalance();
         registerStaking();
         registerDemocracy();
         registerElectionsPhragmen();

@@ -29,9 +29,9 @@ public abstract class Parameter {
         return object;
     }
 
-    protected abstract void write(ScaleCodecWriter scw) throws IOException;
-
     protected abstract void read(ScaleCodecReader scr);
+
+    protected abstract void write(ScaleCodecWriter scw) throws IOException;
 
     protected abstract JSONObject addCallParameter() throws JSONException;
 

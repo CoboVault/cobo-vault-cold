@@ -24,6 +24,8 @@ import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.pallets.balance.ForceTransfer;
+import com.cobo.coinlib.coins.polkadot.pallets.balance.SetBalance;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.Transfer;
 import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferKeepAlive;
 import com.cobo.coinlib.coins.polkadot.pallets.democracy.Blacklist;
@@ -97,6 +99,14 @@ import java.util.Map;
 
 public class Dot extends AbsCoin {
     public static final Map<Integer, Pallet<? extends Parameter>> pallets = new HashMap<>();
+
+    private static void registerBalance() {
+        pallets.put(0x0500, new Transfer(Network.POLKADOT, 0x0500));
+        pallets.put(0x0501, new SetBalance(Network.POLKADOT, 0x0501));
+        pallets.put(0x0502, new ForceTransfer(Network.POLKADOT, 0x0502));
+        pallets.put(0x0503, new TransferKeepAlive(Network.POLKADOT, 0x0503));
+    }
+
     private static void registerStaking() {
         pallets.put(0x0700, new Bond(Network.POLKADOT, 0x0700));
         pallets.put(0x0701, new BondExtra(Network.POLKADOT, 0x0701));
@@ -158,10 +168,8 @@ public class Dot extends AbsCoin {
         pallets.put(0x1105, new RemoveMember(Network.POLKADOT, 0x1105));
     }
     static {
-        pallets.put(0x0500, new Transfer(Network.POLKADOT, 0x0500));
-        pallets.put(0x0503, new TransferKeepAlive(Network.POLKADOT, 0x0503));
         pallets.put(0x0900, new SetKeys(Network.POLKADOT, 0x0900));
-
+        registerBalance();
         registerStaking();
         registerDemocracy();
         registerElectionsPhragmen();
