@@ -217,7 +217,8 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         if (!viewModel.isNetworkSupported(result.getNetwork())) {
             alert(getString(R.string.unknown_substrate_chain_title) ,
                     getString(R.string.unknown_substrate_chain_content));
-        } else if(!viewModel.isTransactionSupported(result.getExtrinsic().palletParameter)) {
+        } else if(result.getExtrinsic() == null ||
+                !viewModel.isTransactionSupported(result.getExtrinsic().palletParameter)) {
             alert(getString(R.string.unsupported_polka_tx_type_title),
                     getString(R.string.unsupported_polka_tx_type_content));
         } else if(!viewModel.isAccountMatch(result.getAccount())) {

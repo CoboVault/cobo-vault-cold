@@ -12,11 +12,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SetIdentityParameter extends Parameter {
-    private Map<byte[], byte[]> additional = new HashMap<>();
+    private final Map<byte[], byte[]> additional = new HashMap<>();
     private byte[] display;
     private byte[] legal;
     private byte[] web;
@@ -135,7 +134,7 @@ public class SetIdentityParameter extends Parameter {
                 .put("Image", fromHexToUtf8String(image))
                 .put("Twitter", fromHexToUtf8String(twitter));
         if (pgpFingerprint != null) {
-        object.put("PgpFingerprint", Hex.toHexString(pgpFingerprint));
+            object.put("PgpFingerprint", Hex.toHexString(pgpFingerprint));
         }
         return object;
     }

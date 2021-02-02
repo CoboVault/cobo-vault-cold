@@ -19,8 +19,6 @@ public class VoteParameter extends Parameter {
         protected abstract void write(ScaleCodecWriter scw) throws IOException;
 
         protected abstract void read(ScaleCodecReader scr);
-
-        protected abstract JSONObject toJSON() throws JSONException;
     }
 
     private class StandardVote extends Vote {
@@ -34,24 +32,24 @@ public class VoteParameter extends Parameter {
 
         @Override
         protected void write(ScaleCodecWriter scw) throws IOException {
-            scw.writeBoolean(aye);
-            scw.writeByte(conviction);
-            scw.writeBIntCompact(balance);
+            scw.writeByte(aye ? 0x80 | conviction : conviction);
+            scw.writeUint128(balance);
         }
 
         @Override
         protected void read(ScaleCodecReader scr) {
-            aye = scr.readBoolean();
-            conviction = scr.readByte();
-            balance = scr.readCompact();
+            byte b = scr.readByte();
+            aye = (b & 0x80) > 0;
+            conviction = (byte) (b & 0x7f);
+            balance = scr.readUint128();
         }
 
         @Override
-        protected JSONObject toJSON() throws JSONException {
-            return new JSONObject().put("Aye", aye)
-                    .put("Conviction", Utils.transformConviction(conviction))
-                    .put("Balance", Utils.getReadableBalanceString(network, balance));
-        }
+        public String toString() {
+            return "Aye: " +aye + "\n"
+                    + "Conviction: " + Utils.transformConviction(conviction) + "\n"
+                    + "Balance: " + Utils.getReadableBalanceString(network, balance);
+         }
     }
 
     private class SplitVote extends Vote {
@@ -64,20 +62,20 @@ public class VoteParameter extends Parameter {
 
         @Override
         protected void write(ScaleCodecWriter scw) throws IOException {
-            scw.writeBIntCompact(aye);
-            scw.writeBIntCompact(nay);
+            scw.writeUint128(aye);
+            scw.writeUint128(nay);
         }
 
         @Override
         protected void read(ScaleCodecReader scr) {
-            aye = scr.readCompact();
-            nay = scr.readCompact();
+            aye = scr.readUint128();
+            nay = scr.readUint128();
         }
 
         @Override
-        protected JSONObject toJSON() throws JSONException {
-            return new JSONObject().put("Aye", Utils.getReadableBalanceString(network, aye))
-                    .put("Nay", Utils.getReadableBalanceString(network, nay));
+        public String toString() {
+            return "Aye: " +Utils.getReadableBalanceString(network, aye) + "\n"
+                    + "Nay: " + Utils.getReadableBalanceString(network, nay);
         }
     }
 
@@ -110,7 +108,8 @@ public class VoteParameter extends Parameter {
 
     @Override
     protected JSONObject addCallParameter() throws JSONException {
-        return new JSONObject().put("RefIndex", refIndex).put("VoteType", vote.getTypeName())
-                .put("Vote", vote.toJSON());
+        return new JSONObject().put("RefIndex", refIndex)
+                .put("VoteType", vote.getTypeName())
+                .put("Vote", vote.toString());
     }
 }
