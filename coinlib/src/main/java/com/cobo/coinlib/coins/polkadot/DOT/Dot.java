@@ -81,6 +81,8 @@ import com.cobo.coinlib.coins.polkadot.pallets.staking.SetValidatorCount;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Unbond;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Validate;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.WithdrawUnbonded;
+import com.cobo.coinlib.coins.polkadot.pallets.treasury.ProposeSpend;
+import com.cobo.coinlib.coins.polkadot.pallets.treasury.ReportAwesome;
 import com.cobo.coinlib.coins.polkadot.pallets.utility.Batch;
 import com.cobo.coinlib.coins.polkadot.pallets.utility.BatchAll;
 import com.cobo.coinlib.exception.InvalidTransactionException;
@@ -173,6 +175,8 @@ public class Dot extends AbsCoin {
 
         pallets.put(0x1a00, new Batch(Network.POLKADOT, 0x1a00));
         pallets.put(0x1a02, new BatchAll(Network.POLKADOT, 0x1a02));
+        pallets.put(0x1303, new ReportAwesome(Network.POLKADOT, 0x1303));
+        pallets.put(0x1300, new ProposeSpend(Network.POLKADOT, 0x1300));
     }
 
     public Dot(Coin impl) {

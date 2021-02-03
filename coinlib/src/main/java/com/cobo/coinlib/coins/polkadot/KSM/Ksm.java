@@ -82,6 +82,9 @@ import com.cobo.coinlib.coins.polkadot.pallets.staking.SetValidatorCount;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Unbond;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Validate;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.WithdrawUnbonded;
+import com.cobo.coinlib.coins.polkadot.pallets.treasury.ProposeSpend;
+import com.cobo.coinlib.coins.polkadot.pallets.treasury.ReportAwesome;
+import com.cobo.coinlib.coins.polkadot.pallets.treasury.ReportAwesomeParameter;
 import com.cobo.coinlib.coins.polkadot.pallets.utility.Batch;
 import com.cobo.coinlib.coins.polkadot.pallets.utility.BatchAll;
 import com.cobo.coinlib.exception.InvalidTransactionException;
@@ -174,6 +177,9 @@ public class Ksm extends Dot {
 
         pallets.put(0x1800, new Batch(Network.KUSAMA, 0x1800));
         pallets.put(0x1802, new BatchAll(Network.KUSAMA, 0x1802));
+
+        pallets.put(0x1203, new ReportAwesome(Network.KUSAMA, 0x1203));
+        pallets.put(0x1200, new ProposeSpend(Network.KUSAMA, 0x1200));
     }
 
     public Ksm(Coin impl) {
