@@ -59,7 +59,10 @@ import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.ReportDefunctV
 import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.SubmitCandidacy;
 import com.cobo.coinlib.coins.polkadot.pallets.identity.SetIdentity;
 import com.cobo.coinlib.coins.polkadot.pallets.proxy.AddProxy;
+import com.cobo.coinlib.coins.polkadot.pallets.recovery.CreateRecovery;
+import com.cobo.coinlib.coins.polkadot.pallets.recovery.InitiateRecovery;
 import com.cobo.coinlib.coins.polkadot.pallets.session.SetKeys;
+import com.cobo.coinlib.coins.polkadot.pallets.society.Bid;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Bond;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.BondExtra;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.CancelDeferredSlash;
@@ -82,9 +85,9 @@ import com.cobo.coinlib.coins.polkadot.pallets.staking.SetValidatorCount;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Unbond;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Validate;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.WithdrawUnbonded;
+import com.cobo.coinlib.coins.polkadot.pallets.treasury.ProposeBounty;
 import com.cobo.coinlib.coins.polkadot.pallets.treasury.ProposeSpend;
 import com.cobo.coinlib.coins.polkadot.pallets.treasury.ReportAwesome;
-import com.cobo.coinlib.coins.polkadot.pallets.treasury.ReportAwesomeParameter;
 import com.cobo.coinlib.coins.polkadot.pallets.utility.Batch;
 import com.cobo.coinlib.coins.polkadot.pallets.utility.BatchAll;
 import com.cobo.coinlib.exception.InvalidTransactionException;
@@ -175,11 +178,17 @@ public class Ksm extends Dot {
 
         pallets.put(0x1e01, new AddProxy(Network.KUSAMA, 0x1e01));
 
+        pallets.put(0x1a00, new Bid(Network.KUSAMA, 0x1a00));
+
         pallets.put(0x1800, new Batch(Network.KUSAMA, 0x1800));
         pallets.put(0x1802, new BatchAll(Network.KUSAMA, 0x1802));
 
-        pallets.put(0x1203, new ReportAwesome(Network.KUSAMA, 0x1203));
         pallets.put(0x1200, new ProposeSpend(Network.KUSAMA, 0x1200));
+        pallets.put(0x1203, new ReportAwesome(Network.KUSAMA, 0x1203));
+        pallets.put(0x1208,new ProposeBounty(Network.KUSAMA, 0x1208));
+
+        pallets.put(0x1b02,new CreateRecovery(Network.KUSAMA, 0x1b02));
+        pallets.put(0x1b03,new InitiateRecovery(Network.KUSAMA, 0x1b03));
     }
 
     public Ksm(Coin impl) {
