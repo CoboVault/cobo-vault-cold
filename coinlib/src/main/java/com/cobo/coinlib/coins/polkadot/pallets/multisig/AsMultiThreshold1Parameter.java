@@ -22,81 +22,54 @@ package com.cobo.coinlib.coins.polkadot.pallets.multisig;
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
+import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
+import com.cobo.coinlib.coins.polkadot.pallets.PalletFactory;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
-import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApproveAsMultiParameter extends Parameter {
-    private int threshold;
+public class AsMultiThreshold1Parameter extends Parameter {
+
     private int otherSignatoriesLen;
     private List<byte[]> otherSignatories;
-    private boolean hasTimePoint;
-    private byte[] callHash;
-    private long height;
-    private long index;
-    private BigInteger maxWeight;
+    private Parameter call;
 
-    public ApproveAsMultiParameter(String name, Network network, int code, ScaleCodecReader scr) {
+
+    public AsMultiThreshold1Parameter(String name, Network network, int code, ScaleCodecReader scr) {
         super(name, network, code, scr);
     }
 
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
-        scw.writeUint16(threshold);
         scw.writeCompact(otherSignatoriesLen);
         for (int i = 0 ; i < otherSignatoriesLen; i++) {
             scw.writeByteArray(otherSignatories.get(i));
         }
-        if (hasTimePoint) {
-            scw.writeByte(1);
-            scw.writeUint32(height);
-            scw.writeUint32(index);
-        } else {
-            scw.writeByte(0);
-        }
-        scw.writeByteArray(callHash);
-        scw.writeUint64(maxWeight);
+        call.writeTo(scw);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        threshold = scr.readUint16();
         otherSignatoriesLen = scr.readCompactInt();
         otherSignatories = new ArrayList<>();
         for (int i = 0; i < otherSignatoriesLen; i++) {
             otherSignatories.add(scr.readByteArray(32));
         }
-        hasTimePoint = scr.readBoolean();
-        if (hasTimePoint) {
-            height = scr.readUint32();
-            index = scr.readUint32();
-        }
-        callHash = scr.readByteArray(32);
-        maxWeight = scr.readUint64();
+        int code = scr.readUint16BE();
+        Pallet<? extends Parameter> pallet = PalletFactory.getPallet(code, network);
+        call = pallet.read(scr);
     }
 
     @Override
     protected JSONObject addCallParameter() throws JSONException {
-        return new JSONObject()
-                .put("Max_weight", maxWeight.toString(10))
-                .put("CallHash", "0x" + Hex.toHexString(callHash))
-                .put("Maybe_timepoint", formatTimePoint())
-                .put("Other_signatories", formatSignatories())
-                .put("Threshold", threshold);
-    }
-
-    private String formatTimePoint() {
-        if (!hasTimePoint) return "";
-        return "height: " + height+ "\n"
-                +"index: " + index;
+        return new JSONObject().put("call", call.toJSON())
+                .put("OtherSignatories", formatSignatories());
     }
 
     private String formatSignatories() {

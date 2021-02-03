@@ -22,10 +22,11 @@ package com.cobo.coinlib.coins.polkadot.pallets.multisig;
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
+import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
+import com.cobo.coinlib.coins.polkadot.pallets.PalletFactory;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
-import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,17 +35,18 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApproveAsMultiParameter extends Parameter {
+public class AsMultiParameter extends Parameter {
     private int threshold;
     private int otherSignatoriesLen;
     private List<byte[]> otherSignatories;
     private boolean hasTimePoint;
-    private byte[] callHash;
     private long height;
     private long index;
+    private Parameter call;
+    private boolean storeCall;
     private BigInteger maxWeight;
 
-    public ApproveAsMultiParameter(String name, Network network, int code, ScaleCodecReader scr) {
+    public AsMultiParameter(String name, Network network, int code, ScaleCodecReader scr) {
         super(name, network, code, scr);
     }
 
@@ -62,7 +64,8 @@ public class ApproveAsMultiParameter extends Parameter {
         } else {
             scw.writeByte(0);
         }
-        scw.writeByteArray(callHash);
+        call.writeTo(scw);
+        scw.writeBoolean(storeCall);
         scw.writeUint64(maxWeight);
     }
 
@@ -79,7 +82,10 @@ public class ApproveAsMultiParameter extends Parameter {
             height = scr.readUint32();
             index = scr.readUint32();
         }
-        callHash = scr.readByteArray(32);
+        int code = scr.readUint16BE();
+        Pallet<? extends Parameter> pallet = PalletFactory.getPallet(code, network);
+        call = pallet.read(scr);
+        storeCall = scr.readBoolean();
         maxWeight = scr.readUint64();
     }
 
@@ -87,7 +93,8 @@ public class ApproveAsMultiParameter extends Parameter {
     protected JSONObject addCallParameter() throws JSONException {
         return new JSONObject()
                 .put("Max_weight", maxWeight.toString(10))
-                .put("CallHash", "0x" + Hex.toHexString(callHash))
+                .put("Call", "0x" + call.toJSON())
+                .put("StoreCall", storeCall)
                 .put("Maybe_timepoint", formatTimePoint())
                 .put("Other_signatories", formatSignatories())
                 .put("Threshold", threshold);

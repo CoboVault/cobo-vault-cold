@@ -57,6 +57,10 @@ import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.RenounceCandid
 import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.ReportDefunctVoter;
 import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.SubmitCandidacy;
 import com.cobo.coinlib.coins.polkadot.pallets.identity.SetIdentity;
+import com.cobo.coinlib.coins.polkadot.pallets.multisig.ApproveAsMulti;
+import com.cobo.coinlib.coins.polkadot.pallets.multisig.AsMulti;
+import com.cobo.coinlib.coins.polkadot.pallets.multisig.AsMultiThreshold1;
+import com.cobo.coinlib.coins.polkadot.pallets.multisig.CancelAsMulti;
 import com.cobo.coinlib.coins.polkadot.pallets.proxy.AddProxy;
 import com.cobo.coinlib.coins.polkadot.pallets.session.SetKeys;
 import com.cobo.coinlib.coins.polkadot.pallets.staking.Bond;
@@ -179,6 +183,15 @@ public class Dot extends AbsCoin {
         pallets.put(0x1300, new ProposeSpend(Network.POLKADOT, 0x1300));
         pallets.put(0x1303, new ReportAwesome(Network.POLKADOT, 0x1303));
         pallets.put(0x1308,new ProposeBounty(Network.POLKADOT, 0x1308));
+
+        registerMultisig();
+    }
+
+    private static void registerMultisig() {
+        pallets.put(0x1e00, new AsMultiThreshold1(Network.POLKADOT, 0x1e00));
+        pallets.put(0x1e01, new AsMulti(Network.POLKADOT, 0x1e01));
+        pallets.put(0x1e02, new ApproveAsMulti(Network.POLKADOT, 0x1e02));
+        pallets.put(0x1e03, new CancelAsMulti(Network.POLKADOT, 0x1e03));
     }
 
     public Dot(Coin impl) {

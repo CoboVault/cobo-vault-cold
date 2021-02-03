@@ -30,21 +30,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApproveAsMultiParameter extends Parameter {
+public class CancelAsMultiParameter extends Parameter {
     private int threshold;
     private int otherSignatoriesLen;
     private List<byte[]> otherSignatories;
-    private boolean hasTimePoint;
     private byte[] callHash;
     private long height;
     private long index;
-    private BigInteger maxWeight;
 
-    public ApproveAsMultiParameter(String name, Network network, int code, ScaleCodecReader scr) {
+    public CancelAsMultiParameter(String name, Network network, int code, ScaleCodecReader scr) {
         super(name, network, code, scr);
     }
 
@@ -52,18 +49,12 @@ public class ApproveAsMultiParameter extends Parameter {
     protected void write(ScaleCodecWriter scw) throws IOException {
         scw.writeUint16(threshold);
         scw.writeCompact(otherSignatoriesLen);
-        for (int i = 0 ; i < otherSignatoriesLen; i++) {
+        for (int i = 0; i < otherSignatoriesLen; i++) {
             scw.writeByteArray(otherSignatories.get(i));
         }
-        if (hasTimePoint) {
-            scw.writeByte(1);
-            scw.writeUint32(height);
-            scw.writeUint32(index);
-        } else {
-            scw.writeByte(0);
-        }
+        scw.writeUint32(height);
+        scw.writeUint32(index);
         scw.writeByteArray(callHash);
-        scw.writeUint64(maxWeight);
     }
 
     @Override
@@ -74,19 +65,14 @@ public class ApproveAsMultiParameter extends Parameter {
         for (int i = 0; i < otherSignatoriesLen; i++) {
             otherSignatories.add(scr.readByteArray(32));
         }
-        hasTimePoint = scr.readBoolean();
-        if (hasTimePoint) {
-            height = scr.readUint32();
-            index = scr.readUint32();
-        }
+        height = scr.readUint32();
+        index = scr.readUint32();
         callHash = scr.readByteArray(32);
-        maxWeight = scr.readUint64();
     }
 
     @Override
     protected JSONObject addCallParameter() throws JSONException {
         return new JSONObject()
-                .put("Max_weight", maxWeight.toString(10))
                 .put("CallHash", "0x" + Hex.toHexString(callHash))
                 .put("Maybe_timepoint", formatTimePoint())
                 .put("Other_signatories", formatSignatories())
@@ -94,7 +80,6 @@ public class ApproveAsMultiParameter extends Parameter {
     }
 
     private String formatTimePoint() {
-        if (!hasTimePoint) return "";
         return "height: " + height+ "\n"
                 +"index: " + index;
     }
