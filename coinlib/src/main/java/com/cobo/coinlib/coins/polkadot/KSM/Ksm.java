@@ -58,6 +58,7 @@ import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.RenounceCandid
 import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.ReportDefunctVoter;
 import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.SubmitCandidacy;
 import com.cobo.coinlib.coins.polkadot.pallets.identity.SetIdentity;
+import com.cobo.coinlib.coins.polkadot.pallets.multisig.ApproveAsMulti;
 import com.cobo.coinlib.coins.polkadot.pallets.proxy.AddProxy;
 import com.cobo.coinlib.coins.polkadot.pallets.recovery.CreateRecovery;
 import com.cobo.coinlib.coins.polkadot.pallets.recovery.InitiateRecovery;
@@ -189,6 +190,9 @@ public class Ksm extends Dot {
 
         pallets.put(0x1b02,new CreateRecovery(Network.KUSAMA, 0x1b02));
         pallets.put(0x1b03,new InitiateRecovery(Network.KUSAMA, 0x1b03));
+
+
+        pallets.put(0x1f02, new ApproveAsMulti(Network.KUSAMA, 0x1f02));
     }
 
     public Ksm(Coin impl) {
