@@ -96,7 +96,8 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
                 || parameter.name.equals("identity.setIdentity")
                 || parameter.name.equals("proxy.addProxy")
                 || parameter.name.startsWith("electionsPhragmen")
-                || parameter.name.startsWith("treasury");
+                || parameter.name.startsWith("treasury")
+                || parameter.name.startsWith("society.bid");
     }
 
     public boolean isNetworkSupported(Network network) {
