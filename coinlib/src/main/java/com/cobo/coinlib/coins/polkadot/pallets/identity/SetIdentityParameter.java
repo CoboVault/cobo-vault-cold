@@ -132,10 +132,8 @@ public class SetIdentityParameter extends Parameter {
                 .put("Riot", fromHexToUtf8String(riot))
                 .put("Email", fromHexToUtf8String(email))
                 .put("Image", fromHexToUtf8String(image))
+                .put("PgpFingerprint", pgpFingerprint == null ? "" : Hex.toHexString(pgpFingerprint))
                 .put("Twitter", fromHexToUtf8String(twitter));
-        if (pgpFingerprint != null) {
-            object.put("PgpFingerprint", Hex.toHexString(pgpFingerprint));
-        }
         return object;
     }
 }
