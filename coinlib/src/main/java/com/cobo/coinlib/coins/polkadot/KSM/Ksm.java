@@ -59,6 +59,9 @@ import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.ReportDefunctV
 import com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.SubmitCandidacy;
 import com.cobo.coinlib.coins.polkadot.pallets.identity.SetIdentity;
 import com.cobo.coinlib.coins.polkadot.pallets.multisig.ApproveAsMulti;
+import com.cobo.coinlib.coins.polkadot.pallets.multisig.AsMulti;
+import com.cobo.coinlib.coins.polkadot.pallets.multisig.AsMultiThreshold1;
+import com.cobo.coinlib.coins.polkadot.pallets.multisig.CancelAsMulti;
 import com.cobo.coinlib.coins.polkadot.pallets.proxy.AddProxy;
 import com.cobo.coinlib.coins.polkadot.pallets.recovery.CreateRecovery;
 import com.cobo.coinlib.coins.polkadot.pallets.recovery.InitiateRecovery;
@@ -192,7 +195,14 @@ public class Ksm extends Dot {
         pallets.put(0x1b03,new InitiateRecovery(Network.KUSAMA, 0x1b03));
 
 
+        registerMultisig();
+    }
+
+    private static void registerMultisig() {
+        pallets.put(0x1f00, new AsMultiThreshold1(Network.KUSAMA, 0x1f00));
+        pallets.put(0x1f01, new AsMulti(Network.KUSAMA, 0x1f01));
         pallets.put(0x1f02, new ApproveAsMulti(Network.KUSAMA, 0x1f02));
+        pallets.put(0x1f03, new CancelAsMulti(Network.KUSAMA, 0x1f03));
     }
 
     public Ksm(Coin impl) {
