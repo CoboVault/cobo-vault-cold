@@ -1009,8 +1009,10 @@ public class TxConfirmViewModel extends AndroidViewModel {
                 List<String> fps = new ArrayList<>();
                 for (int j = 0; j < total; j++) {
                     JSONObject item = bip32Derivation.getJSONObject(j);
-                    hdPath = item.getString("path");
                     String fingerprint = item.getString("masterFingerprint");
+                    if (fingerprint.equalsIgnoreCase(new GetMasterFingerprintCallable().call())) {
+                        hdPath = item.getString("path");
+                    }
                     fps.add(fingerprint);
                 }
 
@@ -1108,13 +1110,16 @@ public class TxConfirmViewModel extends AndroidViewModel {
                     for (int j = 0; j < bip32Derivation.length(); j++) {
                         JSONObject item = bip32Derivation.getJSONObject(j);
                         String hdPath = item.getString("path");
-                        if (!hdPath.startsWith(wallet.getExPubPath())) {
-                            hdPath = wallet.getExPubPath()+ hdPath.substring(1);
+                        String xfp = item.getString("masterFingerprint");
+                        String rootXfp = new GetMasterFingerprintCallable().call();
+                        if (xfp.equalsIgnoreCase(rootXfp)) {
+                            if (!hdPath.startsWith(wallet.getExPubPath())) {
+                                hdPath = wallet.getExPubPath() + hdPath.substring(1);
+                            }
+                            out.put("isChange", true);
+                            out.put("changeAddressPath", hdPath);
+                            break;
                         }
-                        out.put("isChange",true);
-                        out.put("changeAddressPath", hdPath);
-                        break;
-
                     }
                 }
                 outputs.put(out);
