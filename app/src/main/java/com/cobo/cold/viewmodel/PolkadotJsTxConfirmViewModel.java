@@ -98,7 +98,8 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
                 || parameter.name.startsWith("electionsPhragmen")
                 || parameter.name.startsWith("treasury")
                 || parameter.name.startsWith("society")
-                || parameter.name.startsWith("recovery");
+                || parameter.name.startsWith("recovery")
+                || parameter.name.startsWith("multisig");
     }
 
     public boolean isNetworkSupported(Network network) {
