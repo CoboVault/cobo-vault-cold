@@ -19,13 +19,15 @@ public class UOSDecoder {
         result.setCurrentFrame(mp.currentFrame);
         result.setMultiPart(mp.isMultiPart);
 
-        result.setIsHash(sp.isHash);
-        result.setAccountPublicKey(sp.accountPublicKey);
-        result.setCurve(sp.curve);
-        result.setNetwork(sp.network);
-        result.setOversize(sp.isOversize);
-        result.setExtrinsic(sp.extrinsic);
-        result.setRawSigningPayload(sp.rawSigningData);
+        if (sp != null) {
+            result.setIsHash(sp.isHash);
+            result.setAccountPublicKey(sp.accountPublicKey);
+            result.setCurve(sp.curve);
+            result.setNetwork(sp.network);
+            result.setOversize(sp.isOversize);
+            result.setExtrinsic(sp.extrinsic);
+            result.setRawSigningPayload(sp.rawSigningData);
+        }
 
         return result;
     }
