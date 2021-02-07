@@ -214,7 +214,10 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
     protected void handlePolkadotJsTransaction(String res, Result result) {
         PolkadotJsTxConfirmViewModel viewModel = ViewModelProviders.of(this)
                 .get(PolkadotJsTxConfirmViewModel.class);
-        if (!viewModel.isNetworkSupported(result.getNetwork())) {
+        if (result.isMultiPart) {
+            alert(getString(R.string.unsupported_polka_tx_type_title),
+                    getString(R.string.unsupported_polka_tx_type_content));
+        } else if (!viewModel.isNetworkSupported(result.getNetwork())) {
             alert(getString(R.string.unknown_substrate_chain_title) ,
                     getString(R.string.unknown_substrate_chain_content));
         } else if(result.getExtrinsic() == null ||
