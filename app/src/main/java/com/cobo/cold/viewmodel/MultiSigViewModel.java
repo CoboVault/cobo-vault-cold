@@ -492,13 +492,16 @@ public class MultiSigViewModel extends AndroidViewModel {
                             if (object != null) {
                                 fileList.put(f.getName(), object);
                             }
-                        } else if (f.getName().endsWith(".json")) {
+                        }
+                        /*
+                        else if (f.getName().endsWith(".json")) {
                             String fileContent = FileUtils.readString(f);
                             JSONObject object = decodeCaravanWalletFile(fileContent);
                             if (object != null) {
                                 fileList.put(f.getName(), object);
                             }
                         }
+                        */
                     }
                 }
             }
