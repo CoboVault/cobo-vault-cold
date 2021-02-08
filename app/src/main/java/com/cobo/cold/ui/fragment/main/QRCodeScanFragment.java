@@ -31,13 +31,11 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.cobo.coinlib.coins.BTC.Electrum.ElectrumTx;
-import com.cobo.coinlib.coins.polkadot.UOS.Result;
-import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOS.Extrinsic;
+import com.cobo.coinlib.coins.polkadot.UOS.SubstratePayload;
 import com.cobo.coinlib.exception.CoinNotFindException;
 import com.cobo.coinlib.exception.InvalidTransactionException;
 import com.cobo.coinlib.exception.InvalidUOSException;
-import com.cobo.coinlib.utils.Base43;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.CommonModalBinding;
 import com.cobo.cold.databinding.QrcodeScanFragmentBinding;
@@ -50,17 +48,14 @@ import com.cobo.cold.scan.camera.CameraManager;
 import com.cobo.cold.scan.view.PreviewFrame;
 import com.cobo.cold.ui.fragment.BaseFragment;
 import com.cobo.cold.ui.modal.ModalDialog;
-import com.cobo.cold.viewmodel.ElectrumViewModel;
 import com.cobo.cold.viewmodel.PolkadotJsTxConfirmViewModel;
 import com.cobo.cold.viewmodel.QrScanViewModel;
 import com.cobo.cold.viewmodel.SharedDataViewModel;
 import com.cobo.cold.viewmodel.UnknowQrCodeException;
 import com.cobo.cold.viewmodel.UuidNotMatchException;
 import com.cobo.cold.viewmodel.WatchWallet;
-import com.cobo.cold.viewmodel.XpubNotMatchException;
 
 import org.json.JSONException;
-import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 
@@ -199,10 +194,12 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         } else {
             WatchWallet watchWallet = WatchWallet.getWatchWallet(mActivity);
             if (watchWallet == WatchWallet.POLKADOT_JS) {
-                Result result;
-                if ((result = tryDecodePolkadotjsTx(res)) != null) {
-                    handlePolkadotJsTransaction(res, result);
+                try {
+                    SubstratePayload sp = new SubstratePayload(res);
+                    handlePolkadotJsTransaction(res, sp);
                     return;
+                } catch (InvalidUOSException e) {
+                    e.printStackTrace();
                 }
             }
             alert(getString(R.string.unresolve_tx),
@@ -211,20 +208,18 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         }
     }
 
-    protected void handlePolkadotJsTransaction(String res, Result result) {
+    protected void handlePolkadotJsTransaction(String res, SubstratePayload sp) {
         PolkadotJsTxConfirmViewModel viewModel = ViewModelProviders.of(this)
                 .get(PolkadotJsTxConfirmViewModel.class);
-        if (result.isMultiPart) {
-            alert(getString(R.string.unsupported_polka_tx_type_title),
-                    getString(R.string.unsupported_polka_tx_type_content));
-        } else if (!viewModel.isNetworkSupported(result.getNetwork())) {
+        Extrinsic extrinsic = sp.extrinsic;
+        if (!viewModel.isNetworkSupported(sp.network)) {
             alert(getString(R.string.unknown_substrate_chain_title) ,
                     getString(R.string.unknown_substrate_chain_content));
-        } else if(result.getExtrinsic() == null ||
-                !viewModel.isTransactionSupported(result.getExtrinsic().palletParameter)) {
+        } else if(extrinsic == null ||
+                !viewModel.isTransactionSupported(extrinsic.palletParameter)) {
             alert(getString(R.string.unsupported_polka_tx_type_title),
                     getString(R.string.unsupported_polka_tx_type_content));
-        } else if(!viewModel.isAccountMatch(result.getAccount())) {
+        } else if(!viewModel.isAccountMatch(sp.getAccount())) {
             alert(getString(R.string.account_not_match),
                     getString(R.string.account_not_match_detail));
         } else {
@@ -232,48 +227,11 @@ public class QRCodeScanFragment extends BaseFragment<QrcodeScanFragmentBinding>
         }
     }
 
-    private void handleElectrumTx(String res) {
-        String data = Hex.toHexString(Base43.decode(res));
-        Bundle bundle = new Bundle();
-        bundle.putString("txn", data);
-        navigate(R.id.action_to_ElectrumTxConfirmFragment, bundle);
-    }
-
     private void handlePolkadotJsTx(String res) {
         Bundle bundle = new Bundle();
         bundle.putString(KEY_TX_DATA, res);
         bundle.putBoolean("substrateTx", true);
         navigate(R.id.action_to_polkadotTxConfirm, bundle);
-    }
-
-    private ElectrumTx tryParseElecturmTx(String res) throws XpubNotMatchException {
-        try {
-            byte[] data = Base43.decode(res);
-            ElectrumTx tx = ElectrumTx.parse(data);
-            if (!checkElectrumExpub(tx)) {
-                throw new XpubNotMatchException("xpub not match");
-            }
-            return tx;
-        } catch (ElectrumTx.SerializationException | IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private Result tryDecodePolkadotjsTx(String res) {
-        try {
-            return UOSDecoder.decode(res,false);
-        } catch (InvalidUOSException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private boolean checkElectrumExpub(ElectrumTx tx) {
-        String xpub = ViewModelProviders.of(mActivity).get(ElectrumViewModel.class).getXpub();
-        return tx.getInputs()
-                .stream()
-                .allMatch(input -> xpub.equals(input.pubKey.xpub));
     }
 
     @Override

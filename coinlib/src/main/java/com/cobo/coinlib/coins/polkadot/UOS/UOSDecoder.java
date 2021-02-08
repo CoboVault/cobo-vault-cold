@@ -1,35 +1,71 @@
 package com.cobo.coinlib.coins.polkadot.UOS;
 
+import com.cobo.coinlib.Util;
 import com.cobo.coinlib.exception.InvalidUOSException;
 
-import java.util.Arrays;
-import java.util.List;
+import org.bouncycastle.util.encoders.Hex;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class UOSDecoder {
 
-    public static Result decode(String rawData, boolean multipartComplete)
+    public Map<Integer, UosDecodeResult> results = new HashMap<>();
+    private int frameCount = -1;
+
+    public UosDecodeResult decode(String rawData)
             throws InvalidUOSException {
         String UOSRawData = extractUOSRawData(rawData);
-        MultipartPayload mp = new MultipartPayload(UOSRawData, multipartComplete);
+        MultipartPayload mp = new MultipartPayload(UOSRawData);
         SubstratePayload sp = mp.substratePayload;
 
-        Result result = new Result();
-
-        result.setFrameCount(mp.frameCount);
-        result.setCurrentFrame(mp.currentFrame);
-        result.setMultiPart(mp.isMultiPart);
-
-        if (sp != null) {
-            result.setIsHash(sp.isHash);
-            result.setAccountPublicKey(sp.accountPublicKey);
-            result.setCurve(sp.curve);
-            result.setNetwork(sp.network);
-            result.setOversize(sp.isOversize);
-            result.setExtrinsic(sp.extrinsic);
-            result.setRawSigningPayload(sp.rawSigningData);
+        UosDecodeResult result = new UosDecodeResult();
+        result.frameCount = mp.frameCount;
+        result.currentFrame = mp.currentFrame;
+        result.isMultiPart = mp.isMultiPart;
+        result.frameData = mp.frameData;
+        if (result.isMultiPart) {
+            if (frameCount == -1) {
+                frameCount = result.frameCount;
+            }
+            if (!results.containsKey(result.currentFrame)) {
+                results.put(result.currentFrame, result);
+                if (results.size() == frameCount) {
+                    UosDecodeResult completeResult = combine();
+                    completeResult.isComplete = true;
+                    return completeResult;
+                }
+            }
+            result.isComplete = false;
+        } else {
+            result.isComplete = true;
+            result.setSubstratePayload(sp);
         }
-
         return result;
+    }
+
+    private UosDecodeResult combine() throws InvalidUOSException {
+        byte[] data = new byte[0];
+        for (int i = 0; i < frameCount; i++) {
+            data = Util.concat(data, results.get(i).frameData);
+        }
+        UosDecodeResult completeResult = new UosDecodeResult();
+        completeResult.frameData = data;
+        completeResult.isComplete = true;
+        if (data[0] == 0x53) {
+            SubstratePayload sp = new SubstratePayload(Hex.toHexString(data).substring(2));
+            completeResult.setSubstratePayload(sp);
+            return completeResult;
+        }
+        throw new InvalidUOSException("invalid payload type:" + data[0]);
+    }
+
+    public int getFrameCount() {
+        return frameCount;
+    }
+
+    public int getScanedFrames() {
+        return results.size();
     }
 
     private static String extractUOSRawData(String QRRawData) throws InvalidUOSException {

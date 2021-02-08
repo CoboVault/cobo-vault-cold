@@ -1,20 +1,20 @@
 package com.cobo.coinlib.coins.polkadot.UOS;
 
+import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.exception.InvalidUOSException;
 
 import org.bouncycastle.util.encoders.Hex;
 
 public class SubstratePayload {
-    private final String rawData;
-
+    public final String rawData;
     public String curve;
     public byte[] accountPublicKey;
     public boolean isHash;
     public boolean isOversize;
     public String genesisHash;
     public Extrinsic extrinsic;
-    public byte[] rawSigningData;
+    private byte[] rawSigningData;
 
     public Network network;
 
@@ -63,5 +63,12 @@ public class SubstratePayload {
                 throw new InvalidUOSException("invalid data type byte");
             }
         }
+    }
+    public byte[] getSigningPayload() {
+        return isHash ? rawSigningData : isOversize ? AddressCodec.blake2b(rawSigningData, 256) : rawSigningData;
+    }
+
+    public String getAccount() {
+        return AddressCodec.encodeAddress(accountPublicKey, network.SS58Prefix);
     }
 }
