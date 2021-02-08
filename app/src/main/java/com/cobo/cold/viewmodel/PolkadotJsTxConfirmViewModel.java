@@ -27,14 +27,11 @@ import androidx.annotation.NonNull;
 
 import com.cobo.coinlib.coins.polkadot.UOS.Extrinsic;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
-import com.cobo.coinlib.coins.polkadot.UOS.Result;
-import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOS.SubstratePayload;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
-import com.cobo.coinlib.coins.polkadot.pallets.balance.TransferParameter;
 import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.coinlib.interfaces.SignCallback;
 import com.cobo.coinlib.interfaces.Signer;
-import com.cobo.coinlib.utils.Arith;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.AppExecutors;
 import com.cobo.cold.DataRepository;
@@ -48,7 +45,6 @@ import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -73,14 +69,14 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
 
     public void parseTxData(String data) {
         try {
-            Result result = UOSDecoder.decode(data, false);
-            isHash = result.isHash;
-            extrinsic = result.extrinsic;
-            accountPublicKey = result.getAccountPublicKey();
+            SubstratePayload sp = new SubstratePayload(data);
+            isHash = sp.isHash;
+            extrinsic = sp.extrinsic;
+            accountPublicKey = sp.accountPublicKey;
             extrinsicObject = extrinsic.palletParameter.toJSON();
-            TxEntity tx = generateSubstrateTxEntity(result);
+            TxEntity tx = generateSubstrateTxEntity(sp);
             observableTx.postValue(tx);
-            signingPayload = result.getSigningPayload();
+            signingPayload = sp.getSigningPayload();
         } catch (InvalidUOSException | JSONException e) {
             e.printStackTrace();
         }
@@ -121,15 +117,15 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
         return false;
     }
 
-    private TxEntity generateSubstrateTxEntity(Result result) {
+    private TxEntity generateSubstrateTxEntity(SubstratePayload sp) {
         TxEntity tx = new TxEntity();
-        coinCode = result.getNetwork().coinCode();
+        coinCode = sp.network.coinCode();
         tx.setSignId(WatchWallet.POLKADOT_JS_SIGN_ID);
         tx.setTimeStamp(getUniversalSignIndex(getApplication()));
         tx.setCoinCode(coinCode);
         tx.setCoinId(Coins.coinIdFromCoinCode(coinCode));
-        tx.setFrom(result.getAccount());
-        tx.setFee(result.getExtrinsic().getTip()+ " " + coinCode);
+        tx.setFrom(sp.getAccount());
+        tx.setFee(sp.extrinsic.getTip()+ " " + coinCode);
         tx.setSignedHex(extrinsicObject.toString());
         tx.setBelongTo(mRepository.getBelongTo());
         return tx;

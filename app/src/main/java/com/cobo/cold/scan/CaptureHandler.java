@@ -20,7 +20,9 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.cobo.bcUniformResource.Workload;
+import com.cobo.coinlib.coins.polkadot.UOS.SubstratePayload;
 import com.cobo.coinlib.coins.polkadot.UOS.UOSDecoder;
+import com.cobo.coinlib.coins.polkadot.UOS.UosDecodeResult;
 import com.cobo.coinlib.exception.InvalidUOSException;
 import com.cobo.cold.scan.camera.CameraManager;
 import com.cobo.cold.scan.common.Constant;
@@ -41,8 +43,9 @@ public final class CaptureHandler extends Handler {
     private State state;
     private final CameraManager cameraManager;
 
-    private StringBuilder result = new StringBuilder();
     private ScannedData[] mScannedDatas;
+
+    private final UOSDecoder uosDecoder = new UOSDecoder();
 
     private enum State {
         PREVIEW, SUCCESS, DONE
@@ -70,15 +73,22 @@ public final class CaptureHandler extends Handler {
             case Constant.DECODE_SUCCEEDED:
                 Result result = (Result) message.obj;
                 String text = result.getText();
-                com.cobo.coinlib.coins.polkadot.UOS.Result decodeResult = null;
+                UosDecodeResult decodeResult = null;
                 try {
-                    decodeResult = UOSDecoder.decode(Hex.toHexString(result.getRawBytes()), false);
+                    decodeResult = uosDecoder.decode(Hex.toHexString(result.getRawBytes()));
                 } catch (InvalidUOSException e) {
                     e.printStackTrace();
                 }
                 if (decodeResult != null) {
-                    state = State.SUCCESS;
-                    host.handleDecode(Hex.toHexString(result.getRawBytes()));
+                    SubstratePayload sp = decodeResult.getSubstratePayload();
+                    if (!decodeResult.isMultiPart || decodeResult.isComplete) {
+                        state = State.SUCCESS;
+                        host.handleDecode(sp.rawData);
+                    } else {
+                        state = State.PREVIEW;
+                        host.handleProgress(uosDecoder.getFrameCount(), uosDecoder.getScanedFrames());
+                        cameraManager.requestPreviewFrame(decodeThread.getHandler(), Constant.DECODE);
+                    }
                     return;
                 }
 

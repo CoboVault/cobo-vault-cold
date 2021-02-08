@@ -2,6 +2,8 @@ package com.cobo.coinlib.coins.polkadot.UOS;
 
 import com.cobo.coinlib.exception.InvalidUOSException;
 
+import org.bouncycastle.util.encoders.Hex;
+
 public class MultipartPayload {
     private final String rawData;
 
@@ -9,14 +11,16 @@ public class MultipartPayload {
     public boolean isMultiPart;
     public int currentFrame;
 
+    public byte[] frameData;
+
     public SubstratePayload substratePayload;
 
-    public MultipartPayload(String rawData, boolean multipartComplete) throws InvalidUOSException {
+    public MultipartPayload(String rawData) throws InvalidUOSException {
         this.rawData = rawData;
-        read(multipartComplete);
+        read();
     }
 
-    private void read(boolean multipartComplete) throws InvalidUOSException {
+    private void read() throws InvalidUOSException {
         String frameInfo = rawData.substring(0, 10);
         frameCount = Utils.tryParseInt(frameInfo.substring(2, 6));
         isMultiPart = frameCount > 1;
@@ -24,11 +28,15 @@ public class MultipartPayload {
             throw new InvalidUOSException("Frames number is too big, the QR seems not to be a recognized extrinsic raw data");
         }
         currentFrame = Utils.tryParseInt(frameInfo.substring(6, 10));
-        if(isMultiPart  && !multipartComplete) {
-            return;
-        }
+
         String uosAfterFrame = rawData.substring(10);
         String zerothByte = uosAfterFrame.substring(0, 2);
+
+        if(isMultiPart) {
+            frameData = Hex.decode(uosAfterFrame);
+            return;
+        }
+
         if ("53".equals(zerothByte)) {
             substratePayload = new SubstratePayload(uosAfterFrame.substring(2));
             return;
