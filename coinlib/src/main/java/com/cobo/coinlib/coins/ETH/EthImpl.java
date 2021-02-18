@@ -51,6 +51,7 @@ import org.web3j.rlp.RlpType;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -245,6 +246,18 @@ public class EthImpl implements Coin {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String signPersonalMessage(@NonNull String message, Signer signer) {
+        String signature = signer.sign(Hex.toHexString(hashPersonalMessage(message)));
+        Sign.SignatureData signatureData = getSignatureData(signature);
+        byte[] sigBytes = concat(concat(signatureData.getR(),signatureData.getS()),signatureData.getV());
+        return Hex.toHexString(sigBytes);
+    }
+
+    private byte[] hashPersonalMessage(String message) {
+        String prefix = "\u0019Ethereum Signed Message:\n" + message.length();
+        return Hash.sha3((prefix + message).getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
