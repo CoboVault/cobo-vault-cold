@@ -125,16 +125,8 @@ public class PassphraseFragment extends SetupVaultBaseFragment<PassphraseBinding
     }
 
     private void setFilterSpace(EditText editText) {
-        InputFilter letterFilter = (source, start, end, dest, dstart, dend) -> {
-            if (SPACE.equals(source.toString())) {
-                return "";
-            } else {
-                return null;
-            }
-        };
-
         InputFilter lengthFilter = new InputFilter.LengthFilter(MAX_LENGTH);
-        editText.setFilters(new InputFilter[]{letterFilter, lengthFilter});
+        editText.setFilters(new InputFilter[]{lengthFilter});
     }
 
     @Override
