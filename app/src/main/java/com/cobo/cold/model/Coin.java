@@ -28,6 +28,8 @@ public interface Coin {
 
     String getCoinCode();
 
+    String getDisplayName();
+
     int getIconResId();
 
     int getAddressCount();

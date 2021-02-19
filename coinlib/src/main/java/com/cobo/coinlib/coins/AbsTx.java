@@ -179,7 +179,7 @@ public abstract class AbsTx {
         if (isToken) {
             return tokenName;
         } else {
-            return coinCode;
+            return "XZC".equals(coinCode) ? "FIRO" : coinCode;
         }
     }
 }

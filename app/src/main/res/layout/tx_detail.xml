@@ -68,7 +68,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="16dp"
-                android:text="@{tx.coinCode}"
+                android:text="@{tx.displayName}"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"

@@ -241,6 +241,9 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
         String assetCode = null;
         try {
             assetCode = txEntity.getAmount().split(" ")[1];
+            if ("FIRO".equals(assetCode)) {
+                assetCode = "XZC";
+            }
         } catch (Exception ignore) {
         }
         if (TextUtils.isEmpty(assetCode)) {

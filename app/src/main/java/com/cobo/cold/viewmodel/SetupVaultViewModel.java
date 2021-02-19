@@ -406,7 +406,7 @@ public class SetupVaultViewModel extends AndroidViewModel {
                     mRepository.insertAccount(account);
                     if (!Coins.showPublicKey(coin.getCoinCode())) {
                         new AddAddressViewModel.AddAddressTask(coin, mRepository, null)
-                                .execute(coin.getCoinCode() + "-0");
+                                .execute(coin.getDisplayName() + "-0");
                     }
                 }
             }

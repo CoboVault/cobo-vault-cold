@@ -78,6 +78,11 @@ public class CoinEntity implements Coin, FilterableItem {
         return coinCode;
     }
 
+    @Override
+    public String getDisplayName() {
+        return coinCode.equals("XZC") ? "FIRO" : coinCode;
+    }
+
     public void setCoinCode(String coinCode) {
         this.coinCode = coinCode;
     }

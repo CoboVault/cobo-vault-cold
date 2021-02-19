@@ -127,6 +127,9 @@ public class TxFragment extends BaseFragment<TxBinding> {
         String assetCode = null;
         try {
             assetCode = txEntity.getAmount().split(" ")[1];
+            if (assetCode.equals("FIRO")) {
+                assetCode = "XZC";
+            }
         } catch (Exception ignore) {
         }
         if (TextUtils.isEmpty(assetCode)) {
