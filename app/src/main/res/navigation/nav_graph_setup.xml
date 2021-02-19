@@ -103,7 +103,29 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_to_selectLastMnemonicFragment"
+            app:destination="@id/selectLastMnemonicFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/selectLastMnemonicFragment"
+        android:name="com.cobo.cold.ui.fragment.setup.SelectLastMnemonicFragment"
+        android:label="SelectLastMnemonicFragment"
+        >
+        <action
+            android:id="@id/action_to_generateMnemonicFragment"
+            app:destination="@id/generateMnemonicFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+
     <fragment
         android:id="@+id/setPasswordFragment"
         android:name="com.cobo.cold.ui.fragment.setup.SetPasswordFragment"
