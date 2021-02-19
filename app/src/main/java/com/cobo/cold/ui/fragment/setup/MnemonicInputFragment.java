@@ -373,7 +373,7 @@ public class MnemonicInputFragment extends SetupVaultBaseFragment<MnemonicInputF
         Bundle data = new Bundle();
         data.putString("words", mnemonic);
         data.putBoolean("seed_pick", true);
-        navigate(R.id.action_to_generateMnemonicFragment, data);
+        navigate(R.id.action_to_selectLastMnemonicFragment, data);
     }
 
     private void addFirstShard(String mnemonic) {

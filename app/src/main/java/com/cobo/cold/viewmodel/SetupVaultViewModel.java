@@ -456,11 +456,11 @@ public class SetupVaultViewModel extends AndroidViewModel {
     }
 
     public void completeMnemonic(String mnemonic) {
-        this.mnemonic.postValue(mnemonic + " " + calculateLastWord(mnemonic));
+        this.mnemonic.postValue(mnemonic);
     }
 
     private String calculateLastWord(String mnemonic) {
-        return MnemonicUtils.calculateLastWord(mnemonic);
+        return MnemonicUtils.calculateLastWord(mnemonic).get(0);
     }
 
     public void setIsCreateMnemonic(boolean b) {
