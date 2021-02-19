@@ -194,7 +194,7 @@ public class TxConfirmViewModel extends AndroidViewModel {
         tx.setFrom(getFromAddress());
         tx.setTo(getToAddress());
         tx.setAmount(nf.format(transaction.getAmount()) + " " + transaction.getUnit());
-        tx.setFee(nf.format(transaction.getFee()) + " " + coinCode);
+        tx.setFee(nf.format(transaction.getFee()) + " " + tx.getDisplayName());
         tx.setMemo(transaction.getMemo());
         tx.setBelongTo(mRepository.getBelongTo());
         return tx;
@@ -384,8 +384,9 @@ public class TxConfirmViewModel extends AndroidViewModel {
         if (addressLength < addressIndex + 1) {
             String[] names = new String[addressIndex + 1 - addressLength];
             int index = 0;
+            String displayName = "XZC".equals(coinCode) ? "FIRO" : coinCode;
             for (int i = addressLength; i < addressIndex + 1; i++) {
-                names[index++] = coinCode + "-" + i;
+                names[index++] = displayName + "-" + i;
             }
             final CountDownLatch mLatch = new CountDownLatch(1);
             addingAddress.postValue(true);

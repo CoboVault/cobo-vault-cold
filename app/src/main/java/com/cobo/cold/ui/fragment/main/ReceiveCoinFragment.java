@@ -56,6 +56,7 @@ public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
         Objects.requireNonNull(data);
         String coinCode = data.getString(KEY_COIN_CODE);
         mBinding.setCoinCode(coinCode);
+        mBinding.setDisplayName("XZC".equals(coinCode) ? "FIRO" : coinCode);
         String address = data.getString(KEY_ADDRESS);
         if (coinCode.equals(Coins.BCH.coinCode())) {
             address = Bch.toCashAddress(address);

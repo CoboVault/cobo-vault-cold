@@ -24,6 +24,8 @@ public interface Tx {
 
     String getCoinCode();
 
+    String getDisplayName();
+
     String getAmount();
 
     String getFrom();

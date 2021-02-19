@@ -65,7 +65,7 @@
                 android:id="@+id/coinCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{coin.coinCode}"
+                android:text="@{coin.displayName}"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"

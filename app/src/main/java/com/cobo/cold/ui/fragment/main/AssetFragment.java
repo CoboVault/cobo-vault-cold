@@ -338,7 +338,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 int addrCount = coinEntity.getAddressCount();
                 List<String> observableAddressNames = new ArrayList<>();
                 for (int i = addrCount; i < value + addrCount; i++) {
-                    String name = coinEntity.getCoinCode() + "-" + i ;
+                    String name = coinEntity.getDisplayName() + "-" + i ;
                     observableAddressNames.add(name);
                 }
                 viewModel.addAddress(observableAddressNames);

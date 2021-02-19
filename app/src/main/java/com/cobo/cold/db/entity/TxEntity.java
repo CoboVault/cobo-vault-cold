@@ -78,6 +78,11 @@ public class TxEntity implements Tx, FilterableItem {
         return coinCode;
     }
 
+    @Override
+    public String getDisplayName() {
+        return "XZC".equals(coinCode) ? "FIRO" : coinCode;
+    }
+
     public void setCoinId(String coinId) {
         this.coinId = coinId;
     }
