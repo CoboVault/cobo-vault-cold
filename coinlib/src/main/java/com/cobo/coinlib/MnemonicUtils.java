@@ -19,6 +19,7 @@ package com.cobo.coinlib;
 
 import org.bouncycastle.jcajce.provider.digest.SHA256;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -110,11 +111,14 @@ public class MnemonicUtils {
         }
     }
 
-    public static String calculateLastWord(String mnemonic) {
+    public static List<String> calculateLastWord(String mnemonic) {
+        List<String> words = new ArrayList<>();
         for (String word : WordList.words) {
-            if (validateMnemonic(mnemonic + " " +word)) return word;
+            if (validateMnemonic(mnemonic + " " +word)) {
+                words.add(word);
+            }
         }
-        return null;
+        return words;
     }
 
     private static boolean[] nextElevenBits(boolean[] bits, int i) {
