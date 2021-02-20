@@ -74,7 +74,6 @@ import static com.cobo.coinlib.utils.MultiSig.Account.P2WSH_TEST;
 
 public class MultiSigViewModel extends AndroidViewModel {
 
-    private final Storage storage;
     private final LiveData<List<MultiSigWalletEntity>> mObservableWallets;
     private final MutableLiveData<Boolean> addComplete = new MutableLiveData<>();
     private final Map<MultiSig.Account, String> xpubsMap = new HashMap<>();
@@ -85,7 +84,6 @@ public class MultiSigViewModel extends AndroidViewModel {
         super(application);
         xfp = new GetMasterFingerprintCallable().call();
         repo = ((MainApplication) application).getRepository();
-        storage = Storage.createByEnvironment(application);
         mObservableWallets = repo.loadAllMultiSigWallet();
     }
 
@@ -483,6 +481,7 @@ public class MultiSigViewModel extends AndroidViewModel {
         MutableLiveData<Map<String, JSONObject>> result = new MutableLiveData<>();
         AppExecutors.getInstance().diskIO().execute(() -> {
             Map<String, JSONObject> fileList = new HashMap<>();
+            Storage storage = Storage.createByEnvironment(getApplication());
             if (storage != null && storage.getExternalDir() != null) {
                 File[] files = storage.getExternalDir().listFiles();
                 if (files != null) {
