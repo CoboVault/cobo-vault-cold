@@ -35,12 +35,10 @@ import java.util.regex.Pattern;
 
 
 public class PsbtViewModel extends AndroidViewModel {
-    private static Pattern signedPsbtPattern = Pattern.compile("^signed_[0-9a-fA-F]{8}.psbt$");
-    private Storage storage;
+    private static final Pattern signedPsbtPattern = Pattern.compile("^signed_[0-9a-fA-F]{8}.psbt$");
 
     public PsbtViewModel(@NonNull Application application) {
         super(application);
-        storage = Storage.createByEnvironment(application);
     }
 
     private boolean isSignedPsbt(String fileName) {
@@ -52,6 +50,7 @@ public class PsbtViewModel extends AndroidViewModel {
         MutableLiveData<List<String>> result = new MutableLiveData<>();
         AppExecutors.getInstance().diskIO().execute(() -> {
             List<String> fileList = new ArrayList<>();
+            Storage storage = Storage.createByEnvironment(getApplication());
             if (storage != null) {
                 File[] files = storage.getElectrumDir().listFiles();
                 if (files != null) {
