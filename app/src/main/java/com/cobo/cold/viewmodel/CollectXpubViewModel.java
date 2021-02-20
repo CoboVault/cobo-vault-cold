@@ -40,11 +40,9 @@ public class CollectXpubViewModel extends AndroidViewModel {
 
     private List<XpubInfo> xpubInfos;
     public boolean startCollect;
-    private Storage storage;
 
     public CollectXpubViewModel(@NonNull Application application) {
         super(application);
-        storage = Storage.createByEnvironment(application);
     }
 
 
@@ -73,6 +71,7 @@ public class CollectXpubViewModel extends AndroidViewModel {
         MutableLiveData<List<File>> result = new MutableLiveData<>();
         AppExecutors.getInstance().diskIO().execute(() -> {
             List<File> fileList = new ArrayList<>();
+            Storage storage = Storage.createByEnvironment(getApplication());
             if (storage != null) {
                 File[] files = storage.getElectrumDir().listFiles();
                 if (files != null) {
