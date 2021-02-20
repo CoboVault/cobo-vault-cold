@@ -111,6 +111,10 @@ public class PsbtListFragment extends BaseFragment<FileListBinding>
 
     @Override
     public void onClick(String file) {
+        if (!hasSdcard(mActivity)) {
+
+            return;
+        }
         Storage storage = Storage.createByEnvironment(mActivity);
         byte[] content = FileUtils.bufferlize(new File(storage.getExternalDir(), file));
         if (content != null) {

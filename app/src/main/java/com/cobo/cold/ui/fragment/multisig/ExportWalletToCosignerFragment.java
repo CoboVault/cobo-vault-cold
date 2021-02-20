@@ -45,7 +45,6 @@ import static com.cobo.cold.viewmodel.GlobalViewModel.writeToSdcard;
 
 public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportWalletToCosignerBinding> {
     private MultiSigWalletEntity walletEntity;
-    private Storage storage;
     private String walletFileContent;
 
     @Override
@@ -58,7 +57,6 @@ public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportW
         super.init(view);
         Bundle data = getArguments();
         Objects.requireNonNull(data);
-        storage = Storage.createByEnvironment(mActivity);
         String walletFingerprint = data.getString("wallet_fingerprint");
         boolean isSetup = data.getBoolean("setup");
         if (!isSetup) {
@@ -111,7 +109,7 @@ public class ExportWalletToCosignerFragment extends MultiSigBaseFragment<ExportW
             binding.right.setText(R.string.export);
             binding.right.setOnClickListener(right -> {
                 dialog.dismiss();
-                if (writeToSdcard(storage, walletFileContent, fileName)) {
+                if (writeToSdcard(Storage.createByEnvironment(mActivity), walletFileContent, fileName)) {
                     exportSuccess(mActivity, null);
                 }
             });
