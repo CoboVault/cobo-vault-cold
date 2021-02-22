@@ -24,6 +24,7 @@ import android.view.View;
 import androidx.databinding.DataBindingUtil;
 
 import com.cobo.coinlib.coins.BCH.Bch;
+import com.cobo.coinlib.coins.CFX.Cfx;
 import com.cobo.coinlib.coins.LTC.Ltc;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.R;
@@ -62,12 +63,14 @@ public class ReceiveCoinFragment extends BaseFragment<ReceiveFragmentBinding> {
             address = Bch.toCashAddress(address);
         } else if (coinCode.equals(Coins.LTC.coinCode())) {
             address = Ltc.convertAddress(address);
+        } else if(coinCode.equals(Coins.CFX.coinCode())) {
+            address = Cfx.convertToBase32Address(address);
         }
         index = data.getInt(KEY_ADDRESS_INDEX);
         mBinding.setAddress(address);
         mBinding.setAddressName(data.getString(KEY_ADDRESS_NAME));
         mBinding.setPath(data.getString(KEY_ADDRESS_PATH));
-        mBinding.qrcode.setData(data.getString(KEY_ADDRESS));
+        mBinding.qrcode.setData(address);
         setupMenu();
     }
 

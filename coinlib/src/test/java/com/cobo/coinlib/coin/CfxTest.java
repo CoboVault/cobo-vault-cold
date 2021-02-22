@@ -47,6 +47,18 @@ public class CfxTest {
         }
     }
 
+    @Test
+    public void testCIP37Address() {
+        String address = "106d49f8505410eb4e671d51f7d96d2c87807b09";
+        assertEquals("cfx:aajg4wt2mbmbb44sp6szd783ry0jtad5bea80xdy7p",
+                Cfx.convertToBase32Address(address, 1029));
+
+        String hexAddress = Cfx.convertToHexAddress("cfx:aajg4wt2mbmbb44sp6szd783ry0jtad5bea80xdy7p");
+        assertEquals("0x106d49f8505410eb4e671d51f7d96d2c87807b09", hexAddress);
+
+
+    }
+
 }
 
 

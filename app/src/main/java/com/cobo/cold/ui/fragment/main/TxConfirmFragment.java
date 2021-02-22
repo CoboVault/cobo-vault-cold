@@ -31,6 +31,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.cobo.coinlib.coins.BCH.Bch;
+import com.cobo.coinlib.coins.CFX.Cfx;
 import com.cobo.coinlib.coins.LTC.Ltc;
 import com.cobo.coinlib.utils.Arith;
 import com.cobo.coinlib.utils.Coins;
@@ -324,6 +325,8 @@ public class TxConfirmFragment extends BaseFragment<TxConfirmFragmentBinding> {
             fromAddress = Bch.toCashAddress(fromAddress);
         } else if (coinCode.equals(Coins.LTC.coinCode())) {
             fromAddress = Ltc.convertAddress(fromAddress);
+        } else if(coinCode.equals(Coins.CFX.coinCode())) {
+            fromAddress = Cfx.convertToBase32Address(fromAddress);
         }
         return fromAddress;
     }
