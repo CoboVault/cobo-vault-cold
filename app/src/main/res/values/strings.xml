@@ -140,7 +140,7 @@
     <string name="factory_reset_hint">All data will be erased. This cannot be undone.</string>
     <string name="factory_reset_title">Wipe Device</string>
     <string name="password_modal_title">Please enter password.</string>
-    <string name="passphrase_hint3">Passphrases cannot exceed 128 characters. Can consist of upper and lower case letters, digits, and symbols, but not spaces. Case Sensitive.</string>
+    <string name="passphrase_hint3">Passphrases cannot exceed 128 characters. Can consist of upper and lower case letters, digits, symbols, spaces. Case Sensitive.</string>
     <string name="passphrase_hint2">Enter a Passphrase (case sensitive)</string>
     <string name="passphrase_hint_agian">Enter Passphrase Again</string>
     <string name="passphrase_hint1">Important Information:\n1. When a Hidden Vault is created, its Passphrase cannot be changed. If the Passphrase is lost or forgotten, the Hidden Vault and all its assets will be irretrievable. Record and store the Passphrase securely before creating a Hidden Vault \n2. Keep the Passphrase field blank to enter the default Vault</string>
