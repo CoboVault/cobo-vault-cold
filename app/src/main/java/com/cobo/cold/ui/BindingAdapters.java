@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
 import com.cobo.coinlib.coins.BCH.Bch;
+import com.cobo.coinlib.coins.CFX.Cfx;
 import com.cobo.coinlib.coins.LTC.Ltc;
 import com.cobo.coinlib.utils.Coins;
 import com.cobo.cold.db.entity.AddressEntity;
@@ -99,6 +100,12 @@ public class BindingAdapters {
         } else if (entity.getCoinId().equals(Coins.LTC.coinId())) {
             if (address.startsWith("3")) {
                 view.setText(Ltc.convertAddress(address));
+            } else {
+                view.setText(address);
+            }
+        } else if (entity.getCoinId().equals(Coins.CFX.coinId())){
+            if (address.startsWith("0x")) {
+                view.setText(Cfx.convertToBase32Address(address));
             } else {
                 view.setText(address);
             }

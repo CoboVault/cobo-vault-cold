@@ -381,16 +381,15 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat {
                     DataCleaner.cleanApplicationData(activity);
                     removeAllFingerprint(activity);
                     LocalePicker.updateLocale(LanguageHelper.defaultLocale);
-                    dialog.dismiss();
                     restartApplication(activity);
                 } catch (Exception e) {
                     e.printStackTrace();
                     dialog.dismiss();
-                    resetFail(activity);
+                    activity.runOnUiThread(()->resetFail(activity));
                 }
             } else {
                 dialog.dismiss();
-                resetFail(activity);
+                activity.runOnUiThread(()->resetFail(activity));
             }
         });
     }

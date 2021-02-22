@@ -28,6 +28,7 @@ import com.cobo.cold.MainApplication;
 import com.cobo.cold.Utilities;
 import com.cobo.cold.setting.LanguageHelper;
 
+import static com.cobo.cold.setting.LanguageHelper.ENGLISH;
 import static com.cobo.cold.ui.fragment.setting.SystemPreferenceFragment.SETTING_LANGUAGE;
 
 public abstract class FullScreenActivity extends AppCompatActivity {
@@ -48,7 +49,7 @@ public abstract class FullScreenActivity extends AppCompatActivity {
     @Override
     protected void attachBaseContext(Context newBase) {
         String language = Utilities.getPrefs(MainApplication.getApplication())
-                .getString(SETTING_LANGUAGE, "zh_rCN");
+                .getString(SETTING_LANGUAGE, ENGLISH);
         super.attachBaseContext(LanguageHelper.updateResources(newBase, language));
     }
 }
