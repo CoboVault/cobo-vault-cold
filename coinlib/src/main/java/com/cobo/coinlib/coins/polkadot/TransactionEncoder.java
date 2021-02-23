@@ -95,6 +95,7 @@ public class TransactionEncoder {
         ScaleCodecWriter codecWriter = new ScaleCodecWriter(new ByteArrayOutputStream());
         codecWriter.writeByteArray(int16ToBytes(chainProperty.callId.transferKeepAlive));
         byte[] publicKey = AddressCodec.decodeAddress(dest);
+        codecWriter.writeByte(00);
         codecWriter.writeByteArray(publicKey);
         codecWriter.writeBIntCompact(BigInteger.valueOf(amount));
         byte[] mortalEra = constructEra(blockNumber, validityPeriod);
@@ -111,6 +112,7 @@ public class TransactionEncoder {
     public byte[] constructSignedTransaction() throws Exception {
         ScaleCodecWriter scaleCodecWriter = new ScaleCodecWriter(new ByteArrayOutputStream());
         scaleCodecWriter.writeByte(chainProperty.payloadVersion);
+        scaleCodecWriter.writeByte(00);
         scaleCodecWriter.writeByteArray(AddressCodec.decodeAddress(from));
         scaleCodecWriter.writeByte(0x01);
         scaleCodecWriter.writeByteArray(Hex.decode(signature));
@@ -120,6 +122,7 @@ public class TransactionEncoder {
         scaleCodecWriter.writeLIntCompact(tip);
         scaleCodecWriter.writeByteArray(int16ToBytes(chainProperty.callId.transferKeepAlive));
         byte[] destPublicKey = AddressCodec.decodeAddress(dest);
+        scaleCodecWriter.writeByte(00);
         scaleCodecWriter.writeByteArray(destPublicKey);
         scaleCodecWriter.writeBIntCompact(BigInteger.valueOf(amount));
         byte[] txContent = scaleCodecWriter.toByteArray();
