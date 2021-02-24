@@ -1,10 +1,10 @@
 package com.cobo.coinlib.coins.polkadot.pallets.democracy;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.Utils;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -23,14 +23,14 @@ public class DelegateParameter extends Parameter {
 
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
-        scw.writeByteArray(to);
+        writeAccount(scw, to);
         scw.writeByte(conviction);
         scw.writeBIntCompact(balance);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        to = scr.readByteArray(32);
+        to = readAccount(scr);
         conviction = scr.readByte();
         balance = scr.readCompact();
     }

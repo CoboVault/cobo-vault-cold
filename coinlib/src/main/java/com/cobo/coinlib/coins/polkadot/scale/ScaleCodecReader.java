@@ -2,6 +2,9 @@ package com.cobo.coinlib.coins.polkadot.scale;
 
 import com.cobo.coinlib.coins.polkadot.scale.reader.*;
 
+import org.bouncycastle.util.encoders.Hex;
+
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.Optional;
 
@@ -162,5 +165,26 @@ public class ScaleCodecReader {
      */
     public String readString() {
         return new String(readByteArray());
+    }
+
+    public BigInteger readCompact() {
+        return COMPACT_BIGINT.read(this);
+    }
+
+    public String readString(int length) {
+        byte[] bytes = readByteArray(length);
+        return Hex.toHexString(bytes);
+    }
+
+    public byte[] readRestBytes() {
+        ByteArrayOutputStream bo = new ByteArrayOutputStream();
+        while (hasNext()) {
+            bo.write(readByte());
+        }
+        return bo.toByteArray();
+    }
+
+    public String readRestString() {
+        return Hex.toHexString(readRestBytes());
     }
 }

@@ -1,9 +1,9 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -26,7 +26,7 @@ public class NominateParameter extends Parameter {
         publicKeys = new ArrayList<>();
         length = scr.readCompactInt();
         for (int i = 0; i < length; i++) {
-            publicKeys.add(scr.readByteArray(32));
+            publicKeys.add(readAccount(scr));
         }
     }
 
@@ -50,7 +50,7 @@ public class NominateParameter extends Parameter {
     public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeCompact(length);
         for (byte[] pk : publicKeys) {
-            scw.writeByteArray(pk);
+            writeAccount(scw, pk);
         }
     }
 }

@@ -2,6 +2,7 @@ package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
+import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
@@ -9,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
+import static com.cobo.coinlib.coins.polkadot.pallets.Parameter.readAccount;
 
 public class Payee {
     private final byte rewardType;
@@ -23,7 +26,7 @@ public class Payee {
             case 0x02:
                 break;
             default:
-                rewardDestinationPublicKey = scr.readByteArray(32);
+                rewardDestinationPublicKey = readAccount(scr);
         }
         return new Payee(rewardType, rewardDestinationPublicKey);
     }
@@ -54,7 +57,7 @@ public class Payee {
 
     public void writeTo(ScaleCodecWriter scw) throws IOException {
         scw.writeByte(rewardType);
-        scw.writeByteArray(rewardDestination);
+        Parameter.writeAccount(scw, rewardDestination);
     }
 
     public void writeToJSON(Network network, JSONObject object) throws JSONException {

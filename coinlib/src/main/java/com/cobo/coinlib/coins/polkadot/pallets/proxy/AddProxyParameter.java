@@ -1,7 +1,7 @@
 package com.cobo.coinlib.coins.polkadot.pallets.proxy;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
@@ -22,14 +22,14 @@ public class AddProxyParameter extends Parameter {
 
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
-        scw.writeByteArray(delegate);
+        writeAccount(scw, delegate);
         scw.writeByte(proxyType);
         scw.writeUint32(blockNumber);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        delegate = scr.readByteArray(32);
+        delegate = readAccount(scr);
         proxyType = scr.readByte();
         blockNumber = scr.readUint32();
     }

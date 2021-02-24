@@ -1,10 +1,10 @@
 package com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.Utils;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -29,7 +29,7 @@ public class VoteParameter extends Parameter {
         length = scr.readCompactInt();
         publicKeys = new ArrayList<>();
         for (int i = 0; i < length; i++) {
-            publicKeys.add(scr.readByteArray(32));
+            publicKeys.add(readAccount(scr));
         }
         value = scr.readCompact();
     }
@@ -48,7 +48,7 @@ public class VoteParameter extends Parameter {
     public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeCompact(length);
         for (int i = 0; i < publicKeys.size(); i++) {
-            scw.writeByteArray(publicKeys.get(i));
+            writeAccount(scw, publicKeys.get(i));
         }
         scw.writeBIntCompact(value);
     }

@@ -1,8 +1,8 @@
 package com.cobo.coinlib.coins.polkadot.pallets.democracy;
 
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 
 public class NoteImminentPreimage extends Pallet<NotePreimageParameter> {
     public NoteImminentPreimage(Network network, int code) {

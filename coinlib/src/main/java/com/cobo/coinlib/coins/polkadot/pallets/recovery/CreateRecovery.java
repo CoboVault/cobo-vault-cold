@@ -19,9 +19,9 @@
 
 package com.cobo.coinlib.coins.polkadot.pallets.recovery;
 
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 
 public class CreateRecovery extends Pallet<CreateRecoveryParameter> {
     public CreateRecovery(Network network, int code) {

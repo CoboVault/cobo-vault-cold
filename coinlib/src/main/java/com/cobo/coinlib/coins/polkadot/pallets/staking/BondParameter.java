@@ -1,10 +1,10 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.Utils;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -24,7 +24,7 @@ public class BondParameter extends Parameter {
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        publicKey = scr.readByteArray(32);
+        publicKey = readAccount(scr);
         amount = scr.readCompact();
         payee = Payee.readToPayee(scr);
     }
@@ -40,7 +40,7 @@ public class BondParameter extends Parameter {
 
     @Override
     public void write(ScaleCodecWriter scw) throws IOException {
-        scw.writeByteArray(publicKey);
+        writeAccount(scw, publicKey);
         scw.writeBIntCompact(amount);
         payee.writeTo(scw);
     }

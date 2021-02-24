@@ -1,9 +1,9 @@
 package com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -22,14 +22,14 @@ public class ReportDefunctVoterParameter extends Parameter {
 
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
-        scw.writeByteArray(who);
+        writeAccount(scw, who);
         scw.writeLIntCompact(voteCount);
         scw.writeLIntCompact(candidateCount);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        who = scr.readByteArray(32);
+        who = readAccount(scr);
         voteCount = scr.readCompact().longValue();
         candidateCount = scr.readCompact().longValue();
     }

@@ -19,9 +19,9 @@
 
 package com.cobo.coinlib.coins.polkadot.pallets.treasury;
 
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 
 public class ProposeBounty extends Pallet<ProposeBountyParameter> {
     public ProposeBounty(Network network, int code) {
