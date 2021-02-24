@@ -20,10 +20,10 @@
 package com.cobo.coinlib.coins.polkadot.pallets.treasury;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.Utils;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -44,13 +44,13 @@ public class ProposeSpendParameter extends Parameter {
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
         scw.writeBIntCompact(value);
-        scw.writeByteArray(beneficiary);
+        writeAccount(scw, beneficiary);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
         value = scr.readCompact();
-        beneficiary = scr.readByteArray(32);
+        beneficiary = readAccount(scr);
     }
 
     @Override

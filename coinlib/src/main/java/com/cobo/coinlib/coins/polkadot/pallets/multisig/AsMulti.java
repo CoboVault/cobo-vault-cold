@@ -19,9 +19,9 @@
 
 package com.cobo.coinlib.coins.polkadot.pallets.multisig;
 
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 
 public class AsMulti extends Pallet<AsMultiParameter> {
     public AsMulti(Network network, int code) {

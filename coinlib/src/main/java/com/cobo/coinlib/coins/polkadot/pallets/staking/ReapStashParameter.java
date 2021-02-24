@@ -1,9 +1,9 @@
 package com.cobo.coinlib.coins.polkadot.pallets.staking;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -21,7 +21,7 @@ public class ReapStashParameter extends Parameter {
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        stashAccountPublicKey = scr.readByteArray(32);
+        stashAccountPublicKey = readAccount(scr);
         numSlashingSpans = scr.readUint32();
     }
 
@@ -33,7 +33,7 @@ public class ReapStashParameter extends Parameter {
 
     @Override
     public void write(ScaleCodecWriter scw) throws IOException {
-        scw.writeByteArray(stashAccountPublicKey);
+        writeAccount(scw, stashAccountPublicKey);
         scw.writeUint32(numSlashingSpans);
     }
 }

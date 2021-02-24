@@ -1,7 +1,7 @@
 package com.cobo.coinlib.coins.polkadot.UOS;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.exception.InvalidUOSException;
 
 import org.bouncycastle.util.encoders.Hex;

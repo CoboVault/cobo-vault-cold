@@ -1,7 +1,7 @@
 package com.cobo.coinlib.coins.polkadot.pallets;
 
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 
 public abstract class Pallet<T extends Parameter> {
     public String name;

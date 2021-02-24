@@ -1,8 +1,8 @@
 package com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen;
 
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;

@@ -1,10 +1,10 @@
 package com.cobo.coinlib.coins.polkadot.UOS;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
 import com.cobo.coinlib.coins.polkadot.pallets.PalletFactory;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.bouncycastle.util.encoders.Hex;
@@ -13,6 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import static com.cobo.coinlib.coins.polkadot.pallets.Parameter.writeAccount;
 
 public class Extrinsic {
     private final byte[] rawSigningPayload;
@@ -83,7 +85,7 @@ public class Extrinsic {
     public byte[] getSignedTransaction(byte[] accountPublicKey, byte[] signature) throws IOException {
         ScaleCodecWriter scaleCodecWriter = new ScaleCodecWriter(new ByteArrayOutputStream());
         scaleCodecWriter.writeByte(network.payloadVersion);
-        scaleCodecWriter.writeByteArray(accountPublicKey);
+        writeAccount(scaleCodecWriter, accountPublicKey);
         scaleCodecWriter.writeByte(0x01);
         scaleCodecWriter.writeByteArray(signature);
         scaleCodecWriter.writeByteArray(Hex.decode(era));

@@ -1,9 +1,9 @@
 package com.cobo.coinlib.coins.polkadot.pallets.democracy;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -21,13 +21,13 @@ public class RemoveOtherVoteParameter extends Parameter {
 
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
-        scw.writeByteArray(target);
+        writeAccount(scw, target);
         scw.writeUint32(index);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        target = scr.readByteArray(32);
+        target = readAccount(scr);
         index = scr.readUint32();
     }
 

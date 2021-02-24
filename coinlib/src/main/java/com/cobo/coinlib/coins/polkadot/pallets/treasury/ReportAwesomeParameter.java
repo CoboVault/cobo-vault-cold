@@ -20,9 +20,9 @@
 package com.cobo.coinlib.coins.polkadot.pallets.treasury;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -44,14 +44,14 @@ public class ReportAwesomeParameter extends Parameter {
     protected void write(ScaleCodecWriter scw) throws IOException {
         scw.writeCompact(reasonLen);
         scw.writeByteArray(reason);
-        scw.writeByteArray(who);
+        writeAccount(scw, who);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
         reasonLen = scr.readCompactInt();
         reason = scr.readByteArray(reasonLen);
-        who = scr.readByteArray(32);
+        who = readAccount(scr);
     }
 
     @Override

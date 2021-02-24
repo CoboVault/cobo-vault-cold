@@ -20,9 +20,9 @@
 package com.cobo.coinlib.coins.polkadot.pallets.multisig;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.bouncycastle.util.encoders.Hex;
@@ -50,7 +50,7 @@ public class CancelAsMultiParameter extends Parameter {
         scw.writeUint16(threshold);
         scw.writeCompact(otherSignatoriesLen);
         for (int i = 0; i < otherSignatoriesLen; i++) {
-            scw.writeByteArray(otherSignatories.get(i));
+            writeAccount(scw, otherSignatories.get(i));
         }
         scw.writeUint32(height);
         scw.writeUint32(index);
@@ -63,7 +63,7 @@ public class CancelAsMultiParameter extends Parameter {
         otherSignatoriesLen = scr.readCompactInt();
         otherSignatories = new ArrayList<>();
         for (int i = 0; i < otherSignatoriesLen; i++) {
-            otherSignatories.add(scr.readByteArray(32));
+            otherSignatories.add(readAccount(scr));
         }
         height = scr.readUint32();
         index = scr.readUint32();

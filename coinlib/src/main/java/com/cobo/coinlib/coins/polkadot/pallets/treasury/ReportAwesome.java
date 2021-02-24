@@ -19,9 +19,9 @@
 
 package com.cobo.coinlib.coins.polkadot.pallets.treasury;
 
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Pallet;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 
 public class ReportAwesome extends Pallet<ReportAwesomeParameter> {
     public ReportAwesome(Network network, int code) {

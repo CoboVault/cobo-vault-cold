@@ -1,10 +1,10 @@
 package com.cobo.coinlib.coins.polkadot.pallets.balance;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
 import com.cobo.coinlib.coins.polkadot.pallets.Utils;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -27,7 +27,7 @@ public class TransferParameter extends Parameter {
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        destinationPublicKey = scr.readByteArray(32);
+        destinationPublicKey = readAccount(scr);
         amount = scr.readCompact();
     }
 
@@ -40,7 +40,7 @@ public class TransferParameter extends Parameter {
 
     @Override
     public void write(ScaleCodecWriter scw) throws IOException {
-        scw.writeByteArray(destinationPublicKey);
+        writeAccount(scw, destinationPublicKey);
         scw.writeBIntCompact(amount);
     }
 }

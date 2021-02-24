@@ -1,9 +1,9 @@
 package com.cobo.coinlib.coins.polkadot.pallets.recovery;
 
 import com.cobo.coinlib.coins.polkadot.AddressCodec;
-import com.cobo.coinlib.coins.polkadot.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.UOS.Network;
 import com.cobo.coinlib.coins.polkadot.pallets.Parameter;
+import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecWriter;
 
 import org.json.JSONException;
@@ -28,7 +28,7 @@ public class CreateRecoveryParameter extends Parameter {
         len = scr.readCompactInt();
         friends = new ArrayList<>();
         for (int i = 0; i < len; i++) {
-            friends.add(scr.readByteArray(32));
+            friends.add(readAccount(scr));
         }
         threshold = scr.readUint16();
         delay_period = scr.readUint32();
@@ -54,7 +54,7 @@ public class CreateRecoveryParameter extends Parameter {
     public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeCompact(len);
         for (int i = 0; i < len; i++) {
-            scw.writeByteArray(friends.get(i));
+            writeAccount(scw, friends.get(i));
         }
         scw.writeUint16(threshold);
         scw.writeUint32(delay_period);
