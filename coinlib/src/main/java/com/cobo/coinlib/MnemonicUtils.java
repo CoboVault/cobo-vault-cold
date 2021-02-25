@@ -117,6 +117,9 @@ public class MnemonicUtils {
             if (validateMnemonic(mnemonic + " " +word)) {
                 words.add(word);
             }
+            if (words.size() == 8) {
+                break;
+            }
         }
         return words;
     }
