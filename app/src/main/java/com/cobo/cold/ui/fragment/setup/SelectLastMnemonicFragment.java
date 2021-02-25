@@ -22,10 +22,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.cobo.coinlib.MnemonicUtils;
+import com.cobo.cold.AppExecutors;
 import com.cobo.cold.R;
 import com.cobo.cold.databinding.LastWordBinding;
 import com.cobo.cold.databinding.SelectLastMnemonicBinding;
 import com.cobo.cold.ui.common.BaseBindingAdapter;
+import com.cobo.cold.ui.modal.ProgressModalDialog;
 
 import java.util.List;
 import java.util.Objects;
@@ -49,11 +51,22 @@ public class SelectLastMnemonicFragment extends SetupVaultBaseFragment<SelectLas
         mBinding.confirm.setOnClickListener(this::confirm);
         Bundle bundle = Objects.requireNonNull(getArguments());
         words = bundle.getString("words");
-        List<String> validLastWords = MnemonicUtils.calculateLastWord(words);
-        selectWord = validLastWords.get(0);
-        adapter = new WordsAdapter(mActivity);
-        adapter.setItems(validLastWords);
-        mBinding.words.setAdapter(adapter);
+        calculateLastWords(words);
+    }
+
+    public void calculateLastWords(String words) {
+        ProgressModalDialog dialog = ProgressModalDialog.newInstance();
+        dialog.show(Objects.requireNonNull(mActivity.getSupportFragmentManager()), "");
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            List<String> validLastWords = MnemonicUtils.calculateLastWord(words);
+            selectWord = validLastWords.get(0);
+            mActivity.runOnUiThread(() -> {
+                dialog.dismiss();
+                adapter = new WordsAdapter(mActivity);
+                adapter.setItems(validLastWords);
+                mBinding.words.setAdapter(adapter);
+            });
+        });
     }
 
     public void handleClick(String s) {
