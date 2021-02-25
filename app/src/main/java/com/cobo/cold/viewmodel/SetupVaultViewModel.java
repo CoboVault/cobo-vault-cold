@@ -154,7 +154,7 @@ public class SetupVaultViewModel extends AndroidViewModel {
             }
             return true;
         } else if (isCreateMnemonic) {
-            return calculateLastWord(mnemonic) != null;
+            return true;
         } else {
             return Bip39.validateMnemonic(mnemonic);
         }
@@ -457,10 +457,6 @@ public class SetupVaultViewModel extends AndroidViewModel {
 
     public void completeMnemonic(String mnemonic) {
         this.mnemonic.postValue(mnemonic);
-    }
-
-    private String calculateLastWord(String mnemonic) {
-        return MnemonicUtils.calculateLastWord(mnemonic).get(0);
     }
 
     public void setIsCreateMnemonic(boolean b) {
