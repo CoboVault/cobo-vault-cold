@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import static com.cobo.coinlib.coins.polkadot.pallets.Parameter.readAccount;
+import static com.cobo.coinlib.coins.polkadot.pallets.Parameter.writeAccount;
 
 public class Payee {
     private final byte rewardType;
@@ -57,7 +58,9 @@ public class Payee {
 
     public void writeTo(ScaleCodecWriter scw) throws IOException {
         scw.writeByte(rewardType);
-        Parameter.writeAccount(scw, rewardDestination);
+        if (rewardType == 0x03) {
+            writeAccount(scw, rewardDestination);
+        }
     }
 
     public void writeToJSON(Network network, JSONObject object) throws JSONException {
