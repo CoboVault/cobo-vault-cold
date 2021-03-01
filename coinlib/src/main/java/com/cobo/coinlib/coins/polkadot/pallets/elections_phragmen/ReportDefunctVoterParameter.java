@@ -22,14 +22,14 @@ public class ReportDefunctVoterParameter extends Parameter {
 
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
-        writeAccount(scw, who);
+        scw.writeByteArray(who);
         scw.writeLIntCompact(voteCount);
         scw.writeLIntCompact(candidateCount);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        who = readAccount(scr);
+        who = scr.readByteArray(32);
         voteCount = scr.readCompact().longValue();
         candidateCount = scr.readCompact().longValue();
     }

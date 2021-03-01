@@ -164,10 +164,9 @@ public class Ksm extends Dot {
         pallets.put(0x1000,
                 new com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.Vote(Network.KUSAMA, 0x1000));
         pallets.put(0x1001, new RemoveVoter(Network.POLKADOT, 0x1001));
-        pallets.put(0x1002, new ReportDefunctVoter(Network.POLKADOT, 0x1002));
-        pallets.put(0x1003, new SubmitCandidacy(Network.POLKADOT, 0x1003));
-        pallets.put(0x1004, new RenounceCandidacy(Network.POLKADOT, 0x1004));
-        pallets.put(0x1005, new RemoveMember(Network.POLKADOT, 0x1005));
+        pallets.put(0x1002, new SubmitCandidacy(Network.POLKADOT, 0x1002));
+        pallets.put(0x1003, new RenounceCandidacy(Network.POLKADOT, 0x1003));
+        pallets.put(0x1004, new RemoveMember(Network.POLKADOT, 0x1004));
     }
     static {
         pallets.put(0x0400, new Transfer(Network.KUSAMA, 0x0400));

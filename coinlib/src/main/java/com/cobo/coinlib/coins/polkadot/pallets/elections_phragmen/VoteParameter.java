@@ -29,7 +29,7 @@ public class VoteParameter extends Parameter {
         length = scr.readCompactInt();
         publicKeys = new ArrayList<>();
         for (int i = 0; i < length; i++) {
-            publicKeys.add(readAccount(scr));
+            publicKeys.add(scr.readByteArray(32));
         }
         value = scr.readCompact();
     }
@@ -48,7 +48,7 @@ public class VoteParameter extends Parameter {
     public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeCompact(length);
         for (int i = 0; i < publicKeys.size(); i++) {
-            writeAccount(scw, publicKeys.get(i));
+            scw.writeByteArray(publicKeys.get(i));
         }
         scw.writeBIntCompact(value);
     }
