@@ -31,6 +31,7 @@ import com.google.zxing.Result;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.util.Arrays;
@@ -76,7 +77,7 @@ public final class CaptureHandler extends Handler {
                 UosDecodeResult decodeResult = null;
                 try {
                     decodeResult = uosDecoder.decode(Hex.toHexString(result.getRawBytes()));
-                } catch (InvalidUOSException e) {
+                } catch (InvalidUOSException| DecoderException e) {
                     e.printStackTrace();
                 }
                 if (decodeResult != null) {

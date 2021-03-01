@@ -3,6 +3,7 @@ package com.cobo.coinlib.coins.polkadot.UOS;
 import com.cobo.coinlib.Util;
 import com.cobo.coinlib.exception.InvalidUOSException;
 
+import org.bouncycastle.util.encoders.DecoderException;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class UOSDecoder {
         return result;
     }
 
-    private UosDecodeResult combine() throws InvalidUOSException {
+    private UosDecodeResult combine() throws InvalidUOSException, DecoderException {
         byte[] data = new byte[0];
         for (int i = 0; i < frameCount; i++) {
             data = Util.concat(data, results.get(i).frameData);

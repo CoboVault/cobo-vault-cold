@@ -3,6 +3,7 @@ package com.cobo.coinlib.coins.polkadot.UOS;
 import com.cobo.coinlib.exception.InvalidUOSException;
 
 import org.bouncycastle.util.encoders.Hex;
+import org.spongycastle.util.encoders.DecoderException;
 
 public class MultipartPayload {
     private final String rawData;
@@ -20,7 +21,7 @@ public class MultipartPayload {
         read();
     }
 
-    private void read() throws InvalidUOSException {
+    private void read() throws InvalidUOSException, DecoderException {
         String frameInfo = rawData.substring(0, 10);
         frameCount = Utils.tryParseInt(frameInfo.substring(2, 6));
         isMultiPart = frameCount > 1;
