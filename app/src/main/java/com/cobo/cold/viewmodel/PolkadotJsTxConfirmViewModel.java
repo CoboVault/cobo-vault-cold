@@ -42,6 +42,7 @@ import com.cobo.cold.encryption.ChipSigner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -77,7 +78,7 @@ public class PolkadotJsTxConfirmViewModel extends TxConfirmViewModel {
             TxEntity tx = generateSubstrateTxEntity(sp);
             observableTx.postValue(tx);
             signingPayload = sp.getSigningPayload();
-        } catch (InvalidUOSException | JSONException e) {
+        } catch (InvalidUOSException | JSONException | DecoderException e) {
             e.printStackTrace();
         }
     }

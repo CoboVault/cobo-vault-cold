@@ -4,6 +4,7 @@ import com.cobo.coinlib.coins.polkadot.AddressCodec;
 import com.cobo.coinlib.coins.polkadot.scale.ScaleCodecReader;
 import com.cobo.coinlib.exception.InvalidUOSException;
 
+import org.bouncycastle.util.encoders.DecoderException;
 import org.bouncycastle.util.encoders.Hex;
 
 public class SubstratePayload {
@@ -24,7 +25,13 @@ public class SubstratePayload {
     }
 
     private void read() throws InvalidUOSException {
-        ScaleCodecReader scaleCodecReader = new ScaleCodecReader(Hex.decode(rawData));
+        ScaleCodecReader scaleCodecReader;
+        try {
+            scaleCodecReader = new ScaleCodecReader(Hex.decode(rawData));
+        } catch (DecoderException e) {
+            e.printStackTrace();
+            throw new InvalidUOSException("invalid curve bytes");
+        }
         byte firstByte = scaleCodecReader.readByte();
         byte secondByte = scaleCodecReader.readByte();
         switch (firstByte) {

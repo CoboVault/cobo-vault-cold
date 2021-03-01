@@ -27,7 +27,7 @@ public class Payee {
             case 0x02:
                 break;
             default:
-                rewardDestinationPublicKey = readAccount(scr);
+                rewardDestinationPublicKey = scr.readByteArray(32);
         }
         return new Payee(rewardType, rewardDestinationPublicKey);
     }
@@ -59,7 +59,7 @@ public class Payee {
     public void writeTo(ScaleCodecWriter scw) throws IOException {
         scw.writeByte(rewardType);
         if (rewardType == 0x03) {
-            writeAccount(scw, rewardDestination);
+            scw.writeByteArray(rewardDestination);
         }
     }
 
