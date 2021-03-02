@@ -210,7 +210,12 @@ public class Utilities {
 
     public static void setAttackDetected(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
-        sp.edit().putBoolean(ATTACK_DETECTED,true).apply();
+        sp.edit().putBoolean(ATTACK_DETECTED, true).apply();
+    }
+
+    public static void setAttackDetected(Context context, boolean attached) {
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_SECRET, MODE_PRIVATE);
+        sp.edit().putBoolean(ATTACK_DETECTED, attached).apply();
     }
 
     public static boolean isAttackDetected(Context context) {

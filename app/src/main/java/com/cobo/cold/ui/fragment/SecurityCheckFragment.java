@@ -50,6 +50,7 @@ public class SecurityCheckFragment extends BaseFragment<SecurityCheckBinding> {
             handler.postDelayed(() -> {
                 if (checkResult.result == RESULT_OK) {
                     boolean vaultCreated = Utilities.hasVaultCreated(mActivity);
+                    Utilities.setAttackDetected(mActivity, false);
                     Log.d(TAG, "vaultCreated = " + vaultCreated);
                     Intent intent;
                     if (vaultCreated) {
