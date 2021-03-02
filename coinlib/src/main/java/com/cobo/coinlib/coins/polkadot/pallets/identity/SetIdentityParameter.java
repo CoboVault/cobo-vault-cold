@@ -31,15 +31,7 @@ public class SetIdentityParameter extends Parameter {
 
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
-        writeAdditional(scw);
-        writeRaw(scw, display);
-        writeRaw(scw, legal);
-        writeRaw(scw, web);
-        writeRaw(scw, riot);
-        writeRaw(scw, email);
-        writePgpFingerprint(scw);
-        writeRaw(scw, image);
-        writeRaw(scw, twitter);
+        scw.writeByteArray(data);
     }
 
     private byte[] readRaw(ScaleCodecReader scr) {
@@ -51,12 +43,6 @@ public class SetIdentityParameter extends Parameter {
         return content;
     }
 
-    private void writeRaw(ScaleCodecWriter scw, byte[] data) throws IOException {
-        int length = data.length;
-        scw.writeByte(length);
-        scw.writeByteArray(data);
-    }
-
     private void readAdditional(ScaleCodecReader scr) {
         int length = scr.readCompactInt();
         for (int i = 0; i < length; i++) {
@@ -66,33 +52,10 @@ public class SetIdentityParameter extends Parameter {
         }
     }
 
-    private void writeAdditional(ScaleCodecWriter scw) throws IOException {
-        int size = additional.size();
-        scw.writeCompact(size);
-        additional.forEach((key, value) -> {
-            try {
-                writeRaw(scw, key);
-                writeRaw(scw, value);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
     private void readPgpFingerprint(ScaleCodecReader scr) {
         boolean isSome = scr.readBoolean();
         if (isSome) {
             pgpFingerprint = scr.readByteArray(20);
-        }
-    }
-
-    private void writePgpFingerprint(ScaleCodecWriter scw) throws IOException {
-        if (pgpFingerprint!= null && pgpFingerprint.length > 0) {
-            scw.writeByte(0x01);
-            scw.writeByteArray(pgpFingerprint);
-        }
-        else {
-            scw.writeByte(0x00);
         }
     }
 

@@ -50,8 +50,10 @@ public class AddProxyParameter extends Parameter {
                     return "NoUsed";
                 case 0x05:
                     return "IdentityJudgement";
+                case 0x06:
+                    return "CancelProxy";
                 default:
-                    throw new Error("Unknown proxy type");
+                    return "Unknown";
             }
         } else {
             //KSM
@@ -66,8 +68,10 @@ public class AddProxyParameter extends Parameter {
                     return "Staking";
                 case 0x04:
                     return "IdentityJudgement";
+                case 0x05:
+                    return "CancelProxy";
                 default:
-                    throw new Error("Unknown proxy type");
+                    return "Unknown";
             }
         }
     }

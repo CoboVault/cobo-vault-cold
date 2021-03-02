@@ -25,7 +25,7 @@ public class ScaleCodecReader {
     public static final BoolOptionalReader BOOL_OPTIONAL = new BoolOptionalReader();
     public static final StringReader STRING = new StringReader();
 
-    private byte[] source;
+    private final byte[] source;
     private int pos = 0;
 
     public ScaleCodecReader(byte[] source) {
@@ -186,5 +186,13 @@ public class ScaleCodecReader {
 
     public String readRestString() {
         return Hex.toHexString(readRestBytes());
+    }
+
+    public byte[] getSource() {
+        return source;
+    }
+
+    public int getPos() {
+        return pos;
     }
 }
