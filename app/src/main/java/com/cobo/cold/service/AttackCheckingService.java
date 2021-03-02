@@ -36,7 +36,7 @@ public class AttackCheckingService extends Service {
     private SecurityCheck securityCheck;
 
     private final int checkingInterval = 60 * 1000;
-    private Runnable checkingRunnable = new Runnable() {
+    private final Runnable checkingRunnable = new Runnable() {
         @Override
         public void run() {
             SecurityCheck.CheckResult result = securityCheck.attackChecking(AttackCheckingService.this);
@@ -52,6 +52,7 @@ public class AttackCheckingService extends Service {
                 intent.putExtras(data);
                 startActivity(intent);
             } else {
+                Utilities.setAttackDetected(AttackCheckingService.this, false);
                 handler.postDelayed(this, checkingInterval);
             }
         }
