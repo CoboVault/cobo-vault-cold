@@ -159,10 +159,9 @@ public class Dot extends AbsCoin {
         pallets.put(0x1100,
                 new com.cobo.coinlib.coins.polkadot.pallets.elections_phragmen.Vote(Network.POLKADOT, 0x1100));
         pallets.put(0x1101, new RemoveVoter(Network.POLKADOT, 0x1101));
-        pallets.put(0x1102, new ReportDefunctVoter(Network.POLKADOT, 0x1102));
-        pallets.put(0x1103, new SubmitCandidacy(Network.POLKADOT, 0x1103));
-        pallets.put(0x1104, new RenounceCandidacy(Network.POLKADOT, 0x1104));
-        pallets.put(0x1105, new RemoveMember(Network.POLKADOT, 0x1105));
+        pallets.put(0x1102, new SubmitCandidacy(Network.POLKADOT, 0x1102));
+        pallets.put(0x1103, new RenounceCandidacy(Network.POLKADOT, 0x1103));
+        pallets.put(0x1104, new RemoveMember(Network.POLKADOT, 0x1104));
     }
     static {
         pallets.put(0x0500, new Transfer(Network.POLKADOT, 0x0500));
