@@ -28,7 +28,7 @@ public class CreateRecoveryParameter extends Parameter {
         len = scr.readCompactInt();
         friends = new ArrayList<>();
         for (int i = 0; i < len; i++) {
-            friends.add(readAccount(scr));
+            friends.add(scr.readByteArray(32));
         }
         threshold = scr.readUint16();
         delay_period = scr.readUint32();
@@ -54,7 +54,7 @@ public class CreateRecoveryParameter extends Parameter {
     public void write(ScaleCodecWriter scw) throws IOException {
         scw.writeCompact(len);
         for (int i = 0; i < len; i++) {
-            writeAccount(scw, friends.get(i));
+            scw.writeByteArray(friends.get(i));
         }
         scw.writeUint16(threshold);
         scw.writeUint32(delay_period);

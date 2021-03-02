@@ -22,14 +22,14 @@ public class AddProxyParameter extends Parameter {
 
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
-        writeAccount(scw, delegate);
+        scw.writeByteArray(delegate);
         scw.writeByte(proxyType);
         scw.writeUint32(blockNumber);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        delegate = readAccount(scr);
+        delegate =  scr.readByteArray(32);
         proxyType = scr.readByte();
         blockNumber = scr.readUint32();
     }

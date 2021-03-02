@@ -23,16 +23,16 @@ public class DelegateParameter extends Parameter {
 
     @Override
     protected void write(ScaleCodecWriter scw) throws IOException {
-        writeAccount(scw, to);
+        scw.writeByteArray(to);
         scw.writeByte(conviction);
-        scw.writeBIntCompact(balance);
+        scw.writeUint128(balance);
     }
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        to = readAccount(scr);
+        to = scr.readByteArray(32);
         conviction = scr.readByte();
-        balance = scr.readCompact();
+        balance = scr.readUint128();
     }
 
     private String transformConviction(){
