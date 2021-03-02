@@ -53,7 +53,7 @@ public class ApproveAsMultiParameter extends Parameter {
         scw.writeUint16(threshold);
         scw.writeCompact(otherSignatoriesLen);
         for (int i = 0 ; i < otherSignatoriesLen; i++) {
-            writeAccount(scw, otherSignatories.get(i));
+            scw.writeByteArray(otherSignatories.get(i));
         }
         if (hasTimePoint) {
             scw.writeByte(1);
@@ -72,7 +72,7 @@ public class ApproveAsMultiParameter extends Parameter {
         otherSignatoriesLen = scr.readCompactInt();
         otherSignatories = new ArrayList<>();
         for (int i = 0; i < otherSignatoriesLen; i++) {
-            otherSignatories.add(readAccount(scr));
+            otherSignatories.add(scr.readByteArray(32));
         }
         hasTimePoint = scr.readBoolean();
         if (hasTimePoint) {

@@ -20,12 +20,11 @@ public class InitiateRecoveryParameter extends Parameter {
 
     @Override
     protected void read(ScaleCodecReader scr) {
-        account = readAccount(scr);
+        account = scr.readByteArray(32);
     }
 
     @Override
     protected JSONObject addCallParameter() throws JSONException {
-
         return new JSONObject()
                 .put("Account", AddressCodec.encodeAddress(account, network.SS58Prefix));
     }
@@ -33,6 +32,6 @@ public class InitiateRecoveryParameter extends Parameter {
 
     @Override
     public void write(ScaleCodecWriter scw) throws IOException {
-        writeAccount(scw, account);
+        scw.writeByteArray(account);
     }
 }
