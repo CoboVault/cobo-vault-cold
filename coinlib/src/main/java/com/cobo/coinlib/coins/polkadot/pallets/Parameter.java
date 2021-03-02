@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static com.cobo.coinlib.coins.polkadot.pallets.Parameter.AddressType.MULTI_ADDRESS;
 
@@ -15,12 +16,16 @@ public abstract class Parameter {
     protected Network network;
     public String name;
     public int code;
+    protected byte[] data;
 
     public Parameter(String name, Network network, int code, ScaleCodecReader scr) {
         this.network = network;
         this.name = name;
         this.code = code;
+        int start = scr.getPos();
         this.read(scr);
+        int end = scr.getPos();
+        data = Arrays.copyOfRange(scr.getSource(), start, end);
     }
 
     public JSONObject toJSON() throws JSONException {
