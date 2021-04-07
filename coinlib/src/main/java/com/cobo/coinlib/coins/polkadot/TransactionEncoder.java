@@ -93,7 +93,7 @@ public class TransactionEncoder {
 
     public byte[] constructTransaction() throws Exception {
         ScaleCodecWriter codecWriter = new ScaleCodecWriter(new ByteArrayOutputStream());
-        codecWriter.writeByteArray(int16ToBytes(chainProperty.callId.transferKeepAlive));
+        codecWriter.writeByteArray(int16ToBytes(chainProperty.callId.transfer));
         byte[] publicKey = AddressCodec.decodeAddress(dest);
         codecWriter.writeByte(00);
         codecWriter.writeByteArray(publicKey);
@@ -120,7 +120,7 @@ public class TransactionEncoder {
         scaleCodecWriter.writeByteArray(mortalEra);
         scaleCodecWriter.writeLIntCompact(nonce);
         scaleCodecWriter.writeLIntCompact(tip);
-        scaleCodecWriter.writeByteArray(int16ToBytes(chainProperty.callId.transferKeepAlive));
+        scaleCodecWriter.writeByteArray(int16ToBytes(chainProperty.callId.transfer));
         byte[] destPublicKey = AddressCodec.decodeAddress(dest);
         scaleCodecWriter.writeByte(00);
         scaleCodecWriter.writeByteArray(destPublicKey);
