@@ -168,7 +168,15 @@ public class TxConfirmViewModel extends AndroidViewModel {
                     feeAttachCheckingResult.postValue(DUPLICATE_TX);
                     break;
                 } else if (outputs.equals(tx.getTo())) {
-                    feeAttachCheckingResult.postValue(SAME_OUTPUTS);
+                    if (txEntity.getAmount().endsWith("USDT")) {
+                        if (txEntity.getAmount().equals(tx.getAmount())) {
+                            feeAttachCheckingResult.postValue(SAME_OUTPUTS);
+                        } else {
+                            feeAttachCheckingResult.postValue(NORMAL);
+                        }
+                    } else {
+                        feeAttachCheckingResult.postValue(SAME_OUTPUTS);
+                    }
                     break;
                 } else {
                     feeAttachCheckingResult.postValue(NORMAL);
