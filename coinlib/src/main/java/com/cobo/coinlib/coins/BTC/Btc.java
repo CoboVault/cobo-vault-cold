@@ -68,6 +68,9 @@ public class Btc extends AbsCoin {
         private static final int OMNI_USDT_PROPERTYID = 31;
         private ChangeAddressInfo changeAddressInfo;
 
+        private String changeAddress;
+        private long changeAmount;
+
         public Tx(JSONObject signTxObject, String coinCode) throws JSONException, InvalidTransactionException {
             super(signTxObject, coinCode);
         }
@@ -92,10 +95,31 @@ public class Btc extends AbsCoin {
         }
         @Override
         public JSONArray getOutputs() {
-            try {
-                return metaData.getJSONArray("outputs");
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (isToken) {
+                JSONArray out = new JSONArray();
+                JSONObject toObj = new JSONObject();
+                try {
+                    toObj.put("address", to);
+                    toObj.put("value", DUST_AMOUNT);
+                    toObj.put("isChange", false);
+                    out.put(toObj);
+                    if (changeAmount > 0) {
+                        JSONObject changeObj = new JSONObject();
+                        changeObj.put("address", changeAddress);
+                        changeObj.put("value", changeAmount);
+                        changeObj.put("isChange", true);
+                        out.put(changeObj);
+                    }
+                    return out;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    return metaData.getJSONArray("outputs");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             return null;
         }
@@ -128,6 +152,8 @@ public class Btc extends AbsCoin {
                 }
                 amount = metaData.optLong("omniAmount") / Math.pow(10, decimal);
                 to = metaData.getString("to");
+                changeAddress = metaData.optString("changeAddress");
+                changeAmount = inputAmount - metaData.getLong("fee") - DUST_AMOUNT;
             } else {
                 parseInput();
                 parseOutPut();
