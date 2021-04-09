@@ -6,6 +6,7 @@ import com.cobo.coinlib.coins.polkadot.scale.ScaleWriter;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 public class CompactBigIntWriter implements ScaleWriter<BigInteger> {
 
@@ -16,6 +17,15 @@ public class CompactBigIntWriter implements ScaleWriter<BigInteger> {
         CompactMode mode = CompactMode.forNumber(value);
 
         byte[] data = value.toByteArray();
+        int noneZeroPos = 0;
+        while (noneZeroPos < data.length - 1) {
+            if (data[noneZeroPos] == 0) {
+                noneZeroPos++;
+            } else {
+                break;
+            }
+        }
+        data = Arrays.copyOfRange(data, noneZeroPos, data.length);
         int pos = data.length-1;
         int limit = 0;
 
